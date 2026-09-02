@@ -256,23 +256,71 @@ window.GAME_DATA = {
     }
   ],
   "attributes": {
-    "totalPoints": 10,
+    "totalPoints": 30,
     "attributes": [
+      {
+        "id": "strength",
+        "name": "力量",
+        "description": "衡量肌肉力量、负重和近身对抗能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "agility",
+        "name": "敏捷",
+        "description": "衡量移动速度、反应和身体协调能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "education",
+        "name": "教育",
+        "description": "衡量知识储备、专业训练和学习能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
       {
         "id": "insight",
         "name": "灵感",
-        "description": "观察和理解异常现象的能力。",
-        "initial": 60,
-        "min": 0,
-        "max": 99
+        "description": "衡量观察异常、联想线索和理解现象的能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "will",
+        "name": "意志",
+        "description": "衡量坚持行动、抵抗压力和控制恐惧的能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "luck",
+        "name": "幸运",
+        "description": "衡量偶然事件对角色有利的程度。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "constitution",
+        "name": "体质",
+        "description": "衡量耐力、健康程度和承受伤害的能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
       },
       {
         "id": "san",
-        "name": "理智",
-        "description": "承受精神冲击的能力。",
-        "initial": 75,
+        "name": "SAN",
+        "description": "衡量角色承受精神冲击的能力，游戏过程中可降低至0。",
+        "initial": 5,
         "min": 0,
-        "max": 99
+        "max": 10
       }
     ]
   },
