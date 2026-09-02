@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "事件列表",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "actions"],
+    "properties": {
+      "id": { "$ref": "#/$defs/id" },
+      "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+      "next": { "$ref": "#/$defs/id" }
+    },
+    "additionalProperties": false
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "dialogue": {
+      "type": "object",
+      "required": ["type", "text"],
+      "properties": {
+        "type": { "const": "dialogue" },
+        "speaker": { "type": "string" },
+        "text": { "type": "string" },
+        "speed": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "inspect": {
+      "type": "object",
+      "required": ["type", "title", "text"],
+      "properties": {
+        "type": { "const": "inspect" },
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "choice": {
+      "type": "object",
+      "required": ["type", "prompt", "options"],
+      "properties": {
+        "type": { "const": "choice" },
+        "prompt": { "type": "string" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["label", "next"],
+            "properties": {
+              "label": { "type": "string" },
+              "next": { "$ref": "#/$defs/id" },
+              "when": { "type": "object" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "required": ["type", "checkId", "attribute", "success", "fail"],
+      "properties": {
+        "type": { "const": "check" },
+        "checkId": { "$ref": "#/$defs/id" },
+        "label": { "type": "string" },
+        "attribute": { "$ref": "#/$defs/id" },
+        "modifier": { "type": "number" },
+        "success": { "$ref": "#/$defs/id" },
+        "fail": { "$ref": "#/$defs/id" }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "oneOf": [
+        { "$ref": "#/$defs/dialogue" },
+        { "$ref": "#/$defs/inspect" },
+        { "$ref": "#/$defs/choice" },
+        { "$ref": "#/$defs/check" },
+        {
+          "type": "object",
+          "required": ["type", "scene"],
+          "properties": { "type": { "const": "changeScene" }, "scene": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "key", "value"],
+          "properties": { "type": { "const": "setFlag" }, "key": { "$ref": "#/$defs/id" }, "value": {} },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "attribute", "amount"],
+          "properties": { "type": { "const": "modifyAttribute" }, "attribute": { "$ref": "#/$defs/id" }, "amount": { "type": "number" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "item"],
+          "properties": { "type": { "const": "addItem" }, "item": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "object", "patch"],
+          "properties": { "type": { "const": "setObjectState" }, "object": { "$ref": "#/$defs/id" }, "patch": { "type": "object" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "name"],
+          "properties": { "type": { "const": "custom" }, "name": { "$ref": "#/$defs/id" }, "params": { "type": "object" } },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

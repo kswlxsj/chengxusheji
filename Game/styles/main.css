@@ -1,0 +1,181 @@
+:root {
+  color-scheme: dark;
+  font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --ink: #ece5d8;
+  --panel: rgba(16, 19, 24, 0.92);
+  --line: #8e7b5f;
+  --accent: #d5ad6d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--ink);
+  background: #090b0e;
+}
+
+button { font: inherit; }
+
+#game-shell {
+  position: relative;
+  width: min(100vw, 160vh);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #15181d;
+  box-shadow: 0 0 50px #000;
+}
+
+#scene-layer,
+.scene-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-background { object-fit: cover; }
+
+.scene-object {
+  position: absolute;
+  z-index: 10;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: filter 120ms ease, transform 120ms ease;
+}
+
+.scene-object img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.scene-object:hover,
+.scene-object:focus-visible {
+  filter: brightness(1.35) drop-shadow(0 0 10px #ffe7ad);
+  transform: scale(1.035);
+  outline: none;
+}
+
+.scene-object:disabled { cursor: wait; filter: grayscale(0.4); }
+
+#hud {
+  position: absolute;
+  z-index: 40;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(7, 9, 12, .72);
+  backdrop-filter: blur(6px);
+  font-size: clamp(12px, 1.2vw, 16px);
+}
+
+#scene-name { color: var(--accent); font-weight: 700; }
+#inventory { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hud-actions { display: flex; gap: 6px; }
+
+.hud-actions button,
+.window-controls button,
+.choice-list button,
+.inspect-close {
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #272a2f;
+  cursor: pointer;
+}
+
+.hud-actions button:hover,
+.window-controls button:hover,
+.choice-list button:hover,
+.inspect-close:hover { background: #423a30; }
+
+#window-layer { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
+
+.game-window {
+  pointer-events: auto;
+  border: 2px solid var(--line);
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: 0 10px 36px rgba(0,0,0,.7);
+}
+
+.dialog-window {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 4%;
+  min-height: 25%;
+  padding: 18px 20px 46px;
+  cursor: pointer;
+}
+
+.dialog-speaker { min-height: 1.5em; color: var(--accent); font-weight: 700; }
+.dialog-text { margin: 9px 0 0; font-size: clamp(17px, 1.7vw, 25px); line-height: 1.65; }
+.dialog-hint { position: absolute; right: 18px; bottom: 14px; opacity: .65; font-size: 13px; }
+
+.window-controls {
+  position: absolute;
+  left: 18px;
+  bottom: 11px;
+  display: flex;
+  gap: 6px;
+}
+
+.window-controls button { padding: 4px 9px; }
+.window-controls button[aria-pressed="true"] { color: #17120a; background: var(--accent); }
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 8%;
+  pointer-events: auto;
+  background: rgba(0,0,0,.58);
+}
+
+.choice-window,
+.inspect-window { width: min(650px, 90%); padding: 24px; }
+.choice-window h2,
+.inspect-window h2 { margin-top: 0; color: var(--accent); }
+.choice-list { display: grid; gap: 10px; }
+.choice-list button { padding: 12px 16px; text-align: left; }
+.inspect-content { display: grid; grid-template-columns: minmax(0, 180px) 1fr; gap: 20px; align-items: center; }
+.inspect-content img { width: 100%; max-height: 220px; object-fit: contain; }
+.inspect-close { float: right; margin-top: 18px; padding: 8px 18px; }
+
+#toast {
+  position: absolute;
+  z-index: 100;
+  top: 70px;
+  left: 50%;
+  translate: -50% -15px;
+  padding: 8px 16px;
+  opacity: 0;
+  background: rgba(0,0,0,.82);
+  transition: 180ms ease;
+  pointer-events: none;
+}
+
+#toast.visible { opacity: 1; translate: -50% 0; }
+#game-shell.flash { animation: flash 420ms ease; }
+@keyframes flash { 35% { filter: brightness(2.4) contrast(1.25); } }
+
+@media (max-width: 700px) {
+  #attributes { display: none; }
+  #hud { gap: 8px; }
+  .inspect-content { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "游戏入口与初始状态",
+  "type": "object",
+  "required": ["formatVersion", "title", "startEvent", "initialScene", "initialState"],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "startEvent": { "$ref": "#/$defs/id" },
+    "initialScene": { "$ref": "#/$defs/id" },
+    "initialState": {
+      "type": "object",
+      "required": ["sceneId", "attributes", "flags", "inventory", "objectStates", "checkResults"],
+      "properties": {
+        "sceneId": { "$ref": "#/$defs/id" },
+        "currentEventId": { "type": ["string", "null"] },
+        "attributes": { "type": "object", "additionalProperties": { "type": "number" } },
+        "flags": { "type": "object", "additionalProperties": true },
+        "inventory": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "objectStates": { "type": "object", "additionalProperties": { "type": "object" } },
+        "checkResults": { "type": "object" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["/data/meta.json"],
+      "url": "./schemas/meta.schema.json"
+    },
+    {
+      "fileMatch": ["/data/scenes.json"],
+      "url": "./schemas/scenes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/events.json"],
+      "url": "./schemas/events.schema.json"
+    },
+    {
+      "fileMatch": ["/data/items.json"],
+      "url": "./schemas/items.schema.json"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "formatVersion": 1,
+  "title": "末班列车框架演示",
+  "startEvent": "E_START",
+  "initialScene": "carriage_06",
+  "initialState": {
+    "sceneId": "carriage_06",
+    "currentEventId": null,
+    "attributes": {
+      "insight": 65,
+      "san": 80
+    },
+    "flags": {},
+    "inventory": [],
+    "objectStates": {},
+    "checkResults": {}
+  }
+}

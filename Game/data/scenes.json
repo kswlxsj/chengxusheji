@@ -1,0 +1,57 @@
+[
+  {
+    "id": "carriage_06",
+    "name": "6 号车厢",
+    "background": "assets/carriage-06.svg",
+    "objects": [
+      {
+        "id": "note_06",
+        "name": "门上的便签",
+        "image": "assets/note.svg",
+        "position": { "x": 71, "y": 32, "width": 7, "height": 11 },
+        "zIndex": 12,
+        "clickEvent": "E_NOTE",
+        "visibleWhen": {
+          "not": {
+            "objectState": {
+              "objectId": "note_06",
+              "property": "hidden",
+              "equals": true
+            }
+          }
+        }
+      },
+      {
+        "id": "door_06",
+        "name": "通往前车厢的门",
+        "image": "assets/door.svg",
+        "position": { "x": 39, "y": 21, "width": 22, "height": 63 },
+        "zIndex": 11,
+        "clickEvent": "E_DOOR"
+      }
+    ]
+  },
+  {
+    "id": "carriage_07",
+    "name": "7 号车厢",
+    "background": "assets/carriage-07.svg",
+    "objects": [
+      {
+        "id": "radio_07",
+        "name": "损坏的收音机",
+        "image": "assets/radio.svg",
+        "position": { "x": 18, "y": 54, "width": 13, "height": 18 },
+        "zIndex": 12,
+        "clickEvent": "E_RADIO"
+      },
+      {
+        "id": "return_door_07",
+        "name": "返回 6 号车厢",
+        "image": "assets/door.svg",
+        "position": { "x": 70, "y": 21, "width": 22, "height": 63 },
+        "zIndex": 11,
+        "clickEvent": "E_RETURN"
+      }
+    ]
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "场景列表",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "background", "objects"],
+    "properties": {
+      "id": { "$ref": "#/$defs/id" },
+      "name": { "type": "string", "minLength": 1 },
+      "background": { "type": "string", "minLength": 1 },
+      "objects": { "type": "array", "items": { "$ref": "#/$defs/object" } }
+    },
+    "additionalProperties": false
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 100 },
+        "y": { "type": "number", "minimum": 0, "maximum": 100 },
+        "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
+        "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["all"],
+          "properties": { "all": { "type": "array", "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["any"],
+          "properties": { "any": { "type": "array", "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/condition" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["flag", "equals"],
+          "properties": { "flag": { "$ref": "#/$defs/id" }, "equals": { "type": "boolean" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["hasItem"],
+          "properties": { "hasItem": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["objectState"],
+          "properties": {
+            "objectState": {
+              "type": "object",
+              "required": ["objectId", "property", "equals"],
+              "properties": {
+                "objectId": { "$ref": "#/$defs/id" },
+                "property": { "type": "string", "minLength": 1 },
+                "equals": {}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "object": {
+      "type": "object",
+      "required": ["id", "name", "image", "position", "clickEvent"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "image": { "type": "string", "minLength": 1 },
+        "position": { "$ref": "#/$defs/position" },
+        "zIndex": { "type": "integer" },
+        "clickEvent": { "$ref": "#/$defs/id" },
+        "visibleWhen": { "$ref": "#/$defs/condition" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

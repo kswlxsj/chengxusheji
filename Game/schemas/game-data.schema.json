@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/game-data.schema.json",
+  "title": "剧情网页游戏中间数据",
+  "type": "object",
+  "required": ["meta", "scenes", "events", "items"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["formatVersion", "startEvent", "initialScene", "initialState"],
+      "properties": {
+        "formatVersion": { "const": 1 },
+        "title": { "type": "string" },
+        "startEvent": { "$ref": "#/$defs/id" },
+        "initialScene": { "$ref": "#/$defs/id" },
+        "initialState": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "scenes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/scene" }
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 100 },
+        "y": { "type": "number", "minimum": 0, "maximum": 100 },
+        "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
+        "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "sceneObject": {
+      "type": "object",
+      "required": ["id", "image", "position", "clickEvent"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "image": { "type": "string" },
+        "position": { "$ref": "#/$defs/position" },
+        "zIndex": { "type": "integer" },
+        "clickEvent": { "$ref": "#/$defs/id" },
+        "visibleWhen": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "scene": {
+      "type": "object",
+      "required": ["id", "name", "background", "objects"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "background": { "type": "string" },
+        "objects": { "type": "array", "items": { "$ref": "#/$defs/sceneObject" } }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": { "type": { "type": "string" } },
+      "additionalProperties": true
+    },
+    "event": {
+      "type": "object",
+      "required": ["id", "actions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+        "next": { "$ref": "#/$defs/id" }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "required": ["id", "name", "image", "description"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "image": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#3a2928"/><stop offset="1" stop-color="#121315"/></linearGradient></defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <path d="M0 160H1600M0 720H1600" stroke="#74594f" stroke-width="12"/>
+  <path d="M100 720V230H350V720M1250 720V230H1500V720" fill="#242126" stroke="#695b58" stroke-width="10"/>
+  <path d="M0 720L280 610H1320L1600 720V900H0Z" fill="#191719"/>
+  <g fill="#9e785a" opacity=".38"><rect x="120" y="90" width="300" height="48"/><rect x="650" y="90" width="300" height="48"/><rect x="1180" y="90" width="300" height="48"/></g>
+  <text x="70" y="830" fill="#c6aaa1" font-size="46" font-family="sans-serif">7 号车厢 · 示例背景</text>
+</svg>
