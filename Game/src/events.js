@@ -115,6 +115,7 @@
       if (this.busy) return false;
       this.busy = true;
       this.scene.setInteractionEnabled(false);
+      this.onStateChanged();
       try {
         let nextId = eventId;
         let guard = 0;

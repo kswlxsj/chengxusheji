@@ -36,6 +36,10 @@
       this.render(scene);
     }
 
+    hasScene(sceneId) {
+      return this.scenes.has(sceneId);
+    }
+
     refresh() {
       if (this.state.sceneId) this.load(this.state.sceneId);
     }

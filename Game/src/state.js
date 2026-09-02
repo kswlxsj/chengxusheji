@@ -31,7 +31,24 @@
     }
 
     restore(snapshot) {
+      if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)) {
+        throw new TypeError("存档状态格式无效");
+      }
       const clean = Game.deepClone(snapshot);
+      if (clean.sceneId != null && typeof clean.sceneId !== "string") {
+        throw new TypeError("存档场景 ID 无效");
+      }
+      if (clean.currentEventId != null && typeof clean.currentEventId !== "string") {
+        throw new TypeError("存档事件 ID 无效");
+      }
+      for (const key of ["attributes", "flags", "objectStates", "checkResults"]) {
+        if (clean[key] != null && (typeof clean[key] !== "object" || Array.isArray(clean[key]))) {
+          throw new TypeError(`存档字段 ${key} 格式无效`);
+        }
+      }
+      if (clean.inventory != null && (!Array.isArray(clean.inventory) || clean.inventory.some((item) => typeof item !== "string"))) {
+        throw new TypeError("存档物品栏格式无效");
+      }
       this.sceneId = clean.sceneId || null;
       this.currentEventId = clean.currentEventId || null;
       this.attributes = clean.attributes || {};
@@ -59,13 +76,17 @@
       this.storageKey = storageKey;
     }
 
+    hasSave() {
+      return localStorage.getItem(this.storageKey) !== null;
+    }
+
     save() {
       localStorage.setItem(this.storageKey, JSON.stringify(this.state.snapshot()));
     }
 
     load() {
       const raw = localStorage.getItem(this.storageKey);
-      if (!raw) return false;
+      if (raw === null) return false;
       this.state.restore(JSON.parse(raw));
       return true;
     }
