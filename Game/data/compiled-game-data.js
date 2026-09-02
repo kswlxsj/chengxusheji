@@ -245,6 +245,1596 @@ window.GAME_DATA = {
           "text": "你回到了 6 号车厢。已经拿走的便签不会重新出现。"
         }
       ]
+    },
+    {
+      "id": "E_CHECK_START_LUCK_ITEMS",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "start_luck_items_001",
+          "label": "幸运：保留随身物品",
+          "attribute": "luck",
+          "modifier": 0,
+          "success": "E_START_LUCK_ITEMS_SUCCESS",
+          "fail": "E_START_LUCK_ITEMS_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_START_LUCK_ITEMS_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "幸运检定成功：醒来时仍保留随身携带的物品。"
+        }
+      ]
+    },
+    {
+      "id": "E_START_LUCK_ITEMS_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "幸运检定失败：除衣物和眼镜等必需品外，其余随身物品暂时遗失。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_START_INSIGHT_TERMINAL",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "start_insight_terminal_001",
+          "label": "灵感：察觉早已到站",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_START_INSIGHT_TERMINAL_SUCCESS",
+          "fail": "E_START_INSIGHT_TERMINAL_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_START_INSIGHT_TERMINAL_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你意识到列车按时间早就应该抵达终点站了。"
+        }
+      ]
+    },
+    {
+      "id": "E_START_INSIGHT_TERMINAL_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你无法判断自己睡了多久，只觉得列车仍在前进。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C06_NOTE_SCOUTING",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage06_note_scouting_001",
+          "label": "侦查：调查便签",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C06_NOTE_SCOUTING_SUCCESS",
+          "fail": "E_C06_NOTE_SCOUTING_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C06_NOTE_SCOUTING_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你发现便签背面写着：第三个箱子里藏着钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_C06_NOTE_SCOUTING_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你只看到了便签正面的警告，没有发现更多内容。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C06_MAP_INSIGHT",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage06_map_insight_001",
+          "label": "灵感：调查电车地图",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C06_MAP_INSIGHT_SUCCESS",
+          "fail": "E_C06_MAP_INSIGHT_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C06_MAP_INSIGHT_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你发现7号车厢以后的部分像是被人蓄意涂掉了。"
+        }
+      ]
+    },
+    {
+      "id": "E_C06_MAP_INSIGHT_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "地图后半段模糊不清，你暂时看不出原因。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_ADVANCE_INSIGHT",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_advance_insight_001",
+          "label": "灵感：判断是否继续前进",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C07_ADVANCE_INSIGHT_SUCCESS",
+          "fail": "E_C07_ADVANCE_INSIGHT_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_ADVANCE_INSIGHT_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "血腥气让你本能地意识到，继续前进十分危险。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_ADVANCE_INSIGHT_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你闻到了血腥气，却没能及时意识到前方的危险。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_CORPSE_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_corpse_san_001",
+          "label": "SAN：目击残破尸体",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C07_CORPSE_SAN_SUCCESS",
+          "fail": "E_C07_CORPSE_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "你勉强稳住心神。SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 4,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "遍地残肢令你遭受强烈精神冲击。SAN减少1d4点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_CORPSE_WARNED_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_corpse_warned_san_001",
+          "label": "SAN：有预警地目击尸体",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C07_CORPSE_WARNED_SAN_SUCCESS",
+          "fail": "E_C07_CORPSE_WARNED_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_WARNED_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "先前的预感让你做好了心理准备，没有损失SAN。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_WARNED_SAN_FAIL",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "即使有所准备，眼前惨状仍令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_CORPSE_MEDICINE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_corpse_medicine_001",
+          "label": "医学：调查尸体",
+          "attribute": "education",
+          "modifier": 0,
+          "success": "E_C07_CORPSE_MEDICINE_SUCCESS",
+          "fail": "E_C07_CORPSE_MEDICINE_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_MEDICINE_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你判断尸体死亡时间并不久。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_CORPSE_MEDICINE_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "尸体损毁严重，你无法判断准确死亡时间。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_MOUTH_SCOUTING",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_mouth_scouting_001",
+          "label": "侦查：发现吞噬车厢的大嘴",
+          "attribute": "insight",
+          "modifier": 1,
+          "success": "E_C07_MOUTH_SCOUTING_SUCCESS",
+          "fail": "E_C07_MOUTH_SCOUTING_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_MOUTH_SCOUTING_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你看清车厢深处的巨口，意识到某个比列车更庞大的存在正在吞噬车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_MOUTH_SCOUTING_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你只发现通往8号车厢的门消失了，那里仅剩一片黑暗。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C07_MOUTH_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage07_mouth_san_001",
+          "label": "SAN：目击巨大怪物",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C07_MOUTH_SAN_SUCCESS",
+          "fail": "E_C07_MOUTH_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_MOUTH_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "你强迫自己接受眼前的现实。SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C07_MOUTH_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 6,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "超越常识的巨口击溃了你的理智。SAN减少1d6点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_NEWSPAPER_SCOUTING",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_newspaper_scouting_001",
+          "label": "侦查：寻找报纸",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C05_NEWSPAPER_SCOUTING_SUCCESS",
+          "fail": "E_C05_NEWSPAPER_SCOUTING_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_SCOUTING_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在车厢里找到一张报道末班车恐怖事件的报纸。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_SCOUTING_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能在杂乱的车厢中找到有价值的东西。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_NEWSPAPER_DATE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_newspaper_date_001",
+          "label": "侦查：确认报纸日期",
+          "attribute": "insight",
+          "modifier": 1,
+          "success": "E_C05_NEWSPAPER_DATE_SUCCESS",
+          "fail": "E_C05_NEWSPAPER_DATE_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_DATE_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你发现报纸日期是明天，而报道的正是列车上正在发生的事件。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_DATE_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "报道令人不安，但你没有发现日期上的异常。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_NEWSPAPER_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_newspaper_san_001",
+          "label": "SAN：理解报纸预言",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C05_NEWSPAPER_SAN_SUCCESS",
+          "fail": "E_C05_NEWSPAPER_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你压下了报纸带来的不安，没有损失SAN。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_NEWSPAPER_SAN_FAIL",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "这张来自未来的报纸令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_DISAPPEARING_INSIGHT",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_disappearing_insight_001",
+          "label": "灵感：察觉车厢正在消失",
+          "attribute": "insight",
+          "modifier": 1,
+          "success": "E_C05_DISAPPEARING_INSIGHT_SUCCESS",
+          "fail": "E_C05_DISAPPEARING_INSIGHT_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_DISAPPEARING_INSIGHT_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你及时发现身后的车厢正在被黑暗吞没。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_DISAPPEARING_INSIGHT_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你暂时没有察觉立足点正在从身后消失。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_DISAPPEARING_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_disappearing_san_001",
+          "label": "SAN：目击车厢消失",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C05_DISAPPEARING_SAN_SUCCESS",
+          "fail": "E_C05_DISAPPEARING_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_DISAPPEARING_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "非日常景象令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_DISAPPEARING_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 3,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "空间被吞噬的景象令你SAN减少1d3点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C05_MOUTH_INTERIOR_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage05_mouth_interior_san_001",
+          "label": "SAN：观察大嘴内部",
+          "attribute": "san",
+          "modifier": -1,
+          "success": "E_C05_MOUTH_INTERIOR_SAN_SUCCESS",
+          "fail": "E_C05_MOUTH_INTERIOR_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_MOUTH_INTERIOR_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "你看清巨口内部后勉强保持清醒。SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C05_MOUTH_INTERIOR_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 3,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "巨口内部的景象令你SAN减少1d3点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_FIRST_AID",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_first_aid_001",
+          "label": "急救：救醒乘务员",
+          "attribute": "education",
+          "modifier": 1,
+          "success": "E_C04_FIRST_AID_SUCCESS",
+          "fail": "E_C04_FIRST_AID_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_FIRST_AID_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你成功稳定伤势并唤醒乘务员。这是取得钥匙位置和怪物情报的关键。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_FIRST_AID_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能唤醒乘务员，但他仍有微弱呼吸，剧情不会在此中断。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_STORY_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_story_san_001",
+          "label": "SAN：听闻惨案",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C04_STORY_SAN_SUCCESS",
+          "fail": "E_C04_STORY_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_STORY_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你承受住了乘务员讲述的惨案，没有损失SAN。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_STORY_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 2,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "惨案与腿上的咬痕令你SAN减少1d2点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_TALK_SOUND_CLUE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_talk_sound_clue_001",
+          "label": "话术：追问怪物弱点",
+          "attribute": "will",
+          "modifier": 1,
+          "success": "E_C04_TALK_SOUND_CLUE_SUCCESS",
+          "fail": "E_C04_TALK_SOUND_CLUE_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_TALK_SOUND_CLUE_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员回忆起怪物对声音极度敏感，这是通过2号车厢的重要线索。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_TALK_SOUND_CLUE_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员仍处于恐慌中，暂时无法讲清袭击细节。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_CARRY_STRENGTH",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_carry_strength_001",
+          "label": "力量：背起乘务员",
+          "attribute": "strength",
+          "modifier": 0,
+          "success": "E_C04_CARRY_STRENGTH_SUCCESS",
+          "fail": "E_C04_CARRY_STRENGTH_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CARRY_STRENGTH_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你稳稳背起受伤的乘务员。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CARRY_STRENGTH_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你无法独自背起乘务员，需要同伴协助或暂时留下他。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_CARRY_CONSTITUTION",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_carry_constitution_001",
+          "label": "体质：持续背负乘务员",
+          "attribute": "constitution",
+          "modifier": 0,
+          "success": "E_C04_CARRY_CONSTITUTION_SUCCESS",
+          "fail": "E_C04_CARRY_CONSTITUTION_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CARRY_CONSTITUTION_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你保持体力，继续背负乘务员前进。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CARRY_CONSTITUTION_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "持续负重令你难以行动，必须休息、换人或放下乘务员。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_CREW_DEATH_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_crew_death_san_001",
+          "label": "SAN：听见乘务员遇害",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C04_CREW_DEATH_SAN_SUCCESS",
+          "fail": "E_C04_CREW_DEATH_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CREW_DEATH_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你强迫自己继续前进，没有损失SAN。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_CREW_DEATH_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 3,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "身后的哀嚎令你SAN减少1d3点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C04_C03_SAFETY_SCOUTING",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage04_carriage03_safety_001",
+          "label": "侦查：确认3号车厢安全",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C04_C03_SAFETY_SUCCESS",
+          "fail": "E_C04_C03_SAFETY_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_C03_SAFETY_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "透过门上玻璃，你确认3号车厢内暂时没有怪物。"
+        }
+      ]
+    },
+    {
+      "id": "E_C04_C03_SAFETY_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "昏暗与杂物遮挡了视线，你无法确认里面是否安全。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C03_KEY_WITH_CLUE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage03_key_with_clue_001",
+          "label": "侦查：按线索寻找钥匙",
+          "attribute": "insight",
+          "modifier": 1,
+          "success": "E_C03_KEY_SUCCESS",
+          "fail": "E_C03_KEY_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C03_KEY_WITHOUT_CLUE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage03_key_without_clue_001",
+          "label": "侦查：盲目寻找钥匙",
+          "attribute": "insight",
+          "modifier": -1,
+          "success": "E_C03_KEY_SUCCESS",
+          "fail": "E_C03_KEY_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_KEY_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在前门附近的杂物中找到了驾驶室和控制面板的钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_KEY_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "杂物太多，你暂时没找到钥匙；可以换人或获得位置线索后重试。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C03_TALK_KEEP_KEY",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage03_talk_keep_key_001",
+          "label": "话术：说服乘务员交出钥匙",
+          "attribute": "will",
+          "modifier": 0,
+          "success": "E_C03_TALK_KEEP_KEY_SUCCESS",
+          "fail": "E_C03_TALK_KEEP_KEY_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_TALK_KEEP_KEY_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员接受你的安排，将钥匙交给调查员保管。"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_TALK_KEEP_KEY_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员坚持自己承担责任，暂时不愿交出钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C03_RECOVER_ITEMS_LUCK",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage03_recover_items_luck_001",
+          "label": "幸运：找回遗失物品",
+          "attribute": "luck",
+          "modifier": 0,
+          "success": "E_C03_RECOVER_ITEMS_SUCCESS",
+          "fail": "E_C03_RECOVER_ITEMS_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_RECOVER_ITEMS_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你从散落行李中找回了先前遗失的随身物品。"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_RECOVER_ITEMS_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没有找到自己的物品。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C03_C02_SCOUTING",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage03_carriage02_scouting_001",
+          "label": "侦查：判断Clicker数量",
+          "attribute": "insight",
+          "modifier": 0,
+          "success": "E_C03_C02_SCOUTING_SUCCESS",
+          "fail": "E_C03_C02_SCOUTING_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_C02_SCOUTING_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你捕捉到黑暗中的人影，并大致掌握Clicker的数量。"
+        }
+      ]
+    },
+    {
+      "id": "E_C03_C02_SCOUTING_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "黑暗中似乎有人影移动，但你无法判断数量。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_CLICKER_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_clicker_san_001",
+          "label": "SAN：目击Clicker",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C02_CLICKER_SAN_SUCCESS",
+          "fail": "E_C02_CLICKER_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_CLICKER_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "怪物令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_CLICKER_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 6,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "Clicker的形貌令你SAN减少1d6点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_CORPSE_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_corpse_san_001",
+          "label": "SAN：初次目击残尸",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C02_CORPSE_SAN_SUCCESS",
+          "fail": "E_C02_CORPSE_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_CORPSE_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "尸体与血腥气令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_CORPSE_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 4,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "残尸带来的冲击令你SAN减少1d4点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_LISTEN_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_listen_san_001",
+          "label": "SAN：听音辨位",
+          "attribute": "san",
+          "modifier": 0,
+          "success": "E_C02_LISTEN_SAN_SUCCESS",
+          "fail": "E_C02_LISTEN_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_LISTEN_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你做好心理准备，承受住了越来越近的非人喘息。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_LISTEN_SAN_FAIL",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "非人的喘息令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_STEALTH_LIGHT",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_stealth_light_001",
+          "label": "潜行：借助手电筒通过",
+          "attribute": "agility",
+          "modifier": 1,
+          "success": "E_C02_STEALTH_SUCCESS",
+          "fail": "E_C02_STEALTH_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_STEALTH_PHONE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_stealth_phone_001",
+          "label": "潜行：借助手机光源通过",
+          "attribute": "agility",
+          "modifier": 0,
+          "success": "E_C02_STEALTH_SUCCESS",
+          "fail": "E_C02_STEALTH_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_STEALTH_DARK",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_stealth_dark_001",
+          "label": "潜行：在黑暗中通过",
+          "attribute": "agility",
+          "modifier": -1,
+          "success": "E_C02_STEALTH_SUCCESS",
+          "fail": "E_C02_STEALTH_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_STEALTH_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没有发出明显声响，成功通过Clicker所在的车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_STEALTH_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你踩到尸体发出声响，Clicker立刻转向声音来源。"
+        }
+      ],
+      "next": "E_CHECK_C02_AGILITY_OPPOSED"
+    },
+    {
+      "id": "E_CHECK_C02_HALF_LUCK",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_half_luck_001",
+          "label": "困难幸运：冒险穿过车厢",
+          "attribute": "luck",
+          "modifier": -1,
+          "success": "E_C02_STEALTH_SUCCESS",
+          "fail": "E_C02_STEALTH_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_THROW_CLOSE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_throw_close_001",
+          "label": "投掷：近距离制造声响（第1次）",
+          "attribute": "agility",
+          "modifier": -1,
+          "success": "E_CHECK_C02_THROW_CLOSE_SECOND",
+          "fail": "E_C02_THROW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_THROW_CLOSE_SECOND",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_throw_close_002",
+          "label": "投掷：近距离制造声响（第2次）",
+          "attribute": "agility",
+          "modifier": -1,
+          "success": "E_C02_THROW_SUCCESS",
+          "fail": "E_C02_THROW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_THROW_MEDIUM",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_throw_medium_001",
+          "label": "投掷：中距离制造声响（第1次）",
+          "attribute": "agility",
+          "modifier": 0,
+          "success": "E_CHECK_C02_THROW_MEDIUM_SECOND",
+          "fail": "E_C02_THROW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_THROW_MEDIUM_SECOND",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_throw_medium_002",
+          "label": "投掷：中距离制造声响（第2次）",
+          "attribute": "agility",
+          "modifier": 0,
+          "success": "E_C02_THROW_SUCCESS",
+          "fail": "E_C02_THROW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_THROW_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "连续两次投掷都成功，声响将Clicker引向远处。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_THROW_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "制造声响的计划失败，Clicker开始逼近。"
+        }
+      ],
+      "next": "E_CHECK_C02_AGILITY_OPPOSED"
+    },
+    {
+      "id": "E_CHECK_C02_AGILITY_CLOSE",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_agility_close_001",
+          "label": "敏捷：近距离制造声音后脱身",
+          "attribute": "agility",
+          "modifier": -1,
+          "success": "E_C02_AGILITY_ESCAPE_SUCCESS",
+          "fail": "E_CHECK_C02_AGILITY_OPPOSED"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_AGILITY_MEDIUM",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_agility_medium_001",
+          "label": "敏捷：中距离制造声音后脱身",
+          "attribute": "agility",
+          "modifier": 0,
+          "success": "E_C02_AGILITY_ESCAPE_SUCCESS",
+          "fail": "E_CHECK_C02_AGILITY_OPPOSED"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_AGILITY_ESCAPE_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在Clicker转向前及时脱离危险区域。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_AGILITY_OPPOSED",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_clicker_agility_opposed_001",
+          "label": "敏捷对抗：躲避Clicker",
+          "attribute": "agility",
+          "modifier": -1,
+          "success": "E_C02_AGILITY_OPPOSED_SUCCESS",
+          "fail": "E_CHECK_C02_STRENGTH_OPPOSED"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_AGILITY_OPPOSED_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你避开Clicker的扑击，没有被抓住。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_STRENGTH_OPPOSED",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_clicker_strength_opposed_001",
+          "label": "力量对抗：挣脱单只Clicker",
+          "attribute": "strength",
+          "modifier": -1,
+          "success": "E_C02_STRENGTH_OPPOSED_SUCCESS",
+          "fail": "E_C02_STRENGTH_OPPOSED_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_STRENGTH_OPPOSED_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你从单只Clicker的控制中挣脱。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_STRENGTH_OPPOSED_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能挣脱Clicker；若敌人达到两只，该对抗直接判定失败。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_RECOVER_KEY_LUCK",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_recover_key_luck_001",
+          "label": "幸运：及时取得乘务员的钥匙",
+          "attribute": "luck",
+          "modifier": 1,
+          "success": "E_C02_RECOVER_KEY_SUCCESS",
+          "fail": "E_C02_RECOVER_KEY_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_RECOVER_KEY_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在乘务员被抓走前及时取得了钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_RECOVER_KEY_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能及时拿到钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_BAIT_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_bait_san_001",
+          "label": "SAN：以同伴作为诱饵",
+          "attribute": "san",
+          "modifier": -1,
+          "success": "E_C02_BAIT_SAN_SUCCESS",
+          "fail": "E_C02_BAIT_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_BAIT_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        },
+        {
+          "type": "dialogue",
+          "text": "残忍的决定令你SAN减少1点。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_BAIT_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 8,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "同伴被当作诱饵的场景令你SAN减少1d8点。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_CAB_CONTROLS_EDUCATION",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "cab_controls_education_001",
+          "label": "教育：理解驾驶台",
+          "attribute": "education",
+          "modifier": 1,
+          "success": "E_CAB_CONTROLS_EDUCATION_SUCCESS",
+          "fail": "E_CAB_CONTROLS_EDUCATION_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_CONTROLS_EDUCATION_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你理解了左杆控制制动、右杆控制速度，并判断向下推动右杆可加速。"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_CONTROLS_EDUCATION_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "操作台标识令人困惑，需要乘务员说明或寻找其他提示。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_CAB_TALK_CREW",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "cab_talk_crew_001",
+          "label": "话术：说服乘务员不要减速",
+          "attribute": "will",
+          "modifier": 1,
+          "success": "E_CAB_TALK_CREW_SUCCESS",
+          "fail": "E_CAB_TALK_CREW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_TALK_CREW_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员相信了后方存在巨口，同意让列车继续加速。"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_TALK_CREW_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员仍坚持停车，必须阻止他接触控制杆。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_CAB_STRENGTH_CREW",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "cab_strength_crew_001",
+          "label": "力量对抗：阻止受伤乘务员",
+          "attribute": "strength",
+          "modifier": 1,
+          "success": "E_CAB_STRENGTH_CREW_SUCCESS",
+          "fail": "E_CAB_STRENGTH_CREW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_STRENGTH_CREW_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你利用乘务员受伤的劣势将他拉离操作台，但仍没有说服他。"
+        }
+      ]
+    },
+    {
+      "id": "E_CAB_STRENGTH_CREW_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能阻止乘务员靠近减速控制杆。"
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_END_B_SAN",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "ending_b_san_001",
+          "label": "SAN：经历列车被吞噬",
+          "attribute": "san",
+          "modifier": -1,
+          "success": "E_END_B_SAN_SUCCESS",
+          "fail": "E_END_B_SAN_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_END_B_SAN_SUCCESS",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 4,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "噩梦般的结局令全员SAN减少1d4点。"
+        }
+      ]
+    },
+    {
+      "id": "E_END_B_SAN_FAIL",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 10,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "被吞噬的记忆令全员SAN减少1d10点。"
+        }
+      ]
     }
   ],
   "items": [

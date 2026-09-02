@@ -165,6 +165,7 @@ function validate(meta, scenes, events, items, attributeData, skills) {
     "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem",
     "setObjectState", "custom"
   ]);
+  const checkIds = new Set();
   for (const event of events) {
     assert(Array.isArray(event.actions), `事件缺少 actions：${event.id}`);
     if (event.next) assert(eventIds.has(event.next), `事件 ${event.id} 的 next 不存在`);
@@ -182,6 +183,8 @@ function validate(meta, scenes, events, items, attributeData, skills) {
       }
       if (action.type === "check") {
         assert(action.checkId, `事件 ${event.id} 的检定缺少 checkId`);
+        assert(!checkIds.has(action.checkId), `检定 checkId 重复：${action.checkId}`);
+        checkIds.add(action.checkId);
         assert(attributeIds.has(action.attribute), `事件 ${event.id} 的检定引用了未注册属性：${action.attribute}`);
         assert(action.modifier == null || Number.isInteger(action.modifier), `事件 ${event.id} 的检定修正必须是整数`);
         assert(eventIds.has(action.success) && eventIds.has(action.fail), `事件 ${event.id} 的检定分支不存在`);

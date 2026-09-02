@@ -74,13 +74,15 @@
 
       this.registerAction("check", async (action) => {
         const base = this.state.getAttribute(action.attribute);
-        const target = Math.max(1, Math.min(99, base + Number(action.modifier || 0)));
-        const roll = Math.floor(Math.random() * 100) + 1;
-        const success = roll <= target;
-        this.state.checkResults[action.checkId] = { roll, target, success };
+        const modifier = Number(action.modifier || 0);
+        const threshold = 11;
+        const roll = Math.floor(Math.random() * 6) + 1;
+        const total = roll + base + modifier;
+        const success = total >= threshold;
+        this.state.checkResults[action.checkId] = { roll, base, modifier, total, threshold, success };
         await this.ui.inspect.show({
           title: success ? "检定成功" : "检定失败",
-          text: `${action.label || action.attribute}：掷出 ${roll}，目标值 ${target}。`
+          text: `${action.label || action.attribute}：1d6 掷出 ${roll} + 属性 ${base}${modifier ? ` ${modifier > 0 ? "+" : "−"} ${Math.abs(modifier)}` : ""} = ${total}，需要达到 ${threshold}。`
         });
         return { next: success ? action.success : action.fail, stop: true };
       });
