@@ -24,6 +24,8 @@ function assertUnique(records, label) {
 
 function validate(meta, scenes, events, items) {
   assert(meta.formatVersion === 1, "当前编译器只支持 formatVersion=1");
+  assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
+  assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
   const sceneIds = assertUnique(scenes, "场景");
   const eventIds = assertUnique(events, "事件");
   const itemIds = assertUnique(items, "物品");

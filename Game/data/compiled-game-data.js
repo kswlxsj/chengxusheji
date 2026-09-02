@@ -2,6 +2,7 @@ window.GAME_DATA = {
   "meta": {
     "formatVersion": 1,
     "title": "末班列车框架演示",
+    "coverImage": "assets/cover-placeholder.svg",
     "startEvent": "E_START",
     "initialScene": "carriage_06",
     "initialState": {

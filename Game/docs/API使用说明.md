@@ -71,8 +71,11 @@
 
 ```javascript
 engine.registerCustomAction("shakeWindow", async (params, context) => {
-  // params 来自 JSON；context 提供 state、scene、ui、engine 和 items。
+  // params 来自 JSON；context 提供 state、scene、ui、engine、items、wait 和取消检查。
   context.ui.toast(`震动 ${params.duration}ms`);
+  // 有等待过程的演出必须使用 context.wait，才能随暂停冻结并在返回主界面时取消。
+  await context.wait(params.duration);
+  context.throwIfCancelled();
 });
 ```
 
@@ -87,6 +90,8 @@ JSON 里调用：
 ```
 
 不要让 JSON 传入 JavaScript 源码，也不要按字符串访问 `window[name]`。特殊动作的注册位置就是安全边界和组员协作清单。
+
+`context.wait(milliseconds)` 是可暂停、可取消的延迟；不要在自定义动作中直接使用 `setTimeout` 或普通延迟 Promise。异步等待后、继续修改状态前调用 `context.throwIfCancelled()`，避免已返回主界面的旧演出继续写入状态。
 
 若要新增一种所有剧情都会频繁使用的通用原子动作，再调用 `engine.registerAction(type, handler)`；一次性演出优先注册 `custom`，不要修改 `EventEngine.play()` 主循环。
 
@@ -153,3 +158,9 @@ game.scene.refresh()
 ```
 
 这些只是调试入口，不应写进剧情 JSON。
+
+## 六、主界面配置与稳定存档
+
+`data/meta.json` 必须提供非空的 `title` 和 `coverImage`。`coverImage` 是相对于项目根目录的图片路径；推荐使用 16:9 图片，界面会以 `object-fit: cover` 填满游戏区域。
+
+`EventEngine.getStableSnapshot()` 返回最近一次完整事件链结束后的状态副本；读取存档或重置状态后，应调用 `EventEngine.adoptStableState()` 建立新的稳定点。`SaveManager.save(snapshot)` 可以保存显式快照，未传参数时仍保存当前状态以保持兼容。

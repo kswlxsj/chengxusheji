@@ -7,10 +7,11 @@
   "properties": {
     "meta": {
       "type": "object",
-      "required": ["formatVersion", "startEvent", "initialScene", "initialState"],
+      "required": ["formatVersion", "title", "coverImage", "startEvent", "initialScene", "initialState"],
       "properties": {
         "formatVersion": { "const": 1 },
         "title": { "type": "string" },
+        "coverImage": { "type": "string", "minLength": 1 },
         "startEvent": { "$ref": "#/$defs/id" },
         "initialScene": { "$ref": "#/$defs/id" },
         "initialState": { "type": "object" }

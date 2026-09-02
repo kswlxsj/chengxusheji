@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">末班列车占位封面</title>
+  <desc id="description">昏暗夜色中的列车与占位封面文字</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#080b12"/>
+      <stop offset="1" stop-color="#24222a"/>
+    </linearGradient>
+    <linearGradient id="train" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#17191d"/>
+      <stop offset=".5" stop-color="#343238"/>
+      <stop offset="1" stop-color="#111318"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1270" cy="165" r="82" fill="#d7c8a4" opacity=".7"/>
+  <path d="M0 650 1600 520v380H0z" fill="#08090b"/>
+  <path d="M0 755 1600 625M0 830 1600 700" stroke="#685d50" stroke-width="9" opacity=".55"/>
+  <path d="M195 420h1050l165 120v170H195z" fill="url(#train)" stroke="#75664f" stroke-width="8"/>
+  <g fill="#c6a76f" opacity=".72">
+    <rect x="285" y="480" width="150" height="95"/><rect x="490" y="480" width="150" height="95"/>
+    <rect x="695" y="480" width="150" height="95"/><rect x="900" y="480" width="150" height="95"/>
+  </g>
+  <g fill="#090a0d" stroke="#75664f" stroke-width="8">
+    <circle cx="420" cy="715" r="58"/><circle cx="1120" cy="715" r="58"/>
+  </g>
+  <text x="800" y="235" fill="#e7dcc8" font-family="Microsoft YaHei, sans-serif" font-size="92" text-anchor="middle" letter-spacing="18">末班列车</text>
+  <text x="800" y="315" fill="#a99982" font-family="Microsoft YaHei, sans-serif" font-size="28" text-anchor="middle" letter-spacing="8">封面图片占位符</text>
+</svg>

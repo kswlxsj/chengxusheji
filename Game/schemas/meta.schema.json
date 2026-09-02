@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "游戏入口与初始状态",
   "type": "object",
-  "required": ["formatVersion", "title", "startEvent", "initialScene", "initialState"],
+  "required": ["formatVersion", "title", "coverImage", "startEvent", "initialScene", "initialState"],
   "properties": {
     "formatVersion": { "const": 1 },
     "title": { "type": "string", "minLength": 1 },
+    "coverImage": { "type": "string", "minLength": 1 },
     "startEvent": { "$ref": "#/$defs/id" },
     "initialScene": { "$ref": "#/$defs/id" },
     "initialState": {

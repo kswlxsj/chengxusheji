@@ -80,8 +80,8 @@
       return localStorage.getItem(this.storageKey) !== null;
     }
 
-    save() {
-      localStorage.setItem(this.storageKey, JSON.stringify(this.state.snapshot()));
+    save(snapshot = this.state.snapshot()) {
+      localStorage.setItem(this.storageKey, JSON.stringify(Game.deepClone(snapshot)));
     }
 
     load() {

@@ -35,31 +35,35 @@
       this.element = element;
       this.timer = null;
       this.running = false;
+      this.paused = false;
       this.index = 0;
       this.text = "";
+      this.speed = 28;
       this.resolve = null;
+      this.tick = () => {
+        if (this.paused || !this.running) return;
+        this.index += 1;
+        this.element.textContent = this.text.slice(0, this.index);
+        if (this.index >= this.text.length) {
+          this.complete();
+          return;
+        }
+        this.timer = setTimeout(this.tick, this.speed);
+      };
     }
 
     play(text, speed = 28) {
       this.cancel();
       this.text = String(text);
+      this.speed = speed;
       this.index = 0;
       this.element.textContent = "";
       this.running = true;
 
       return new Promise((resolve) => {
         this.resolve = resolve;
-        const tick = () => {
-          this.index += 1;
-          this.element.textContent = this.text.slice(0, this.index);
-          if (this.index >= this.text.length) {
-            this.complete();
-            return;
-          }
-          this.timer = setTimeout(tick, speed);
-        };
         if (this.text.length === 0) this.complete();
-        else this.timer = setTimeout(tick, speed);
+        else if (!this.paused) this.timer = setTimeout(this.tick, this.speed);
       });
     }
 
@@ -68,6 +72,14 @@
       this.element.textContent = this.text;
       this.index = this.text.length;
       this.complete();
+    }
+
+    setPaused(value) {
+      if (this.paused === value) return;
+      this.paused = value;
+      clearTimeout(this.timer);
+      this.timer = null;
+      if (!value && this.running) this.timer = setTimeout(this.tick, this.speed);
     }
 
     complete() {
@@ -83,7 +95,9 @@
       clearTimeout(this.timer);
       this.timer = null;
       this.running = false;
+      const resolve = this.resolve;
       this.resolve = null;
+      if (resolve) resolve();
     }
   }
 
@@ -92,8 +106,10 @@
       super(root, "dialog-window");
       this.auto = false;
       this.fast = false;
+      this.paused = false;
       this.advance = null;
-
+      this.autoTimer = null;
+      this.lineToken = 0;
       this.speaker = document.createElement("div");
       this.speaker.className = "dialog-speaker";
       this.text = document.createElement("p");
@@ -135,6 +151,7 @@
       this.auto = value;
       this.autoButton.setAttribute("aria-pressed", String(value));
       if (value && !this.player.running && this.advance) this.scheduleAdvance();
+      if (!value) this.clearAutoTimer();
     }
 
     setFast(value) {
@@ -144,7 +161,19 @@
       if (value && this.advance) this.scheduleAdvance();
     }
 
+    setPaused(value) {
+      this.paused = value;
+      this.player.setPaused(value);
+      if (value) this.clearAutoTimer();
+      else if (this.advance && (this.auto || this.fast)) this.scheduleAdvance();
+    }
+
+    isAwaitingAdvance() {
+      return this.element.isConnected && (this.player.running || Boolean(this.advance));
+    }
+
     handleAdvance() {
+      if (this.paused) return;
       if (this.player.running) {
         this.player.finish();
         return;
@@ -152,14 +181,22 @@
       this.resolveLine();
     }
 
+    clearAutoTimer() {
+      clearTimeout(this.autoTimer);
+      this.autoTimer = null;
+    }
+
     scheduleAdvance() {
+      if (this.paused) return;
+      this.clearAutoTimer();
       const activeAdvance = this.advance;
-      setTimeout(() => {
+      this.autoTimer = setTimeout(() => {
         if (this.advance === activeAdvance && !this.player.running) this.resolveLine();
       }, this.fast ? 90 : 850);
     }
 
     resolveLine() {
+      this.clearAutoTimer();
       if (!this.advance) return;
       const resolve = this.advance;
       this.advance = null;
@@ -167,10 +204,11 @@
     }
 
     async showLine({ speaker = "", text = "", speed = 28 }) {
+      const token = ++this.lineToken;
       this.open();
       this.speaker.textContent = speaker;
-      const typing = this.player.play(text, this.fast ? 1 : speed);
-      await typing;
+      await this.player.play(text, this.fast ? 1 : speed);
+      if (token !== this.lineToken) return;
       return new Promise((resolve) => {
         this.advance = resolve;
         if (this.auto || this.fast) this.scheduleAdvance();
@@ -178,6 +216,7 @@
     }
 
     close() {
+      this.lineToken += 1;
       this.player.cancel();
       this.resolveLine();
       super.close();
@@ -187,9 +226,12 @@
   class ChoiceWindow extends GameWindow {
     constructor(root) {
       super(root, "choice-window");
+      this.backdrop = null;
+      this.resolve = null;
     }
 
     choose(prompt, options) {
+      this.close(null);
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop";
       const title = document.createElement("h2");
@@ -199,28 +241,38 @@
       this.element.replaceChildren(title, list);
       backdrop.append(this.element);
       this.root.append(backdrop);
+      this.backdrop = backdrop;
 
       return new Promise((resolve) => {
+        this.resolve = resolve;
         for (const option of options) {
           const button = document.createElement("button");
           button.type = "button";
           button.textContent = option.label;
-          button.addEventListener("click", () => {
-            backdrop.remove();
-            resolve(option);
-          });
+          button.addEventListener("click", () => this.close(option));
           list.append(button);
         }
       });
+    }
+
+    close(value = null) {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      const resolve = this.resolve;
+      this.resolve = null;
+      if (resolve) resolve(value);
     }
   }
 
   class InspectWindow extends GameWindow {
     constructor(root) {
       super(root, "inspect-window");
+      this.backdrop = null;
+      this.resolve = null;
     }
 
     show({ title = "调查", text = "", image = null }) {
+      this.close();
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop";
       const heading = document.createElement("h2");
@@ -243,13 +295,82 @@
       this.element.replaceChildren(heading, content, close);
       backdrop.append(this.element);
       this.root.append(backdrop);
+      this.backdrop = backdrop;
 
       return new Promise((resolve) => {
-        close.addEventListener("click", () => {
-          backdrop.remove();
-          resolve();
-        });
+        this.resolve = resolve;
+        close.addEventListener("click", () => this.close());
       });
+    }
+
+    close() {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      const resolve = this.resolve;
+      this.resolve = null;
+      if (resolve) resolve();
+    }
+  }
+
+  class MenuWindow extends GameWindow {
+    constructor(root, className) {
+      super(root, className);
+      this.backdrop = null;
+      this.resolve = null;
+      this.previousFocus = null;
+    }
+
+    choose({ title, coverImage = null, options, backdropClass = "menu-backdrop" }) {
+      this.close(null);
+      this.previousFocus = document.activeElement;
+      const backdrop = document.createElement("div");
+      backdrop.className = backdropClass;
+      const content = document.createElement("div");
+      content.className = "menu-content";
+      if (coverImage) {
+        const image = document.createElement("img");
+        image.className = "menu-cover";
+        image.src = coverImage;
+        image.alt = "";
+        backdrop.append(image);
+      }
+      const heading = document.createElement("h1");
+      heading.textContent = title;
+      const list = document.createElement("div");
+      list.className = "menu-actions";
+      content.append(heading, list);
+      this.element.replaceChildren(content);
+      backdrop.append(this.element);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+
+      return new Promise((resolve) => {
+        this.resolve = resolve;
+        let firstEnabledButton = null;
+        for (const option of options) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = option.label;
+          button.disabled = Boolean(option.disabled);
+          if (!button.disabled && !firstEnabledButton) firstEnabledButton = button;
+          if (option.description) button.title = option.description;
+          button.addEventListener("click", () => this.close(option.value));
+          list.append(button);
+        }
+        firstEnabledButton?.focus();
+      });
+    }
+
+    close(value = null) {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      const resolve = this.resolve;
+      this.resolve = null;
+      if (resolve) resolve(value);
+      if (this.previousFocus instanceof HTMLElement && this.previousFocus.isConnected) {
+        this.previousFocus.focus();
+      }
+      this.previousFocus = null;
     }
   }
 
@@ -259,6 +380,9 @@
       this.dialog = new DialogWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
+      this.mainMenu = new MenuWindow(root, "main-menu-window");
+      this.pauseMenu = new MenuWindow(root, "pause-menu-window");
+      this.confirmMenu = new MenuWindow(root, "confirm-menu-window");
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
     }
@@ -267,11 +391,26 @@
       this.dialog.close();
     }
 
+    setPaused(value) {
+      this.dialog.setPaused(value);
+    }
+
+    cancelPending() {
+      this.dialog.close();
+      this.choice.close(null);
+      this.inspect.close();
+    }
+
+    closePauseMenus() {
+      this.pauseMenu.close("resume");
+      this.confirmMenu.close(false);
+    }
+
     toast(message) {
       clearTimeout(this.toastTimer);
       this.toastElement.textContent = message;
       this.toastElement.classList.add("visible");
-      this.toastTimer = setTimeout(() => this.toastElement.classList.remove("visible"), 1500);
+      this.toastTimer = setTimeout(() => this.toastElement.classList.remove("visible"), 1800);
     }
   }
 

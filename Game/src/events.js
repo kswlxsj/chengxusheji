@@ -20,6 +20,13 @@
     }
   }
 
+  class EventCancelled extends Error {
+    constructor() {
+      super("事件已取消");
+      this.name = "EventCancelled";
+    }
+  }
+
   class EventEngine {
     constructor({ events, state, scene, ui, items }) {
       this.events = new Map(events.map((event) => [event.id, event]));
@@ -30,6 +37,12 @@
       this.actions = new Registry("动作类型");
       this.customActions = new Registry("自定义动作");
       this.busy = false;
+      this.paused = false;
+      this.activeRun = null;
+      this.runSerial = 0;
+      this.pauseWaiters = new Set();
+      this.timers = new Set();
+      this.stableSnapshot = state.snapshot();
       this.onStateChanged = () => {};
       this.registerBuiltIns();
     }
@@ -56,7 +69,7 @@
         const options = action.options.filter((option) => Game.evaluateCondition(option.when, this.state));
         if (!options.length) throw new Error(`选项动作没有可用选项：${action.id || "未命名"}`);
         const selected = await this.ui.choice.choose(action.prompt, options);
-        return { next: selected.next, stop: true };
+        return selected ? { next: selected.next, stop: true } : null;
       });
 
       this.registerAction("check", async (action) => {
@@ -102,24 +115,126 @@
     }
 
     context() {
+      const run = this.activeRun;
       return {
         state: this.state,
         scene: this.scene,
         ui: this.ui,
         engine: this,
-        items: this.items
+        items: this.items,
+        wait: (milliseconds) => this.wait(milliseconds, run),
+        throwIfCancelled: () => this.assertActive(run)
       };
+    }
+
+    getStableSnapshot() {
+      return Game.deepClone(this.stableSnapshot);
+    }
+
+    adoptStableState() {
+      this.stableSnapshot = this.state.snapshot();
+    }
+
+    restoreStableState() {
+      this.state.restore(this.stableSnapshot);
+      if (this.state.sceneId) this.scene.load(this.state.sceneId);
+      this.onStateChanged();
+    }
+
+    setPaused(value) {
+      if (this.paused === value) return;
+      this.paused = value;
+      this.ui.setPaused(value);
+      for (const timer of this.timers) {
+        if (value) this.pauseTimer(timer);
+        else this.startTimer(timer);
+      }
+      if (!value) {
+        for (const resolve of this.pauseWaiters) resolve();
+        this.pauseWaiters.clear();
+      }
+    }
+
+    waitWhilePaused(run) {
+      this.assertActive(run);
+      if (!this.paused) return Promise.resolve();
+      return new Promise((resolve) => this.pauseWaiters.add(resolve)).then(() => this.assertActive(run));
+    }
+
+    wait(milliseconds, run = this.activeRun) {
+      this.assertActive(run);
+      const duration = Math.max(0, Number(milliseconds) || 0);
+      return new Promise((resolve, reject) => {
+        const timer = {
+          run,
+          remaining: duration,
+          startedAt: 0,
+          handle: null,
+          resolve,
+          reject
+        };
+        this.timers.add(timer);
+        if (!this.paused) this.startTimer(timer);
+      });
+    }
+
+    startTimer(timer) {
+      if (timer.handle !== null || !this.timers.has(timer)) return;
+      timer.startedAt = performance.now();
+      timer.handle = setTimeout(() => {
+        timer.handle = null;
+        this.timers.delete(timer);
+        timer.resolve();
+      }, timer.remaining);
+    }
+
+    pauseTimer(timer) {
+      if (timer.handle === null) return;
+      clearTimeout(timer.handle);
+      timer.handle = null;
+      timer.remaining = Math.max(0, timer.remaining - (performance.now() - timer.startedAt));
+    }
+
+    cancelTimers(run) {
+      for (const timer of [...this.timers]) {
+        if (timer.run !== run) continue;
+        clearTimeout(timer.handle);
+        this.timers.delete(timer);
+        timer.reject(new EventCancelled());
+      }
+    }
+
+    assertActive(run) {
+      if (!run || run.cancelled || this.activeRun !== run) throw new EventCancelled();
+    }
+
+    async cancelToStable() {
+      const run = this.activeRun;
+      if (run) {
+        run.cancelled = true;
+        this.cancelTimers(run);
+        this.setPaused(false);
+        this.ui.cancelPending();
+        await run.finished;
+      }
+      this.restoreStableState();
     }
 
     async play(eventId) {
       if (this.busy) return false;
+      const run = { id: ++this.runSerial, cancelled: false, finished: null, finish: null };
+      run.finished = new Promise((resolve) => { run.finish = resolve; });
+      this.activeRun = run;
       this.busy = true;
       this.scene.setInteractionEnabled(false);
       this.onStateChanged();
+      let completed = false;
+
       try {
         let nextId = eventId;
         let guard = 0;
         while (nextId) {
+          await this.waitWhilePaused(run);
           if (++guard > 100) throw new Error("连续事件超过 100 个，可能存在无输入死循环");
           const event = this.events.get(nextId);
           if (!event) throw new Error(`事件不存在：${nextId}`);
@@ -127,7 +242,9 @@
           nextId = null;
 
           for (const action of event.actions || []) {
+            await this.waitWhilePaused(run);
             const result = await this.actions.get(action.type)(action, this.context());
+            this.assertActive(run);
             this.onStateChanged();
             if (result && result.stop) {
               nextId = result.next || null;
@@ -136,17 +253,24 @@
           }
           if (!nextId && event.next) nextId = event.next;
         }
+        completed = true;
+        this.adoptStableState();
         return true;
       } catch (error) {
-        console.error(error);
-        this.ui.toast(`运行错误：${error.message}`);
+        this.restoreStableState();
+        if (!(error instanceof EventCancelled)) {
+          console.error(error);
+          this.ui.toast(`运行错误：${error.message}`);
+        }
         return false;
       } finally {
-        this.ui.closeDialog();
-        this.scene.refresh();
-        this.scene.setInteractionEnabled(true);
+        this.ui.cancelPending();
+        this.activeRun = null;
         this.busy = false;
+        this.scene.refresh();
+        this.scene.setInteractionEnabled(!this.paused);
         this.onStateChanged();
+        run.finish(completed);
       }
     }
   }
