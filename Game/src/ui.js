@@ -233,13 +233,26 @@
     choose(definitions, totalPoints) {
       this.close(null);
       const values = Object.fromEntries(definitions.map((definition) => [definition.id, definition.initial]));
+      const initialTotal = definitions.reduce((sum, definition) => sum + definition.initial, 0);
+      const targetTotal = initialTotal + totalPoints;
       let remaining = totalPoints;
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop attribute-allocation-backdrop";
       const heading = document.createElement("h1");
       heading.textContent = "分配属性点";
+      const introduction = document.createElement("p");
+      introduction.className = "allocation-introduction";
+      introduction.textContent = `请将 ${totalPoints} 点全部分配完毕。普通属性最高为 10，SAN 初始为 5。`;
+      const summary = document.createElement("div");
+      summary.className = "allocation-summary";
       const remainingText = document.createElement("p");
       remainingText.className = "allocation-remaining";
+      const totalText = document.createElement("p");
+      totalText.className = "allocation-total";
+      const progress = document.createElement("progress");
+      progress.className = "allocation-progress";
+      progress.max = totalPoints;
+      summary.append(remainingText, totalText, progress);
       const list = document.createElement("div");
       list.className = "attribute-allocation-list";
       const actions = document.createElement("div");
@@ -247,19 +260,26 @@
       const backButton = document.createElement("button");
       backButton.type = "button";
       backButton.textContent = "返回主界面";
+      const resetButton = document.createElement("button");
+      resetButton.type = "button";
+      resetButton.textContent = "重置点数";
       const confirmButton = document.createElement("button");
       confirmButton.type = "button";
       confirmButton.textContent = "确认分配";
-      actions.append(backButton, confirmButton);
-      this.element.replaceChildren(heading, remainingText, list, actions);
+      actions.append(backButton, resetButton, confirmButton);
+      this.element.replaceChildren(heading, introduction, summary, list, actions);
       backdrop.append(this.element);
       this.root.append(backdrop);
       this.backdrop = backdrop;
 
       const rows = new Map();
       const refresh = () => {
+        const spent = totalPoints - remaining;
         remainingText.textContent = `剩余点数：${remaining}`;
+        totalText.textContent = `已分配：${spent}/${totalPoints}　当前总值：${initialTotal + spent}/${targetTotal}`;
+        progress.value = spent;
         confirmButton.disabled = remaining !== 0;
+        resetButton.disabled = spent === 0;
         for (const definition of definitions) {
           const row = rows.get(definition.id);
           row.value.textContent = String(values[definition.id]);
@@ -276,7 +296,10 @@
         name.textContent = definition.name;
         const description = document.createElement("p");
         description.textContent = definition.description || definition.id;
-        details.append(name, description);
+        const limits = document.createElement("small");
+        limits.className = "attribute-allocation-limits";
+        limits.textContent = `初始 ${definition.initial} · 创建上限 ${definition.max}`;
+        details.append(name, description, limits);
         const controls = document.createElement("div");
         controls.className = "attribute-stepper";
         const minus = document.createElement("button");
@@ -307,6 +330,11 @@
         rows.set(definition.id, { minus, value, plus });
       }
 
+      resetButton.addEventListener("click", () => {
+        for (const definition of definitions) values[definition.id] = definition.initial;
+        remaining = totalPoints;
+        refresh();
+      });
       refresh();
       return new Promise((resolve) => {
         this.resolve = resolve;
