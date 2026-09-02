@@ -90,7 +90,54 @@ JSON 里调用：
 
 若要新增一种所有剧情都会频繁使用的通用原子动作，再调用 `engine.registerAction(type, handler)`；一次性演出优先注册 `custom`，不要修改 `EventEngine.play()` 主循环。
 
-## 四、常用调试入口
+## 四、程序员：派生通用窗口
+
+`TrainGame.GameWindow` 负责窗口元素的基础生命周期和内容装载。构造时传入窗口挂载层（通常是 `#window-layer`）与可选的自定义 CSS 类名：
+
+| 方法 | 作用 |
+| --- | --- |
+| `new GameWindow(root, className)` | 创建带有 `.game-window` 基础样式的窗口 |
+| `open()` | 将窗口挂载到 `root`；已挂载时不会重复添加 |
+| `close()` | 从页面移除窗口元素 |
+| `setContent(content)` | 清空旧内容并写入字符串或 DOM 节点；字符串使用 `textContent` |
+| `addChild(child)` | 追加 DOM 节点或另一个 `GameWindow` 的元素 |
+
+需要新窗口类型时应派生基类，并在 `UIManager` 中只创建一个实例。下面的窗口会返回一个 Promise，适合由事件动作等待玩家关闭：
+
+```javascript
+class NoticeWindow extends TrainGame.GameWindow {
+  constructor(root) {
+    super(root, "notice-window");
+  }
+
+  show(title, text) {
+    const content = document.createElement("div");
+    const heading = document.createElement("h2");
+    const paragraph = document.createElement("p");
+    const closeButton = document.createElement("button");
+    heading.textContent = title;
+    paragraph.textContent = text;
+    closeButton.type = "button";
+    closeButton.textContent = "关闭";
+    content.append(heading, paragraph, closeButton);
+    this.setContent(content).open();
+
+    return new Promise((resolve) => {
+      closeButton.addEventListener("click", () => {
+        this.close();
+        resolve();
+      }, { once: true });
+    });
+  }
+}
+
+// UIManager 构造函数中：this.notice = new NoticeWindow(root);
+// 事件动作中：await context.ui.notice.show("提示", "窗口内容");
+```
+
+基类不会自动创建模态遮罩、关闭按钮或 Promise，也不会决定窗口何时出现；这些行为由派生类负责。常驻对话、选项和调查窗口可分别参考 `DialogWindow`、`ChoiceWindow` 与 `InspectWindow` 的现有实现。新增样式时使用传入的自定义类名，保留 `.game-window` 的公共外观和交互规则。
+
+## 五、常用调试入口
 
 开发时浏览器控制台可查看：
 
