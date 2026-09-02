@@ -1,0 +1,13 @@
+[
+  {
+    "id": "keen_insight",
+    "name": "敏锐直觉",
+    "description": "灵感达到 70 时自动生效。",
+    "initial": false,
+    "autoTrigger": {
+      "attribute": "insight",
+      "operator": "gte",
+      "value": 70
+    }
+  }
+]

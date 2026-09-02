@@ -15,6 +15,14 @@
     {
       "fileMatch": ["/data/items.json"],
       "url": "./schemas/items.schema.json"
+    },
+    {
+      "fileMatch": ["/data/attributes.json"],
+      "url": "./schemas/attributes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/skills.json"],
+      "url": "./schemas/skills.schema.json"
     }
   ]
 }

@@ -6,7 +6,7 @@
     return;
   }
 
-  const state = new Game.GameState(data.meta.initialState);
+  const state = new Game.GameState(data.meta.initialState, data.attributes, data.skills);
   const ui = new Game.UIManager(document.querySelector("#window-layer"));
   const sceneRoot = document.querySelector("#scene-layer");
   const scene = new Game.SceneManager(sceneRoot, data.scenes, state);
@@ -28,7 +28,7 @@
 
   function updateHud() {
     document.querySelector("#attributes").textContent = Object.entries(state.attributes)
-      .map(([key, value]) => `${key.toUpperCase()} ${value}`)
+      .map(([key, value]) => `${state.attributeDefinitions.get(key)?.name || key} ${value}`)
       .join(" · ");
     const names = state.inventory.map(itemName);
     document.querySelector("#inventory").textContent = `物品：${names.length ? names.join("、") : "无"}`;
@@ -194,6 +194,16 @@
       if (selected === "new") {
         state.reset();
         scene.load(data.meta.initialScene);
+        const allocation = await ui.attributeAllocation.choose(
+          [...state.attributeDefinitions.values()],
+          state.totalAttributePoints
+        );
+        if (!allocation) {
+          state.reset();
+          scene.load(data.meta.initialScene);
+          continue;
+        }
+        state.completeAttributeAllocation(allocation);
         engine.adoptStableState();
         startupLocked = false;
         scene.setInteractionEnabled(true);

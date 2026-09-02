@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "title": "末班列车框架演示",
   "coverImage": "assets/cover-placeholder.svg",
   "startEvent": "E_START",
@@ -7,10 +7,6 @@
   "initialState": {
     "sceneId": "carriage_06",
     "currentEventId": null,
-    "attributes": {
-      "insight": 65,
-      "san": 80
-    },
     "flags": {},
     "inventory": [],
     "objectStates": {},

@@ -73,7 +73,7 @@
       });
 
       this.registerAction("check", async (action) => {
-        const base = Number(this.state.attributes[action.attribute] || 0);
+        const base = this.state.getAttribute(action.attribute);
         const target = Math.max(1, Math.min(99, base + Number(action.modifier || 0)));
         const roll = Math.floor(Math.random() * 100) + 1;
         const success = roll <= target;
@@ -95,8 +95,19 @@
       });
 
       this.registerAction("modifyAttribute", async (action) => {
-        const current = Number(this.state.attributes[action.attribute] || 0);
-        this.state.attributes[action.attribute] = current + Number(action.amount);
+        this.state.modifyAttribute(action.attribute, action.amount);
+      });
+
+      this.registerAction("setSkill", async (action) => {
+        this.state.setSkill(action.skill, action.value);
+      });
+
+      this.registerAction("learnSkill", async (action) => {
+        this.state.learnSkill(action.skill);
+      });
+
+      this.registerAction("loseSkill", async (action) => {
+        this.state.loseSkill(action.skill);
       });
 
       this.registerAction("addItem", async (action) => {
@@ -122,6 +133,8 @@
         ui: this.ui,
         engine: this,
         items: this.items,
+        attributes: this.state.attributeDefinitions,
+        skills: this.state.skillDefinitions,
         wait: (milliseconds) => this.wait(milliseconds, run),
         throwIfCancelled: () => this.assertActive(run)
       };

@@ -223,6 +223,110 @@
     }
   }
 
+  class AttributeAllocationWindow extends GameWindow {
+    constructor(root) {
+      super(root, "attribute-allocation-window");
+      this.backdrop = null;
+      this.resolve = null;
+    }
+
+    choose(definitions, totalPoints) {
+      this.close(null);
+      const values = Object.fromEntries(definitions.map((definition) => [definition.id, definition.initial]));
+      let remaining = totalPoints;
+      const backdrop = document.createElement("div");
+      backdrop.className = "modal-backdrop attribute-allocation-backdrop";
+      const heading = document.createElement("h1");
+      heading.textContent = "分配属性点";
+      const remainingText = document.createElement("p");
+      remainingText.className = "allocation-remaining";
+      const list = document.createElement("div");
+      list.className = "attribute-allocation-list";
+      const actions = document.createElement("div");
+      actions.className = "allocation-actions";
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.textContent = "返回主界面";
+      const confirmButton = document.createElement("button");
+      confirmButton.type = "button";
+      confirmButton.textContent = "确认分配";
+      actions.append(backButton, confirmButton);
+      this.element.replaceChildren(heading, remainingText, list, actions);
+      backdrop.append(this.element);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+
+      const rows = new Map();
+      const refresh = () => {
+        remainingText.textContent = `剩余点数：${remaining}`;
+        confirmButton.disabled = remaining !== 0;
+        for (const definition of definitions) {
+          const row = rows.get(definition.id);
+          row.value.textContent = String(values[definition.id]);
+          row.minus.disabled = values[definition.id] <= definition.initial;
+          row.plus.disabled = remaining <= 0 || values[definition.id] >= definition.max;
+        }
+      };
+
+      for (const definition of definitions) {
+        const row = document.createElement("section");
+        row.className = "attribute-allocation-row";
+        const details = document.createElement("div");
+        const name = document.createElement("h2");
+        name.textContent = definition.name;
+        const description = document.createElement("p");
+        description.textContent = definition.description || definition.id;
+        details.append(name, description);
+        const controls = document.createElement("div");
+        controls.className = "attribute-stepper";
+        const minus = document.createElement("button");
+        minus.type = "button";
+        minus.textContent = "−";
+        minus.setAttribute("aria-label", `降低${definition.name}`);
+        const value = document.createElement("output");
+        value.setAttribute("aria-label", `${definition.name}当前值`);
+        const plus = document.createElement("button");
+        plus.type = "button";
+        plus.textContent = "+";
+        plus.setAttribute("aria-label", `提高${definition.name}`);
+        minus.addEventListener("click", () => {
+          if (values[definition.id] <= definition.initial) return;
+          values[definition.id] -= 1;
+          remaining += 1;
+          refresh();
+        });
+        plus.addEventListener("click", () => {
+          if (remaining <= 0 || values[definition.id] >= definition.max) return;
+          values[definition.id] += 1;
+          remaining -= 1;
+          refresh();
+        });
+        controls.append(minus, value, plus);
+        row.append(details, controls);
+        list.append(row);
+        rows.set(definition.id, { minus, value, plus });
+      }
+
+      refresh();
+      return new Promise((resolve) => {
+        this.resolve = resolve;
+        backButton.addEventListener("click", () => this.close(null), { once: true });
+        confirmButton.addEventListener("click", () => {
+          if (remaining === 0) this.close(Game.deepClone(values));
+        }, { once: true });
+        list.querySelector("button:not(:disabled)")?.focus();
+      });
+    }
+
+    close(value = null) {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      const resolve = this.resolve;
+      this.resolve = null;
+      if (resolve) resolve(value);
+    }
+  }
+
   class ChoiceWindow extends GameWindow {
     constructor(root) {
       super(root, "choice-window");
@@ -378,6 +482,7 @@
     constructor(root) {
       this.root = root;
       this.dialog = new DialogWindow(root);
+      this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
       this.mainMenu = new MenuWindow(root, "main-menu-window");

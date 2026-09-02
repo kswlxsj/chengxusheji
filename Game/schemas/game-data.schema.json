@@ -3,13 +3,13 @@
   "$id": "https://example.local/schemas/game-data.schema.json",
   "title": "剧情网页游戏中间数据",
   "type": "object",
-  "required": ["meta", "scenes", "events", "items"],
+  "required": ["meta", "scenes", "events", "items", "attributes", "skills"],
   "properties": {
     "meta": {
       "type": "object",
       "required": ["formatVersion", "title", "coverImage", "startEvent", "initialScene", "initialState"],
       "properties": {
-        "formatVersion": { "const": 1 },
+        "formatVersion": { "const": 2 },
         "title": { "type": "string" },
         "coverImage": { "type": "string", "minLength": 1 },
         "startEvent": { "$ref": "#/$defs/id" },
@@ -29,7 +29,9 @@
     "items": {
       "type": "array",
       "items": { "$ref": "#/$defs/item" }
-    }
+    },
+    "attributes": { "$ref": "attributes.schema.json" },
+    "skills": { "$ref": "skills.schema.json" }
   },
   "$defs": {
     "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },

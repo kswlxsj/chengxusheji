@@ -4,18 +4,17 @@
   "type": "object",
   "required": ["formatVersion", "title", "coverImage", "startEvent", "initialScene", "initialState"],
   "properties": {
-    "formatVersion": { "const": 1 },
+    "formatVersion": { "const": 2 },
     "title": { "type": "string", "minLength": 1 },
     "coverImage": { "type": "string", "minLength": 1 },
     "startEvent": { "$ref": "#/$defs/id" },
     "initialScene": { "$ref": "#/$defs/id" },
     "initialState": {
       "type": "object",
-      "required": ["sceneId", "attributes", "flags", "inventory", "objectStates", "checkResults"],
+      "required": ["sceneId", "flags", "inventory", "objectStates", "checkResults"],
       "properties": {
         "sceneId": { "$ref": "#/$defs/id" },
         "currentEventId": { "type": ["string", "null"] },
-        "attributes": { "type": "object", "additionalProperties": { "type": "number" } },
         "flags": { "type": "object", "additionalProperties": true },
         "inventory": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
         "objectStates": { "type": "object", "additionalProperties": { "type": "object" } },

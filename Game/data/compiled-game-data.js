@@ -1,6 +1,6 @@
 window.GAME_DATA = {
   "meta": {
-    "formatVersion": 1,
+    "formatVersion": 2,
     "title": "末班列车框架演示",
     "coverImage": "assets/cover-placeholder.svg",
     "startEvent": "E_START",
@@ -8,10 +8,6 @@ window.GAME_DATA = {
     "initialState": {
       "sceneId": "carriage_06",
       "currentEventId": null,
-      "attributes": {
-        "insight": 65,
-        "san": 80
-      },
       "flags": {},
       "inventory": [],
       "objectStates": {},
@@ -257,6 +253,40 @@ window.GAME_DATA = {
       "name": "旧车票",
       "image": "assets/note.svg",
       "description": "一张已经褪色的车票，背面写着无法辨认的日期。"
+    }
+  ],
+  "attributes": {
+    "totalPoints": 10,
+    "attributes": [
+      {
+        "id": "insight",
+        "name": "灵感",
+        "description": "观察和理解异常现象的能力。",
+        "initial": 60,
+        "min": 0,
+        "max": 99
+      },
+      {
+        "id": "san",
+        "name": "理智",
+        "description": "承受精神冲击的能力。",
+        "initial": 75,
+        "min": 0,
+        "max": 99
+      }
+    ]
+  },
+  "skills": [
+    {
+      "id": "keen_insight",
+      "name": "敏锐直觉",
+      "description": "灵感达到 70 时自动生效。",
+      "initial": false,
+      "autoTrigger": {
+        "attribute": "insight",
+        "operator": "gte",
+        "value": 70
+      }
     }
   ]
 };

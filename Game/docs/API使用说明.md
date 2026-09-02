@@ -59,6 +59,9 @@
 | `changeScene` | `scene` | 清空旧场景并加载目标场景 |
 | `setFlag` | `key`, `value` | 写入重要事件旗标 |
 | `modifyAttribute` | `attribute`, `amount` | 增减角色属性 |
+| `setSkill` | `skill`, `value` | 普通设置技能布尔值，不屏蔽自动触发 |
+| `learnSkill` | `skill` | 强制习得技能，并永久屏蔽该技能的自动触发 |
+| `loseSkill` | `skill` | 强制失去技能，并永久屏蔽该技能的自动触发 |
 | `addItem` | `item` | 向物品栏加入已注册物品 |
 | `setObjectState` | `object`, `patch` | 合并更新场景物件状态 |
 | `custom` | `name` | 调用程序员白名单动作；可加 `params` |
@@ -90,6 +93,21 @@ JSON 里调用：
 ```
 
 不要让 JSON 传入 JavaScript 源码，也不要按字符串访问 `window[name]`。特殊动作的注册位置就是安全边界和组员协作清单。
+
+修改属性或技能时使用状态接口，不要直接写 `state.attributes` 或 `state.skills`：
+
+```javascript
+context.state.getAttribute("insight");
+context.state.setAttribute("insight", 70);
+context.state.modifyAttribute("san", -3);
+context.state.getSkill("keen_insight");
+context.state.setSkill("keen_insight", false);
+context.state.learnSkill("keen_insight");
+context.state.loseSkill("keen_insight");
+```
+
+属性接口只接受整数，并把结果限制在注册的 `min` 与 `max` 之间。`setSkill` 仍可能在相关属性下次变化时被自动逻辑覆盖；`learnSkill` 和 `loseSkill` 会永久关闭该技能在当前存档中的自动逻辑。
+注册定义可通过 `context.attributes` 与 `context.skills` 两个只读用途的 `Map` 查询；不要在运行时修改定义。
 
 `context.wait(milliseconds)` 是可暂停、可取消的延迟；不要在自定义动作中直接使用 `setTimeout` 或普通延迟 Promise。异步等待后、继续修改状态前调用 `context.throwIfCancelled()`，避免已返回主界面的旧演出继续写入状态。
 
@@ -164,3 +182,51 @@ game.scene.refresh()
 `data/meta.json` 必须提供非空的 `title` 和 `coverImage`。`coverImage` 是相对于项目根目录的图片路径；推荐使用 16:9 图片，界面会以 `object-fit: cover` 填满游戏区域。
 
 `EventEngine.getStableSnapshot()` 返回最近一次完整事件链结束后的状态副本；读取存档或重置状态后，应调用 `EventEngine.adoptStableState()` 建立新的稳定点。`SaveManager.save(snapshot)` 可以保存显式快照，未传参数时仍保存当前状态以保持兼容。
+
+## 七、属性与技能注册
+
+属性在 `data/attributes.json` 注册。`totalPoints` 是新游戏时必须全部分配的额外点数：
+
+```json
+{
+  "totalPoints": 10,
+  "attributes": [
+    {
+      "id": "insight",
+      "name": "灵感",
+      "description": "观察和理解异常现象的能力。",
+      "initial": 60,
+      "min": 0,
+      "max": 99
+    }
+  ]
+}
+```
+
+技能在 `data/skills.json` 注册。没有 `autoTrigger` 的技能只受手动动作影响；有条件时，条件为真即自动设为 `true`，否则设为 `false`：
+
+```json
+[
+  {
+    "id": "keen_insight",
+    "name": "敏锐直觉",
+    "description": "灵感达到 70 时自动生效。",
+    "initial": false,
+    "autoTrigger": {
+      "all": [
+        { "attribute": "insight", "operator": "gte", "value": 70 },
+        { "attribute": "san", "operator": "gt", "value": 0 }
+      ]
+    }
+  }
+]
+```
+
+条件可用 `all`、`any`、`not` 组合；比较符支持 `eq`、`ne`、`lt`、`lte`、`gt`、`gte`。自动条件只能引用属性。选择项的 `when` 和场景物件的 `visibleWhen` 还可以读取属性或技能：
+
+```json
+{ "attribute": "insight", "operator": "gte", "value": 70 }
+{ "skill": "keen_insight", "equals": true }
+```
+
+修改注册表后必须运行 `npm run compile`。编译器会检查重复 ID、整数边界、可分配容量，以及事件和条件引用是否存在。

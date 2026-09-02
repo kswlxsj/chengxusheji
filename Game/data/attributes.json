@@ -1,0 +1,21 @@
+{
+  "totalPoints": 10,
+  "attributes": [
+    {
+      "id": "insight",
+      "name": "灵感",
+      "description": "观察和理解异常现象的能力。",
+      "initial": 60,
+      "min": 0,
+      "max": 99
+    },
+    {
+      "id": "san",
+      "name": "理智",
+      "description": "承受精神冲击的能力。",
+      "initial": 75,
+      "min": 0,
+      "max": 99
+    }
+  ]
+}

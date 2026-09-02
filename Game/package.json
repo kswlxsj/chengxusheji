@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "compile": "node tools/compile-data.mjs",
-    "check": "node tools/compile-data.mjs && node --check src/namespace.js && node --check src/state.js && node --check src/ui.js && node --check src/scene.js && node --check src/events.js && node --check src/custom-actions.js && node --check src/main.js"
+    "test": "node tools/test-runtime.mjs",
+    "check": "node tools/compile-data.mjs && node --check src/namespace.js && node --check src/state.js && node --check src/ui.js && node --check src/scene.js && node --check src/events.js && node --check src/custom-actions.js && node --check src/main.js && npm test"
   }
 }

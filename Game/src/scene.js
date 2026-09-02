@@ -6,6 +6,15 @@
     return object[query.property];
   }
 
+  const comparisonOperators = {
+    eq: (left, right) => left === right,
+    ne: (left, right) => left !== right,
+    lt: (left, right) => left < right,
+    lte: (left, right) => left <= right,
+    gt: (left, right) => left > right,
+    gte: (left, right) => left >= right
+  };
+
   function evaluateCondition(condition, state) {
     if (!condition) return true;
     if (condition.all) return condition.all.every((part) => evaluateCondition(part, state));
@@ -13,6 +22,11 @@
     if (condition.not) return !evaluateCondition(condition.not, state);
     if (condition.flag) return Boolean(state.flags[condition.flag]) === condition.equals;
     if (condition.hasItem) return state.inventory.includes(condition.hasItem);
+    if (condition.attribute) {
+      const compare = comparisonOperators[condition.operator];
+      return Boolean(compare) && compare(state.getAttribute(condition.attribute), condition.value);
+    }
+    if (condition.skill) return state.getSkill(condition.skill) === condition.equals;
     if (condition.objectState) {
       return readObjectState(state, condition.objectState) === condition.objectState.equals;
     }

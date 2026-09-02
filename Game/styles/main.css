@@ -100,6 +100,8 @@ button:disabled { cursor: not-allowed; opacity: .48; }
 .window-controls button,
 .choice-list button,
 .inspect-close,
+.attribute-stepper button,
+.allocation-actions button,
 .menu-actions button {
   color: var(--ink);
   border: 1px solid var(--line);
@@ -113,6 +115,8 @@ button:disabled { cursor: not-allowed; opacity: .48; }
 .window-controls button:hover,
 .choice-list button:hover,
 .inspect-close:hover,
+.attribute-stepper button:not(:disabled):hover,
+.allocation-actions button:not(:disabled):hover,
 .menu-actions button:not(:disabled):hover { background: #423a30; }
 
 #window-layer { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
@@ -238,6 +242,32 @@ button:disabled { cursor: not-allowed; opacity: .48; }
 .inspect-content img { width: 100%; max-height: 220px; object-fit: contain; }
 .inspect-close { float: right; margin-top: 18px; padding: 8px 18px; }
 
+.attribute-allocation-backdrop { padding: 4%; }
+.attribute-allocation-window {
+  width: min(720px, 94%);
+  max-height: 92%;
+  padding: 26px;
+  overflow: auto;
+}
+.attribute-allocation-window h1 { margin: 0; color: var(--accent); }
+.allocation-remaining { font-size: 1.1em; font-weight: 700; }
+.attribute-allocation-list { display: grid; gap: 10px; }
+.attribute-allocation-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.13);
+}
+.attribute-allocation-row h2 { margin: 0 0 4px; color: var(--accent); font-size: 1.1em; }
+.attribute-allocation-row p { margin: 0; opacity: .78; }
+.attribute-stepper { display: grid; grid-template-columns: 38px 54px 38px; align-items: center; text-align: center; }
+.attribute-stepper button { height: 38px; font-size: 22px; }
+.attribute-stepper output { font-size: 1.25em; font-weight: 700; }
+.allocation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.allocation-actions button { padding: 9px 16px; }
+
 #toast {
   position: absolute;
   z-index: 100;
@@ -261,4 +291,6 @@ button:disabled { cursor: not-allowed; opacity: .48; }
   #hud { gap: 8px; }
   .inspect-content { grid-template-columns: 1fr; }
   .main-menu-window .menu-content { width: 62%; }
+  .attribute-allocation-row { grid-template-columns: 1fr; }
+  .attribute-stepper { justify-content: end; }
 }

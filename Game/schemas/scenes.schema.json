@@ -31,12 +31,12 @@
       "oneOf": [
         {
           "required": ["all"],
-          "properties": { "all": { "type": "array", "items": { "$ref": "#/$defs/condition" } } },
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
           "additionalProperties": false
         },
         {
           "required": ["any"],
-          "properties": { "any": { "type": "array", "items": { "$ref": "#/$defs/condition" } } },
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
           "additionalProperties": false
         },
         {
@@ -52,6 +52,20 @@
         {
           "required": ["hasItem"],
           "properties": { "hasItem": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["attribute", "operator", "value"],
+          "properties": {
+            "attribute": { "$ref": "#/$defs/id" },
+            "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte"] },
+            "value": { "type": "integer" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["skill", "equals"],
+          "properties": { "skill": { "$ref": "#/$defs/id" }, "equals": { "type": "boolean" } },
           "additionalProperties": false
         },
         {

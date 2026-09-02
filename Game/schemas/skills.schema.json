@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "技能注册表",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "initial"],
+    "properties": {
+      "id": { "$ref": "#/$defs/id" },
+      "name": { "type": "string", "minLength": 1 },
+      "description": { "type": "string" },
+      "initial": { "type": "boolean" },
+      "autoTrigger": { "$ref": "#/$defs/attributeCondition" }
+    },
+    "additionalProperties": false
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "attributeCondition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["all"],
+          "properties": {
+            "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/attributeCondition" } }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["any"],
+          "properties": {
+            "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/attributeCondition" } }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/attributeCondition" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["attribute", "operator", "value"],
+          "properties": {
+            "attribute": { "$ref": "#/$defs/id" },
+            "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte"] },
+            "value": { "type": "integer" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
