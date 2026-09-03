@@ -14,12 +14,16 @@
     <header id="hud" hidden>
       <div id="scene-name">载入中……</div>
       <div id="attributes"></div>
-      <div id="inventory">物品：无</div>
       <div id="save-slot"></div>
       <div class="hud-actions">
         <button id="pause-button" type="button">暂停</button>
       </div>
     </header>
+
+    <aside id="inventory-bar" aria-label="物品栏" hidden>
+      <div class="inventory-bar-title">物品栏</div>
+      <div id="inventory-slots" aria-label="快捷物品格"></div>
+    </aside>
 
     <div id="window-layer" aria-live="polite"></div>
     <div id="toast" role="status" aria-live="polite"></div>

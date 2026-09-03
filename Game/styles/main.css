@@ -210,8 +210,89 @@ a { color: inherit; }
 }
 
 #scene-name { color: var(--accent); font-weight: 700; }
-#inventory { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#attributes { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hud-actions { display: flex; gap: 6px; }
+
+#inventory-bar {
+  position: absolute;
+  z-index: 45;
+  left: 50%;
+  bottom: 2.5%;
+  width: min(720px, 88%);
+  translate: -50% 0;
+  pointer-events: auto;
+}
+
+.inventory-bar-title {
+  margin: 0 0 5px 4px;
+  color: rgba(236, 229, 216, .78);
+  font-size: clamp(11px, 1vw, 14px);
+  text-shadow: 0 1px 4px #000;
+}
+
+#inventory-slots {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(48px, 1fr);
+  gap: 5px;
+  padding: 7px;
+  overflow-x: auto;
+  border: 2px solid rgba(142, 123, 95, .9);
+  border-radius: 8px;
+  background: rgba(10, 12, 15, .84);
+  box-shadow: 0 8px 24px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.06);
+  backdrop-filter: blur(6px);
+}
+
+.inventory-slot {
+  position: relative;
+  aspect-ratio: 1;
+  min-width: 48px;
+  padding: 5px 4px 3px;
+  overflow: hidden;
+  color: var(--ink);
+  border: 1px solid rgba(213, 173, 109, .48);
+  border-radius: 4px;
+  background: linear-gradient(145deg, rgba(58, 52, 43, .94), rgba(27, 29, 33, .96));
+  box-shadow: inset 0 0 10px rgba(0,0,0,.5);
+}
+
+.inventory-slot.empty { opacity: .58; }
+.inventory-slot.occupied { cursor: pointer; }
+.inventory-slot.occupied:not(:disabled):hover,
+.inventory-slot.occupied:not(:disabled):focus-visible {
+  border-color: #f1c77f;
+  outline: 2px solid rgba(241, 199, 127, .42);
+  background: linear-gradient(145deg, #514532, #292b2f);
+  translate: 0 -2px;
+}
+
+.inventory-slot:disabled { cursor: default; }
+.inventory-slot img {
+  display: block;
+  width: 68%;
+  height: 65%;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.7));
+}
+
+.inventory-shortcut {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  color: rgba(236, 229, 216, .6);
+  font-size: 10px;
+}
+
+.inventory-item-name {
+  display: block;
+  overflow: hidden;
+  font-size: clamp(9px, .8vw, 12px);
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .hud-actions button,
 .window-controls button,
@@ -421,6 +502,9 @@ a { color: inherit; }
 @media (max-width: 700px) {
   #attributes { display: none; }
   #hud { gap: 8px; }
+  #inventory-bar { width: 94%; bottom: 1.5%; }
+  #inventory-slots { gap: 3px; padding: 5px; }
+  .inventory-slot { min-width: 42px; }
   .inspect-content { grid-template-columns: 1fr; }
   .main-menu-window .menu-content { width: 62%; }
   .attribute-allocation-row { grid-template-columns: 1fr; }

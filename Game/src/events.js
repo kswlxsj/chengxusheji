@@ -70,7 +70,17 @@
       });
 
       this.registerAction("inspect", async (action) => {
-        await this.ui.inspect.show(action);
+        if (!action.item) {
+          await this.ui.inspect.show(action);
+          return;
+        }
+        const item = this.items.get(action.item);
+        if (!item) throw new Error(`调查物品未注册：${action.item}`);
+        await this.ui.inspect.show({
+          title: action.title || item.name,
+          text: action.text || item.description,
+          image: action.image || item.image
+        });
       });
 
       this.registerAction("choice", async (action) => {

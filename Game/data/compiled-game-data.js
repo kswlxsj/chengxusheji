@@ -1841,6 +1841,15 @@ window.GAME_DATA = {
           "text": "被吞噬的记忆令全员SAN减少1d10点。"
         }
       ]
+    },
+    {
+      "id": "E_ITEM_OLD_TICKET_001",
+      "actions": [
+        {
+          "type": "inspect",
+          "item": "old_ticket"
+        }
+      ]
     }
   ],
   "items": [
@@ -1848,7 +1857,8 @@ window.GAME_DATA = {
       "id": "old_ticket",
       "name": "旧车票",
       "image": "assets/note.svg",
-      "description": "一张已经褪色的车票，背面写着无法辨认的日期。"
+      "description": "一张已经褪色的车票，背面写着无法辨认的日期。",
+      "inspectEvent": "E_ITEM_OLD_TICKET_001"
     }
   ],
   "attributes": {

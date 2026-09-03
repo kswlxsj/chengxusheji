@@ -135,6 +135,15 @@ function validate(meta, scenes, events, items, attributeData, skills) {
   assert(sceneIds.has(meta.initialScene), `初始场景不存在：${meta.initialScene}`);
   assert(eventIds.has(meta.startEvent), `起始事件不存在：${meta.startEvent}`);
 
+  for (const item of items) {
+    assertOnlyKeys(item, ["id", "name", "image", "description", "inspectEvent"], `物品 ${item.id}`);
+    assert(typeof item.name === "string" && item.name, `物品名称不能为空：${item.id}`);
+    assert(typeof item.image === "string" && item.image, `物品图片不能为空：${item.id}`);
+    assert(typeof item.description === "string", `物品 ${item.id} 的 description 必须是字符串`);
+    assertId(item.inspectEvent, `物品 ${item.id} 的 inspectEvent 无效`);
+    assert(eventIds.has(item.inspectEvent), `物品 ${item.id} 引用了不存在的调查事件：${item.inspectEvent}`);
+  }
+
   let allocationCapacity = 0;
   for (const attribute of attributeData.attributes) {
     assertOnlyKeys(attribute, ["id", "name", "description", "initial", "min", "max"], `属性 ${attribute.id}`);
@@ -184,6 +193,14 @@ function validate(meta, scenes, events, items, attributeData, skills) {
       assert(actionTypes.has(action.type), `事件 ${event.id} 使用未知动作：${action.type}`);
       if (action.type === "changeScene") assert(sceneIds.has(action.scene), `事件 ${event.id} 引用了不存在的场景`);
       if (action.type === "addItem") assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
+      if (action.type === "inspect") {
+        if (action.item) {
+          assert(itemIds.has(action.item), `事件 ${event.id} 的调查动作引用了不存在的物品：${action.item}`);
+        } else {
+          assert(typeof action.title === "string" && action.title, `事件 ${event.id} 的调查动作缺少 title`);
+          assert(typeof action.text === "string", `事件 ${event.id} 的调查动作缺少 text`);
+        }
+      }
       if (action.type === "modifyAttribute") {
         assert(attributeIds.has(action.attribute), `事件 ${event.id} 引用了未注册属性：${action.attribute}`);
         assert(Number.isInteger(action.amount), `事件 ${event.id} 的属性修改量必须是整数`);

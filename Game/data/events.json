@@ -802,5 +802,14 @@
     ]
   },
   { "id": "E_END_B_SAN_SUCCESS", "actions": [{ "type": "custom", "name": "modifyAttributeByDice", "params": { "attribute": "san", "direction": "loss", "count": 1, "sides": 4, "bonus": 0, "label": "SAN" } }, { "type": "dialogue", "text": "噩梦般的结局令全员SAN减少1d4点。" }] },
-  { "id": "E_END_B_SAN_FAIL", "actions": [{ "type": "custom", "name": "modifyAttributeByDice", "params": { "attribute": "san", "direction": "loss", "count": 1, "sides": 10, "bonus": 0, "label": "SAN" } }, { "type": "dialogue", "text": "被吞噬的记忆令全员SAN减少1d10点。" }] }
+  { "id": "E_END_B_SAN_FAIL", "actions": [{ "type": "custom", "name": "modifyAttributeByDice", "params": { "attribute": "san", "direction": "loss", "count": 1, "sides": 10, "bonus": 0, "label": "SAN" } }, { "type": "dialogue", "text": "被吞噬的记忆令全员SAN减少1d10点。" }] },
+  {
+    "id": "E_ITEM_OLD_TICKET_001",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "old_ticket"
+      }
+    ]
+  }
 ]

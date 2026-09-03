@@ -32,7 +32,11 @@
   });
   const gameShell = document.querySelector("#game-shell");
   const hud = document.querySelector("#hud");
+  const inventoryBar = document.querySelector("#inventory-bar");
+  const inventorySlots = document.querySelector("#inventory-slots");
   const pauseButton = document.querySelector("#pause-button");
+  const itemDefinitions = new Map(data.items.map((item) => [item.id, item]));
+  const minimumInventorySlots = 9;
   let startupLocked = true;
   let paused = false;
   let pauseTask = null;
@@ -41,19 +45,52 @@
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);
 
-  function itemName(itemId) {
-    return data.items.find((item) => item.id === itemId)?.name || itemId;
+  function inspectInventoryItem(item) {
+    if (!item || startupLocked || paused || engine.busy) return;
+    void engine.play(item.inspectEvent);
+  }
+
+  function updateInventoryBar() {
+    const slotCount = Math.max(minimumInventorySlots, state.inventory.length);
+    inventorySlots.replaceChildren();
+    for (let index = 0; index < slotCount; index += 1) {
+      const itemId = state.inventory[index];
+      const item = itemId ? itemDefinitions.get(itemId) : null;
+      const slot = document.createElement("button");
+      slot.type = "button";
+      slot.className = `inventory-slot${item ? " occupied" : " empty"}`;
+      slot.disabled = !item || startupLocked || paused || engine.busy;
+      slot.title = item ? `${item.name}（点击调查）` : `空物品格 ${index + 1}`;
+      slot.setAttribute("aria-label", slot.title);
+
+      const shortcut = document.createElement("span");
+      shortcut.className = "inventory-shortcut";
+      shortcut.textContent = index < 9 ? String(index + 1) : "";
+      slot.append(shortcut);
+
+      if (item) {
+        const image = document.createElement("img");
+        image.src = item.image;
+        image.alt = "";
+        const name = document.createElement("span");
+        name.className = "inventory-item-name";
+        name.textContent = item.name;
+        slot.append(image, name);
+        slot.addEventListener("click", () => inspectInventoryItem(item));
+      }
+      inventorySlots.append(slot);
+    }
   }
 
   function updateHud() {
     document.querySelector("#attributes").textContent = Object.entries(state.attributes)
       .map(([key, value]) => `${state.attributeDefinitions.get(key)?.name || key} ${value}`)
       .join(" · ");
-    const names = state.inventory.map(itemName);
-    document.querySelector("#inventory").textContent = `物品：${names.length ? names.join("、") : "无"}`;
     document.querySelector("#save-slot").textContent = activeSlot ? `槽位 ${activeSlot}` : "未绑定槽位";
     hud.hidden = startupLocked;
+    inventoryBar.hidden = startupLocked;
     pauseButton.disabled = startupLocked;
+    updateInventoryBar();
   }
 
   engine.onStateChanged = updateHud;
