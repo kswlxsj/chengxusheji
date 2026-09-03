@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>末班列车 · 存档管理</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <main class="site-shell content-page">
+    <section class="page-panel">
+      <h1>存档管理</h1>
+      <p class="page-introduction">选择已有存档继续游戏，或删除不再需要的存档。</p>
+      <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
+      <nav class="page-footer"><a href="index.html">返回主页</a></nav>
+    </section>
+  </main>
+  <script src="data/compiled-game-data.js"></script>
+  <script src="src/namespace.js"></script>
+  <script src="src/page-flow.js"></script>
+  <script src="src/state.js"></script>
+  <script src="src/save-manager.js"></script>
+</body>
+</html>

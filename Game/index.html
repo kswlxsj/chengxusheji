@@ -3,35 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>末班列车 · 框架演示</title>
+  <title>末班列车</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <main id="game-shell" aria-label="游戏区域">
-    <section id="scene-layer" aria-label="当前场景"></section>
-
-    <header id="hud" hidden>
-      <div id="scene-name">载入中……</div>
-      <div id="attributes"></div>
-      <div id="inventory">物品：无</div>
-      <div class="hud-actions">
-        <button id="pause-button" type="button">暂停</button>
-      </div>
-    </header>
-
-    <div id="window-layer" aria-live="polite"></div>
-    <div id="toast" role="status" aria-live="polite"></div>
+  <main class="site-shell home-page" aria-label="主界面">
+    <img id="home-cover" class="page-cover" alt="">
+    <section class="home-content">
+      <h1 id="game-title">末班列车</h1>
+      <nav class="page-actions" aria-label="主菜单">
+        <a href="save-write.html?intent=new">新的游戏</a>
+        <a href="save-manager.html">存档管理</a>
+        <a href="settings.html">设置</a>
+        <a href="about.html">小组介绍</a>
+      </nav>
+    </section>
   </main>
 
-  <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
   <script src="data/compiled-game-data.js"></script>
   <script src="src/namespace.js"></script>
-  <script src="src/state.js"></script>
-  <script src="src/ui.js"></script>
-  <script src="src/scene.js"></script>
-  <script src="src/events.js"></script>
-  <script src="src/custom-actions.js"></script>
-  <script src="src/main.js"></script>
+  <script src="src/page-flow.js"></script>
+  <script src="src/home.js"></script>
 </body>
 </html>

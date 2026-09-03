@@ -27,8 +27,15 @@
     }
   }
 
+  class TerminalStateReached extends Error {
+    constructor() {
+      super("游戏已进入终止状态");
+      this.name = "TerminalStateReached";
+    }
+  }
+
   class EventEngine {
-    constructor({ events, state, scene, ui, items }) {
+    constructor({ events, state, scene, ui, items, shouldTerminate = () => false, onTerminate = () => {} }) {
       this.events = new Map(events.map((event) => [event.id, event]));
       this.items = new Map(items.map((item) => [item.id, item]));
       this.state = state;
@@ -44,6 +51,8 @@
       this.timers = new Set();
       this.stableSnapshot = state.snapshot();
       this.onStateChanged = () => {};
+      this.shouldTerminate = shouldTerminate;
+      this.onTerminate = onTerminate;
       this.registerBuiltIns();
     }
 
@@ -246,6 +255,7 @@
       this.scene.setInteractionEnabled(false);
       this.onStateChanged();
       let completed = false;
+      let terminated = false;
 
       try {
         let nextId = eventId;
@@ -263,6 +273,7 @@
             const result = await this.actions.get(action.type)(action, this.context());
             this.assertActive(run);
             this.onStateChanged();
+            if (this.shouldTerminate(this.state)) throw new TerminalStateReached();
             if (result && result.stop) {
               nextId = result.next || null;
               break;
@@ -274,8 +285,13 @@
         this.adoptStableState();
         return true;
       } catch (error) {
-        this.restoreStableState();
-        if (!(error instanceof EventCancelled)) {
+        terminated = error instanceof TerminalStateReached;
+        if (terminated) {
+          this.onTerminate(this.state);
+        } else {
+          this.restoreStableState();
+        }
+        if (!(error instanceof EventCancelled) && !terminated) {
           console.error(error);
           this.ui.toast(`运行错误：${error.message}`);
         }
@@ -284,9 +300,11 @@
         this.ui.cancelPending();
         this.activeRun = null;
         this.busy = false;
-        this.scene.refresh();
-        this.scene.setInteractionEnabled(!this.paused);
-        this.onStateChanged();
+        if (!terminated) {
+          this.scene.refresh();
+          this.scene.setInteractionEnabled(!this.paused);
+          this.onStateChanged();
+        }
         run.finish(completed);
       }
     }

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>末班列车 · 选择存档槽位</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <main class="site-shell content-page">
+    <section class="page-panel">
+      <h1 id="write-title">选择存档槽位</h1>
+      <p id="write-introduction" class="page-introduction"></p>
+      <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
+      <p id="page-error" class="page-error" role="alert"></p>
+      <div class="page-footer"><button id="cancel-write" type="button">取消</button></div>
+    </section>
+  </main>
+  <script src="data/compiled-game-data.js"></script>
+  <script src="src/namespace.js"></script>
+  <script src="src/page-flow.js"></script>
+  <script src="src/state.js"></script>
+  <script src="src/save-write.js"></script>
+</body>
+</html>

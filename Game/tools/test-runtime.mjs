@@ -19,7 +19,8 @@ const sandbox = {
   Error,
   localStorage: {
     getItem: (key) => storage.has(key) ? storage.get(key) : null,
-    setItem: (key, value) => storage.set(key, String(value))
+    setItem: (key, value) => storage.set(key, String(value)),
+    removeItem: (key) => storage.delete(key)
   },
   window: {}
 };
@@ -115,18 +116,35 @@ assert.equal(Game.evaluateCondition({ all: [
 ] }, state), true);
 
 const saves = new Game.SaveManager(state, "test-save");
-saves.save();
+saves.save(1);
+assert.equal(saves.listSlots().length, 3);
+assert.equal(saves.listSlots()[0].empty, false);
+assert.equal(typeof saves.listSlots()[0].savedAt, "string");
+assert.equal(saves.listSlots()[1].empty, true);
 const restored = createState();
-new Game.SaveManager(restored, "test-save").load();
+new Game.SaveManager(restored, "test-save").load(1);
 assert.deepEqual(restored.snapshot(), state.snapshot());
 restored.setAttribute("strength", 5);
 assert.equal(restored.getSkill("strong"), true, "读取后应保留技能自动屏蔽状态");
 
-storage.set("legacy-save", JSON.stringify(state.snapshot()));
-assert.throws(() => new Game.SaveManager(createState(), "legacy-save").load(), /版本不兼容/);
+state.setAttribute("insight", 4);
+saves.save(2);
+assert.equal(saves.hasSave(1), true);
+assert.equal(saves.hasSave(2), true);
+saves.load(1);
+assert.equal(state.getAttribute("insight"), 3, "不同槽位的状态应相互隔离");
+saves.delete(2);
+assert.equal(saves.hasSave(2), false);
+assert.throws(() => saves.hasSave(0), /1 到 3/);
+assert.throws(() => saves.save(4), /1 到 3/);
+
+storage.set("legacy-save-1", JSON.stringify(state.snapshot()));
+assert.throws(() => new Game.SaveManager(createState(), "legacy-save").load(1), /版本不兼容/);
+storage.set("train-game-save-v1", JSON.stringify({ saveVersion: 2, state: state.snapshot() }));
+assert.equal(new Game.SaveManager(createState()).listSlots().every((slot) => slot.empty), true, "旧单槽存档不应自动迁移");
 
 const unallocated = createState();
-assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(), /分配完成前/);
+assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1), /分配完成前/);
 
 const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
 const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
@@ -195,4 +213,70 @@ await actionEngine.actions.get("learnSkill")({ type: "learnSkill", skill: "stron
 assert.equal(actionState.getSkill("strong"), true);
 assert.equal(actionState.skillOverrides.strong, true);
 
-console.log("运行时测试通过：属性分配、技能触发、条件读取与存档兼容性。");
+function createEngineUi() {
+  return {
+    dialog: { showLine: async () => {} },
+    inspect: { show: async () => {} },
+    closeDialog: () => {},
+    cancelPending: () => {},
+    setPaused: () => {},
+    toast: () => {}
+  };
+}
+
+function createEngineScene() {
+  return {
+    load: () => {},
+    refresh: () => {},
+    setInteractionEnabled: () => {}
+  };
+}
+
+const terminalState = createState();
+terminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
+let terminalCalls = 0;
+const terminalEngine = new Game.EventEngine({
+  events: [{
+    id: "E_TERMINAL",
+    actions: [
+      { type: "modifyAttribute", attribute: "strength", amount: -4 },
+      { type: "setFlag", key: "continued", value: true }
+    ]
+  }],
+  state: terminalState,
+  items: [],
+  scene: createEngineScene(),
+  ui: createEngineUi(),
+  shouldTerminate: (currentState) => currentState.getAttribute("strength") === 0,
+  onTerminate: () => { terminalCalls += 1; }
+});
+await terminalEngine.play("E_TERMINAL");
+assert.equal(terminalState.getAttribute("strength"), 0, "终止状态不应回滚");
+assert.equal(terminalState.flags.continued, undefined, "终止后的动作不应继续执行");
+assert.equal(terminalCalls, 1, "终止回调应只执行一次");
+
+const diceTerminalState = createState();
+diceTerminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
+let diceTerminalCalls = 0;
+const diceTerminalEngine = new Game.EventEngine({
+  events: [{
+    id: "E_DICE_TERMINAL",
+    actions: [
+      { type: "custom", name: "modifyAttributeByDice", params: { attribute: "strength", direction: "loss", count: 0, sides: 1, bonus: 4 } },
+      { type: "setFlag", key: "continued", value: true }
+    ]
+  }],
+  state: diceTerminalState,
+  items: [],
+  scene: createEngineScene(),
+  ui: createEngineUi(),
+  shouldTerminate: (currentState) => currentState.getAttribute("strength") === 0,
+  onTerminate: () => { diceTerminalCalls += 1; }
+});
+Game.registerProjectActions(diceTerminalEngine);
+await diceTerminalEngine.play("E_DICE_TERMINAL");
+assert.equal(diceTerminalState.getAttribute("strength"), 0);
+assert.equal(diceTerminalState.flags.continued, undefined, "骰子动作触发终止后不应继续执行");
+assert.equal(diceTerminalCalls, 1);
+
+console.log("运行时测试通过：属性分配、技能触发、条件读取、三槽存档与终止状态。");

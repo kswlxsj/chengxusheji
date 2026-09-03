@@ -222,31 +222,85 @@
     }
   }
 
+  const SAVE_SLOT_COUNT = 3;
+
   class SaveManager {
-    constructor(state, storageKey = "train-game-save-v1") {
+    constructor(state, storageKeyPrefix = "train-game-save-slot") {
       this.state = state;
-      this.storageKey = storageKey;
+      this.storageKeyPrefix = storageKeyPrefix;
     }
 
-    hasSave() {
-      return localStorage.getItem(this.storageKey) !== null;
+    slotKey(slot) {
+      if (!Number.isInteger(slot) || slot < 1 || slot > SAVE_SLOT_COUNT) {
+        throw new RangeError(`存档槽位必须是 1 到 ${SAVE_SLOT_COUNT} 的整数`);
+      }
+      return `${this.storageKeyPrefix}-${slot}`;
     }
 
-    save(snapshot = this.state.snapshot()) {
-      if (snapshot.attributeAllocationComplete !== true) throw new Error("属性分配完成前不能保存");
-      localStorage.setItem(this.storageKey, JSON.stringify({ saveVersion: SAVE_VERSION, state: Game.deepClone(snapshot) }));
-    }
-
-    load() {
-      const raw = localStorage.getItem(this.storageKey);
-      if (raw === null) return false;
+    readEnvelope(slot) {
+      const raw = localStorage.getItem(this.slotKey(slot));
+      if (raw === null) return null;
       const save = JSON.parse(raw);
       if (!isPlainObject(save) || save.saveVersion !== SAVE_VERSION || !isPlainObject(save.state)) {
         throw new Error("存档版本不兼容，请开始新的游戏");
       }
       if (save.state.attributeAllocationComplete !== true) throw new Error("存档尚未完成属性分配");
+      return save;
+    }
+
+    listSlots() {
+      return Array.from({ length: SAVE_SLOT_COUNT }, (_, index) => {
+        const slot = index + 1;
+        try {
+          const save = this.readEnvelope(slot);
+          if (!save) return { slot, empty: true, compatible: true };
+          const previousState = this.state.snapshot();
+          try {
+            this.state.restore(save.state);
+          } finally {
+            this.state.restore(previousState);
+          }
+          return {
+            slot,
+            empty: false,
+            compatible: true,
+            savedAt: typeof save.savedAt === "string" ? save.savedAt : null,
+            sceneId: typeof save.state.sceneId === "string" ? save.state.sceneId : null,
+            san: Number.isInteger(save.state.attributes?.san) ? save.state.attributes.san : null
+          };
+        } catch (error) {
+          return {
+            slot,
+            empty: false,
+            compatible: false,
+            error: error instanceof Error ? error.message : "存档格式无效"
+          };
+        }
+      });
+    }
+
+    hasSave(slot) {
+      return localStorage.getItem(this.slotKey(slot)) !== null;
+    }
+
+    save(slot, snapshot = this.state.snapshot()) {
+      if (snapshot.attributeAllocationComplete !== true) throw new Error("属性分配完成前不能保存");
+      localStorage.setItem(this.slotKey(slot), JSON.stringify({
+        saveVersion: SAVE_VERSION,
+        savedAt: new Date().toISOString(),
+        state: Game.deepClone(snapshot)
+      }));
+    }
+
+    load(slot) {
+      const save = this.readEnvelope(slot);
+      if (!save) return false;
       this.state.restore(save.state);
       return true;
+    }
+
+    delete(slot) {
+      localStorage.removeItem(this.slotKey(slot));
     }
   }
 

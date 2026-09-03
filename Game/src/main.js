@@ -6,18 +6,37 @@
     return;
   }
 
+  const flow = Game.PageFlow;
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode");
+  const requestedSlot = flow.parseSlot(params.get("slot"));
   const state = new Game.GameState(data.meta.initialState, data.attributes, data.skills);
   const ui = new Game.UIManager(document.querySelector("#window-layer"));
   const sceneRoot = document.querySelector("#scene-layer");
   const scene = new Game.SceneManager(sceneRoot, data.scenes, state);
   const saves = new Game.SaveManager(state);
-  const engine = new Game.EventEngine({ events: data.events, state, scene, ui, items: data.items });
+  let ending = false;
+  const engine = new Game.EventEngine({
+    events: data.events,
+    state,
+    scene,
+    ui,
+    items: data.items,
+    shouldTerminate: (currentState) => currentState.getAttribute("san") <= 0,
+    onTerminate: () => {
+      if (ending) return;
+      ending = true;
+      flow.clearTransfer();
+      flow.navigate("ending", { reason: "san" }, true);
+    }
+  });
   const gameShell = document.querySelector("#game-shell");
   const hud = document.querySelector("#hud");
   const pauseButton = document.querySelector("#pause-button");
   let startupLocked = true;
   let paused = false;
   let pauseTask = null;
+  let activeSlot = requestedSlot;
 
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);
@@ -32,6 +51,7 @@
       .join(" · ");
     const names = state.inventory.map(itemName);
     document.querySelector("#inventory").textContent = `物品：${names.length ? names.join("、") : "无"}`;
+    document.querySelector("#save-slot").textContent = activeSlot ? `槽位 ${activeSlot}` : "未绑定槽位";
     hud.hidden = startupLocked;
     pauseButton.disabled = startupLocked;
   }
@@ -42,11 +62,11 @@
     return error instanceof Error ? error.message : "未知错误";
   }
 
-  function restoreSave() {
+  function restoreSave(slot) {
     const previousState = state.snapshot();
     try {
-      if (!saves.load()) {
-        ui.toast("还没有存档");
+      if (!saves.load(slot)) {
+        ui.toast(`槽位 ${slot} 还没有存档`);
         return false;
       }
       if (!state.sceneId || !scene.hasScene(state.sceneId)) {
@@ -55,7 +75,7 @@
       scene.load(state.sceneId);
       engine.adoptStableState();
       updateHud();
-      ui.toast("已读取存档");
+      ui.toast(`已读取槽位 ${slot}`);
       return true;
     } catch (error) {
       state.restore(previousState);
@@ -63,19 +83,6 @@
       updateHud();
       console.error("读取存档失败：", error);
       ui.toast(`读取失败：${errorMessage(error)}`);
-      return false;
-    }
-  }
-
-  function saveStableState() {
-    const savedPreviousStablePoint = engine.busy;
-    try {
-      saves.save(engine.getStableSnapshot());
-      ui.toast(savedPreviousStablePoint ? "已保存上一个稳定状态" : "已保存到本机浏览器");
-      return true;
-    } catch (error) {
-      console.error("保存存档失败：", error);
-      ui.toast(`保存失败：${errorMessage(error)}`);
       return false;
     }
   }
@@ -101,8 +108,7 @@
     });
   }
 
-  async function returnToMainMenu(saveFirst) {
-    if (saveFirst && !saveStableState()) return false;
+  async function returnToMainMenu() {
     startupLocked = true;
     updateHud();
     await engine.cancelToStable();
@@ -112,19 +118,48 @@
     ui.closePauseMenus();
     scene.setInteractionEnabled(false);
     updateHud();
-    await showMainMenu();
-    return true;
+    flow.clearTransfer();
+    flow.navigate("home", {}, true);
+  }
+
+  function openSaveWriter(returnTo) {
+    if (engine.busy) return false;
+    try {
+      flow.setTransfer({
+        kind: "save-write",
+        snapshot: engine.getStableSnapshot(),
+        slot: activeSlot,
+        returnTo
+      });
+      flow.navigate("saveWrite", { intent: "save" });
+      return true;
+    } catch (error) {
+      console.error("准备跨页保存失败：", error);
+      ui.toast(`无法打开存档写入页：${errorMessage(error)}`);
+      return false;
+    }
   }
 
   async function runPauseMenu() {
     while (paused && !startupLocked) {
+      const savingDisabled = engine.busy;
       const action = await ui.pauseMenu.choose({
         title: "游戏已暂停",
         options: [
           { label: "继续游戏", value: "resume" },
-          { label: "保存", value: "save" },
+          {
+            label: savingDisabled ? "保存（事件结束后可用）" : "保存",
+            value: "save",
+            disabled: savingDisabled,
+            description: savingDisabled ? "请先完成当前事件或对话" : "选择一个槽位写入"
+          },
           { label: "返回主界面", value: "return" },
-          { label: "保存并返回主界面", value: "save-return" }
+          {
+            label: savingDisabled ? "保存并返回（事件结束后可用）" : "保存并返回主界面",
+            value: "save-return",
+            disabled: savingDisabled,
+            description: savingDisabled ? "请先完成当前事件或对话" : "保存后返回主界面"
+          }
         ]
       });
       if (!paused || startupLocked) return;
@@ -133,18 +168,18 @@
         return;
       }
       if (action === "save") {
-        saveStableState();
+        if (openSaveWriter("game")) return;
         continue;
       }
       if (action === "return") {
         const confirmed = await confirmReturnToMenu();
         if (!paused || startupLocked) return;
         if (!confirmed) continue;
-        await returnToMainMenu(false);
+        await returnToMainMenu();
         return;
       }
       if (action === "save-return") {
-        if (await returnToMainMenu(true)) return;
+        if (openSaveWriter("home")) return;
       }
     }
   }
@@ -159,58 +194,102 @@
     pauseTask = runPauseMenu().finally(() => { pauseTask = null; });
   }
 
-  async function showMainMenu() {
-    while (startupLocked) {
-      let hasSave = false;
+  async function showStartupError(message, destination = "saveManager") {
+    console.error(message);
+    await ui.confirmMenu.choose({
+      title: message,
+      backdropClass: "menu-backdrop confirm-backdrop",
+      options: [{ label: destination === "home" ? "返回主页" : "返回存档管理", value: true }]
+    });
+    flow.navigate(destination, {}, true);
+  }
+
+  async function saveInitialState(slot) {
+    while (true) {
       try {
-        hasSave = saves.hasSave();
+        saves.save(slot, engine.getStableSnapshot());
+        return true;
       } catch (error) {
-        console.error("检查存档失败：", error);
-        ui.toast(`无法访问本机存档：${errorMessage(error)}`);
+        console.error("建立初始存档失败：", error);
+        const retry = await ui.confirmMenu.choose({
+          title: `建立初始存档失败：${errorMessage(error)}`,
+          backdropClass: "menu-backdrop confirm-backdrop",
+          options: [
+            { label: "返回主页", value: false },
+            { label: "重试", value: true }
+          ]
+        });
+        if (!retry) return false;
       }
+    }
+  }
 
-      const selected = await ui.mainMenu.choose({
-        title: data.meta.title,
-        coverImage: data.meta.coverImage,
-        backdropClass: "main-menu-backdrop",
-        options: [
-          { label: "新的游戏", value: "new" },
-          {
-            label: hasSave ? "读取存档" : "读取存档（暂无存档）",
-            value: "load",
-            disabled: !hasSave,
-            description: hasSave ? "读取浏览器中的存档" : "当前浏览器没有存档"
-          }
-        ]
-      });
+  function activateGame() {
+    startupLocked = false;
+    paused = false;
+    scene.setInteractionEnabled(true);
+    updateHud();
+  }
 
-      if (selected === "load") {
-        if (!restoreSave()) continue;
-        startupLocked = false;
-        scene.setInteractionEnabled(true);
-        updateHud();
+  async function startNewGame(slot) {
+    state.reset();
+    scene.load(data.meta.initialScene);
+    const allocation = await ui.attributeAllocation.choose(
+      [...state.attributeDefinitions.values()],
+      state.totalAttributePoints
+    );
+    if (!allocation) {
+      flow.navigate("home", {}, true);
+      return;
+    }
+    state.completeAttributeAllocation(allocation);
+    engine.adoptStableState();
+    if (!await saveInitialState(slot)) {
+      flow.navigate("home", {}, true);
+      return;
+    }
+    activateGame();
+    void engine.play(data.meta.startEvent);
+  }
+
+  function restoreTransfer(slot) {
+    const transfer = flow.getTransfer("resume-game");
+    if (!transfer || transfer.slot !== slot || !transfer.snapshot) {
+      throw new Error("恢复游戏所需的临时状态不存在或已经失效");
+    }
+    state.restore(transfer.snapshot);
+    flow.clearTransfer();
+    if (!state.sceneId || !scene.hasScene(state.sceneId)) {
+      throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
+    }
+    scene.load(state.sceneId);
+    engine.adoptStableState();
+    activateGame();
+  }
+
+  async function initialize() {
+    if (!requestedSlot || !["new", "load", "resume"].includes(mode)) {
+      await showStartupError("游戏入口参数无效，请从主页重新进入。", "home");
+      return;
+    }
+    try {
+      if (mode === "new") {
+        await startNewGame(requestedSlot);
         return;
       }
-      if (selected === "new") {
-        state.reset();
-        scene.load(data.meta.initialScene);
-        const allocation = await ui.attributeAllocation.choose(
-          [...state.attributeDefinitions.values()],
-          state.totalAttributePoints
-        );
-        if (!allocation) {
-          state.reset();
-          scene.load(data.meta.initialScene);
-          continue;
-        }
-        state.completeAttributeAllocation(allocation);
-        engine.adoptStableState();
-        startupLocked = false;
-        scene.setInteractionEnabled(true);
-        updateHud();
-        void engine.play(data.meta.startEvent);
+      if (mode === "load") {
+        if (!restoreSave(requestedSlot)) throw new Error(`槽位 ${requestedSlot} 暂无存档`);
+      } else {
+        restoreTransfer(requestedSlot);
+      }
+      if (state.getAttribute("san") <= 0) {
+        flow.navigate("ending", { reason: "san" }, true);
         return;
       }
+      activateGame();
+    } catch (error) {
+      flow.clearTransfer();
+      await showStartupError(`无法进入游戏：${errorMessage(error)}`);
     }
   }
 
@@ -230,7 +309,7 @@
   scene.load(data.meta.initialScene);
   scene.setInteractionEnabled(false);
   updateHud();
-  void showMainMenu();
+  void initialize();
 
   // 便于组员在浏览器控制台调试，不作为剧情 JSON 的公共接口。
   window.game = { state, ui, scene, engine, saves, pauseGame, resumeGame };
