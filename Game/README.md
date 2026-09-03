@@ -87,6 +87,8 @@
 
 保留完整目录，通过固定地址的本地静态服务器打开 `index.html`。点击对话框或场景空白处推进普通对话，按 `Esc` 或点击“暂停”打开菜单。
 
+第一次运行或遇到启动问题时，请阅读独立的[游戏启动说明](启动说明.md)。
+
 例如在 `Game` 目录启动 Python 自带的静态服务器：
 
 ```powershell
@@ -206,6 +208,7 @@ Game/
 ├─ save-manager.html
 ├─ save-write.html
 ├─ settings.html
+├─ 启动说明.md
 └─ README.md
 ```
 
