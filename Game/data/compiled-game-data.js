@@ -1916,15 +1916,40 @@ window.GAME_DATA = {
   },
   "skills": [
     {
-      "id": "keen_insight",
-      "name": "敏锐直觉",
-      "description": "灵感达到 70 时自动生效。",
-      "initial": false,
-      "autoTrigger": {
-        "attribute": "insight",
-        "operator": "gte",
-        "value": 70
-      }
+      "id": "talk",
+      "name": "话术",
+      "description": "通过表达、劝说和交涉影响他人的判断。",
+      "initial": false
+    },
+    {
+      "id": "stealth",
+      "name": "潜行",
+      "description": "降低行动时产生的声响，避免被敌人发现。",
+      "initial": false
+    },
+    {
+      "id": "throwing",
+      "name": "投掷",
+      "description": "将物品准确投向目标位置或利用声响转移敌人注意。",
+      "initial": false
+    },
+    {
+      "id": "firstAid",
+      "name": "急救",
+      "description": "对伤者进行紧急处理并稳定其当前状态。",
+      "initial": false
+    },
+    {
+      "id": "medicine",
+      "name": "医学",
+      "description": "运用医学知识判断伤势、死因和死亡时间。",
+      "initial": false
+    },
+    {
+      "id": "scouting",
+      "name": "侦查",
+      "description": "搜索环境、发现隐藏线索并判断潜在危险。",
+      "initial": false
     }
   ]
 };
