@@ -207,7 +207,15 @@ function validate(meta, scenes, events, items, attributeData, skills) {
           validateCondition(option.when, references, `事件 ${event.id} 的选项条件`);
         }
       }
-      if (action.type === "custom") assert(typeof action.name === "string" && action.name, `事件 ${event.id} 的自定义动作缺少 name`);
+      if (action.type === "custom") {
+        assert(typeof action.name === "string" && action.name, `事件 ${event.id} 的自定义动作缺少 name`);
+        if (action.name === "rollClickerCount") {
+          assertPlainObject(action.params, `事件 ${event.id} 的Clicker数量检定缺少 params`);
+          assertId(action.params.checkId, `事件 ${event.id} 的Clicker数量检定缺少有效 checkId`);
+          assert(!checkIds.has(action.params.checkId), `检定 checkId 重复：${action.params.checkId}`);
+          checkIds.add(action.params.checkId);
+        }
+      }
     }
   }
 }

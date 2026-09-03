@@ -1198,6 +1198,13 @@ window.GAME_DATA = {
       "id": "E_CHECK_C03_C02_SCOUTING",
       "actions": [
         {
+          "type": "custom",
+          "name": "rollClickerCount",
+          "params": {
+            "checkId": "carriage02_clicker_count_001"
+          }
+        },
+        {
           "type": "check",
           "checkId": "carriage03_carriage02_scouting_001",
           "label": "侦查：判断Clicker数量",
@@ -1212,8 +1219,12 @@ window.GAME_DATA = {
       "id": "E_C03_C02_SCOUTING_SUCCESS",
       "actions": [
         {
+          "type": "custom",
+          "name": "showClickerCount"
+        },
+        {
           "type": "dialogue",
-          "text": "你捕捉到黑暗中的人影，并大致掌握Clicker的数量。"
+          "text": "你记住了Clicker的具体数量，可以据此判断后续风险。"
         }
       ]
     },

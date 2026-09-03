@@ -519,6 +519,13 @@
     "id": "E_CHECK_C03_C02_SCOUTING",
     "actions": [
       {
+        "type": "custom",
+        "name": "rollClickerCount",
+        "params": {
+          "checkId": "carriage02_clicker_count_001"
+        }
+      },
+      {
         "type": "check",
         "checkId": "carriage03_carriage02_scouting_001",
         "label": "侦查：判断Clicker数量",
@@ -529,7 +536,7 @@
       }
     ]
   },
-  { "id": "E_C03_C02_SCOUTING_SUCCESS", "actions": [{ "type": "dialogue", "text": "你捕捉到黑暗中的人影，并大致掌握Clicker的数量。" }] },
+  { "id": "E_C03_C02_SCOUTING_SUCCESS", "actions": [{ "type": "custom", "name": "showClickerCount" }, { "type": "dialogue", "text": "你记住了Clicker的具体数量，可以据此判断后续风险。" }] },
   { "id": "E_C03_C02_SCOUTING_FAIL", "actions": [{ "type": "dialogue", "text": "黑暗中似乎有人影移动，但你无法判断数量。" }] },
   {
     "id": "E_CHECK_C02_CLICKER_SAN",

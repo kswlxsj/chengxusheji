@@ -25,7 +25,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/state.js", "src/scene.js", "src/events.js"]) {
+for (const file of ["src/namespace.js", "src/state.js", "src/scene.js", "src/events.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
@@ -157,6 +157,15 @@ const actionEngine = new Game.EventEngine({
   scene: {},
   ui: {}
 });
+Game.registerProjectActions(actionEngine);
+const rollClickerCount = actionEngine.customActions.get("rollClickerCount");
+await rollClickerCount({ checkId: "test_clicker_count_001" }, { state: actionState });
+const firstClickerCount = actionState.flags.clickerCount;
+assert(Number.isInteger(firstClickerCount) && firstClickerCount >= 1 && firstClickerCount <= 3);
+assert.equal(actionState.checkResults.test_clicker_count_001.roll, firstClickerCount);
+await rollClickerCount({ checkId: "test_clicker_count_002" }, { state: actionState });
+assert.equal(actionState.flags.clickerCount, firstClickerCount, "Clicker数量生成后不应重复暗骰");
+assert.equal(actionState.checkResults.test_clicker_count_002, undefined, "重复调用不应写入新的检定结果");
 await actionEngine.actions.get("modifyAttribute")({ type: "modifyAttribute", attribute: "strength", amount: -1 });
 assert.equal(actionState.getAttribute("strength"), 3);
 await actionEngine.actions.get("setSkill")({ type: "setSkill", skill: "manual", value: true });
