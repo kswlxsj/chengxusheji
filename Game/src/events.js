@@ -73,16 +73,18 @@
       });
 
       this.registerAction("check", async (action) => {
-        const base = this.state.getAttribute(action.attribute);
+        const rawBase = this.state.getAttribute(action.attribute);
+        const usesHalfAttribute = action.checkId === "carriage02_stealth_half_luck_001";
+        const base = usesHalfAttribute ? Math.floor(rawBase / 2) : rawBase;
         const modifier = Number(action.modifier || 0);
-        const threshold = 11;
+        const threshold = usesHalfAttribute ? 7 : 11;
         const roll = Math.floor(Math.random() * 6) + 1;
         const total = roll + base + modifier;
         const success = total >= threshold;
-        this.state.checkResults[action.checkId] = { roll, base, modifier, total, threshold, success };
+        this.state.checkResults[action.checkId] = { roll, base, rawBase, modifier, total, threshold, success };
         await this.ui.inspect.show({
           title: success ? "检定成功" : "检定失败",
-          text: `${action.label || action.attribute}：1d6 掷出 ${roll} + 属性 ${base}${modifier ? ` ${modifier > 0 ? "+" : "−"} ${Math.abs(modifier)}` : ""} = ${total}，需要达到 ${threshold}。`
+          text: `${action.label || action.attribute}：1d6 掷出 ${roll} + ${usesHalfAttribute ? `幸运 ${rawBase}÷2（取整为 ${base}）` : `属性 ${base}`}${modifier ? ` ${modifier > 0 ? "+" : "−"} ${Math.abs(modifier)}` : ""} = ${total}，需要达到 ${threshold}。`
         });
         return { next: success ? action.success : action.fail, stop: true };
       });

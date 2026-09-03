@@ -1373,44 +1373,47 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_CHECK_C02_STEALTH_LIGHT",
+      "id": "E_C02_PASSAGE_CHOICE",
       "actions": [
         {
-          "type": "check",
-          "checkId": "carriage02_stealth_light_001",
-          "label": "潜行：借助手电筒通过",
-          "attribute": "agility",
-          "modifier": 1,
-          "success": "E_C02_STEALTH_SUCCESS",
-          "fail": "E_C02_STEALTH_FAIL"
+          "type": "choice",
+          "prompt": "要怎样通过Clicker所在的车厢？",
+          "options": [
+            {
+              "label": "利用潜行技巧谨慎通过",
+              "next": "E_CHECK_C02_STEALTH_HALF_LUCK",
+              "when": {
+                "skill": "stealth",
+                "equals": true
+              }
+            },
+            {
+              "label": "依靠敏捷直接冲过去",
+              "next": "E_CHECK_C02_AGILITY_RUSH"
+            },
+            {
+              "label": "留在原位，使用投掷技能制造声响",
+              "next": "E_C02_THROW_AUTO_SUCCESS",
+              "when": {
+                "skill": "throwing",
+                "equals": true
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "id": "E_CHECK_C02_STEALTH_PHONE",
+      "id": "E_CHECK_C02_STEALTH_HALF_LUCK",
       "actions": [
         {
           "type": "check",
-          "checkId": "carriage02_stealth_phone_001",
-          "label": "潜行：借助手机光源通过",
-          "attribute": "agility",
+          "checkId": "carriage02_stealth_half_luck_001",
+          "label": "潜行：1d6＋幸运的一半",
+          "attribute": "luck",
           "modifier": 0,
           "success": "E_C02_STEALTH_SUCCESS",
-          "fail": "E_C02_STEALTH_FAIL"
-        }
-      ]
-    },
-    {
-      "id": "E_CHECK_C02_STEALTH_DARK",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_stealth_dark_001",
-          "label": "潜行：在黑暗中通过",
-          "attribute": "agility",
-          "modifier": -1,
-          "success": "E_C02_STEALTH_SUCCESS",
-          "fail": "E_C02_STEALTH_FAIL"
+          "fail": "E_C02_STEALTH_FAIL_CHOICE"
         }
       ]
     },
@@ -1419,59 +1422,116 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你没有发出明显声响，成功通过Clicker所在的车厢。"
+          "text": "你利用潜行技巧控制脚步，没有发出明显声响，成功通过车厢。"
         }
       ]
     },
     {
-      "id": "E_C02_STEALTH_FAIL",
+      "id": "E_C02_STEALTH_FAIL_CHOICE",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你踩到尸体发出声响，Clicker立刻转向声音来源。"
-        }
-      ],
-      "next": "E_CHECK_C02_AGILITY_OPPOSED"
-    },
-    {
-      "id": "E_CHECK_C02_HALF_LUCK",
-      "actions": [
+          "text": "你踩到尸体发出声响，Clicker立刻转向你。"
+        },
         {
-          "type": "check",
-          "checkId": "carriage02_half_luck_001",
-          "label": "困难幸运：冒险穿过车厢",
-          "attribute": "luck",
-          "modifier": -1,
-          "success": "E_C02_STEALTH_SUCCESS",
-          "fail": "E_C02_STEALTH_FAIL"
-        }
-      ]
-    },
-    {
-      "id": "E_CHECK_C02_THROW_CLOSE",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_throw_close_001",
-          "label": "投掷：近距离制造声响",
-          "attribute": "agility",
-          "modifier": -1,
-          "success": "E_C02_THROW_SUCCESS",
-          "fail": "E_C02_THROW_FAIL"
+          "type": "choice",
+          "prompt": "潜行失败，要立刻采取什么行动？",
+          "options": [
+            {
+              "label": "依靠敏捷冲过去",
+              "next": "E_CHECK_C02_AGILITY_RUSH"
+            },
+            {
+              "label": "不冲过去，使用投掷技能引开Clicker",
+              "next": "E_C02_THROW_AUTO_SUCCESS",
+              "when": {
+                "skill": "throwing",
+                "equals": true
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "id": "E_CHECK_C02_THROW_MEDIUM",
+      "id": "E_CHECK_C02_AGILITY_RUSH",
       "actions": [
         {
           "type": "check",
-          "checkId": "carriage02_throw_medium_001",
-          "label": "投掷：中距离制造声响",
+          "checkId": "carriage02_agility_rush_001",
+          "label": "敏捷：冲过Clicker所在区域",
           "attribute": "agility",
           "modifier": 0,
+          "success": "E_C02_AGILITY_ESCAPE_SUCCESS",
+          "fail": "E_C02_AGILITY_FAIL_CHOICE"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_AGILITY_ESCAPE_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你抓住机会迅速冲过Clicker所在区域。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_AGILITY_FAIL_CHOICE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能及时冲过去，Clicker已经逼近。"
+        },
+        {
+          "type": "choice",
+          "prompt": "敏捷检定失败，是否改用投掷补救？",
+          "options": [
+            {
+              "label": "立刻使用投掷技能补救（需要检定）",
+              "next": "E_CHECK_C02_THROW_AFTER_AGILITY",
+              "when": {
+                "skill": "throwing",
+                "equals": true
+              }
+            },
+            {
+              "label": "放弃投掷，直接躲避Clicker",
+              "next": "E_CHECK_C02_AGILITY_OPPOSED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_CHECK_C02_THROW_AFTER_AGILITY",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "carriage02_throw_after_agility_001",
+          "label": "投掷：敏捷失败后的紧急补救",
+          "attribute": "agility",
+          "modifier": -1,
           "success": "E_C02_THROW_SUCCESS",
           "fail": "E_C02_THROW_FAIL"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_THROW_AUTO_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你熟练地将物品投向远处，声响成功引开Clicker。"
+        }
+      ]
+    },
+    {
+      "id": "E_C02_THROW_FAR_AUTO_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "距离超过半节车厢，投掷自动成功，Clicker被远处声响吸引。"
         }
       ]
     },
@@ -1489,47 +1549,10 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "制造声响的计划失败，Clicker开始逼近。"
+          "text": "投掷没有产生预期效果，Clicker继续逼近。"
         }
       ],
       "next": "E_CHECK_C02_AGILITY_OPPOSED"
-    },
-    {
-      "id": "E_CHECK_C02_AGILITY_CLOSE",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_agility_close_001",
-          "label": "敏捷：近距离制造声音后脱身",
-          "attribute": "agility",
-          "modifier": -1,
-          "success": "E_C02_AGILITY_ESCAPE_SUCCESS",
-          "fail": "E_CHECK_C02_AGILITY_OPPOSED"
-        }
-      ]
-    },
-    {
-      "id": "E_CHECK_C02_AGILITY_MEDIUM",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_agility_medium_001",
-          "label": "敏捷：中距离制造声音后脱身",
-          "attribute": "agility",
-          "modifier": 0,
-          "success": "E_C02_AGILITY_ESCAPE_SUCCESS",
-          "fail": "E_CHECK_C02_AGILITY_OPPOSED"
-        }
-      ]
-    },
-    {
-      "id": "E_C02_AGILITY_ESCAPE_SUCCESS",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你在Clicker转向前及时脱离危险区域。"
-        }
-      ]
     },
     {
       "id": "E_CHECK_C02_AGILITY_OPPOSED",

@@ -148,6 +148,26 @@ assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达�
 assert.equal(registeredState.getSkill("stealth"), true, "敏捷与力量之和达到14时应触发潜行");
 assert.equal(registeredState.getSkill("medicine"), true, "教育达到7时应触发医学");
 
+const halfLuckEngine = new Game.EventEngine({
+  events: [],
+  state: registeredState,
+  items: [],
+  scene: {},
+  ui: { inspect: { show: async () => {} } }
+});
+await halfLuckEngine.actions.get("check")({
+  type: "check",
+  checkId: "carriage02_stealth_half_luck_001",
+  label: "潜行：1d6＋幸运的一半",
+  attribute: "luck",
+  modifier: 0,
+  success: "TEST_SUCCESS",
+  fail: "TEST_FAIL"
+});
+assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.rawBase, 10);
+assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.base, 5, "幸运应先除以2并向下取整");
+assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.threshold, 7, "潜行幸运检定阈值应为7");
+
 const actionState = createState();
 actionState.completeAttributeAllocation({ strength: 4, insight: 1 });
 const actionEngine = new Game.EventEngine({
