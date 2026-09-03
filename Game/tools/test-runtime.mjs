@@ -148,6 +148,7 @@ assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1
 
 const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
 const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
+const registeredItems = JSON.parse(await readFile("data/items.json", "utf8"));
 const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 assert.equal(registeredState.getSkill("talk"), false);
 assert.equal(registeredState.getSkill("stealth"), false);
@@ -165,6 +166,19 @@ registeredState.completeAttributeAllocation({
 assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达到14时应触发话术");
 assert.equal(registeredState.getSkill("stealth"), true, "敏捷与力量之和达到14时应触发潜行");
 assert.equal(registeredState.getSkill("medicine"), true, "教育达到7时应触发医学");
+
+let inspectedItem = null;
+const inspectEngine = new Game.EventEngine({
+  events: [],
+  state: registeredState,
+  items: registeredItems,
+  scene: {},
+  ui: { inspect: { show: async (payload) => { inspectedItem = payload; } } }
+});
+await inspectEngine.actions.get("inspect")({ type: "inspect", item: "old_ticket" });
+assert.equal(inspectedItem.title, "旧车票", "物品调查应读取注册表中的名称");
+assert.equal(inspectedItem.text, "一张已经褪色的车票，背面写着无法辨认的日期。", "物品调查应读取注册表中的说明");
+assert.equal(inspectedItem.image, "assets/note.svg", "物品调查应读取注册表中的图片");
 
 const halfLuckEngine = new Game.EventEngine({
   events: [],

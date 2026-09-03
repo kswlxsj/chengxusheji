@@ -193,6 +193,14 @@ function validate(meta, scenes, events, items, attributeData, skills) {
       assert(actionTypes.has(action.type), `事件 ${event.id} 使用未知动作：${action.type}`);
       if (action.type === "changeScene") assert(sceneIds.has(action.scene), `事件 ${event.id} 引用了不存在的场景`);
       if (action.type === "addItem") assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
+      if (action.type === "inspect") {
+        if (action.item) {
+          assert(itemIds.has(action.item), `事件 ${event.id} 的调查动作引用了不存在的物品：${action.item}`);
+        } else {
+          assert(typeof action.title === "string" && action.title, `事件 ${event.id} 的调查动作缺少 title`);
+          assert(typeof action.text === "string", `事件 ${event.id} 的调查动作缺少 text`);
+        }
+      }
       if (action.type === "modifyAttribute") {
         assert(attributeIds.has(action.attribute), `事件 ${event.id} 引用了未注册属性：${action.attribute}`);
         assert(Number.isInteger(action.amount), `事件 ${event.id} 的属性修改量必须是整数`);

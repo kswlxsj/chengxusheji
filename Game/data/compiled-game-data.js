@@ -1847,9 +1847,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
-          "title": "旧车票",
-          "text": "一张已经褪色的车票，边角被潮气泡得发软。背面的日期已经模糊，暂时无法辨认。",
-          "image": "assets/note.svg"
+          "item": "old_ticket"
         }
       ]
     }

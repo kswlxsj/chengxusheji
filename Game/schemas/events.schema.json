@@ -93,15 +93,31 @@
       "additionalProperties": false
     },
     "inspect": {
-      "type": "object",
-      "required": ["type", "title", "text"],
-      "properties": {
-        "type": { "const": "inspect" },
-        "title": { "type": "string" },
-        "text": { "type": "string" },
-        "image": { "type": "string" }
-      },
-      "additionalProperties": false
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "title", "text"],
+          "properties": {
+            "type": { "const": "inspect" },
+            "title": { "type": "string" },
+            "text": { "type": "string" },
+            "image": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "item"],
+          "properties": {
+            "type": { "const": "inspect" },
+            "item": { "$ref": "#/$defs/id" },
+            "title": { "type": "string" },
+            "text": { "type": "string" },
+            "image": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      ]
     },
     "choice": {
       "type": "object",
