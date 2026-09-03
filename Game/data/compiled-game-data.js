@@ -1442,21 +1442,7 @@ window.GAME_DATA = {
         {
           "type": "check",
           "checkId": "carriage02_throw_close_001",
-          "label": "投掷：近距离制造声响（第1次）",
-          "attribute": "agility",
-          "modifier": -1,
-          "success": "E_CHECK_C02_THROW_CLOSE_SECOND",
-          "fail": "E_C02_THROW_FAIL"
-        }
-      ]
-    },
-    {
-      "id": "E_CHECK_C02_THROW_CLOSE_SECOND",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_throw_close_002",
-          "label": "投掷：近距离制造声响（第2次）",
+          "label": "投掷：近距离制造声响",
           "attribute": "agility",
           "modifier": -1,
           "success": "E_C02_THROW_SUCCESS",
@@ -1470,21 +1456,7 @@ window.GAME_DATA = {
         {
           "type": "check",
           "checkId": "carriage02_throw_medium_001",
-          "label": "投掷：中距离制造声响（第1次）",
-          "attribute": "agility",
-          "modifier": 0,
-          "success": "E_CHECK_C02_THROW_MEDIUM_SECOND",
-          "fail": "E_C02_THROW_FAIL"
-        }
-      ]
-    },
-    {
-      "id": "E_CHECK_C02_THROW_MEDIUM_SECOND",
-      "actions": [
-        {
-          "type": "check",
-          "checkId": "carriage02_throw_medium_002",
-          "label": "投掷：中距离制造声响（第2次）",
+          "label": "投掷：中距离制造声响",
           "attribute": "agility",
           "modifier": 0,
           "success": "E_C02_THROW_SUCCESS",
@@ -1497,7 +1469,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "连续两次投掷都成功，声响将Clicker引向远处。"
+          "text": "投掷成功，声响将Clicker引向远处。"
         }
       ]
     },
