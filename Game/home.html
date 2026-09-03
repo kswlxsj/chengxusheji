@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>末班列车</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="src/namespace.js"></script>
+  <script src="src/auth.js"></script>
+  <script src="src/auth-guard.js"></script>
+</head>
+<body>
+  <main class="site-shell home-page" aria-label="主界面">
+    <img id="home-cover" class="page-cover" alt="">
+    <section class="home-content">
+      <h1 id="game-title">末班列车</h1>
+      <p class="auth-user-status">当前用户：<strong id="current-user"></strong></p>
+      <nav class="page-actions" aria-label="主菜单">
+        <a href="save-write.html?intent=new">新的游戏</a>
+        <a href="save-manager.html">存档管理</a>
+        <a href="settings.html">设置</a>
+        <a href="about.html">小组介绍</a>
+        <button id="logout-button" type="button">退出登录</button>
+      </nav>
+    </section>
+  </main>
+
+  <script src="data/compiled-game-data.js"></script>
+  <script src="src/page-flow.js"></script>
+  <script src="src/home.js"></script>
+</body>
+</html>

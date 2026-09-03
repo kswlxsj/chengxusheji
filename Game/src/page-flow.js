@@ -1,4 +1,4 @@
-// PageFlow —— 集中管理多页面游戏（index / game / ending / settings 等）之间的导航：
+// PageFlow —— 集中管理多页面游戏（home / game / ending / settings 等）之间的导航：
 // 统一维护“路由名 → HTML 文件”映射、带查询参数的跳转、存档槽位校验，
 // 以及通过 sessionStorage 实现的跨页临时交接（如恢复游戏快照）。
 (function (Game) {
@@ -9,7 +9,7 @@
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
   const routes = Object.freeze({
-    home: "index.html", // 主页（标题界面）
+    home: "home.html", // 主页（标题界面）
     game: "game.html", // 游戏主流程页
     ending: "ending.html", // 结局页
     settings: "settings.html", // 设置页

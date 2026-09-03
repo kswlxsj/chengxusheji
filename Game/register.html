@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>末班列车 · 注册</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <main class="site-shell content-page auth-page" aria-label="注册">
+    <section class="page-panel compact-panel auth-panel">
+      <p class="page-kicker">末班列车</p>
+      <h1>注册</h1>
+      <p class="page-introduction">创建一个保存在此浏览器中的本地账号。</p>
+      <form id="register-form" class="auth-form" novalidate>
+        <label for="register-username">用户名</label>
+        <input id="register-username" name="username" type="text" minlength="3" maxlength="20" autocomplete="username" required autofocus>
+        <p class="field-hint">去除首尾空格后须为 3–20 个字符，区分大小写。</p>
+        <label for="register-password">密码</label>
+        <input id="register-password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+        <label for="register-confirm-password">确认密码</label>
+        <input id="register-confirm-password" name="confirmPassword" type="password" minlength="6" autocomplete="new-password" required>
+        <p id="auth-error" class="page-error auth-error" role="alert" aria-live="polite"></p>
+        <button type="submit">注册</button>
+      </form>
+      <p class="auth-switch">已有账号？<a href="index.html">返回登录</a></p>
+      <p class="auth-notice">这是纯前端演示，密码会以明文保存在浏览器中。</p>
+    </section>
+  </main>
+
+  <script src="src/namespace.js"></script>
+  <script src="src/auth.js"></script>
+  <script src="src/register.js"></script>
+</body>
+</html>

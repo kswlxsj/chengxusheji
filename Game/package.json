@@ -5,6 +5,6 @@
   "scripts": {
     "compile": "node tools/compile-data.mjs",
     "test": "node tools/test-runtime.mjs",
-    "check": "node tools/compile-data.mjs && node --check src/namespace.js && node --check src/page-flow.js && node --check src/state.js && node --check src/ui.js && node --check src/scene.js && node --check src/events.js && node --check src/custom-actions.js && node --check src/home.js && node --check src/save-manager.js && node --check src/save-write.js && node --check src/main.js && npm test"
+    "check": "node tools/compile-data.mjs && node --check src/namespace.js && node --check src/auth.js && node --check src/auth-guard.js && node --check src/login.js && node --check src/register.js && node --check src/page-flow.js && node --check src/state.js && node --check src/ui.js && node --check src/scene.js && node --check src/events.js && node --check src/custom-actions.js && node --check src/home.js && node --check src/save-manager.js && node --check src/save-write.js && node --check src/main.js && npm test"
   }
 }

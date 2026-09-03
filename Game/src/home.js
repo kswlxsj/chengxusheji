@@ -1,4 +1,4 @@
-(function (data) {
+(function (Game, data) {
   "use strict";
 
   if (!data) return;
@@ -7,4 +7,9 @@
   const cover = document.querySelector("#home-cover");
   cover.src = data.meta.coverImage;
   cover.alt = `${data.meta.title}封面`;
-})(window.GAME_DATA);
+  document.querySelector("#current-user").textContent = Game.Auth.currentUser() || "";
+  document.querySelector("#logout-button").addEventListener("click", () => {
+    Game.Auth.logout();
+    window.location.replace(new URL("index.html", window.location.href));
+  });
+})(window.TrainGame, window.GAME_DATA);

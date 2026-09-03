@@ -3,6 +3,17 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const storage = new Map();
+const session = new Map();
+const localStorage = {
+  getItem: (key) => storage.has(key) ? storage.get(key) : null,
+  setItem: (key, value) => storage.set(key, String(value)),
+  removeItem: (key) => storage.delete(key)
+};
+const sessionStorage = {
+  getItem: (key) => session.has(key) ? session.get(key) : null,
+  setItem: (key, value) => session.set(key, String(value)),
+  removeItem: (key) => session.delete(key)
+};
 const sandbox = {
   console,
   JSON,
@@ -17,20 +28,42 @@ const sandbox = {
   TypeError,
   RangeError,
   Error,
-  localStorage: {
-    getItem: (key) => storage.has(key) ? storage.get(key) : null,
-    setItem: (key, value) => storage.set(key, String(value)),
-    removeItem: (key) => storage.delete(key)
-  },
-  window: {}
+  localStorage,
+  sessionStorage,
+  window: { localStorage, sessionStorage }
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/state.js", "src/scene.js", "src/events.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
 const Game = sandbox.window.TrainGame;
+const Auth = Game.Auth;
+
+assert.equal(Auth.register("ab", "123456").ok, false, "用户名过短时不应注册");
+assert.equal(Auth.register("Alice", "12345").ok, false, "密码过短时不应注册");
+const aliceRegistration = Auth.register("  Alice  ", "secret1");
+assert.equal(aliceRegistration.ok, true);
+assert.equal(aliceRegistration.message, "");
+assert.equal(aliceRegistration.username, "Alice");
+assert.equal(Auth.register("Alice", "secret2").ok, false, "完全同名账号不应重复注册");
+assert.equal(Auth.register("alice", "secret2").ok, true, "用户名应区分大小写");
+assert.equal(Auth.login("Alice", "wrong-password").ok, false);
+assert.equal(Auth.login("Alice", "secret1").ok, true);
+assert.equal(Auth.currentUser(), "Alice");
+Auth.logout();
+assert.equal(Auth.currentUser(), null);
+Auth.rememberRegistration("alice");
+assert.equal(Auth.consumeRegistration(), "alice");
+assert.equal(Auth.consumeRegistration(), null, "注册预填信息应只消费一次");
+assert.equal(Auth.login("alice", "secret2").ok, true);
+storage.delete("train-game-auth-user-v1:alice");
+assert.equal(Auth.currentUser(), null, "账号不存在时应清除失效会话");
+const originalSetItem = localStorage.setItem;
+localStorage.setItem = () => { throw new Error("storage disabled"); };
+assert.match(Auth.register("storage-test", "123456").message, /无法保存账号/);
+localStorage.setItem = originalSetItem;
 const initialState = {
   sceneId: "test_scene",
   currentEventId: null,
@@ -293,4 +326,4 @@ assert.equal(diceTerminalState.getAttribute("strength"), 0);
 assert.equal(diceTerminalState.flags.continued, undefined, "骰子动作触发终止后不应继续执行");
 assert.equal(diceTerminalCalls, 1);
 
-console.log("运行时测试通过：属性分配、技能触发、条件读取、三槽存档与终止状态。");
+console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档与终止状态。");

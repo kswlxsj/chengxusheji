@@ -53,7 +53,8 @@
 - 场景、旗标、属性、技能、物品和物件状态修改。
 - 技能按属性自动触发，以及手动永久覆盖自动触发。
 - 可暂停、可取消的自定义异步演出。
-- 独立主页、游戏页、存档管理/写入页、结束页及占位信息页。
+- 独立登录、注册、标题主页、游戏、存档管理/写入、结束及占位信息页。
+- 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
 - 稳定状态存档：事件中保存的是该事件开始前最近的完整状态。
 - SAN 归零后立即终止事件并进入结束页。
@@ -85,7 +86,7 @@
 
 ### 玩家或验收人员
 
-保留完整目录，通过固定地址的本地静态服务器打开 `index.html`。点击对话框或场景空白处推进普通对话，按 `Esc` 或点击“暂停”打开菜单。
+保留完整目录，通过固定地址的本地静态服务器打开 `index.html`。首次进入时先注册本地账号，再使用相同的用户名和密码登录。进入标题主页后可以开始游戏；点击对话框或场景空白处推进普通对话，按 `Esc` 或点击“暂停”打开菜单。
 
 第一次运行或遇到启动问题时，请阅读独立的[游戏启动说明](启动说明.md)。
 
@@ -98,7 +99,10 @@ python -m http.server 8000 --bind 127.0.0.1
 然后始终通过 `http://127.0.0.1:8000/` 访问；更换协议、主机或端口会进入另一份浏览器存储空间。
 
 > [!NOTE]
-> 多个页面依靠同源的 `localStorage` 和 `sessionStorage` 传递存档。浏览器对 `file:` 地址下存储的行为没有统一保证，因此直接双击只可用于查看静态页面，不属于受支持的游戏运行方式。
+> 本地账号和正式存档使用同源 `localStorage`，登录状态与跨页临时数据使用 `sessionStorage`。浏览器对 `file:` 地址下存储的行为没有统一保证，因此直接双击只可用于查看静态页面，不属于受支持的游戏运行方式。
+
+> [!WARNING]
+> 当前登录功能只用于纯前端课程演示，密码以明文保存在浏览器中，页面守卫也不能替代服务端鉴权。请勿使用任何真实密码。
 
 ### 内容或框架维护者
 
@@ -118,8 +122,8 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：2 个场景，135 个事件，1 个物品，8 个属性，6 个技能。
-运行时测试通过：属性分配、技能触发、条件读取、三槽存档与终止状态。
+编译完成：2 个场景，136 个事件，1 个物品，8 个属性，6 个技能。
+运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档与终止状态。
 ```
 
 ## 运行原理
@@ -133,9 +137,9 @@ tools/compile-data.mjs（校验与合并）
 data/compiled-game-data.js（生成 window.GAME_DATA）
     │ 各页面按职责加载共享数据与模块
     ▼
-主页 / 存档页 / GameState + SceneManager + UIManager + EventEngine
+登录 / 注册 / 主页 / 存档页 / GameState + SceneManager + UIManager + EventEngine
     ▼
-浏览器场景、事件、跨页交接和三槽 localStorage 存档
+本地认证、浏览器场景、事件、跨页交接和三槽 localStorage 存档
 ```
 
 一次物件点击的处理过程：
@@ -183,12 +187,16 @@ Game/
 │  ├─ scenes.schema.json
 │  └─ skills.schema.json
 ├─ src/
+│  ├─ auth-guard.js
+│  ├─ auth.js
 │  ├─ custom-actions.js
 │  ├─ events.js
 │  ├─ home.js
+│  ├─ login.js
 │  ├─ main.js
 │  ├─ namespace.js
 │  ├─ page-flow.js
+│  ├─ register.js
 │  ├─ save-manager.js
 │  ├─ save-write.js
 │  ├─ scene.js
@@ -203,8 +211,10 @@ Game/
 ├─ about.html
 ├─ ending.html
 ├─ game.html
+├─ home.html
 ├─ index.html
 ├─ package.json
+├─ register.html
 ├─ save-manager.html
 ├─ save-write.html
 ├─ settings.html
@@ -270,6 +280,8 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | 文件 | 用途 |
 | --- | --- |
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
+| `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
+| `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -277,6 +289,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `events.js` | 注册表、取消机制、终止条件、内置动作与 `EventEngine`。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
+| `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
 | `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
 | `main.js` | 游戏页组装入口，处理新游戏、读取、恢复、暂停与 SAN 归零。 |
@@ -287,8 +300,9 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | --- | --- |
 | `styles/main.css` | 16:9 容器、场景、HUD、窗口、菜单和动画的全部样式。 |
 | `tools/compile-data.mjs` | 读取六份 JSON，校验并覆盖生成编译数据。 |
-| `tools/test-runtime.mjs` | 在 Node.js `vm` 沙箱测试状态、技能、条件、存档和部分动作。 |
-| `index.html` | 独立主页；其他 HTML 分别承载游戏、存档、结束和占位页面。 |
+| `tools/test-runtime.mjs` | 在 Node.js `vm` 沙箱测试本地认证、状态、技能、条件、存档和部分动作。 |
+| `index.html` / `register.html` | 公共登录入口和独立注册页。 |
+| `home.html` | 登录后显示的游戏标题主页；其他 HTML 分别承载游戏、存档、结束和占位页面。 |
 | `package.json` | 项目信息及 `compile`、`test`、`check` 命令。 |
 | `README.md` | 项目总说明和维护手册。 |
 | `AGENTS.md` | 仓库协作与提交约束。 |
@@ -301,7 +315,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 2. 修改对应的 `data/*.json`，不要编辑编译产物。
 3. 根据 VS Code Schema 提示修正字段和类型。
 4. 运行 `npm run compile`，修正跨文件引用。
-5. 通过静态服务器刷新 `index.html`，从“新的游戏”验证内容。
+5. 通过静态服务器登录后刷新 `home.html`，从“新的游戏”验证内容。
 6. 提交前运行 `npm run check`。
 
 ### ID 与路径约定
@@ -512,6 +526,21 @@ const state = new TrainGame.GameState(
 框架可只读查询 `attributeDefinitions`、`skillDefinitions` 和 `totalAttributePoints`。不要直接改 `state.attributes` 或 `state.skills`，否则会跳过边界和技能重算。
 
 快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`。
+
+### 本地认证 API
+
+`TrainGame.Auth` 为静态课程项目提供浏览器本地认证。用户名去除首尾空格后须为 3–20 个字符并区分大小写，密码至少 6 个字符且不会裁剪空格。
+
+| 方法 | 行为 |
+| --- | --- |
+| `register(username, password)` | 以用户名为键保存明文密码；返回 `{ ok, message, username }`，拒绝完全同名账号。 |
+| `login(username, password)` | 严格比较用户名和密码，成功后在当前标签页建立会话。 |
+| `currentUser()` | 返回有效会话的用户名；账号不存在或存储不可用时返回 `null`。 |
+| `logout()` | 清除当前标签页的登录态和注册预填信息，不删除账号或游戏存档。 |
+| `requireAuth()` | 验证登录态，未登录时替换导航到 `index.html`。 |
+| `redirectAuthenticated()` | 已登录时替换导航到 `home.html`。 |
+
+账号键前缀为 `train-game-auth-user-v1:`，用户名会先经过 `encodeURIComponent`；会话键为 `train-game-auth-session-v1`。账号保存在 `localStorage`，关闭标签页后仍存在；登录态保存在 `sessionStorage`，关闭标签页后需要重新登录。所有账号共用现有三个游戏存档槽。
 
 ### 存档 API
 
@@ -768,6 +797,8 @@ game.saves.listSlots()
 | 自定义动作未注册 | 对齐 JSON 名称与 `custom-actions.js` 注册名。 |
 | 存档不兼容 | 注册表或版本已变化；开始新游戏或实现明确迁移。 |
 | 换浏览器或地址后找不到存档 | `localStorage` 按来源隔离；固定浏览器、用户配置、协议、主机和端口。 |
+| 刷新后突然回到登录页 | 当前标签页会话已失效，或浏览器阻止了 `sessionStorage`；重新登录并检查站点存储权限。 |
+| 注册或登录提示无法使用存储 | 浏览器隐私策略可能阻止 Web Storage；允许该地址保存站点数据后重试。 |
 | 保存按钮显示事件结束后可用 | 跨页无法保留事件调用栈；完成当前对话、调查或事件链后再保存。 |
 
 提交前执行：

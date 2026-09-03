@@ -70,6 +70,7 @@ a { color: inherit; }
 .page-actions { display: grid; gap: 12px; }
 
 .page-actions a,
+.page-actions button,
 .page-footer a,
 .page-footer button,
 .slot-actions button {
@@ -84,6 +85,7 @@ a { color: inherit; }
 }
 
 .page-actions a:hover,
+.page-actions button:hover,
 .page-footer a:hover,
 .page-footer button:hover,
 .slot-actions button:not(:disabled):hover { background: #423a30; }
@@ -112,6 +114,44 @@ a { color: inherit; }
 .page-error { min-height: 1.5em; color: #ffb7a7; }
 .page-footer { display: flex; justify-content: flex-end; margin-top: 24px; }
 .horizontal-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.auth-page { overflow: auto; }
+.auth-panel { width: min(520px, 100%); }
+.auth-panel h1 { margin-bottom: 24px; }
+.auth-form { display: grid; gap: 10px; }
+.auth-form label { font-weight: 700; }
+.auth-form input {
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--ink);
+  border: 1px solid rgba(255,255,255,.28);
+  outline: none;
+  background: rgba(0,0,0,.32);
+  font: inherit;
+}
+.auth-form input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(213,173,109,.22);
+}
+.auth-form button {
+  padding: 12px 20px;
+  color: #17130e;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.auth-form button:hover { filter: brightness(1.08); }
+.auth-error { margin: 2px 0; }
+.auth-switch { margin: 22px 0 0; }
+.auth-switch a { color: var(--accent); }
+.auth-notice,
+.field-hint { color: rgba(236,229,216,.62); font-size: .86em; line-height: 1.55; }
+.field-hint { margin: -4px 0 4px; }
+.auth-notice { margin: 16px 0 0; }
+.auth-user-status { margin: -18px 0 20px; color: rgba(236,229,216,.78); }
+.auth-user-status strong { color: var(--accent); }
 
 .save-slot-list { display: grid; gap: 12px; }
 .save-slot-card {
@@ -517,4 +557,5 @@ a { color: inherit; }
   .slot-actions { width: 100%; }
   .slot-actions button { flex: 1; text-align: center; }
   .horizontal-actions { grid-template-columns: 1fr; }
+  .auth-page { aspect-ratio: auto; min-height: 100vh; }
 }
