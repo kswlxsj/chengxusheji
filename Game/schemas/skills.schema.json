@@ -49,6 +49,21 @@
             "value": { "type": "integer" }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["sum", "operator", "value"],
+          "properties": {
+            "sum": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte"] },
+            "value": { "type": "integer" }
+          },
+          "additionalProperties": false
         }
       ]
     }

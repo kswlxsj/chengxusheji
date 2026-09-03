@@ -416,7 +416,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 `attributes.json` 根对象包含非负整数 `totalPoints` 和非空 `attributes`。属性必填 `id/name/initial/min/max`，可选 `description`；数值必须是整数且 `min <= initial <= max`。全部 `max - initial` 的总和必须不小于 `totalPoints`。
 
-`skills.json` 每项必填 `id/name/initial`，可选 `description/autoTrigger`。`autoTrigger` 只允许属性比较与 `all/any/not`，不能读取旗标、物品、技能或物件状态。
+`skills.json` 每项必填 `id/name/initial`，可选 `description/autoTrigger`。`autoTrigger` 允许单项属性比较、多个属性求和比较与 `all/any/not`，不能读取旗标、物品、技能或物件状态。求和条件使用 `{ "sum": ["education", "insight"], "operator": "gte", "value": 14 }`。
 
 ```json
 {

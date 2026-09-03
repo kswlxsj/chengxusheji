@@ -205,6 +205,8 @@ game.scene.refresh()
 
 技能在 `data/skills.json` 注册。没有 `autoTrigger` 的技能只受手动动作影响；有条件时，条件为真即自动设为 `true`，否则设为 `false`：
 
+多个属性之和可以使用 `sum`，例如 `{ "sum": ["education", "insight"], "operator": "gte", "value": 14 }` 表示教育与灵感之和至少为14。
+
 ```json
 [
   {

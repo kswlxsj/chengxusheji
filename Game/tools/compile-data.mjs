@@ -41,7 +41,7 @@ function assertUnique(records, label) {
 
 function validateAttributeCondition(condition, attributeIds, label) {
   assertPlainObject(condition, `${label}必须是条件对象`);
-  const branches = ["all", "any", "not", "attribute"].filter((key) => key in condition);
+  const branches = ["all", "any", "not", "attribute", "sum"].filter((key) => key in condition);
   assert(branches.length === 1, `${label}必须且只能包含一种条件`);
   const branch = branches[0];
   if (branch === "all" || branch === "any") {
@@ -53,6 +53,17 @@ function validateAttributeCondition(condition, attributeIds, label) {
   if (branch === "not") {
     assertOnlyKeys(condition, ["not"], label);
     validateAttributeCondition(condition.not, attributeIds, `${label}.not`);
+    return;
+  }
+  if (branch === "sum") {
+    assertOnlyKeys(condition, ["sum", "operator", "value"], label);
+    assert(Array.isArray(condition.sum) && condition.sum.length >= 2, `${label}.sum 至少需要两个属性`);
+    assert(new Set(condition.sum).size === condition.sum.length, `${label}.sum 不能重复引用同一属性`);
+    for (const attributeId of condition.sum) {
+      assert(attributeIds.has(attributeId), `${label}.sum 引用了未注册属性：${attributeId}`);
+    }
+    assert(comparisonOperators.has(condition.operator), `${label}使用了无效比较符：${condition.operator}`);
+    assert(Number.isInteger(condition.value), `${label}的比较值必须是整数`);
     return;
   }
   assertOnlyKeys(condition, ["attribute", "operator", "value"], label);

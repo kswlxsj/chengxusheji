@@ -47,6 +47,7 @@ const attributeData = {
 };
 const skills = [
   { id: "strong", name: "强壮", initial: false, autoTrigger: { attribute: "strength", operator: "gte", value: 4 } },
+  { id: "combined", name: "综合能力", initial: false, autoTrigger: { sum: ["strength", "insight"], operator: "gte", value: 5 } },
   {
     id: "perceptive",
     name: "感知敏锐",
@@ -71,6 +72,7 @@ function createState() {
 const state = createState();
 assert.deepEqual(state.attributes, { strength: 2, insight: 1 });
 assert.equal(state.getSkill("strong"), false);
+assert.equal(state.getSkill("combined"), false);
 assert.throws(() => state.completeAttributeAllocation({ strength: 3, insight: 1 }), /用完全部属性点/);
 assert.throws(() => state.completeAttributeAllocation({ strength: 5, insight: 1 }), /用完全部属性点/);
 assert.throws(() => state.completeAttributeAllocation({ strength: 2, insight: 3, extra: 1 }), /不兼容/);
@@ -78,6 +80,7 @@ assert.throws(() => state.completeAttributeAllocation({ strength: 2, insight: 3,
 state.completeAttributeAllocation({ strength: 4, insight: 1 });
 assert.equal(state.attributeAllocationComplete, true);
 assert.equal(state.getSkill("strong"), true);
+assert.equal(state.getSkill("combined"), true);
 assert.equal(state.getSkill("perceptive"), false);
 assert.throws(() => state.completeAttributeAllocation({ strength: 4, insight: 1 }), /已经完成/);
 
@@ -124,6 +127,26 @@ assert.throws(() => new Game.SaveManager(createState(), "legacy-save").load(), /
 
 const unallocated = createState();
 assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(), /分配完成前/);
+
+const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
+const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
+const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+assert.equal(registeredState.getSkill("talk"), false);
+assert.equal(registeredState.getSkill("stealth"), false);
+assert.equal(registeredState.getSkill("medicine"), false);
+registeredState.completeAttributeAllocation({
+  strength: 7,
+  agility: 7,
+  education: 7,
+  insight: 7,
+  will: 10,
+  luck: 10,
+  constitution: 3,
+  san: 5
+});
+assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达到14时应触发话术");
+assert.equal(registeredState.getSkill("stealth"), true, "敏捷与力量之和达到14时应触发潜行");
+assert.equal(registeredState.getSkill("medicine"), true, "教育达到7时应触发医学");
 
 const actionState = createState();
 actionState.completeAttributeAllocation({ strength: 4, insight: 1 });

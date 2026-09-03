@@ -17,6 +17,7 @@
 
   function collectAttributeDependencies(condition, result = new Set()) {
     if (condition.attribute) result.add(condition.attribute);
+    for (const attributeId of condition.sum || []) result.add(attributeId);
     for (const part of condition.all || condition.any || []) collectAttributeDependencies(part, result);
     if (condition.not) collectAttributeDependencies(condition.not, result);
     return result;
@@ -196,6 +197,10 @@
       if (condition.all) return condition.all.every((part) => this.evaluateAttributeCondition(part));
       if (condition.any) return condition.any.some((part) => this.evaluateAttributeCondition(part));
       if (condition.not) return !this.evaluateAttributeCondition(condition.not);
+      if (condition.sum) {
+        const total = condition.sum.reduce((sum, attributeId) => sum + this.getAttribute(attributeId), 0);
+        return operators[condition.operator](total, condition.value);
+      }
       return operators[condition.operator](this.getAttribute(condition.attribute), condition.value);
     }
 

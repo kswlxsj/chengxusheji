@@ -1919,13 +1919,29 @@ window.GAME_DATA = {
       "id": "talk",
       "name": "话术",
       "description": "通过表达、劝说和交涉影响他人的判断。",
-      "initial": false
+      "initial": false,
+      "autoTrigger": {
+        "sum": [
+          "education",
+          "insight"
+        ],
+        "operator": "gte",
+        "value": 14
+      }
     },
     {
       "id": "stealth",
       "name": "潜行",
       "description": "降低行动时产生的声响，避免被敌人发现。",
-      "initial": false
+      "initial": false,
+      "autoTrigger": {
+        "sum": [
+          "agility",
+          "strength"
+        ],
+        "operator": "gte",
+        "value": 14
+      }
     },
     {
       "id": "throwing",
@@ -1943,7 +1959,12 @@ window.GAME_DATA = {
       "id": "medicine",
       "name": "医学",
       "description": "运用医学知识判断伤势、死因和死亡时间。",
-      "initial": false
+      "initial": false,
+      "autoTrigger": {
+        "attribute": "education",
+        "operator": "gte",
+        "value": 7
+      }
     },
     {
       "id": "scouting",
