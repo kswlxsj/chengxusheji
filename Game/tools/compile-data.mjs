@@ -135,6 +135,15 @@ function validate(meta, scenes, events, items, attributeData, skills) {
   assert(sceneIds.has(meta.initialScene), `初始场景不存在：${meta.initialScene}`);
   assert(eventIds.has(meta.startEvent), `起始事件不存在：${meta.startEvent}`);
 
+  for (const item of items) {
+    assertOnlyKeys(item, ["id", "name", "image", "description", "inspectEvent"], `物品 ${item.id}`);
+    assert(typeof item.name === "string" && item.name, `物品名称不能为空：${item.id}`);
+    assert(typeof item.image === "string" && item.image, `物品图片不能为空：${item.id}`);
+    assert(typeof item.description === "string", `物品 ${item.id} 的 description 必须是字符串`);
+    assertId(item.inspectEvent, `物品 ${item.id} 的 inspectEvent 无效`);
+    assert(eventIds.has(item.inspectEvent), `物品 ${item.id} 引用了不存在的调查事件：${item.inspectEvent}`);
+  }
+
   let allocationCapacity = 0;
   for (const attribute of attributeData.attributes) {
     assertOnlyKeys(attribute, ["id", "name", "description", "initial", "min", "max"], `属性 ${attribute.id}`);

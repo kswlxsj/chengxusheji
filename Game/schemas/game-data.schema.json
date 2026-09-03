@@ -89,12 +89,13 @@
     },
     "item": {
       "type": "object",
-      "required": ["id", "name", "image", "description"],
+      "required": ["id", "name", "image", "description", "inspectEvent"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
         "name": { "type": "string" },
         "image": { "type": "string" },
-        "description": { "type": "string" }
+        "description": { "type": "string" },
+        "inspectEvent": { "$ref": "#/$defs/id" }
       },
       "additionalProperties": false
     }

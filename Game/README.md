@@ -238,7 +238,7 @@ Game/
 | `meta.json` | 是 | 标题、封面、入口和初始状态。 |
 | `scenes.json` | 是 | 场景背景、物件位置、点击入口和显示条件。 |
 | `events.json` | 是 | 剧情事件、动作、选择和检定分支。 |
-| `items.json` | 是 | 物品注册表；当前 UI 只使用名称。 |
+| `items.json` | 是 | 物品注册表；配置名称、图标、说明和点击调查事件。 |
 | `attributes.json` | 是 | 属性、边界和新游戏可分配点数。 |
 | `skills.json` | 是 | 技能和可选的属性自动触发条件。 |
 | `compiled-game-data.js` | **否** | `npm run compile` 生成的数据包；必须随游戏交付。 |
@@ -439,7 +439,17 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 ### 物品、属性与技能
 
-`items.json` 每项必须有 `id`、非空 `name`、非空 `image` 和字符串 `description`。当前 HUD 只消费 `name`；`image` 和 `description` 尚未显示。
+`items.json` 每项必须有 `id`、非空 `name`、非空 `image`、字符串 `description` 和 `inspectEvent`。物品进入物品栏后会显示在底部常驻快捷栏中；点击物品会运行 `inspectEvent` 指向的编号事件，该事件必须在 `events.json` 中存在。
+
+```json
+{
+  "id": "old_ticket",
+  "name": "旧车票",
+  "image": "assets/note.svg",
+  "description": "一张已经褪色的车票。",
+  "inspectEvent": "E_ITEM_OLD_TICKET_001"
+}
+```
 
 `attributes.json` 根对象包含非负整数 `totalPoints` 和非空 `attributes`。属性必填 `id/name/initial/min/max`，可选 `description`；数值必须是整数且 `min <= initial <= max`。全部 `max - initial` 的总和必须不小于 `totalPoints`。
 
