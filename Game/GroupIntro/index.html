@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="程序设计小组 · 成员介绍汇总入口" />
+  <title>程序设计小组 · 成员介绍</title>
+  <link rel="stylesheet" href="back-button.css" />
+  <script src="back-button.js" defer></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: #0e0e11; 
+      color: #ececed;
+      font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+      height: 100vh;
+      height: 100dvh; 
+      overflow: hidden;
+    }
+
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 半透明深色蒙层：保证文字在任何背景上可读*/
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: rgba(12, 12, 16, 0.55);
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(20px, 4vh, 44px);
+      padding: clamp(24px, 6vw, 64px);
+      text-align: center;
+    }
+
+    .roster__title {
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      font-weight: 600;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: rgba(236, 236, 237, 0.55);
+    }
+
+    .roster {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(10px, 2.2vh, 22px);
+    }
+
+    .roster li {
+      line-height: 1;
+    }
+
+    .roster a {
+      position: relative;
+      display: inline-flex;
+      align-items: baseline;
+      color: #f4f4f5;
+      text-decoration: none;
+      font-size: clamp(1.8rem, 6vw, 3.4rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .roster a:hover {
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .roster .tag {
+      position: absolute;
+      left: 100%;
+      top: 0.22em;
+      margin-left: 14px;
+      white-space: nowrap; /* 避免签名在 left:100% 处被压窄而纵向换行 */
+      letter-spacing: 0.3em;
+      text-indent: 0.3em; /* 抵消末字符后的 letter-spacing 尾随空白，使“组长”在胶囊内完美居中 */
+      font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+      font-weight: 500;
+      color: rgba(236, 236, 237, 0.5);
+      border: 1px solid rgba(236, 236, 237, 0.25);
+      border-radius: 999px;
+      padding: 0.3em 0.9em;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <img class="page-bg" src="background.png" alt="" aria-hidden="true" />
+
+  <!-- 深色蒙层，保证文字可读 -->
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="group-back">
+    <a class="group-back__btn" href="../home.html" data-noop aria-label="返回游戏主页">
+      <span class="group-back__icon" aria-hidden="true">&#8592;</span>
+      <span class="group-back__label">返回</span>
+    </a>
+  </div>
+
+  <main class="page">
+    <h1 class="roster__title">小组成员介绍</h1>
+    <ol class="roster">
+      <li>
+        <a href="lty/demo.html">李天怡<span class="tag">组长</span></a>
+      </li>
+      <li><a href="czh/index.html">陈子昊</a></li>
+      <li><a href="cr/index.html">迟锐</a></li>
+      <li><a href="dxh/index.html">董旭航</a></li>
+      <li><a href="xyx/index.html">夏雨煊</a></li>
+      <li><a href="zxy/index.html">周欣阳</a></li>
+    </ol>
+  </main>
+</body>
+</html>

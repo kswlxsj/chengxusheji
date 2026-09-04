@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人介绍</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #FEFEFE;
+        }
+
+        canvas {
+            position: fixed;
+        }
+
+        .windowcontainer {
+            position: relative;
+            z-index: 1;
+            width: 560px;
+        }
+
+        .video {
+            position: absolute;
+            top: -102px;
+            left: 20px;
+            z-index: 10;
+            width: 100px;
+            height: 120px;
+        }
+        .video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 46% -50%;
+        }
+
+        .window {
+            position: relative;
+            width: 100%;
+            border: 1px solid #D6D6D6;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18),
+                        0 8px 24px rgba(0, 0, 0, 0.10);
+            background: rgba(255, 255, 255, 0.808);
+        }
+
+        .windowtop {
+            background: #ECECEC;
+            padding: 32px 32px 0 32px;
+        }
+
+        .windowbottom {
+            background: rgba(255, 255, 255, 0.75);
+            padding: 0 32px 32px 32px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .touxiang {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .touxiang img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #002e5d;
+            letter-spacing: 0.5px;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: rgba(0, 62, 123, 0.45);
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        .divider {
+            width: 48px;
+            height: 7px;
+        }
+
+        .bio {
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(26, 58, 90, 0.7);
+            letter-spacing: 0.3px;
+            text-indent: 2em;
+            text-align: left;
+        }
+        .bio span {
+            background: rgba(135, 206, 235, 0.12);
+            padding: 0 8px;
+            border-radius: 3px;
+            color: #2a6a8a;
+        }
+    </style>
+    <link rel="stylesheet" href="../back-button.css" />
+    <script src="../back-button.js" defer></script>
+</head>
+<body>
+
+    <!-- 统一返回按钮：回到小组汇总入口 -->
+    <div class="group-back">
+        <a class="group-back__btn" href="../index.html" aria-label="返回小组汇总页">
+            <span class="group-back__icon" aria-hidden="true">&#8592;</span>
+            <span class="group-back__label">返回</span>
+        </a>
+    </div>
+
+    <canvas id="waveCanvas"></canvas>
+
+    <div class="windowcontainer">
+        <div class="video">
+            <video src="video/Timeline 1.mov" autoplay muted loop playsinline></video>
+        </div>
+
+        <div class="window">
+            <div class="windowtop">
+                <div class="header">
+                    <div class="touxiang"><img src="picture/2.gif" alt="头像" /></div>
+                    <div class="name-area">
+                        <div class="name">李天怡</div>
+                        <div class="subtitle">组长/ 项目经理</div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+
+            <div class="windowbottom">
+                <div class="bio">
+                    我来自山东，爱好听歌画画看动画片打游戏，我也搞搞乐队，当当<a href="https://space.bilibili.com/289547771?spm_id_from=333.1007.0.0" target="_blank" style="color:#2a6a8a;">up</a>。
+                    <p>玩了很久的游戏，终于有机会让我的想法落地。游戏是我一直以来想做的一个方向，虽然很累但是做的过程很快乐，也算不虚此行。和组内的大家讨论很有趣，也感谢组员朋友们愿意和我一起完成这个项目。</p>
+                    <p>虽然有过一些代码基础，但对于前端几乎是停留在知道的程度，一路上有很多东西要学，</p>
+                    <p>总之，很高兴认识你。</p>
+                    <p>tips:点击一下水面试试</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const c = document.getElementById('waveCanvas'),
+              x = c.getContext('2d');
+
+        let W, H,
+            by,
+            t = 0,
+            bs = [];
+
+        const w = {
+            a: 22,
+            f: 0.015,
+            s: 0.3
+        };
+
+        (function resize() {
+            W = c.width = innerWidth;
+            H = c.height = innerHeight;
+            by = H * 0.5;
+        })();
+
+        function waveY(x) {
+            return by + w.a * Math.sin(w.f * x + t * w.s);
+        }
+
+        (function draw() {
+            x.clearRect(0, 0, W, H);
+
+            x.beginPath();
+            x.moveTo(0, H);
+            for (let i = 0; i <= W; i++) {
+                x.lineTo(i, waveY(i));
+            }
+            x.lineTo(W, H);
+            x.closePath();
+            x.fillStyle = '#D4E9FF';
+            x.fill();
+
+            for ( const b of bs) {
+                b.y -= .8;
+
+                if (b.y > waveY(b.x)) {
+                    x.beginPath();
+                    x.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                    x.fillStyle = 'rgba(255,255,255,0.6)';
+                    x.fill();
+                }
+            }
+
+            t += .02;
+
+            requestAnimationFrame(draw);
+        })();
+
+        onmousedown = e => bs.push({
+            x: e.clientX,
+            y: e.clientY,
+            r: 4 + Math.random() * 8
+        });
+    </script>
+</body>
+</html>

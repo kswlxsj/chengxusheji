@@ -1,0 +1,79 @@
+/* ==========================================================================
+   统一返回按钮（书签式）
+   - 固定于左上角，从屏幕左边缘“伸出”。
+   - 黑底白字圆角胶囊；收起时仅露出右端圆角，悬停/展开时滑出露出右侧绝大部分
+     （左侧仍收在屏幕边缘内，类似书签被拉出）。
+   - 进入页面时默认展开、约 1 秒后自动收起：用纯 CSS 动画实现，
+     不依赖脚本时序（即使外部样式表加载被阻塞也稳定生效）。
+   ========================================================================== */
+
+.group-back {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none; /* 外层容器不拦截点击，只有按钮本身可交互 */
+}
+
+.group-back__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 26px 0 36px; /* 内容整体靠左，右侧留出圆角空白；收起时只露出纯黑圆角（无字符残影） */
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.25); /* 深色页上的一圈细亮描边，保证醒目 */
+  transform: translateX(-80%); /* 默认收起：只露右端圆角 */
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  /* 入场：展开约 1 秒后自动收起（纯 CSS，一次播放） */
+  animation: group-back-intro 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group-back__btn:hover,
+.group-back__btn:focus-visible {
+  /* 展开：左端圆角仍收在屏幕边缘内，只露出右侧绝大部分（书签拉出） */
+  transform: translateX(-26%);
+}
+
+.group-back__icon {
+  font-size: 1.05em;
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+@keyframes group-back-intro {
+  0% {
+    transform: translateX(-80%);
+  }
+
+  10% {
+    transform: translateX(-26%);
+  }
+
+  80% {
+    transform: translateX(-26%);
+  }
+
+  100% {
+    transform: translateX(-80%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group-back__btn {
+    animation: none;
+  }
+}

@@ -1,0 +1,4 @@
+- 版本：18.0.7
+- 来源：`https://cdn.jsdelivr.net/npm/marked@18.0.7/lib/marked.umd.js`
+- 上游仓库：`https://github.com/markedjs/marked/tree/v18.0.7`
+- 许可证：MIT，完整文本见 `LICENSE`

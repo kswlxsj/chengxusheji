@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="一名计算机专业大二学生的个人主页" />
+  <title>夏雨煊的个人主页 · 程序设计小组</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128187;</text></svg>" />
+  <style>
+    /* ============ ① 配色可以在这里改：--primary 主色、--primary2 辅色 ============ */
+    :root {
+      --primary: #0e9fae;
+      --primary2: #29c4d9;
+      --grad: linear-gradient(135deg, #00bcd4, #39c5bb);
+      --bg: #eefbfd;
+      --card: #ffffff;
+      --text: #1d3442;
+      --muted: #5c7d88;
+      --line: #d8edf2;
+      --navbg: rgba(238, 251, 253, .85);
+      --chipbg: rgba(0, 188, 212, .10);
+      --shadow: 0 10px 28px rgba(8, 120, 140, .10);
+      --shadow-hover: 0 16px 36px rgba(8, 120, 140, .16);
+      --cloud: #ffffff;
+      --cloud-op: .9;
+    }
+
+    /* 下雨模式会叠加 .dark，让页面自动进入暗色氛围 */
+    html.dark {
+      --primary: #41d6e0;
+      --primary2: #5fdcff;
+      --grad: linear-gradient(135deg, #31cbe6, #4ed9cb);
+      --bg: #08141f;
+      --card: #0f2434;
+      --text: #dff3f7;
+      --muted: #86b3c0;
+      --line: #1a3c4e;
+      --navbg: rgba(8, 20, 31, .82);
+      --chipbg: rgba(65, 214, 224, .16);
+      --shadow: 0 10px 28px rgba(0, 0, 0, .35);
+      --shadow-hover: 0 16px 36px rgba(0, 0, 0, .45);
+      --cloud: #45607d;
+      --cloud-op: .55;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      transition: background .35s, color .35s;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(0, 188, 212, .22); }
+    a { color: inherit; }
+
+    /* ============ 天气背景层（云、雨都在内容后面） ============ */
+    .page { position: relative; z-index: 1; }
+    .sky {
+      position: fixed; inset: 0; z-index: -3;
+      background: linear-gradient(180deg, #b9e6f6 0%, #eefbfd 72%);
+      transition: background 1.2s ease;
+    }
+    html.rain .sky {
+      background: linear-gradient(180deg, #2e4259 0%, #142031 78%);
+    }
+    .clouds {
+      position: fixed; inset: 0; z-index: -2;
+      overflow: hidden; pointer-events: none;
+    }
+    .cloud {
+      position: absolute; left: 0; will-change: transform;
+      animation: cloudDrift var(--dur, 50s) linear var(--delay, 0s) infinite;
+    }
+    .cloud .shape {
+      display: block; width: 210px; height: 116px;
+      opacity: var(--cloud-op);
+      transition: background 1s, opacity 1s;
+    }
+    .cloud .shape svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .pixel-cloud { shape-rendering: crispEdges; }
+    .pixel-cloud .pcell { fill: var(--cloud); }
+    @keyframes cloudDrift {
+      from { transform: translate3d(-25vw, 0, 0); }
+      to { transform: translate3d(115vw, 0, 0); }
+    }
+    #rainCanvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ============ 顶部导航 ============ */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navbg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      max-width: 900px; height: 60px; margin: 0 auto;
+      padding: 0 20px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+    }
+    .brand {
+      font-weight: 800; font-size: 17px; white-space: nowrap;
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .nav-links { display: flex; list-style: none; gap: 4px; }
+    .nav-links a {
+      display: block; padding: 7px 13px; border-radius: 999px;
+      color: var(--muted); text-decoration: none; font-size: 14px;
+      white-space: nowrap; transition: .2s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--chipbg); }
+    .nav-links a.active { color: #fff; background: var(--grad); }
+
+    /* 天气切换小开关 */
+    .weather-switch {
+      display: flex; flex: none; gap: 2px; padding: 4px;
+      border-radius: 999px; background: var(--card);
+      border: 1px solid var(--line); box-shadow: var(--shadow);
+    }
+    .weather-switch button {
+      width: 32px; height: 28px; border: none; border-radius: 999px;
+      background: transparent; cursor: pointer; font-size: 15px;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: .25s;
+    }
+    .weather-switch button.active { background: var(--grad); }
+
+    section { max-width: 900px; margin: 0 auto; padding: 58px 22px 0; scroll-margin-top: 58px; }
+
+    /* ============ 首页 Hero ============ */
+    .hero { text-align: center; padding: 140px 22px 26px; }
+
+    .avatar-box {
+      position: relative; width: 150px; height: 150px;
+      margin: 0 auto 26px; cursor: pointer;
+      animation: floatY 4s ease-in-out infinite;
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+    /* 旋转的渐变光圈 */
+    .avatar-box::before {
+      content: ""; position: absolute; inset: 0; z-index: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--primary), var(--primary2), var(--primary));
+      animation: spin 6s linear infinite;
+    }
+    .avatar-box:hover::before { animation-duration: 1.6s; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar-box img {
+      position: absolute; inset: 5px; z-index: 1;
+      border-radius: 50%; object-fit: cover;
+      background: var(--card); box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity .4s, transform .3s;
+    }
+    .avatar-box img.ready { opacity: 1; }
+    .avatar-box:hover img.ready { transform: scale(1.06); }
+    .avatar-box.pop img { animation: pop .5s ease; }
+    @keyframes pop {
+      30% { transform: scale(1.14); }
+      60% { transform: scale(.95); }
+      100% { transform: scale(1); }
+    }
+
+    .hello { color: var(--muted); font-size: 17px; margin-top: 12px; }
+    .wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2.4s ease-in-out infinite; }
+    @keyframes wave {
+      0%, 60%, 100% { transform: rotate(0); }
+      10% { transform: rotate(14deg); }
+      20% { transform: rotate(-8deg); }
+      30% { transform: rotate(14deg); }
+      40% { transform: rotate(-4deg); }
+      50% { transform: rotate(10deg); }
+    }
+    h1 {
+      font-size: clamp(30px, 7vw, 44px); font-weight: 800; letter-spacing: 1px;
+      margin: 2px 0 6px;
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .role-line { font-size: 18px; color: var(--muted); min-height: 30px; }
+    .caret {
+      display: inline-block; width: 2px; height: 20px;
+      background: var(--primary); margin-left: 3px; vertical-align: -3px;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .tagline { color: var(--muted); max-width: 540px; margin: 14px auto 26px; }
+
+    .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 11px 24px; border-radius: 999px; font-size: 15px;
+      text-decoration: none; border: 1px solid transparent;
+      cursor: pointer; transition: .25s;
+    }
+    .btn-primary {
+      background: var(--grad); color: #fff;
+      box-shadow: 0 8px 20px rgba(13, 148, 136, .28);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(13, 148, 136, .38); }
+    /* ============ 各内容区通用样式 ============ */
+    h2 { font-size: 26px; margin-bottom: 22px; }
+    h2::after {
+      content: ""; display: block; width: 48px; height: 4px;
+      border-radius: 3px; background: var(--grad); margin-top: 8px;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 22px; padding: 26px 30px;
+      box-shadow: var(--shadow); transition: transform .25s, box-shadow .25s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .hl { color: var(--primary); font-weight: 700; }
+
+    /* “关于我”里的简单信息卡 */
+    .facts {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+      margin-bottom: 22px;
+    }
+    .fact {
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      min-width: 150px; padding: 16px 26px;
+      border-radius: 18px; background: var(--chipbg);
+      border: 1px solid var(--line);
+    }
+    .fact-head {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: var(--text);
+    }
+    .fact strong {
+      margin-top: 4px; font-size: 28px;
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    /* ============ 页脚 ============ */
+    footer {
+      border-top: 1px solid var(--line); margin-top: 72px;
+      padding: 26px 20px; text-align: center;
+      color: var(--muted); font-size: 13px;
+    }
+
+    /* 回到顶部小按钮 */
+    .to-top {
+      position: fixed; right: 22px; bottom: 22px; z-index: 90;
+      width: 44px; height: 44px; border: none; border-radius: 50%;
+      background: var(--grad); color: #fff; font-size: 20px; cursor: pointer;
+      box-shadow: 0 10px 22px rgba(13, 148, 136, .3);
+      opacity: 0; pointer-events: none; transform: translateY(12px);
+      transition: .25s;
+    }
+    .to-top.show { opacity: 1; pointer-events: auto; transform: none; }
+    .to-top:hover { transform: translateY(-3px); }
+
+    /* 滚动出现的小动画 */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (max-width: 520px) {
+      .nav-links { display: none; }
+      .card { padding: 20px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../back-button.css" />
+  <script src="../back-button.js" defer></script>
+</head>
+<body>
+
+  <!-- 统一返回按钮：回到小组汇总入口 -->
+  <div class="group-back">
+    <a class="group-back__btn" href="../index.html" aria-label="返回小组汇总页">
+      <span class="group-back__icon" aria-hidden="true">&#8592;</span>
+      <span class="group-back__label">返回</span>
+    </a>
+  </div>
+
+  <!-- 天气背景层：晴天 = 漂浮的云；雨天 = 乌云 + 雨丝 -->
+  <div class="sky" aria-hidden="true"></div>
+  <div class="clouds" aria-hidden="true"></div>
+  <canvas id="rainCanvas" aria-hidden="true"></canvas>
+
+  <div class="page">
+
+  <header>
+    <nav class="nav">
+      <div class="brand">夏雨煊</div>
+      <ul class="nav-links">
+        <li><a href="#home" class="active">首页</a></li>
+        <li><a href="#about">关于我</a></li>
+      </ul>
+      <div class="weather-switch" role="group" aria-label="切换天气">
+        <button data-weather="clear" class="active" title="晴天 · 漂浮的云" aria-label="晴天">🌤️</button>
+        <button data-weather="rain" title="乌云 · 下雨" aria-label="雨天">🌧️</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============ 首页 ============ -->
+  <section class="hero" id="home">
+    <div class="avatar-box" id="avatarBox" title="点我一下试试 :)">
+      <img id="avatarImg" src="yue.gif" alt="我的头像" />
+    </div>
+    <br><br>
+    <p class="hello"><span class="wave">👋</span> 你好，我是</p>
+    <h1>夏雨煊</h1>
+    <p class="role-line"><span id="role"></span><span class="caret"></span></p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#about">关于我</a>
+    </div>
+  </section>
+
+  <!-- ============ 关于我：简单信息卡 + 自我介绍（不少于 200 字） ============ -->
+  <section class="card-section" id="about">
+    <div class="card reveal">
+      <div class="facts">
+        <div class="fact">
+          <span class="fact-head">MBTI</span>
+          <strong>ISTJ</strong>
+        </div>
+        <div class="fact">
+          <span class="fact-head">星座</span>
+          <strong>天蝎座</strong>
+        </div>
+        <div class="fact">
+          <span class="fact-head">猫/狗</span>
+          <strong>猫</strong>
+        </div>
+      </div>
+      <p class="bio" id="bio">
+        我是<span class="hl">夏雨煊</span>,25级徐班计算机科学与技术专业。在这次项目中担任CIO,同时负责网站编辑。<br>
+        我喜欢按照计划把事情完成,有时候要依靠伟大的DDL之力。 R&B，K-POP，民谣我都听；散文，小说，诗歌我都看；乒乓球，羽毛球，桌球我都打；阴天，雨天，晴天我都喜欢。
+        但是作为南方人，最喜欢的果然还是雪天。<br> 
+        文字向推理游戏是我的钟爱，如果你有《逆转裁判》的全套游戏，我加您。至于动漫，看得少但是很多类型我都喜欢，学到的第一句中二台词大概是越前龙马的“まだまだだね”（还差得远呢）。放在动漫中作为击败对手后的口头禅非常热血
+        ，不过这句话我对自己说得比较多，如余华老师所言，“一直游到海水变蓝”吧。
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> 夏雨煊 · 2026
+  </footer>
+
+  <button class="to-top" id="toTop" title="回到顶部" aria-label="回到顶部">↑</button>
+
+  </div>
+
+  <script>
+    // ============ 天气：晴云 ↔ 乌云下雨 ============
+    const root = document.documentElement;
+
+    // 漂浮的云：随机生成几朵，持续从左侧飘到右侧
+    const cloudLayer = document.querySelector(".clouds");
+
+    // 生成一朵像素风云朵：用几个圆块拼出轮廓，再拉平底部
+    function buildPixelCloudSVG() {
+      const key = (x, y) => x + "," + y;
+      const cells = new Set();
+      const blobs = [[16, 8, 7], [6, 9, 6], [26, 9, 6], [10, 5, 5], [21, 5, 4]];
+      blobs.forEach(([cx, cy, r]) => {
+        for (let y = cy - r; y <= cy + r; y++) {
+          for (let x = cx - r; x <= cx + r; x++) {
+            const dx = x - cx, dy = y - cy;
+            if (dx * dx + dy * dy <= r * r) cells.add(key(x, y));
+          }
+        }
+      });
+      // 每一列从上到下填满，让云朵看起来是实心的一块
+      const cols = new Map();
+      cells.forEach((k) => {
+        const [x, y] = k.split(",").map(Number);
+        if (!cols.has(x)) cols.set(x, []);
+        cols.get(x).push(y);
+      });
+      const flat = new Set();
+      cols.forEach((ys, x) => {
+        let min = Infinity, max = -Infinity;
+        ys.forEach((y) => { if (y < min) min = y; if (y > max) max = y; });
+        for (let y = min; y <= max; y++) flat.add(key(x, y));
+      });
+      // 把同一行的连续像素合并成矩形，减少节点数
+      const rows = new Map();
+      flat.forEach((k) => {
+        const [x, y] = k.split(",").map(Number);
+        if (!rows.has(y)) rows.set(y, []);
+        rows.get(y).push(x);
+      });
+      let rects = "";
+      rows.forEach((xs, y) => {
+        xs.sort((a, b) => a - b);
+        let start = xs[0], prev = xs[0];
+        for (let i = 1; i <= xs.length; i++) {
+          const x = xs[i];
+          if (i === xs.length || x !== prev + 1) {
+            rects += '<rect class="pcell" x="' + start + '" y="' + y +
+              '" width="' + (prev - start + 1) + '" height="1"/>';
+            start = x;
+          }
+          prev = x;
+        }
+      });
+      return '<svg class="pixel-cloud" viewBox="-2 -2 36 20" xmlns="http://www.w3.org/2000/svg">' + rects + "</svg>";
+    }
+
+    for (let i = 0; i < 7; i++) {
+      const cloud = document.createElement("span");
+      cloud.className = "cloud";
+      const dur = 38 + Math.random() * 30;
+      cloud.style.setProperty("--dur", dur + "s");
+      cloud.style.setProperty("--delay", -Math.random() * dur + "s");
+      cloud.style.top = (3 + Math.random() * 46) + "%";
+      const shape = document.createElement("span");
+      shape.className = "shape";
+      shape.style.transform = "scale(" + (0.9 + Math.random() * 1.1) + ")";
+      shape.innerHTML = buildPixelCloudSVG();
+      cloud.appendChild(shape);
+      cloudLayer.appendChild(cloud);
+    }
+
+    // 下雨的雨丝画布
+    const rainCanvas = document.getElementById("rainCanvas");
+    const rainCtx = rainCanvas.getContext("2d");
+    const rainDrops = [];
+    let rainRaf = null;
+
+    function resizeRain() {
+      rainCanvas.width = window.innerWidth;
+      rainCanvas.height = window.innerHeight;
+    }
+    function startRain() {
+      resizeRain();
+      rainDrops.length = 0;
+      const count = Math.min(240, Math.round(window.innerWidth / 6));
+      for (let i = 0; i < count; i++) {
+        rainDrops.push({
+          x: Math.random() * rainCanvas.width,
+          y: Math.random() * -rainCanvas.height,
+          len: 12 + Math.random() * 12,
+          speed: 9 + Math.random() * 8
+        });
+      }
+      cancelAnimationFrame(rainRaf);
+      function frame() {
+        rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+        rainCtx.strokeStyle = "rgba(205, 228, 255, .5)";
+        rainCtx.lineWidth = 1.3;
+        rainCtx.beginPath();
+        for (const d of rainDrops) {
+          d.y += d.speed;
+          d.x -= d.speed * .35;
+          if (d.y > rainCanvas.height + 20) {
+            d.y = -20;
+            d.x = Math.random() * rainCanvas.width;
+          }
+          if (d.x < -20) d.x = rainCanvas.width + 20;
+          rainCtx.moveTo(d.x, d.y);
+          rainCtx.lineTo(d.x + 2, d.y - d.len);
+        }
+        rainCtx.stroke();
+        rainRaf = requestAnimationFrame(frame);
+      }
+      frame();
+    }
+    function stopRain() {
+      cancelAnimationFrame(rainRaf);
+      rainCtx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
+    }
+
+    // 天气切换（雨天会给页面叠加 .dark，更有乌云压城的感觉）
+    const weatherBtns = document.querySelectorAll(".weather-switch button");
+    function setWeather(rain) {
+      root.classList.toggle("rain", rain);
+      root.classList.toggle("dark", rain);
+      weatherBtns.forEach((b) =>
+        b.classList.toggle("active", (b.dataset.weather === "rain") === rain)
+      );
+      if (rain) startRain(); else stopRain();
+      try { localStorage.setItem("weather", rain ? "rain" : "clear"); } catch (e) {}
+    }
+    weatherBtns.forEach((b) =>
+      b.addEventListener("click", () => setWeather(b.dataset.weather === "rain"))
+    );
+
+    try {
+      let mode = localStorage.getItem("weather");
+      const qs = new URLSearchParams(location.search).get("weather");
+      if (qs === "rain" || qs === "clear") mode = qs;
+      setWeather(mode === "rain");
+    } catch (e) { setWeather(false); }
+
+    window.addEventListener("resize", () => {
+      if (root.classList.contains("rain")) startRain();
+    });
+
+    const avatarImg = document.getElementById("avatarImg");
+    avatarImg.addEventListener("load", () => avatarImg.classList.add("ready"));
+    if (avatarImg.complete && avatarImg.naturalWidth > 0) {
+      avatarImg.classList.add("ready");
+    }
+
+    // 点一下头像，会“弹”一下（小彩蛋）
+    const avatarBox = document.getElementById("avatarBox");
+    avatarBox.addEventListener("click", () => {
+      avatarBox.classList.remove("pop");
+      void avatarBox.offsetWidth; // 重新触发动画
+      avatarBox.classList.add("pop");
+    });
+    avatarBox.addEventListener("animationend", () => avatarBox.classList.remove("pop"));
+
+    // ============ 打字机效果的身份文字 ============
+    const roles = [
+      "计算机科学与技术 · 25级",
+      "喜欢 阴天 / 雨天 / 晴天 ",
+      "Nice to meet you !",
+    ];
+    const roleEl = document.getElementById("role");
+    let r = 0, c = 0, deleting = false;
+    function tick() {
+      const cur = roles[r];
+      roleEl.textContent = cur.slice(0, c);
+      if (!deleting) {
+        c++;
+        if (c > cur.length) { deleting = true; setTimeout(tick, 1500); return; }
+        setTimeout(tick, 120);
+      } else {
+        c--;
+        if (c === 0) { deleting = false; r = (r + 1) % roles.length; }
+        setTimeout(tick, 50);
+      }
+    }
+    tick();
+
+    // ============ 滚动时导航高亮当前区块 ============
+    const spySections = document.querySelectorAll("section[id]");
+    const spyLinks = document.querySelectorAll(".nav-links a");
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          spyLinks.forEach((a) =>
+            a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id)
+          );
+        }
+      });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    spySections.forEach((s) => spy.observe(s));
+
+    // ============ 向下滚动时区块淡入 ============
+    const revealEls = document.querySelectorAll(".reveal");
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add("in");
+          ro.unobserve(en.target);
+        }
+      });
+    }, { threshold: .12 });
+    revealEls.forEach((el) => ro.observe(el));
+
+    // ============ 回到顶部按钮 ============
+    const toTop = document.getElementById("toTop");
+    window.addEventListener("scroll", () => {
+      toTop.classList.toggle("show", scrollY > 420);
+    }, { passive: true });
+    toTop.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

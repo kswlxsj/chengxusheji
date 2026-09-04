@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="北京理工大学计算机学院 个人介绍" />
+    <title>董旭航｜个人介绍</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%23f8be90%22/><text x=%2232%22 y=%2243%22 text-anchor=%22middle%22 font-size=%2238%22 fill=%22%231a0505%22>P</text></svg>" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../back-button.css" />
+    <script src="vendor/marked/marked.umd.js" defer></script>
+    <script src="script.js" defer></script>
+    <script src="../back-button.js" defer></script>
+  </head>
+  <body>
+    <!-- 返回按钮：小组汇总入口 -->
+    <div class="group-back">
+      <a class="group-back__btn" href="../index.html" aria-label="返回小组汇总页">
+        <span class="group-back__icon" aria-hidden="true">&#8592;</span>
+        <span class="group-back__label">返回</span>
+      </a>
+    </div>
+    <canvas class="noise-canvas" data-noise-canvas aria-hidden="true"></canvas>
+    <a class="skip-link" href="#main-content">跳至主要内容</a>
+
+    <main id="main-content">
+      <section class="page intro-page" id="top" aria-labelledby="hero-title">
+        <figure class="portrait enter">
+          <div class="portrait__frame">
+            <img
+              src="assets/profile.png"
+              alt="你的姓名的个人照片"
+            />
+          </div>
+        </figure>
+
+        <div class="intro-content">
+          <div class="hero-copy enter">
+            <h1 id="hero-title">董旭航</h1>
+            <p class="school">北京理工大学 · 计算机学院</p>
+            <p class="role">2025 级 CS 学生，19 岁，大二在读。在本次项目中担任技术总监。</p>
+          </div>
+
+          <section class="about enter" id="about" aria-labelledby="about-title">
+            <div class="section-heading">
+              <h2 id="about-title">Nessum Xiao</h2>
+              <p>魔法石头，魔法动物。天空中的魔法隐形动物。天空中隐形的人。</p>
+            </div>
+
+            <div
+              class="about__body markdown-body"
+              data-markdown-source="content/about.md"
+            ></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="page details-page" aria-label="方向与联系">
+        <section class="work" id="work" aria-labelledby="work-title">
+          <h2 id="work-title">或许你想看看</h2>
+          <div class="work-grid">
+            <article class="work-card">
+              <div class="work-card__media" aria-hidden="true">
+                <img src="assets/screen2_1.png" alt="技术和项目图片" />
+              </div>
+              <h3 id="work-technology-title">技术和项目</h3>
+              <p id="work-technology-summary">我的 Github 主页，感兴趣的方向，和正在推进的项目。</p>
+              <button
+                class="work-card__trigger"
+                type="button"
+                data-markdown-source="content/directions/technology.md"
+                data-dialog-title="技术和项目"
+                aria-labelledby="work-technology-title work-technology-summary"
+                aria-haspopup="dialog"
+              ></button>
+            </article>
+            <article class="work-card">
+              <div class="work-card__media" aria-hidden="true">
+                <img src="assets/screen2_2.png" alt="游戏框架图片" />
+              </div>
+              <h3 id="work-project-title">游戏框架</h3>
+              <p id="work-project-summary">我做过的一个好用的 Unity 6 窗口框架。</p>
+              <button
+                class="work-card__trigger"
+                type="button"
+                data-markdown-source="content/directions/projects.md"
+                data-dialog-title="游戏框架"
+                aria-labelledby="work-project-title work-project-summary"
+                aria-haspopup="dialog"
+              ></button>
+            </article>
+            <article class="work-card">
+              <div class="work-card__media" aria-hidden="true">
+                <img src="assets/screen2_3.png" alt="其它兴趣图片" />
+              </div>
+              <h3 id="work-interests-title">其它兴趣</h3>
+              <p id="work-interests-summary">展示一些我做的图和画的插画！</p>
+              <button
+                class="work-card__trigger"
+                type="button"
+                data-markdown-source="content/directions/interests.md"
+                data-dialog-title="其它兴趣"
+                aria-labelledby="work-interests-title work-interests-summary"
+                aria-haspopup="dialog"
+              ></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="contact" id="contact" aria-labelledby="contact-title">
+          <div>
+            <h2 id="contact-title">联系我</h2>
+            <p>欢迎和我聊聊技术、学习或有趣的创意。</p>
+          </div>
+          <div class="contact__action">
+            <button
+              class="email-button"
+              type="button"
+              data-copy-email="675812776@qq.com"
+              aria-describedby="copy-status"
+            >
+              <span>675812776@qq.com</span>
+              <span>点击以复制邮箱</span>
+            </button>
+            <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <footer class="site-footer">
+          <span>© <span data-current-year>2026</span> Nessum Xiao</span>
+          <a href="#top">回到顶部！</a>
+        </footer>
+      </section>
+
+      <div class="palette-page" data-palette-page aria-hidden="true">
+        <img class="palette-page__image" src="assets/bottom.png" alt="" />
+      </div>
+    </main>
+
+    <dialog
+      class="direction-dialog"
+      data-direction-dialog
+      aria-labelledby="direction-dialog-title"
+    >
+      <div class="direction-dialog__panel">
+        <header class="direction-dialog__header">
+          <p>或许你想看看</p>
+          <h2 id="direction-dialog-title" data-dialog-heading></h2>
+          <button
+            class="direction-dialog__close"
+            type="button"
+            data-dialog-close
+            aria-label="关闭详情"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+        <div
+          class="direction-dialog__content markdown-body"
+          data-dialog-content
+          aria-live="polite"
+        ></div>
+      </div>
+    </dialog>
+
+    <!-- markdown-embed:start -->
+    <template data-embedded-markdown="content/about.md">&gt; 一般在社交平台上搜 **leixin** 或者 **nessum** 之类的字样就能找到我。
+- 我是 **BIT CS 2025 级学生**，喜欢研究技术和新事物。
+- 想要的太多，啥都接触过一点。但是广而不精，眼高手低来着。
+
+## 爱好
+
+- 氛围特别的电子游戏！我最喜欢复古低分辨率和故障艺术类的风格。我希望有一天能做出了不起的互动媒体。喜欢的作品：
+    - Yume Nikki
+    - Who&#39;s Lila?
+    - Disco Elysium
+    - Rain World
+    - Tyl3R5
+- 绘画，视觉设计（主要是平面设计）和 AIGC。或许你会在社交媒体上碰巧看到过我发的插画。
+- 编曲和音效设计——仅仅是在学习。*DAW 是真的很难用。*
+- 喜欢听音乐。听的范围很杂，难以描述。我还挺喜欢电棍鬼叫音 mad，古风 DJ 和哈基米音乐的……
+- 计算机技术和折腾高效工作流。一般我一天至少会看 12 个小时的电脑。**总是可以在线秒回！**
+
+## 寻求伙伴
+
+&gt; 如果你会这些，且有意与我合作……你就是我的老大！
+- 如果你会熟练使用任何一种 DAW 或者乐器且喜欢氛围音乐……
+- 如果你有特别有趣的新媒体想分享给我看……
+- 如果你擅长写故事和小说……
+- 如果你是 CS 大手子，精通各种前卫技术……
+- 如果你擅长 3D 技术，比如建模和渲染……
+- 如果你 energetic 又温和友善……
+
+## 工具栈
+- `C#,HLSL 和 Unity`:迟迟难产的游戏开发项目和 Unity 官方的抽象政策常常让我头疼。加我好友一起骂 Unity 公司。
+- `Python`:最近在学习 Agent 开发。对强化学习的 agent 非常着迷。加我好友来玩我做的 qq 机器人。
+- `Photoshop等Adobe软件`:插画，动画和其它视觉资产为主。和我增加好感度以解锁隐藏CG。
+- `C/C++`:仅仅是有所涉猎，暂时还没遇到让我感兴趣的底层项目。
+- `HTML/CSS/JS`:我们这次用来搭网页游戏的东西~</template>
+    <template data-embedded-markdown="content/directions/technology.md">[**我的github主页**](https://github.com/leixin0725)
+
+## 值得一看的项目或许有:
+
+### [ScratchEditor](https://github.com/leixin0725/ScratchEditor)
+![](assets/1_1.png)
+ScratchEditor 是一款面向 Windows 的轻量临时文本编辑器，适合快速整理剪贴板文本、 编写 Markdown，以及在 Codex、pi-coding-agent 等命令行工具中编辑较长的提示词。 它以速度和键盘操作为重点：窗口可常驻后台并通过全局快捷键即时唤出，也可以按文件 启动为一次性的外部编辑器。
+
+### [Bai](https://github.com/leixin0725/Bai)
+一个 Python 单用户聊天 Agent。它不创建或切换“对话”：每次启动都从同一份永久原始记录、近期直接上下文和长期记忆继续工作。
+&gt; 曾依赖 astrbot ,后来决定独立出来开始造轮子的一个项目，仅仅是起步阶段。我只给它搭了个框架，一直没机会把它做得更有特色……
+
+### [AHK_toolbox](https://github.com/leixin0725/AHK_toolbox)
+一些自用的 AHK 脚本用来让我的屏幕时光舒服一点儿，或许也可以让你舒服点儿。</template>
+    <template data-embedded-markdown="content/directions/projects.md">![](assets/screen2_2.png)
+我一直有开发游戏的想法，但是很少做出自己满意的觉得值得发出来的东西。
+
+*不过这个看起来还不错。*
+
+图中是我做的一个窗口系统框架（它以一个 Unity 6 uGUI package 的形式存在），它实现了很优雅的实例级工作区、引用图、布局、快照持久化和二维分层区域系统。它提供了好用的接口，或许我不久会把它挂出来开源。
+
+最终展示为一个近似于 **多通道经过遮盖/合并等逻辑，最终划分出逻辑区域和屏幕显示区域** 的效果。</template>
+    <template data-embedded-markdown="content/directions/interests.md">*展示一些我做的图和画的插画！*
+![](assets/20260427_fin.png)
+
+![](assets/20260717.png)
+
+![](assets/20260615.png)
+
+![](assets/20260722.png)
+</template>
+    <!-- markdown-embed:end -->
+  </body>
+</html>

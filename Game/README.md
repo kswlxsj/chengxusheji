@@ -178,6 +178,63 @@ Game/
 │  ├─ API使用说明.md
 │  ├─ 三天计划.md
 │  └─ 架构设计.md
+├─ GroupIntro/
+│  ├─ back-button.css
+│  ├─ back-button.js
+│  ├─ background.png
+│  ├─ cr/
+│  │  ├─ images/
+│  │  │  └─ avatar.jpg
+│  │  ├─ index.html
+│  │  └─ style.css
+│  ├─ czh/
+│  │  ├─ avatar.jpg
+│  │  └─ index.html
+│  ├─ dxh/
+│  │  ├─ assets/
+│  │  │  ├─ 1_1.png
+│  │  │  ├─ 20260427_fin.png
+│  │  │  ├─ 20260615.png
+│  │  │  ├─ 20260717.png
+│  │  │  ├─ 20260722.png
+│  │  │  ├─ bottom.png
+│  │  │  ├─ profile.png
+│  │  │  ├─ README.md
+│  │  │  ├─ screen2_1.png
+│  │  │  ├─ screen2_2.png
+│  │  │  └─ screen2_3.png
+│  │  ├─ build-markdown.cmd
+│  │  ├─ content/
+│  │  │  ├─ about.md
+│  │  │  └─ directions/
+│  │  │     ├─ interests.md
+│  │  │     ├─ projects.md
+│  │  │     └─ technology.md
+│  │  ├─ index.html
+│  │  ├─ script.js
+│  │  ├─ styles.css
+│  │  ├─ tools/
+│  │  │  └─ embed-markdown.ps1
+│  │  └─ vendor/
+│  │     └─ marked/
+│  │        ├─ LICENSE
+│  │        ├─ marked.umd.js
+│  │        └─ README.md
+│  ├─ index.html
+│  ├─ lty/
+│  │  ├─ demo.html
+│  │  ├─ picture/
+│  │  │  └─ 2.gif
+│  │  └─ video/
+│  │     └─ Timeline 1.mov
+│  ├─ xyx/
+│  │  ├─ index.html
+│  │  └─ yue.gif
+│  └─ zxy/
+│     ├─ image/
+│     │  ├─ p1.png
+│     │  └─ p2.png
+│     └─ index.html
 ├─ schemas/
 │  ├─ attributes.schema.json
 │  ├─ events.schema.json
@@ -208,7 +265,6 @@ Game/
 │  ├─ compile-data.mjs
 │  └─ test-runtime.mjs
 ├─ AGENTS.md
-├─ about.html
 ├─ ending.html
 ├─ game.html
 ├─ home.html
@@ -261,6 +317,17 @@ Game/
 | `API使用说明.md` | 早期精简接口速查；README 是当前完整手册。 |
 | `三天计划.md` | 最初三天交付安排，保留作过程记录。 |
 
+### `GroupIntro/`
+
+小组介绍（成员汇总）独立子站，从 `home.html` 主页菜单“小组介绍”进入，接替原 `about.html` 占位页。页面自带样式与返回按钮，不依赖游戏主样式与登录态。
+
+| 文件/目录 | 用途 |
+| --- | --- |
+| `index.html` | 成员汇总入口页；顶部“返回”按钮返回游戏主页。 |
+| `back-button.css` / `back-button.js` | 各页共用的“返回”胶囊按钮样式与附加行为。 |
+| `background.png` | 汇总页背景图。 |
+| `cr/` `czh/` `dxh/` `lty/` `xyx/` `zxy/` | 六位成员各自的介绍子页，内容与素材由对应作者维护。 |
+
 ### `schemas/`
 
 | 文件 | 用途 |
@@ -302,7 +369,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `tools/compile-data.mjs` | 读取六份 JSON，校验并覆盖生成编译数据。 |
 | `tools/test-runtime.mjs` | 在 Node.js `vm` 沙箱测试本地认证、状态、技能、条件、存档和部分动作。 |
 | `index.html` / `register.html` | 公共登录入口和独立注册页。 |
-| `home.html` | 登录后显示的游戏标题主页；其他 HTML 分别承载游戏、存档、结束和占位页面。 |
+| `home.html` | 登录后显示的游戏标题主页；主页菜单经 `GroupIntro/` 进入小组介绍，其余 HTML 分别承载游戏、存档与结束流程。 |
 | `package.json` | 项目信息及 `compile`、`test`、`check` 命令。 |
 | `README.md` | 项目总说明和维护手册。 |
 | `AGENTS.md` | 仓库协作与提交约束。 |

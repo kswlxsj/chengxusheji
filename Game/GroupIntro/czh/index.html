@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陈子昊｜个人简介</title>
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #17191c;
+      --font-ui: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --muted: #73777c;
+      --light: #a8adb3;
+      --line: #e6e7e9;
+      --accent: #4d8fd0;
+      --accent-soft: #eef5fb;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 320px; scroll-behavior: smooth; }
+    body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-ui); }
+    a { color: inherit; text-decoration: none; }
+
+    .intro-page { min-height: 100vh; background: #fff; }
+    .site-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; padding: 0 clamp(24px, 5vw, 72px); border-bottom: 1px solid var(--line); }
+    .header-title { display: flex; align-items: center; gap: 12px; font-size: 19px; }
+    .header-avatar { width: 32px; height: 32px; overflow: hidden; border-radius: 50%; background: var(--accent-soft); }
+    .header-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 46%; }
+    .header-number { justify-self: end; color: var(--light); font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; }
+
+    .intro-layout { display: grid; grid-template-columns: minmax(300px, .84fr) minmax(360px, 1fr); align-items: center; gap: clamp(56px, 8vw, 130px); width: min(1080px, calc(100% - 120px)); min-height: 650px; margin: 0 auto; padding: 74px 0 68px; }
+    .section-label { margin: 0; color: var(--light); font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
+    .intro-copy h1 { margin: 21px 0 23px; font-size: clamp(48px, 6vw, 76px); font-weight: 700; letter-spacing: -.08em; line-height: .95; }
+    .basic-info { padding: 17px 0 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .basic-info p { display: grid; grid-template-columns: 43px minmax(0, 1fr); gap: 13px; margin: 9px 0; color: #484c51; font-size: 13px; line-height: 1.5; }
+    .basic-info p span { color: var(--light); }
+    .basic-info a { color: var(--accent); word-break: break-word; }
+    .intro-copy h2 { margin: 33px 0 14px; font-size: 22px; font-weight: 600; letter-spacing: -.04em; }
+    .intro-text { margin: 0; color: #5c6065; font-size: 13px; line-height: 2; text-align: justify; }
+
+    .photo-block { position: relative; width: 100%; margin: 0; }
+    .photo-block::before { content: ''; position: absolute; z-index: -1; top: 18px; right: -17px; bottom: -17px; left: 17px; background: var(--accent-soft); }
+    .photo-block img { display: block; width: 100%; aspect-ratio: 1 / 1.18; object-fit: cover; object-position: center 46%; }
+
+    @media (max-width: 900px) {
+      .intro-layout { grid-template-columns: minmax(0, .95fr) minmax(250px, 1fr); gap: 45px; width: min(100% - 64px, 700px); min-height: auto; padding: 60px 0 54px; }
+      .photo-block { grid-column: 2; grid-row: 1; }
+      .intro-copy { grid-column: 1; grid-row: 1; }
+    }
+
+    @media (max-width: 620px) {
+      .site-header { height: 64px; padding: 0 17px; }
+      .header-title { font-size: 16px; }
+      .header-number { display: none; }
+      .intro-layout { display: flex; flex-direction: column; align-items: stretch; gap: 37px; width: calc(100% - 38px); padding: 42px 0 45px; }
+      .photo-block { order: -1; width: min(100%, 440px); margin: 0 auto; }
+      .photo-block img { aspect-ratio: 1 / .95; }
+      .intro-copy h1 { font-size: 57px; }
+      .intro-copy h2 { margin-top: 29px; }
+      .intro-text { font-size: 13px; line-height: 1.9; text-align: left; }
+    }
+  </style>
+  <link rel="stylesheet" href="../back-button.css">
+  <script src="../back-button.js" defer></script>
+</head>
+<body>
+  <!-- 统一返回按钮：回到小组汇总入口 -->
+  <div class="group-back">
+    <a class="group-back__btn" href="../index.html" aria-label="返回小组汇总页">
+      <span class="group-back__icon" aria-hidden="true">&#8592;</span>
+      <span class="group-back__label">返回</span>
+    </a>
+  </div>
+  <main class="intro-page">
+    <header class="site-header">
+      <span class="header-spacer" aria-hidden="true"></span>
+      <div class="header-title">
+        <div class="header-avatar"><img src="avatar.jpg" alt="陈子昊头像"></div>
+        <strong>个人简介</strong>
+      </div>
+      <span class="header-number">01 / 01</span>
+    </header>
+
+    <section class="intro-layout" id="top">
+      <div class="intro-copy">
+        <h1>陈子昊</h1>
+        <div class="basic-info">
+          <p><span>年龄</span>19岁</p>
+          <p><span>学校</span>北京理工大学计算机学院</p>
+          <p><span>年级</span>大二</p>
+          <p><span>邮箱</span><a href="mailto:CristinaCamacho900@gmail.com">CristinaCamacho900@gmail.com</a></p>
+        </div>
+
+        <h2>具体介绍</h2>
+        <p class="intro-text">我叫陈子昊，今年19岁，目前就读于北京理工大学计算机学院，年级大二。我的代码基础目前为零，正在从最基本的知识开始学习。平时喜欢玩游戏，主要是《文明6》等单机游戏；喜欢打篮球，不过水平还不算高；也喜欢阅读，科幻、古典等类型都会读一点。在小组项目中，我承担程序员的任务，负责骰子设计与任务交互、事件触发逻辑、角色属性等内容，希望在实践中逐步理解程序设计，把想法变成能够运行的体验。</p>
+      </div>
+
+      <figure class="photo-block">
+        <img src="avatar.jpg" alt="陈子昊篮球照片">
+      </figure>
+    </section>
+  </main>
+</body>
+</html>
