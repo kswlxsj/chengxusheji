@@ -2,7 +2,7 @@
 
 > 适用对象：在 webGame 仓库内操作本转换 skill 的人与执行 agent（两边对照阅读）。
 > 前置：skill 已被触发（你已说出类似“用剧本转换 skill 把 X 剧本转一下”并得到回应）；**本教程不涉及如何安装/如何触发**。
-> 权威规则：`skills/script-to-game-data/SKILL.md`（红线、闸门与唯一事实源）与 `skills/script-to-game-data/转换规范.md`（全部细节：命名 §10、白名单 §11、审查清单格式与路径 §13）。本教程是“走一遍”的手把手指引，冲突时以 SKILL.md 与转换规范.md 为准。
+> 权威规则：`skills/script-to-game-data/SKILL.md`（红线、闸门与唯一事实源，AI 工作流树）与 `skills/script-to-game-data/conversion-rules.md`（全部细节：命名 §10、白名单 §11、审查清单格式与路径 §13）。本教程是“走一遍”的手把手指引，冲突时以 SKILL.md 与 conversion-rules.md 为准。
 
 ## 0. 总览：一次完整转换的三段闸门
 
@@ -39,17 +39,17 @@ agent 校验失败（文件不存在、不是 UTF-8、内容不是剧本）时�
 agent 依次做（顺序详见 SKILL.md 工作流）：
 
 1. 只读注册表快照：`data/attributes.json`、`data/skills.json`、`data/items.json`、`data/scenes.json`、`data/events.json`；
-2. 按 `转换规范.md` 语法表逐事件解析，产出**候选 JSON 片段**（默认不写盘，用于与你确认）；
-3. **审查清单落盘**：复制空白模板 `skills/script-to-game-data/templates/剧本转换审查清单-模板.md` 并替换占位符，生成 `Game/docs/剧本转换审查/剧本转换审查清单-YYYY-MM-DD-HHmm.md`（目录固定、时间戳精确到分钟、每次新建不覆盖；示例：`剧本转换审查清单-2026-09-04-1849.md`）；
+2. 按 `conversion-rules.md` 语法表逐事件解析，产出**候选 JSON 片段**（默认不写盘，用于与你确认）；
+3. **审查清单落盘**：复制空白模板 `skills/script-to-game-data/templates/review-checklist-template.md` 并替换占位符，生成 `Game/docs/conversion-reviews/review-checklist-YYYY-MM-DD-HHmm.md`（目录固定、时间戳精确到分钟、每次新建不覆盖；示例：`review-checklist-2026-09-04-1849.md`）；
 4. **隔离编译验证**：把 `Game/` 复制到系统临时目录 → 注入候选 → 跑 `node tools/compile-data.mjs` → 断言通过后删除临时目录（真实 `data/` 全程不动）。
 
-想提前熟悉产物长什么样？看 `skills/script-to-game-data/samples/`：`样例输入.md`（节选原文）、`输出样例.json`（候选事件）、`样例说明.md`（逐条解释每个语法怎么映射、哪些进了清单）。
+想提前熟悉产物长什么样？看 `skills/script-to-game-data/samples/`：`sample-input.md`（节选原文）、`sample-output.json`（候选事件）、`sample-notes.md`（逐条解释每个语法怎么映射、哪些进了清单）。
 
 ## 3. 闸门 1：你的决策环节（直接在清单文件上写）
 
 候选阶段结束，agent 会停在第 1 闸门并告知清单路径与待决项概览。**清单特意保持精简可编辑**，你直接打开文件改，不用在对话里复述：
 
-清单结构（格式见 `转换规范.md` §13 与空白模板 `skills/script-to-game-data/templates/`）：
+清单结构（格式见 `conversion-rules.md` §13 与空白模板 `skills/script-to-game-data/templates/review-checklist-template.md`）：
 
 - **头部**：几个固定字段（剧本/输入/生成时间/事件范围/隔离编译结果），扫一眼即可；
 - **待你决策**：编号条目列表，每条固定四行：
@@ -90,7 +90,7 @@ agent 依次做（顺序详见 SKILL.md 工作流）：
 
 ## 4. 半路提问：agent 什么时候会打断你（阻断情形）
 
-这些不是流程故障，是 skill 的规矩（转换规范.md §16）——碰到就停下问你，**不猜**：
+这些不是流程故障，是 skill 的规矩（conversion-rules.md §16）——碰到就停下问你，**不猜**：
 
 - 跳转目标不存在：如“（→E-01X）”查无此事件 → 你确认是笔误还是漏写事件；
 - 编号冲突：来源编号和既有 events.json 或另一输入文件撞车 → 你给命名空间或改编号；
@@ -128,7 +128,7 @@ agent 依次做（顺序详见 SKILL.md 工作流）：
 
 ## 8. 一次成功跑完，你应该拿到什么
 
-- 一份审查清单：`docs/剧本转换审查/剧本转换审查清单-<时间戳>.md`（本次转换的决策台账）；
+- 一份审查清单：`docs/conversion-reviews/review-checklist-<时间戳>.md`（本次转换的决策台账）；
 - （若你批准落地）白名单 JSON 的追加 diff 与真实编译通过结果；
 - 一次（或多次）中文原子 git 提交记录；
 - 输入剧本文件原样未动；`data/attributes.json`/`skills.json`/`schemas/`/`src/`/`tools/` 等全程未被写。

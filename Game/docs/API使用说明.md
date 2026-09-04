@@ -92,12 +92,12 @@
 
 ### 剧本转换 skill（内容维护者）
 
-仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源）与 `Game/skills/script-to-game-data/转换规范.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/`，手把手使用教程见 `Game/docs/skill使用教程/script-to-game-data.md`，最近一次审查清单见 `Game/docs/剧本转换审查/剧本转换审查清单-2026-09-04-1849.md`。要点：
+仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源，AI 工作流树）与 `Game/skills/script-to-game-data/conversion-rules.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/review-checklist-template.md`，手把手使用教程见 `Game/docs/skill-tutorials/script-to-game-data.md`，最近一次审查清单见 `Game/docs/conversion-reviews/review-checklist-2026-09-04-1849.md`。要点：
 
 - **输入由使用者指定**（一个或多个文件）；未指定时执行者会停下询问，不默认任何路径。
 - **执行节奏为强制三段确认闸门**：①候选阶段只产出候选与审查清单，默认不写 `data/`；②清单保持精简可编辑——使用者直接在文件上填写“决策”（批准/修改/否决/转交/留待），agent 重读修改后的清单再执行；③落地（landing）前须逐文件确认改动方案，写入白名单 JSON 并真实编译通过后，经使用者终审才提交 git。任何闸门未获明确批准，执行者不得跳过或合并。
 - skill 不设计数值：技能检定、%修正、对抗、素材坐标等一律以类别标记（C/D/E/F/G/H）记入清单条目，由人工决策。
-- 审查清单固定存放于 `Game/docs/剧本转换审查/`，文件名时间戳精确到分钟，每次转换新建、不覆盖旧文件。
+- 审查清单固定存放于 `Game/docs/conversion-reviews/`（文件名 `review-checklist-YYYY-MM-DD-HHmm.md`），时间戳精确到分钟，每次转换新建、不覆盖旧文件。
 
 ### 变更协议时的联动清单
 
@@ -656,7 +656,7 @@ game.saves.listSlots()
 
 - `Game/README.md`：全局总览、快速开始、运行原理、排错与交付。
 - `Game/docs/README.md`：docs 目录索引与归档说明。
-- `Game/skills/script-to-game-data/`（`SKILL.md`、`转换规范.md`、`templates/`）：剧本转换 skill 的规则（SKILL.md 为入口与唯一事实源）与空白清单模板。
-- `Game/docs/skill使用教程/script-to-game-data.md`：剧本转换 skill 手把手教程。
-- `Game/docs/剧本转换审查/`：各次转换的审查清单。
+- `Game/skills/script-to-game-data/`（`SKILL.md`、`conversion-rules.md`、`templates/`）：剧本转换 skill 的规则（SKILL.md 为入口与唯一事实源）与空白审查清单模板。
+- `Game/docs/skill-tutorials/script-to-game-data.md`：剧本转换 skill 手把手教程。
+- `Game/docs/conversion-reviews/`：各次转换的审查清单（`review-checklist-<时间戳>.md`）。
 - `Game/docs/_Archived/`：已归档历史文档（`架构设计.md`、`三天计划.md`），不再随功能更新。
