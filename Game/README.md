@@ -540,7 +540,7 @@ const state = new TrainGame.GameState(
 | `requireAuth()` | 验证登录态，未登录时替换导航到 `index.html`。 |
 | `redirectAuthenticated()` | 已登录时替换导航到 `home.html`。 |
 
-账号键前缀为 `train-game-auth-user-v1:`，用户名会先经过 `encodeURIComponent`；会话键为 `train-game-auth-session-v1`。账号保存在 `localStorage`，关闭标签页后仍存在；登录态保存在 `sessionStorage`，关闭标签页后需要重新登录。所有账号共用现有三个游戏存档槽。
+账号键前缀为 `train-game-auth-user-v1:`，用户名会先经过 `encodeURIComponent`；会话键为 `train-game-auth-session-v1`。账号保存在 `localStorage`，关闭标签页后仍存在；登录态保存在 `sessionStorage`，关闭标签页后需要重新登录。每个账号拥有独立的三个游戏存档槽。
 
 ### 存档 API
 
@@ -556,7 +556,7 @@ const saves = new TrainGame.SaveManager(state);
 | `load(slot)` | 空槽返回 `false`；不兼容时抛错；成功恢复并返回 `true`。 |
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
-默认存储键为 `train-game-save-slot-1` 至 `train-game-save-slot-3`。旧单槽键 `train-game-save-v1` 不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 2` 为准。
+默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `train-game-save-user-v1:<编码后的用户名>:slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽 `train-game-save-slot-1` 至 `train-game-save-slot-3` 与旧单槽键 `train-game-save-v1` 均不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 2` 为准。
 
 ### 场景 API
 

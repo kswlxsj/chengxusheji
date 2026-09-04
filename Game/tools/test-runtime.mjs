@@ -64,6 +64,8 @@ const originalSetItem = localStorage.setItem;
 localStorage.setItem = () => { throw new Error("storage disabled"); };
 assert.match(Auth.register("storage-test", "123456").message, /无法保存账号/);
 localStorage.setItem = originalSetItem;
+assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登录时不应访问默认存档槽");
+assert.equal(Auth.login("Alice", "secret1").ok, true);
 const initialState = {
   sceneId: "test_scene",
   currentEventId: null,
@@ -171,10 +173,27 @@ assert.equal(saves.hasSave(2), false);
 assert.throws(() => saves.hasSave(0), /1 到 3/);
 assert.throws(() => saves.save(4), /1 到 3/);
 
+const aliceSaves = new Game.SaveManager(state);
+assert.equal(aliceSaves.slotKey(1), "train-game-save-user-v1:Alice:slot-1");
+aliceSaves.save(1);
+Auth.logout();
+assert.equal(Auth.register("Bob", "secret3").ok, true);
+assert.equal(Auth.login("Bob", "secret3").ok, true);
+const bobSaves = new Game.SaveManager(createState());
+assert.equal(bobSaves.slotKey(1), "train-game-save-user-v1:Bob:slot-1");
+assert.equal(bobSaves.listSlots()[0].empty, true, "不同账号不应共享同一存档槽");
+Auth.logout();
+assert.equal(Auth.login("Alice", "secret1").ok, true);
+assert.equal(new Game.SaveManager(createState()).listSlots()[0].empty, false, "原账号应能继续读取自己的存档");
+
 storage.set("legacy-save-1", JSON.stringify(state.snapshot()));
 assert.throws(() => new Game.SaveManager(createState(), "legacy-save").load(1), /版本不兼容/);
 storage.set("train-game-save-v1", JSON.stringify({ saveVersion: 2, state: state.snapshot() }));
-assert.equal(new Game.SaveManager(createState()).listSlots().every((slot) => slot.empty), true, "旧单槽存档不应自动迁移");
+storage.set("train-game-save-slot-1", JSON.stringify({ saveVersion: 2, state: state.snapshot() }));
+Auth.logout();
+assert.equal(Auth.register("LegacyCheck", "secret4").ok, true);
+assert.equal(Auth.login("LegacyCheck", "secret4").ok, true);
+assert.equal(new Game.SaveManager(createState()).listSlots().every((slot) => slot.empty), true, "旧共享存档与旧单槽存档都不应自动迁移");
 
 const unallocated = createState();
 assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1), /分配完成前/);

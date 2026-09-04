@@ -224,10 +224,16 @@
 
   const SAVE_SLOT_COUNT = 3;
 
+  function currentUserSaveKeyPrefix() {
+    const username = Game.Auth?.currentUser?.();
+    if (!username) throw new Error("必须登录后才能访问存档");
+    return `train-game-save-user-v1:${encodeURIComponent(username)}:slot`;
+  }
+
   class SaveManager {
-    constructor(state, storageKeyPrefix = "train-game-save-slot") {
+    constructor(state, storageKeyPrefix = null) {
       this.state = state;
-      this.storageKeyPrefix = storageKeyPrefix;
+      this.storageKeyPrefix = storageKeyPrefix ?? currentUserSaveKeyPrefix();
     }
 
     slotKey(slot) {
