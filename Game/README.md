@@ -270,8 +270,6 @@ Game/
 │  └─ script-to-game-data/
 │     ├─ SKILL.md
 │     ├─ 转换规范.md
-│     ├─ config/
-│     │  └─ policy.json
 │     ├─ samples/
 │     │  ├─ 样例输入.md
 │     │  ├─ 样例说明.md
@@ -371,7 +369,6 @@ Game/
 | --- | --- |
 | `script-to-game-data/SKILL.md` | “剧本 → 游戏 JSON”转换 skill 入口：输入要求、三段强制确认闸门与工作流 SOP。 |
 | `script-to-game-data/转换规范.md` | 完整转换规则：语法映射表、SAN 语义、命名约定、占位策略与隔离验证。 |
-| `script-to-game-data/config/policy.json` | 可调策略常量：输出白名单、命名模板、SAN 约定、审查清单落盘路径与空白模板路径等。 |
 | `script-to-game-data/samples/` | 样例输入/输出与逐条说明，配套隔离编译验证。 |
 | `script-to-game-data/templates/` | 空白审查清单模板（占位符 + 类别标记 + 决策词表说明），生成清单时复制并替换占位符。 |
 
@@ -429,7 +426,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 - **内容怎么改**：素材放 `assets/` → 修改 `data/*.json`（编辑器有 Schema 补全提示）→ `npm run compile` → 静态服务器刷新验证 → `npm run check`。全部字段与动作规则见[接口手册：数据接口参考](docs/API使用说明.md#数据接口参考)，维护工作流与 ID/路径约定见[接口手册：维护工作流与约定](docs/API使用说明.md#维护工作流与约定)。
 - **红线**：只编辑源 JSON，不碰 `data/compiled-game-data.js`（由 `npm run compile` 生成，但必须随游戏交付）；JSON 不能执行 JavaScript，自定义演出只能引用程序员白名单动作。
-- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md`、`转换规范.md`、`config/policy.json`、空白清单模板 `templates/`），手把手教程见 `docs/skill使用教程/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/剧本转换审查/`）保持精简可编辑，由你直接在文件上填写决策（批准/修改/否决/转交/留待），agent 重读你改后的清单再执行；skill 不替编剧设计数值。
+- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md` 为入口与唯一事实源，`转换规范.md` 为规则手册，空白清单模板在 `templates/`），手把手教程见 `docs/skill使用教程/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/剧本转换审查/`）保持精简可编辑，由你直接在文件上填写决策（批准/修改/否决/转交/留待），agent 重读你改后的清单再执行；skill 不替编剧设计数值。
 - **练手**：按[接口手册：复杂维护工作示例](docs/API使用说明.md#复杂维护工作示例)的示例一至示例四各做一遍，即可覆盖新增场景物件、条件选项、物品拾取与属性技能的最常见任务。
 
 ### 游戏框架维护者：从这里开始

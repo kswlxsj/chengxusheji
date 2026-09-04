@@ -2,7 +2,7 @@
 
 > 适用对象：在 webGame 仓库内操作本转换 skill 的人与执行 agent（两边对照阅读）。
 > 前置：skill 已被触发（你已说出类似“用剧本转换 skill 把 X 剧本转一下”并得到回应）；**本教程不涉及如何安装/如何触发**。
-> 权威规则：`skills/script-to-game-data/SKILL.md`（红线与闸门）与 `skills/script-to-game-data/转换规范.md`（全部细节）；策略见 `config/policy.json`。本教程是“走一遍”的手把手指引，冲突时以 SKILL.md 与转换规范.md 为准。
+> 权威规则：`skills/script-to-game-data/SKILL.md`（红线、闸门与唯一事实源）与 `skills/script-to-game-data/转换规范.md`（全部细节：命名 §10、白名单 §11、审查清单格式与路径 §13）。本教程是“走一遍”的手把手指引，冲突时以 SKILL.md 与转换规范.md 为准。
 
 ## 0. 总览：一次完整转换的三段闸门
 
