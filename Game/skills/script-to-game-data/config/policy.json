@@ -17,6 +17,8 @@
   "assetsAutoCopy说明": "不自动复制Assets素材；只产出素材对照建议表。",
   "reportFolder": "Game/docs/剧本转换审查",
   "reportFolder说明": "审查清单固定存放于 docs/剧本转换审查/ 子目录，不与其他文档平铺。",
+  "reportTemplatePath": "Game/skills/script-to-game-data/templates/剧本转换审查清单-模板.md",
+  "reportTemplatePath说明": "生成清单时复制此空白模板并替换占位符；模板保持精简、可直接编辑。",
   "reportPathTemplate": "Game/docs/剧本转换审查/剧本转换审查清单-YYYY-MM-DD-HHmm.md",
   "reportPathTemplate说明": "文件名时间戳精确到分钟；每次转换新建文件，不覆盖旧文件。",
   "whitelistWrite": [
