@@ -183,7 +183,7 @@
 
 ## 补充说明
 
-- 自动推断登记：约定 C1~C5、推断 D1/D2 的说明与样例实现见 `skills/script-to-game-data/samples/样例说明.md`。
+- 自动推断登记：约定 C1~C5、推断 D1/D2 的说明与样例实现见 `skills/script-to-game-data/samples/sample-notes.md`。
 - 更详细的逐事件原文引证（含每段原文摘录）保存在本文件的 git 历史版本中；如需恢复为“详解版”或把某条展开，可在备注里点名要求。
 - 占位行示例：`{ "type": "dialogue", "text": "（检定：医学）" }`——技能检定落地后由 agent 替换为真实动作并删除。
 

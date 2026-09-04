@@ -167,7 +167,7 @@
 
 ## 13. 审查清单：格式与读取规则
 
-落盘 `Game/docs/剧本转换审查/剧本转换审查清单-YYYY-MM-DD-HHmm.md`；固定目录、分钟级时间戳、每次转换**新建文件**不覆盖旧文件。空白模板（含全部占位符与说明）见 `templates/剧本转换审查清单-模板.md`，agent 生成清单时复制模板并替换 `{{…}}`。
+落盘 `Game/docs/conversion-reviews/review-checklist-YYYY-MM-DD-HHmm.md`；固定目录、分钟级时间戳、每次转换**新建文件**不覆盖旧文件。空白模板（含全部占位符与说明）见 `templates/review-checklist-template.md`，agent 生成清单时复制模板并替换 `{{…}}`。
 
 ### 13.1 结构（从简，便于人直接编辑）
 
