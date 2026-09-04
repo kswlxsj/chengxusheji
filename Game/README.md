@@ -243,6 +243,16 @@ Game/
 │  ├─ meta.schema.json
 │  ├─ scenes.schema.json
 │  └─ skills.schema.json
+├─ skills/
+│  └─ 剧本转换器/
+│     ├─ SKILL.md
+│     ├─ 转换规范.md
+│     ├─ config/
+│     │  └─ policy.json
+│     └─ samples/
+│        ├─ 样例输入.md
+│        ├─ 样例说明.md
+│        └─ 输出样例.json
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
@@ -316,6 +326,7 @@ Game/
 | `架构设计.md` | v0.1 架构目标、职责、状态示例和边界。 |
 | `API使用说明.md` | 早期精简接口速查；README 是当前完整手册。 |
 | `三天计划.md` | 最初三天交付安排，保留作过程记录。 |
+| `剧本转换审查清单-2026-09-04.md` | 剧本转换 skill 首次运行的审查清单：自动推断登记与待人工决策项（C~H 节）。 |
 
 ### `GroupIntro/`
 
@@ -327,6 +338,15 @@ Game/
 | `back-button.css` / `back-button.js` | 各页共用的“返回”胶囊按钮样式与附加行为。 |
 | `background.png` | 汇总页背景图。 |
 | `cr/` `czh/` `dxh/` `lty/` `xyx/` `zxy/` | 六位成员各自的介绍子页，内容与素材由对应作者维护。 |
+
+### `skills/`
+
+| 文件 | 用途 |
+| --- | --- |
+| `剧本转换器/SKILL.md` | “剧本 → 游戏 JSON”转换 skill 入口：输入要求、硬红线与工作流 SOP。 |
+| `剧本转换器/转换规范.md` | 完整转换规则：语法映射表、SAN 语义、命名约定、占位策略与隔离验证。 |
+| `剧本转换器/config/policy.json` | 可调策略常量：输出白名单、命名模板、SAN 约定等。 |
+| `剧本转换器/samples/` | 样例输入/输出与逐条说明，配套隔离编译验证。 |
 
 ### `schemas/`
 
@@ -418,6 +438,14 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 ```
 
 注释只用于说明，实际 JSON 文件中不能保留 `//` 注释。`position` 均为相对于游戏区域的百分比：`x/y` 是左上角，`width/height` 是按钮大小。
+
+### 剧本转换 skill（内容维护者）
+
+仓库内置"剧本 → 游戏 JSON"转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `skills/剧本转换器/SKILL.md` 与 `skills/剧本转换器/转换规范.md`，可调策略见 `skills/剧本转换器/config/policy.json`，最近一次审查清单见 `docs/剧本转换审查清单-2026-09-04.md`。要点：
+
+- **输入由使用者指定**（一个或多个文件）；未指定时执行者会停下询问，不默认任何路径。
+- 只产出候选 JSON 与审查清单，**默认不写 `data/`**；skill 不设计数值，技能检定、%修正、对抗、素材坐标等一律登记清单由人工决策。
+- 落地（landing）须先完成审查清单 C~H 节的人工决策并逐文件确认 diff，再真实执行 `npm run compile` 与 `npm run check`。
 
 ## 数据接口参考
 
