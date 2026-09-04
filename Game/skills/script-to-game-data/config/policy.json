@@ -15,7 +15,10 @@
   "pureStageDirectives": "不入JSON，只进审查清单F节；指令后带正文的行整行原样转录。",
   "assetsAutoCopy": false,
   "assetsAutoCopy说明": "不自动复制Assets素材；只产出素材对照建议表。",
-  "reportPathTemplate": "Game/docs/剧本转换审查清单-YYYY-MM-DD.md",
+  "reportFolder": "Game/docs/剧本转换审查",
+  "reportFolder说明": "审查清单固定存放于 docs/剧本转换审查/ 子目录，不与其他文档平铺。",
+  "reportPathTemplate": "Game/docs/剧本转换审查/剧本转换审查清单-YYYY-MM-DD-HHmm.md",
+  "reportPathTemplate说明": "文件名时间戳精确到分钟；每次转换新建文件，不覆盖旧文件。",
   "whitelistWrite": [
     { "file": "Game/data/events.json", "说明": "落地模式仅追加本skill命名空间事件，不动既有条目" },
     { "file": "Game/data/scenes.json", "说明": "落地模式可写但每处须用户确认（坐标/素材为设计输入）" },

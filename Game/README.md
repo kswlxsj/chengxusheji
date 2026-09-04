@@ -244,7 +244,7 @@ Game/
 │  ├─ scenes.schema.json
 │  └─ skills.schema.json
 ├─ skills/
-│  └─ 剧本转换器/
+│  └─ script-to-game-data/
 │     ├─ SKILL.md
 │     ├─ 转换规范.md
 │     ├─ config/
@@ -326,7 +326,8 @@ Game/
 | `架构设计.md` | v0.1 架构目标、职责、状态示例和边界。 |
 | `API使用说明.md` | 早期精简接口速查；README 是当前完整手册。 |
 | `三天计划.md` | 最初三天交付安排，保留作过程记录。 |
-| `剧本转换审查清单-2026-09-04.md` | 剧本转换 skill 首次运行的审查清单：自动推断登记与待人工决策项（C~H 节）。 |
+| `剧本转换skill使用教程.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、落地与提交）。 |
+| `剧本转换审查/剧本转换审查清单-2026-09-04-1849.md` | 剧本转换 skill 首次运行的审查清单：自动推断登记与待人工决策项（C~H 节）。审查清单统一存放于 `docs/剧本转换审查/`，文件名时间戳精确到分钟。 |
 
 ### `GroupIntro/`
 
@@ -343,10 +344,10 @@ Game/
 
 | 文件 | 用途 |
 | --- | --- |
-| `剧本转换器/SKILL.md` | “剧本 → 游戏 JSON”转换 skill 入口：输入要求、硬红线与工作流 SOP。 |
-| `剧本转换器/转换规范.md` | 完整转换规则：语法映射表、SAN 语义、命名约定、占位策略与隔离验证。 |
-| `剧本转换器/config/policy.json` | 可调策略常量：输出白名单、命名模板、SAN 约定等。 |
-| `剧本转换器/samples/` | 样例输入/输出与逐条说明，配套隔离编译验证。 |
+| `script-to-game-data/SKILL.md` | “剧本 → 游戏 JSON”转换 skill 入口：输入要求、三段强制确认闸门与工作流 SOP。 |
+| `script-to-game-data/转换规范.md` | 完整转换规则：语法映射表、SAN 语义、命名约定、占位策略与隔离验证。 |
+| `script-to-game-data/config/policy.json` | 可调策略常量：输出白名单、命名模板、SAN 约定、审查清单落盘路径等。 |
+| `script-to-game-data/samples/` | 样例输入/输出与逐条说明，配套隔离编译验证。 |
 
 ### `schemas/`
 
@@ -441,11 +442,12 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 ### 剧本转换 skill（内容维护者）
 
-仓库内置"剧本 → 游戏 JSON"转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `skills/剧本转换器/SKILL.md` 与 `skills/剧本转换器/转换规范.md`，可调策略见 `skills/剧本转换器/config/policy.json`，最近一次审查清单见 `docs/剧本转换审查清单-2026-09-04.md`。要点：
+仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `skills/script-to-game-data/SKILL.md` 与 `skills/script-to-game-data/转换规范.md`，可调策略见 `skills/script-to-game-data/config/policy.json`，手把手使用教程见 `docs/剧本转换skill使用教程.md`，最近一次审查清单见 `docs/剧本转换审查/剧本转换审查清单-2026-09-04-1849.md`。要点：
 
 - **输入由使用者指定**（一个或多个文件）；未指定时执行者会停下询问，不默认任何路径。
-- 只产出候选 JSON 与审查清单，**默认不写 `data/`**；skill 不设计数值，技能检定、%修正、对抗、素材坐标等一律登记清单由人工决策。
-- 落地（landing）须先完成审查清单 C~H 节的人工决策并逐文件确认 diff，再真实执行 `npm run compile` 与 `npm run check`。
+- **执行节奏为强制三段确认闸门**：①候选阶段只产出候选与审查清单，默认不写 `data/`，等你逐项决策；②落地（landing）前须完成审查清单 C~H 节人工决策并逐文件确认改动方案，才写入白名单 JSON；③写入并真实编译通过后，经你终审才提交 git。任何闸门未获明确批准，执行者不得跳过或合并。
+- skill 不设计数值：技能检定、%修正、对抗、素材坐标等一律登记清单由人工决策。
+- 审查清单固定存放于 `docs/剧本转换审查/`，文件名时间戳精确到分钟，每次转换新建、不覆盖旧文件。
 
 ## 数据接口参考
 
