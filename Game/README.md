@@ -348,8 +348,8 @@ Game/
 | --- | --- |
 | `README.md` | docs 目录索引：本文件夹存放细分板块的详细文档，归档见 `_Archived/`。 |
 | `API使用说明.md` | 数据接口（`data/*.json`）与运行时接口（`window.TrainGame`）的**最详细维护和使用手册**，含复杂维护工作示例。 |
-| `skill-tutorials/script-to-game-data.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、直接在清单上填写决策、落地与提交）。 |
-| `conversion-reviews/review-checklist-2026-09-04-1849.md` | 剧本转换 skill 首次运行的审查清单：编号条目 + 类别标记 + 决策列，供用户直接编辑、agent 重读执行。审查清单统一存放于 `docs/conversion-reviews/`，文件名时间戳精确到分钟。 |
+| `skill-tutorials/script-to-game-data.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、在清单上逐条作答与指定素材、落地与提交）。 |
+| `conversion-reviews/review-checklist-2026-09-04-1849.md` | 剧本转换 skill 首次运行的审查清单（**旧版格式**：编号条目 + 类别标记 + 决策列；当前格式见 skill 空白模板：人话提问 + 素材指定 + 执行台账）。审查清单统一存放于 `docs/conversion-reviews/`，文件名时间戳精确到分钟。 |
 | `_Archived/` | 已归档历史文档（`架构设计.md`、`三天计划.md`），归档后不再跟随功能更新，仅供追溯。 |
 
 ### `GroupIntro/`
@@ -370,7 +370,7 @@ Game/
 | `script-to-game-data/SKILL.md` | “剧本 → 游戏 JSON”转换 skill 入口：输入要求、三段强制确认闸门与工作流 SOP。 |
 | `script-to-game-data/conversion-rules.md` | 完整转换规则：语法映射表、SAN 语义、命名约定、占位策略与隔离验证。 |
 | `script-to-game-data/samples/` | 样例输入/输出与逐条说明，配套隔离编译验证。 |
-| `script-to-game-data/templates/` | 空白审查清单模板（占位符 + 类别标记 + 决策词表说明），生成清单时复制并替换占位符。 |
+| `script-to-game-data/templates/` | 空白审查清单模板（人话提问作答 + 素材指定区 + 执行台账说明），生成清单时复制并替换占位符。 |
 
 ### `schemas/`
 
@@ -426,7 +426,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 - **内容怎么改**：素材放 `assets/` → 修改 `data/*.json`（编辑器有 Schema 补全提示）→ `npm run compile` → 静态服务器刷新验证 → `npm run check`。全部字段与动作规则见[接口手册：数据接口参考](docs/API使用说明.md#数据接口参考)，维护工作流与 ID/路径约定见[接口手册：维护工作流与约定](docs/API使用说明.md#维护工作流与约定)。
 - **红线**：只编辑源 JSON，不碰 `data/compiled-game-data.js`（由 `npm run compile` 生成，但必须随游戏交付）；JSON 不能执行 JavaScript，自定义演出只能引用程序员白名单动作。
-- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md` 为入口与唯一事实源，`conversion-rules.md` 为规则手册，空白清单模板在 `templates/review-checklist-template.md`），手把手教程见 `docs/skill-tutorials/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/conversion-reviews/`，文件名 `review-checklist-<时间戳>.md`）保持精简可编辑，由你直接在文件上填写决策（批准/修改/否决/转交/留待），agent 重读你改后的清单再执行；skill 不替编剧设计数值。
+- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md` 为入口与唯一事实源，`conversion-rules.md` 为规则手册，空白清单模板在 `templates/review-checklist-template.md`），手把手教程见 `docs/skill-tutorials/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/conversion-reviews/`，文件名 `review-checklist-<时间戳>.md`）面向你呈现**人话提问 + 素材指定区**（技术细节封装在文末执行台账，供 agent 用）——由你逐条勾选答复（同意 / 需要调整 / 本次跳过）、逐行指定素材（沿用 / 新建 / 暂缓并注明影响），agent 校验全部完成后才继续；skill 不替编剧设计数值、不自行选定素材。
 - **练手**：按[接口手册：复杂维护工作示例](docs/API使用说明.md#复杂维护工作示例)的示例一至示例四各做一遍，即可覆盖新增场景物件、条件选项、物品拾取与属性技能的最常见任务。
 
 ### 游戏框架维护者：从这里开始
