@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 200">
+  <!-- 占位图：E-007 尸体调查点（待美术替换） -->
+  <rect x="18" y="96" width="224" height="78" rx="14" fill="#3a1412" stroke="#8a1f1b" stroke-width="8" opacity=".9"/>
+  <ellipse cx="130" cy="128" rx="72" ry="26" fill="#571a15" stroke="#c2554e" stroke-width="6"/>
+  <path d="M62 122L40 176M82 130L68 184M198 122L220 176M178 130L192 184" stroke="#b8574f" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="112" cy="118" r="9" fill="#e8e2d8" opacity=".55"/>
+  <circle cx="150" cy="118" r="9" fill="#e8e2d8" opacity=".55"/>
+  <text x="130" y="66" text-anchor="middle" font-family="sans-serif" font-size="26" fill="#e6d7c8" opacity=".9">尸体</text>
+  <text x="130" y="88" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#e6d7c8" opacity=".6">占位贴图</text>
+</svg>
