@@ -1,0 +1,1 @@
+skill的静态部署区，通常来说都是symbolic link。在此文件夹下严格保持只读，任何修改应该修改`Game/skills`中的原始文件。
