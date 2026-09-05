@@ -99,7 +99,7 @@
 
 ### 6.4 运行时事实（写报告用，不是可依赖能力）
 
-当前 `src/events.js` 的 `check` 实现为 `1d6 + 属性值 + modifier >= 11`（README 的 d100 描述已过时）；且存在一个硬编码特例 checkId（`carriage02_stealth_half_luck_001`，幸运半值）。这些属于框架层事实：转换器不得生成依赖硬编码特例的内容，也**不改动 src**；若剧本需要这类规则 → 登记类别 F（框架缺口）。
+当前 `src/events.js` 的 `check` 实现为 `1d6 + 属性值 + modifier >= 11`；且存在一个硬编码特例 checkId（`carriage02_stealth_half_luck_001`，幸运半值）。这些属于框架层事实：转换器不得生成依赖硬编码特例的内容，也**不改动 src**；若剧本需要这类规则 → 登记类别 F（框架缺口）。
 
 ## 7. SAN 语义与骰子
 

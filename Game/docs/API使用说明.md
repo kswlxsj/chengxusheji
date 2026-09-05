@@ -173,7 +173,7 @@
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。 |
 | `inspect` | `title`, `text` | `image` | 打开调查窗口并等待关闭。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
-| `check` | `checkId`, `attribute`, `success`, `fail` | `modifier`, `label` | 掷 `1..100`；目标为属性加修正后限制到 `1..99`，`roll <= target` 成功。 |
+| `check` | `checkId`, `attribute`, `success`, `fail` | `modifier`, `label` | 掷 1d6；骰点＋属性值＋修正 ≥ 11（引擎固定阈值）即成功，随后跳 `success`/`fail`。 |
 | `changeScene` | `scene` | — | 关闭对话并加载场景。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
 | `modifyAttribute` | `attribute`, `amount` | — | 增减整数、限制边界并重算相关技能。 |
@@ -211,7 +211,7 @@
 | 取反 | `{ "not": 条件 }` |
 | 旗标 | `{ "flag": "doorOpened", "equals": true }` |
 | 持有物品 | `{ "hasItem": "brass_key" }` |
-| 属性比较 | `{ "attribute": "insight", "operator": "gte", "value": 70 }` |
+| 属性比较 | `{ "attribute": "insight", "operator": "gte", "value": 7 }` |
 | 技能状态 | `{ "skill": "keen_insight", "equals": true }` |
 | 物件状态 | `{ "objectState": { "objectId": "box_06", "property": "opened", "equals": true } }` |
 
@@ -223,7 +223,7 @@
     { "hasItem": "brass_key" },
     {
       "any": [
-        { "attribute": "insight", "operator": "gte", "value": 70 },
+        { "attribute": "insight", "operator": "gte", "value": 7 },
         { "skill": "keen_insight", "equals": true }
       ]
     }
@@ -251,15 +251,15 @@
 
 ```json
 {
-  "totalPoints": 10,
+  "totalPoints": 30,
   "attributes": [
     {
       "id": "insight",
       "name": "灵感",
       "description": "观察和理解异常现象的能力。",
-      "initial": 60,
-      "min": 0,
-      "max": 99
+      "initial": 3,
+      "min": 3,
+      "max": 10
     }
   ]
 }
@@ -275,11 +275,11 @@
 {
   "id": "keen_insight",
   "name": "敏锐直觉",
-  "description": "灵感达到 70 且理智大于 0 时自动生效。",
+  "description": "灵感不低于 7 且理智大于 0 时自动生效。",
   "initial": false,
   "autoTrigger": {
     "all": [
-      { "attribute": "insight", "operator": "gte", "value": 70 },
+      { "attribute": "insight", "operator": "gte", "value": 7 },
       { "attribute": "san", "operator": "gt", "value": 0 }
     ]
   }
@@ -341,7 +341,7 @@ const state = new TrainGame.GameState(
 {
   "sceneId": "carriage_06",
   "currentEventId": "E_NOTE",
-  "attributes": { "insight": 65, "san": 80 },
+  "attributes": { "insight": 7, "san": 8 },
   "skills": { "keen_insight": false },
   "skillOverrides": {},
   "attributeAllocationComplete": true,
@@ -553,7 +553,7 @@ game.saves.listSlots()
 
 ### 示例二：新增带条件选项的剧情
 
-目标：持有旧车票且灵感至少 70 才能出示车票。
+目标：持有旧车票且灵感至少 7 才能出示车票。
 
 1. 修改 `data/events.json`，加入选项：
 
@@ -564,7 +564,7 @@ game.saves.listSlots()
   "when": {
     "all": [
       { "hasItem": "old_ticket" },
-      { "attribute": "insight", "operator": "gte", "value": 70 }
+      { "attribute": "insight", "operator": "gte", "value": 7 }
     ]
   }
 }
@@ -606,9 +606,9 @@ game.saves.listSlots()
 
 1. 修改 `data/attributes.json`，新增整数边界完整的 `stamina`。
 2. 确认所有属性的可增长容量足以容纳 `totalPoints`。
-3. 修改 `data/skills.json`，新增 `strong_body`，其 `autoTrigger` 为 `stamina gte 70`。
+3. 修改 `data/skills.json`，新增 `strong_body`，其 `autoTrigger` 为 `stamina gte 7`。
 4. 运行 `npm run compile` 和 `npm test`。
-5. 开新游戏。属性窗口和 HUD 应出现体力；体力达到 70 后，控制台执行 `game.state.getSkill("strong_body")` 应为 `true`。
+5. 开新游戏。属性窗口和 HUD 应出现体力；体力达到 7 后，控制台执行 `game.state.getSkill("strong_body")` 应为 `true`。
 6. 注册表变化会让既有 v2 存档因键不一致而读取失败；正式升级需按下一例制定迁移策略。
 
 ### 示例五：修改存档结构或兼容规则
