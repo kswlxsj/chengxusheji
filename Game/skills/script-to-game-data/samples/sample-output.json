@@ -10,10 +10,8 @@
       { "type": "dialogue", "text": "你发现所在车厢的门扉上贴着一张便签。" },
       {
         "type": "check",
-        "checkId": "ev001_insight_01",
-        "attribute": "insight",
-        "success": "E_001_S",
-        "fail": "E_001_F"
+        "dice": "ev001_insight_01",
+        "outcomes": ["E_001_S", "E_001_F"]
       }
     ]
   },
@@ -51,10 +49,8 @@
       { "type": "dialogue", "text": "门扉旁有电车示意图。" },
       {
         "type": "check",
-        "checkId": "ev004_insight_01",
-        "attribute": "insight",
-        "success": "E_004_S",
-        "fail": "E_004_F"
+        "dice": "ev004_insight_01",
+        "outcomes": ["E_004_S", "E_004_F"]
       }
     ]
   },
@@ -76,10 +72,8 @@
     "actions": [
       {
         "type": "check",
-        "checkId": "ev005_insight_01",
-        "attribute": "insight",
-        "success": "E_005_S",
-        "fail": "E_005_F"
+        "dice": "ev005_insight_01",
+        "outcomes": ["E_005_S", "E_005_F"]
       }
     ]
   },
@@ -111,21 +105,10 @@
       { "type": "dialogue", "text": "车厢内部，被撕裂的人类肢体散落一地。" },
       {
         "type": "check",
-        "checkId": "ev006a_san_01",
-        "attribute": "san",
-        "success": "E_006A_END",
-        "fail": "E_006A_SAN1"
+        "dice": "ev006a_san_01"
       }
     ]
   },
-  {
-    "id": "E_006A_SAN1",
-    "actions": [
-      { "type": "modifyAttribute", "attribute": "san", "amount": -1 }
-    ],
-    "next": "E_006A_END"
-  },
-  { "id": "E_006A_END", "actions": [] },
   {
     "id": "E_006B",
     "actions": [
@@ -133,32 +116,10 @@
       { "type": "dialogue", "text": "车厢内部，被撕裂的人类肢体散落一地。" },
       {
         "type": "check",
-        "checkId": "ev006b_san_01",
-        "attribute": "san",
-        "success": "E_006B_SAN1",
-        "fail": "E_006B_SAND"
+        "dice": "ev006b_san_01"
       }
     ]
   },
-  {
-    "id": "E_006B_SAN1",
-    "actions": [
-      { "type": "modifyAttribute", "attribute": "san", "amount": -1 }
-    ],
-    "next": "E_006B_END"
-  },
-  {
-    "id": "E_006B_SAND",
-    "actions": [
-      {
-        "type": "custom",
-        "name": "modifyAttributeByDice",
-        "params": { "attribute": "san", "direction": "loss", "count": 1, "sides": 4, "bonus": 0, "label": "SAN" }
-      }
-    ],
-    "next": "E_006B_END"
-  },
-  { "id": "E_006B_END", "actions": [] },
   {
     "id": "E_007",
     "actions": [
@@ -200,20 +161,7 @@
       { "type": "dialogue", "text": "你硬着头皮，想要追问更多信息。" },
       {
         "type": "check",
-        "checkId": "ev014_san_01",
-        "attribute": "san",
-        "success": "E_014_TALK",
-        "fail": "E_014_SAND"
-      }
-    ]
-  },
-  {
-    "id": "E_014_SAND",
-    "actions": [
-      {
-        "type": "custom",
-        "name": "modifyAttributeByDice",
-        "params": { "attribute": "san", "direction": "loss", "count": 1, "sides": 2, "bonus": 0, "label": "SAN" }
+        "dice": "ev014_san_01"
       }
     ],
     "next": "E_014_TALK"
