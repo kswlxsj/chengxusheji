@@ -7,8 +7,11 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css">
   <script src="src/namespace.js"></script>
+  <!-- 新增 window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
+  <!-- 新增 TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
   <script src="src/auth-guard.js"></script>
+  <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
 </head>
 <body>
   <main class="site-shell content-page">
@@ -20,8 +23,12 @@
     </section>
   </main>
   <script src="data/compiled-game-data.js"></script>
+  <!-- 新增 window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   <script src="src/page-flow.js"></script>
+  <!-- 新增 TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/state.js"></script>
+  <!-- 新增 TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   <script src="src/save-manager.js"></script>
+  <!-- 初始化存档列表渲染、读取和删除存档的交互逻辑。 -->
 </body>
 </html>

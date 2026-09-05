@@ -7,8 +7,13 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css">
   <script src="src/namespace.js"></script>
+  <!-- 新增 window.TrainGame，以及 deepClone、delay 基础接口。 -->
+
   <script src="src/auth.js"></script>
+  <!-- 新增 TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+   
   <script src="src/auth-guard.js"></script>
+  <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
 </head>
 <body>
   <main id="game-shell" aria-label="游戏区域">
@@ -34,13 +39,30 @@
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
   <script src="data/compiled-game-data.js"></script>
+  <!-- 新增 window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
+  
   <script src="src/page-flow.js"></script>
+  <!-- 新增 TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
+  
   <script src="src/state.js"></script>
+  <!-- 新增 TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
+  
   <script src="src/ui.js"></script>
+  <!-- 新增 TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
+  
   <script src="src/scene.js"></script>
+  <!-- 新增 TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
+  
   <script src="src/events.js"></script>
+  <!-- 新增 TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
+  
   <script src="src/dice.js"></script>
+  <!-- 新增 TrainGame.Dice，提供检定注册、查询和执行接口。 -->
+  
   <script src="src/custom-actions.js"></script>
+  <!-- 新增 TrainGame.registerProjectActions，用于向事件引擎注册项目自定义动作。 -->
+  
   <script src="src/main.js"></script>
+  <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>
