@@ -4,7 +4,7 @@
   "type": "object",
   "required": ["formatVersion", "title", "coverImage", "startEvent", "initialScene", "initialState"],
   "properties": {
-    "formatVersion": { "const": 2 },
+    "formatVersion": { "const": 3 },
     "title": { "type": "string", "minLength": 1 },
     "coverImage": { "type": "string", "minLength": 1 },
     "startEvent": { "$ref": "#/$defs/id" },

@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const idPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
@@ -8,6 +9,19 @@ const comparisonOperators = new Set(["eq", "ne", "lt", "lte", "gt", "gte"]);
 
 async function readJson(relativePath) {
   return JSON.parse(await readFile(resolve(projectRoot, relativePath), "utf8"));
+}
+
+// 在 node:vm 沙箱中加载浏览器脚本，读取 dice.js 注册的检定编号清单
+//（src/events.js 导出 Game.Registry，src/dice.js 在 Registry 上注册所有检定）。
+async function loadDiceIds() {
+  const sandbox = { window: {} };
+  vm.createContext(sandbox);
+  for (const file of ["src/namespace.js", "src/events.js", "src/dice.js"]) {
+    vm.runInContext(await readFile(resolve(projectRoot, file), "utf8"), sandbox, { filename: file });
+  }
+  const TrainGame = sandbox.window.TrainGame;
+  if (!TrainGame?.Dice) throw new Error("无法读取 src/dice.js 的检定编号清单：Game.Dice 未注册");
+  return new Set(TrainGame.Dice.keys());
 }
 
 function assert(condition, message) {
@@ -119,8 +133,8 @@ function validateCondition(condition, references, label) {
   assert("equals" in condition.objectState, `${label}的物件状态缺少 equals`);
 }
 
-function validate(meta, scenes, events, items, attributeData, skills) {
-  assert(meta.formatVersion === 2, "当前编译器只支持 formatVersion=2");
+function validate(meta, scenes, events, items, attributeData, skills, diceIds) {
+  assert(meta.formatVersion === 3, "当前编译器只支持 formatVersion=3");
   assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
   assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
   const sceneIds = assertUnique(scenes, "场景");
@@ -185,7 +199,6 @@ function validate(meta, scenes, events, items, attributeData, skills) {
     "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem",
     "setObjectState", "custom"
   ]);
-  const checkIds = new Set();
   for (const event of events) {
     assert(Array.isArray(event.actions), `事件缺少 actions：${event.id}`);
     if (event.next) assert(eventIds.has(event.next), `事件 ${event.id} 的 next 不存在`);
@@ -210,12 +223,13 @@ function validate(meta, scenes, events, items, attributeData, skills) {
         if (action.type === "setSkill") assert(typeof action.value === "boolean", `事件 ${event.id} 的技能值必须是布尔值`);
       }
       if (action.type === "check") {
-        assert(action.checkId, `事件 ${event.id} 的检定缺少 checkId`);
-        assert(!checkIds.has(action.checkId), `检定 checkId 重复：${action.checkId}`);
-        checkIds.add(action.checkId);
-        assert(attributeIds.has(action.attribute), `事件 ${event.id} 的检定引用了未注册属性：${action.attribute}`);
-        assert(action.modifier == null || Number.isInteger(action.modifier), `事件 ${event.id} 的检定修正必须是整数`);
-        assert(eventIds.has(action.success) && eventIds.has(action.fail), `事件 ${event.id} 的检定分支不存在`);
+        assert(typeof action.dice === "string" && diceIds.has(action.dice), `事件 ${event.id} 的检定引用了未注册的 dice 编号：${action.dice}`);
+        if (action.outcomes != null) {
+          assert(Array.isArray(action.outcomes), `事件 ${event.id} 的检定 outcomes 必须是数组`);
+          for (const outcome of action.outcomes) {
+            assert(eventIds.has(outcome), `事件 ${event.id} 的检定结果分支不存在：${outcome}`);
+          }
+        }
       }
       if (action.type === "choice") {
         assert(Array.isArray(action.options) && action.options.length, `事件 ${event.id} 的选择为空`);
@@ -226,12 +240,6 @@ function validate(meta, scenes, events, items, attributeData, skills) {
       }
       if (action.type === "custom") {
         assert(typeof action.name === "string" && action.name, `事件 ${event.id} 的自定义动作缺少 name`);
-        if (action.name === "rollClickerCount") {
-          assertPlainObject(action.params, `事件 ${event.id} 的Clicker数量检定缺少 params`);
-          assertId(action.params.checkId, `事件 ${event.id} 的Clicker数量检定缺少有效 checkId`);
-          assert(!checkIds.has(action.params.checkId), `检定 checkId 重复：${action.params.checkId}`);
-          checkIds.add(action.params.checkId);
-        }
       }
     }
   }
@@ -246,7 +254,8 @@ const [meta, scenes, events, items, attributes, skills] = await Promise.all([
   readJson("data/skills.json")
 ]);
 
-validate(meta, scenes, events, items, attributes, skills);
+const diceIds = await loadDiceIds();
+validate(meta, scenes, events, items, attributes, skills, diceIds);
 const bundle = JSON.stringify({ meta, scenes, events, items, attributes, skills }, null, 2)
   .replaceAll("\u2028", "\\u2028")
   .replaceAll("\u2029", "\\u2029");

@@ -1,7 +1,8 @@
 (function (Game) {
   "use strict";
 
-  const SAVE_VERSION = 2;
+  // v3：检定协议改为 dice.js 编号 + outcomes，事件 id 全面重命名，旧 v2 存档不兼容。
+  const SAVE_VERSION = 3;
   const operators = {
     eq: (left, right) => left === right,
     ne: (left, right) => left !== right,

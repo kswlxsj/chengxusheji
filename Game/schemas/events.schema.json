@@ -144,15 +144,11 @@
     },
     "check": {
       "type": "object",
-      "required": ["type", "checkId", "attribute", "success", "fail"],
+      "required": ["type", "dice"],
       "properties": {
         "type": { "const": "check" },
-        "checkId": { "$ref": "#/$defs/id" },
-        "label": { "type": "string" },
-        "attribute": { "$ref": "#/$defs/id" },
-        "modifier": { "type": "integer" },
-        "success": { "$ref": "#/$defs/id" },
-        "fail": { "$ref": "#/$defs/id" }
+        "dice": { "$ref": "#/$defs/id" },
+        "outcomes": { "type": "array", "items": { "$ref": "#/$defs/id" } }
       },
       "additionalProperties": false
     },

@@ -18,6 +18,10 @@
       if (!handler) throw new Error(`${this.label} 未注册：${name}`);
       return handler;
     }
+
+    keys() {
+      return [...this.entries.keys()];
+    }
   }
 
   class EventCancelled extends Error {
@@ -92,20 +96,22 @@
       });
 
       this.registerAction("check", async (action) => {
-        const rawBase = this.state.getAttribute(action.attribute);
-        const usesHalfAttribute = action.checkId === "carriage02_stealth_half_luck_001";
-        const base = usesHalfAttribute ? Math.floor(rawBase / 2) : rawBase;
-        const modifier = Number(action.modifier || 0);
-        const threshold = usesHalfAttribute ? 7 : 11;
-        const roll = Math.floor(Math.random() * 6) + 1;
-        const total = roll + base + modifier;
-        const success = total >= threshold;
-        this.state.checkResults[action.checkId] = { roll, base, rawBase, modifier, total, threshold, success };
-        await this.ui.inspect.show({
-          title: success ? "检定成功" : "检定失败",
-          text: `${action.label || action.attribute}：1d6 掷出 ${roll} + ${usesHalfAttribute ? `幸运 ${rawBase}÷2（取整为 ${base}）` : `属性 ${base}`}${modifier ? ` ${modifier > 0 ? "+" : "−"} ${Math.abs(modifier)}` : ""} = ${total}，需要达到 ${threshold}。`
-        });
-        return { next: success ? action.success : action.fail, stop: true };
+        if (!Game.Dice) throw new Error("检定系统未加载：缺少 src/dice.js");
+        const outcomes = Array.isArray(action.outcomes) ? action.outcomes : [];
+        const resolver = Game.Dice.get(action.dice);
+        const index = await resolver(this.context(), outcomes);
+        const hasBranch = outcomes.length > 0;
+        if (hasBranch && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)) {
+          throw new Error(`检定 ${action.dice} 返回了无效的结果编号：${index}`);
+        }
+        // 自动留痕：以 dice 编号为键写入最小记录；检定函数可先写入补充字段，此处合并保留。
+        this.state.checkResults[action.dice] = Object.assign(
+          {},
+          this.state.checkResults[action.dice],
+          { dice: action.dice, outcome: hasBranch ? index : null }
+        );
+        if (!hasBranch) return null;
+        return { next: outcomes[index], stop: true };
       });
 
       this.registerAction("changeScene", async (action) => {

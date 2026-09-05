@@ -34,7 +34,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/dice.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
@@ -188,8 +188,8 @@ assert.equal(new Game.SaveManager(createState()).listSlots()[0].empty, false, "�
 
 storage.set("legacy-save-1", JSON.stringify(state.snapshot()));
 assert.throws(() => new Game.SaveManager(createState(), "legacy-save").load(1), /版本不兼容/);
-storage.set("train-game-save-v1", JSON.stringify({ saveVersion: 2, state: state.snapshot() }));
-storage.set("train-game-save-slot-1", JSON.stringify({ saveVersion: 2, state: state.snapshot() }));
+storage.set("train-game-save-v1", JSON.stringify({ saveVersion: 3, state: state.snapshot() }));
+storage.set("train-game-save-slot-1", JSON.stringify({ saveVersion: 3, state: state.snapshot() }));
 Auth.logout();
 assert.equal(Auth.register("LegacyCheck", "secret4").ok, true);
 assert.equal(Auth.login("LegacyCheck", "secret4").ok, true);
@@ -232,52 +232,10 @@ assert.equal(inspectedItem.title, "旧车票", "物品调查应读取注册表�
 assert.equal(inspectedItem.text, "一张已经褪色的车票，背面写着无法辨认的日期。", "物品调查应读取注册表中的说明");
 assert.equal(inspectedItem.image, "assets/note.svg", "物品调查应读取注册表中的图片");
 
-const halfLuckEngine = new Game.EventEngine({
-  events: [],
-  state: registeredState,
-  items: [],
-  scene: {},
-  ui: { inspect: { show: async () => {} } }
-});
-await halfLuckEngine.actions.get("check")({
-  type: "check",
-  checkId: "carriage02_stealth_half_luck_001",
-  label: "潜行：1d6＋幸运的一半",
-  attribute: "luck",
-  modifier: 0,
-  success: "TEST_SUCCESS",
-  fail: "TEST_FAIL"
-});
-assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.rawBase, 10);
-assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.base, 5, "幸运应先除以2并向下取整");
-assert.equal(registeredState.checkResults.carriage02_stealth_half_luck_001.threshold, 7, "潜行幸运检定阈值应为7");
-
-const actionState = createState();
-actionState.completeAttributeAllocation({ strength: 4, insight: 1 });
-const actionEngine = new Game.EventEngine({
-  events: [],
-  state: actionState,
-  items: [],
-  scene: {},
-  ui: {}
-});
-Game.registerProjectActions(actionEngine);
-const rollClickerCount = actionEngine.customActions.get("rollClickerCount");
-await rollClickerCount({ checkId: "test_clicker_count_001" }, { state: actionState });
-const firstClickerCount = actionState.flags.clickerCount;
-assert(Number.isInteger(firstClickerCount) && firstClickerCount >= 1 && firstClickerCount <= 3);
-assert.equal(actionState.checkResults.test_clicker_count_001.roll, firstClickerCount);
-await rollClickerCount({ checkId: "test_clicker_count_002" }, { state: actionState });
-assert.equal(actionState.flags.clickerCount, firstClickerCount, "Clicker数量生成后不应重复暗骰");
-assert.equal(actionState.checkResults.test_clicker_count_002, undefined, "重复调用不应写入新的检定结果");
-await actionEngine.actions.get("modifyAttribute")({ type: "modifyAttribute", attribute: "strength", amount: -1 });
-assert.equal(actionState.getAttribute("strength"), 3);
-await actionEngine.actions.get("setSkill")({ type: "setSkill", skill: "manual", value: true });
-assert.equal(actionState.getSkill("manual"), true);
-await actionEngine.actions.get("loseSkill")({ type: "loseSkill", skill: "strong" });
-await actionEngine.actions.get("learnSkill")({ type: "learnSkill", skill: "strong" });
-assert.equal(actionState.getSkill("strong"), true);
-assert.equal(actionState.skillOverrides.strong, true);
+// ==== 检定（dice.js 可编程检定）====
+assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");
+assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
+assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
 
 function createEngineUi() {
   return {
@@ -297,6 +255,132 @@ function createEngineScene() {
     setInteractionEnabled: () => {}
   };
 }
+
+// 确定性掷骰：骰点恒为 6（成功线）或恒为 1（失败线），验证真实检定条目。
+const realUi = createEngineUi();
+const realUiInspects = [];
+realUi.inspect.show = async (payload) => { realUiInspects.push(payload); };
+const realToasts = [];
+realUi.toast = (message) => { realToasts.push(message); };
+const realDiceEngine = new Game.EventEngine({
+  events: [],
+  state: registeredState,
+  items: [],
+  scene: {},
+  ui: realUi
+});
+const originalRandom = sandbox.Math.random;
+try {
+  // ev005 灵感检定：属性 7，骰点 6 成功、骰点 1 失败，走 outcomes 分支。
+  sandbox.Math.random = () => 0.999;
+  let branch = await realDiceEngine.actions.get("check")({
+    type: "check", dice: "ev005_insight_01", outcomes: ["EV_SUCCESS", "EV_FAIL"]
+  });
+  assert.equal(branch.next, "EV_SUCCESS", "灵感骰点 6 应成功");
+  assert.equal(registeredState.checkResults.ev005_insight_01.outcome, 0);
+  assert.equal(realUiInspects[realUiInspects.length - 1].title, "检定成功", "应展示检定结果窗口");
+
+  sandbox.Math.random = () => 0;
+  branch = await realDiceEngine.actions.get("check")({
+    type: "check", dice: "ev005_insight_01", outcomes: ["EV_SUCCESS", "EV_FAIL"]
+  });
+  assert.equal(branch.next, "EV_FAIL", "灵感骰点 1 应失败");
+  assert.equal(registeredState.checkResults.ev005_insight_01.outcome, 1);
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
+// SAN 检定损失（真实属性表，SAN 初始分配 5）。
+const sanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+sanState.completeAttributeAllocation({
+  strength: 7,
+  agility: 7,
+  education: 7,
+  insight: 7,
+  will: 10,
+  luck: 10,
+  constitution: 3,
+  san: 5
+});
+const sanDiceEngine = new Game.EventEngine({
+  events: [],
+  state: sanState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+try {
+  // ev006a：SAN 0/1，失败扣 1（骰点 1 + SAN 5 = 6 < 11）。
+  sandbox.Math.random = () => 0;
+  const sanResult = await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006a_san_01" });
+  assert.equal(sanResult, null, "无 outcomes 的检定不应跳转");
+  assert.equal(sanState.getAttribute("san"), 4, "SAN 0/1 失败应扣 1");
+  assert.equal(sanState.checkResults.ev006a_san_01.outcome, null, "无分支检定记录 outcome=null");
+
+  // ev006b：SAN 1/1d4，成功扣 1（SAN 恢复 5 后骰点 6 + 5 = 11 达标）。
+  sanState.setAttribute("san", 5);
+  sandbox.Math.random = () => 0.999;
+  await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006b_san_01" });
+  assert.equal(sanState.getAttribute("san"), 4, "SAN 1/1d4 成功应扣 1");
+
+  // ev006b：失败掷 1d4（骰点 1，损失 1）并弹掷骰提示。
+  const toastsBefore = realToasts.length;
+  const sanToasts = [];
+  const toastSink = (message) => { sanToasts.push(message); };
+  sanDiceEngine.ui = { ...createEngineUi(), toast: toastSink };
+  sandbox.Math.random = () => 0;
+  await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006b_san_01" });
+  assert.equal(sanState.getAttribute("san"), 3, "SAN 1/1d4 失败应按 1d4 扣损");
+  assert.equal(sanToasts.length, 1, "骰子损失应弹掷骰提示");
+  assert.equal(sanToasts[0].includes("1d4"), true, "提示应包含骰子表达式");
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
+// 引擎语义：越界回滚、无分支副作用、记录合并、普通动作。
+const actionState = createState();
+actionState.completeAttributeAllocation({ strength: 4, insight: 1 });
+const actionEngine = new Game.EventEngine({
+  events: [],
+  state: actionState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+
+Game.Dice.register("test_dice_out_of_range", async () => 7);
+await assert.rejects(
+  () => actionEngine.actions.get("check")({ type: "check", dice: "test_dice_out_of_range", outcomes: ["EV_ONLY"] }),
+  /无效的结果编号/,
+  "检定返回越界下标应报错"
+);
+
+Game.Dice.register("test_dice_side_effect", async (context) => {
+  context.state.modifyAttribute("strength", -1);
+  return 0;
+});
+const sideResult = await actionEngine.actions.get("check")({ type: "check", dice: "test_dice_side_effect" });
+assert.equal(sideResult, null, "无 outcomes 的检定应返回 null");
+assert.equal(actionState.getAttribute("strength"), 3, "骰子函数内可修改状态");
+assert.equal(actionState.checkResults.test_dice_side_effect.outcome, null, "副作用检定应记录 outcome=null");
+
+Game.Dice.register("test_dice_custom_record", async (context) => {
+  context.state.checkResults.test_dice_custom_record = { success: true };
+  return 0;
+});
+const recordResult = await actionEngine.actions.get("check")({ type: "check", dice: "test_dice_custom_record", outcomes: ["EV_A"] });
+assert.equal(recordResult.next, "EV_A", "应按返回下标跳转结果事件");
+assert.equal(actionState.checkResults.test_dice_custom_record.success, true, "骰子函数补充字段应保留");
+assert.equal(actionState.checkResults.test_dice_custom_record.outcome, 0, "引擎最小记录应写入 outcome");
+
+await actionEngine.actions.get("modifyAttribute")({ type: "modifyAttribute", attribute: "strength", amount: -1 });
+assert.equal(actionState.getAttribute("strength"), 2);
+await actionEngine.actions.get("setSkill")({ type: "setSkill", skill: "manual", value: true });
+assert.equal(actionState.getSkill("manual"), true);
+await actionEngine.actions.get("loseSkill")({ type: "loseSkill", skill: "strong" });
+await actionEngine.actions.get("learnSkill")({ type: "learnSkill", skill: "strong" });
+assert.equal(actionState.getSkill("strong"), true);
+assert.equal(actionState.skillOverrides.strong, true);
 
 const terminalState = createState();
 terminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
@@ -321,14 +405,19 @@ assert.equal(terminalState.getAttribute("strength"), 0, "终止状态不应回�
 assert.equal(terminalState.flags.continued, undefined, "终止后的动作不应继续执行");
 assert.equal(terminalCalls, 1, "终止回调应只执行一次");
 
+// 检定函数内把属性扣到 0 同样触发终止，事件链不再继续。
 const diceTerminalState = createState();
 diceTerminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
 let diceTerminalCalls = 0;
+Game.Dice.register("test_dice_terminal", async (context) => {
+  context.state.modifyAttribute("strength", -4);
+  return 0;
+});
 const diceTerminalEngine = new Game.EventEngine({
   events: [{
     id: "E_DICE_TERMINAL",
     actions: [
-      { type: "custom", name: "modifyAttributeByDice", params: { attribute: "strength", direction: "loss", count: 0, sides: 1, bonus: 4 } },
+      { type: "check", dice: "test_dice_terminal" },
       { type: "setFlag", key: "continued", value: true }
     ]
   }],
@@ -339,10 +428,9 @@ const diceTerminalEngine = new Game.EventEngine({
   shouldTerminate: (currentState) => currentState.getAttribute("strength") === 0,
   onTerminate: () => { diceTerminalCalls += 1; }
 });
-Game.registerProjectActions(diceTerminalEngine);
 await diceTerminalEngine.play("E_DICE_TERMINAL");
 assert.equal(diceTerminalState.getAttribute("strength"), 0);
-assert.equal(diceTerminalState.flags.continued, undefined, "骰子动作触发终止后不应继续执行");
+assert.equal(diceTerminalState.flags.continued, undefined, "骰子检定触发终止后不应继续执行");
 assert.equal(diceTerminalCalls, 1);
 
 console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档与终止状态。");
