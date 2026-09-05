@@ -5,6 +5,8 @@
 - `sample-input.md`：节选（E-001~E-008、E-012~E-014），逐字摘自 `Assets/Text/剧本.md`；
 - `sample-output.json`：按 `conversion-rules.md` 转换得到的候选事件（命名空间 `E_0NN`）。
 
+> 展示口径：下文以“转换分析口径”叙述（如“登记为自动推断 / 类别 A”），对应现行审查清单中的**执行台账**记录；审阅者在清单正文看到的是由此生成的人话提问与素材指定，展示格式见 `templates/review-checklist-template.md` 与 `conversion-rules.md` §13。
+
 ## 1. 转换总览（节选内）
 
 | 来源事件 | 候选事件 | 说明 |
