@@ -27,14 +27,14 @@
         "image": "assets/door.svg",
         "position": { "x": 39, "y": 21, "width": 22, "height": 63 },
         "zIndex": 11,
-        "clickEvent": "E_DOOR"
+        "clickEvent": "E_005"
       }
     ]
   },
   {
     "id": "carriage_07",
     "name": "7 号车厢",
-    "background": "assets/carriage-07.svg",
+    "background": "assets/carriage-07.png",
     "objects": [
       {
         "id": "radio_07",
@@ -51,6 +51,20 @@
         "position": { "x": 70, "y": 21, "width": 22, "height": 63 },
         "zIndex": 11,
         "clickEvent": "E_RETURN"
+      },
+      {
+        "id": "corpse_07",
+        "name": "尸体",
+        "image": "assets/corpse-07.svg",
+        "position": { "x": 20, "y": 55, "width": 25, "height": 20 },
+        "clickEvent": "E_007"
+      },
+      {
+        "id": "deep_07",
+        "name": "车厢深处",
+        "image": "assets/deep-07.svg",
+        "position": { "x": 78, "y": 25, "width": 20, "height": 45 },
+        "clickEvent": "E_008"
       }
     ]
   }

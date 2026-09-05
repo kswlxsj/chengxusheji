@@ -53,14 +53,14 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_DOOR"
+          "clickEvent": "E_005"
         }
       ]
     },
     {
       "id": "carriage_07",
       "name": "7 号车厢",
-      "background": "assets/carriage-07.svg",
+      "background": "assets/carriage-07.png",
       "objects": [
         {
           "id": "radio_07",
@@ -87,6 +87,30 @@ window.GAME_DATA = {
           },
           "zIndex": 11,
           "clickEvent": "E_RETURN"
+        },
+        {
+          "id": "corpse_07",
+          "name": "尸体",
+          "image": "assets/corpse-07.svg",
+          "position": {
+            "x": 20,
+            "y": 55,
+            "width": 25,
+            "height": 20
+          },
+          "clickEvent": "E_007"
+        },
+        {
+          "id": "deep_07",
+          "name": "车厢深处",
+          "image": "assets/deep-07.svg",
+          "position": {
+            "x": 78,
+            "y": 25,
+            "width": 20,
+            "height": 45
+          },
+          "clickEvent": "E_008"
         }
       ]
     }
@@ -1850,6 +1874,173 @@ window.GAME_DATA = {
           "item": "old_ticket"
         }
       ]
+    },
+    {
+      "id": "E_005",
+      "actions": [
+        {
+          "type": "check",
+          "checkId": "ev005_insight_01",
+          "attribute": "insight",
+          "success": "E_005_S",
+          "fail": "E_005_F"
+        }
+      ]
+    },
+    {
+      "id": "E_005_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。"
+        },
+        {
+          "type": "choice",
+          "prompt": "",
+          "options": [
+            {
+              "label": "继续前进",
+              "next": "E_006A"
+            },
+            {
+              "label": "放弃前进",
+              "next": "E_009"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_005_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。"
+        }
+      ],
+      "next": "E_006B"
+    },
+    {
+      "id": "E_006A",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_07"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢内部，被撕裂的人类肢体散落一地。"
+        },
+        {
+          "type": "check",
+          "checkId": "ev006a_san_01",
+          "attribute": "san",
+          "success": "E_006A_END",
+          "fail": "E_006A_SAN1"
+        }
+      ]
+    },
+    {
+      "id": "E_006A_SAN1",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        }
+      ],
+      "next": "E_006A_END"
+    },
+    {
+      "id": "E_006A_END",
+      "actions": []
+    },
+    {
+      "id": "E_006B",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_07"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢内部，被撕裂的人类肢体散落一地。"
+        },
+        {
+          "type": "check",
+          "checkId": "ev006b_san_01",
+          "attribute": "san",
+          "success": "E_006B_SAN1",
+          "fail": "E_006B_SAND"
+        }
+      ]
+    },
+    {
+      "id": "E_006B_SAN1",
+      "actions": [
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": -1
+        }
+      ],
+      "next": "E_006B_END"
+    },
+    {
+      "id": "E_006B_SAND",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "modifyAttributeByDice",
+          "params": {
+            "attribute": "san",
+            "direction": "loss",
+            "count": 1,
+            "sides": 4,
+            "bonus": 0,
+            "label": "SAN"
+          }
+        }
+      ],
+      "next": "E_006B_END"
+    },
+    {
+      "id": "E_006B_END",
+      "actions": []
+    },
+    {
+      "id": "E_007",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "尸体被浓浓的血浆覆盖着，四周散落着大大小小的尸块。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（检定：医学）"
+        }
+      ]
+    },
+    {
+      "id": "E_008",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你颤抖着望向车厢深处"
+        },
+        {
+          "type": "dialogue",
+          "text": "（检定：侦查）"
+        },
+        {
+          "type": "dialogue",
+          "text": "在不安的驱使下，你来到五号车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_009",
+      "actions": []
     }
   ],
   "items": [
