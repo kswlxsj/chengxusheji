@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.1.0**，数据格式版本 **2**（`meta.json.formatVersion`），存档版本 **2**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.1.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -58,8 +58,8 @@
 
 - ID 必须匹配 `^[A-Za-z][A-Za-z0-9_-]*$`。
 - 各注册表内不能重名；**物件 ID 在所有场景之间也必须全局唯一**。
-- 推荐事件使用 `E_` 前缀，检定使用 `事件语义_序号`，如 `door_insight_001`。
-- `checkId` 应匹配 ID 格式、全局唯一且长期稳定；当前 Schema 可提示格式错误，但编译器只检查它非空，不检查格式或重复。
+- 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如开场 `E_901`），避免未来与剧本编号冲突。
+- 检定（骰子）编号建议 `ev<事件编号原样，保留零填充>_<语义>_<序号>`（如 `ev005_insight_01`）；该编号对应 `src/dice.js` 中**唯一**一条检定规则，须匹配 ID 格式、全局唯一且长期稳定。Schema 校验格式；编译器通过 vm 加载 `src/dice.js` 校验事件引用确实已注册。
 - 素材路径相对于项目根目录（仓库内为 `Game/`），如 `assets/radio.svg`，不能写本机绝对路径。
 - 示例代码中的 `//` 注释只用于说明，实际 JSON 文件中不能保留注释。
 - `position` 均为相对于 16:9 游戏区域的百分比：`x/y` 是左上角，`width/height` 是按钮大小；窗口缩放后仍能对齐。
@@ -118,7 +118,7 @@
 
 | 字段 | 类型 | 用法 |
 | --- | --- | --- |
-| `formatVersion` | `2` | 当前数据协议版本，只能为 `2`。 |
+| `formatVersion` | `3` | 当前数据协议版本，只能为 `3`。 |
 | `title` | 非空字符串 | 主界面标题。 |
 | `coverImage` | 非空字符串 | 封面路径，建议 16:9；界面以 `object-fit: cover` 填满游戏区域。 |
 | `startEvent` | 事件 ID | 完成属性分配后自动播放。 |
@@ -128,7 +128,7 @@
 | `initialState.flags` | 对象 | 初始旗标。 |
 | `initialState.inventory` | 唯一 ID 数组 | 初始物品。 |
 | `initialState.objectStates` | 对象 | 以物件 ID 为键的初始状态。 |
-| `initialState.checkResults` | 对象 | 初始检定记录，通常为空。 |
+| `initialState.checkResults` | 对象 | 初始检定记录（以 dice 编号为键），通常为空。 |
 
 属性、技能、技能覆盖状态和属性分配标记由 `GameState` 创建，不写入 `initialState`。启动时先显示 `title`/`coverImage` 配置的主界面，玩家开始新游戏并完成属性分配后才自动播放 `startEvent`。
 
@@ -173,7 +173,7 @@
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。 |
 | `inspect` | `title`, `text` | `image` | 打开调查窗口并等待关闭。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
-| `check` | `checkId`, `attribute`, `success`, `fail` | `modifier`, `label` | 掷 1d6；骰点＋属性值＋修正 ≥ 11（引擎固定阈值）即成功，随后跳 `success`/`fail`。 |
+| `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
 | `changeScene` | `scene` | — | 关闭对话并加载场景。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
 | `modifyAttribute` | `attribute`, `amount` | — | 增减整数、限制边界并重算相关技能。 |
@@ -184,7 +184,7 @@
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 
-检定记录按 `checkId` 存于状态 `checkResults`，因此检定必须有全局唯一且稳定的 `checkId`；推荐格式 `事件语义_序号`（如 `door_insight_001`），不要依赖数组位置——编剧插入动作后位置会变。
+检定记录按 `dice` 编号存于状态 `checkResults`。每个 `dice` 编号对应 `src/dice.js` 里唯一一条可编程检定规则，且必须全局唯一、长期稳定（规则或剧情修改不能改编号，旧记录才可追溯）。引擎每次执行检定后自动合并写入最小记录 `{ dice, outcome }`：`outcomes` 非空时 `outcome` 为函数返回的下标，为空时为 `null`；检定函数可在返回前先写入补充字段，引擎合并保留。`outcomes` 里的分支事件不要依赖数组位置之外的信息——编剧插入动作后位置会变。
 
 完整事件示例：
 
@@ -241,7 +241,7 @@
   "name": "旧车票",
   "image": "assets/note.svg",
   "description": "一张已经褪色的车票。",
-  "inspectEvent": "E_ITEM_OLD_TICKET_001"
+  "inspectEvent": "E_903"
 }
 ```
 
@@ -340,7 +340,7 @@ const state = new TrainGame.GameState(
 ```json
 {
   "sceneId": "carriage_06",
-  "currentEventId": "E_NOTE",
+  "currentEventId": "E_902",
   "attributes": { "insight": 7, "san": 8 },
   "skills": { "keen_insight": false },
   "skillOverrides": {},
@@ -377,11 +377,11 @@ const saves = new TrainGame.SaveManager(state);
 | --- | --- |
 | `listSlots()` | 返回固定三个槽位的占用、兼容性、保存时间、场景和 SAN 摘要。 |
 | `hasSave(slot)` | 判断指定的 `1..3` 槽位是否存在数据。 |
-| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 2, savedAt, state }`；属性未分配完时拒绝。 |
+| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 3, savedAt, state }`；属性未分配完时拒绝。 |
 | `load(slot)` | 空槽返回 `false`；不兼容时抛错；成功恢复并返回 `true`。 |
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
-默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽 `train-game-save-slot-1` 至 `slot-3` 与旧单槽键 `train-game-save-v1` 均不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 2` 为准。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
+默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽 `train-game-save-slot-1` 至 `slot-3` 与旧单槽键 `train-game-save-v1` 均不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 3` 为准。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
 
 ### SceneManager（场景渲染与物件点击）
 
@@ -455,6 +455,29 @@ engine.registerCustomAction("shakeWindow", async (params, context) => {
 - 不要修改定义 `Map`；不要用普通延迟（`setTimeout`/普通 Promise）控制事件演出，等待一律用 `context.wait()`；异步等待后、继续修改状态前必须调用 `context.throwIfCancelled()`，避免已返回主界面的旧演出继续写状态。
 - 不要让 JSON 传入 JavaScript 源码，也不要按字符串访问 `window[name]` 或使用 `eval`。自定义动作的注册位置就是安全边界和组员协作清单：JSON 里写 `{ "type": "custom", "name": "shakeWindow", "params": { ... } }`，名称必须与 `registerCustomAction` 的注册名完全一致（编译器只检查名称格式，不确认 JS 已注册，因此必须实际触发验证）。
 
+### 检定：dice.js 注册表与 check 动作
+
+`Game/src/dice.js` 暴露 `TrainGame.Dice`（Registry），游戏内所有检定按编号注册为**独立可编程函数**；JSON 的 `check` 动作只传编号与结果事件列表，规则细节全部由函数负责：
+
+```javascript
+// dice.js 内新增/修改检定的形态；编号必须全局唯一、长期稳定
+registerDice("my_custom_roll_01", async (context, outcomes) => {
+  const score = context.state.getAttribute("insight") + 1 + Math.floor(Math.random() * 6);
+  context.ui.toast(`检定骰点：${score}`);
+  return score >= 11 ? 0 : 1; // 对应 outcomes[0] / outcomes[1]
+});
+```
+
+| 约定 | 说明 |
+| --- | --- |
+| 签名 | `async (context, outcomes) => 非负整数下标` |
+| context | 与[自定义动作上下文](#自定义动作上下文)一致（`state`/`scene`/`ui`/`engine`/`items`/`attributes`/`skills`/`wait`/`throwIfCancelled`） |
+| 返回值 | 引擎校验 `0 <= 下标 < outcomes.length` 后跳 `outcomes[下标]`；越界或非整数报错并回滚本事件链；`outcomes` 省略/为空时返回值被忽略（纯副作用，事件继续） |
+| 记录 | 引擎每次执行后自动合并写入 `state.checkResults[dice] = { dice, outcome }`（无分支时 `outcome: null`）；函数可先写补充字段（如 `checkResults[dice] = { 成功: true }`）供排查/复用 |
+| 规则内状态 | 一律经 `context.state` 接口修改（含扣损）；等待用 `context.wait()`、写状态前用 `context.throwIfCancelled()`，与自定义动作同一套安全边界 |
+
+建议：需要重复使用的低层能力（标准 1d6 属性检定、SAN 扣损掷骰等）做成 dice.js 内部的工厂函数，具体检定条目一行引用，保持条目独立可读。新增检定 = 改 `src/dice.js`（追加条目）+ 在 `events.json` 引用其编号与 `outcomes`；编译器通过 node:vm 加载 `src/dice.js` 校验引用与注册唯一性，运行时对未注册编号同样报错回滚。
+
 ### UI：GameWindow / TextPlayer / UIManager
 
 `new TrainGame.GameWindow(root, className)` 是窗口基类，负责窗口元素的基础生命周期与内容装载：
@@ -526,7 +549,7 @@ class NoticeWindow extends TrainGame.GameWindow {
 ```javascript
 game.state.snapshot()
 game.engine.getStableSnapshot()
-game.engine.play("E_NOTE")
+game.engine.play("E_902")
 game.scene.refresh()
 game.pauseGame()
 game.resumeGame()
