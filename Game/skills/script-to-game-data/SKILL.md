@@ -12,15 +12,6 @@ description: 把“剧本”形式的 Markdown（如《常暗之厢》事件剧�
 - 工作示例：见同目录 [`samples/sample-notes.md`](samples/sample-notes.md) 及配套样例文件（`sample-input.md`、`sample-output.json`）。
 - 空白清单模板：见同目录 [`templates/review-checklist-template.md`](templates/review-checklist-template.md)。
 
-## 触发
-
-### 何时使用
-- 用户要求“把剧本转成游戏数据 / JSON”“按剧本生成事件”“转换 / 清洗剧本”等，并给出输入文件。
-
-### 何时不使用
-- 用户只是讨论剧情内容、数值设计、框架功能——不执行转换。
-- 未明确指定输入文件，或指定文件不存在、不可读、不是剧本正文。
-
 ## 硬红线（贯穿全程，违规即失败）
 
 - 只允许输出到白名单 JSON（见 `conversion-rules.md` §11）；`attributes.json`、`skills.json`、`schemas/`、`src/`、`tools/`、`compiled-game-data.js`、`assets/` 永不写入。
@@ -146,3 +137,9 @@ description: 把“剧本”形式的 Markdown（如《常暗之厢》事件剧�
 | review checklist | 人机决策台账；空白模板 `templates/review-checklist-template.md`，产物落 `docs/conversion-reviews/review-checklist-<时间戳>.md` |
 | 原文占位行 | 不可落地内容的原文整行 `dialogue`（`conversion-rules.md` §9） |
 | 样例 | `samples/sample-input.md`（输入）、`samples/sample-output.json`（候选）、`samples/sample-notes.md`（逐条说明） |
+
+
+## 与用户交互的注意事项
+
+对用户给予充分的引导。
+如果你在阀门处有任何 **预期收到的固定词语** 作为指令，应该主动列举出来，并简单解释，以供用户选择。
