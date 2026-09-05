@@ -34,6 +34,17 @@
     return context.attributes.get(attribute)?.name || attribute;
   }
 
+  function skillName(context, skill) {
+    return context.skills.get(skill)?.name || skill;
+  }
+
+  async function showSkillResult(context, skill, success, detail) {
+    await context.ui.inspect.show({
+      title: success ? "技能检定成功" : "技能检定失败",
+      text: `${skillName(context, skill)}：${detail || (success ? "已掌握" : "尚未掌握")}。`
+    });
+  }
+
   // 标准 d6 属性检定：1d6 + 属性值 >= 阈值（默认 11）即成功。
   // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
   function attrCheck(attribute, threshold = DEFAULT_THRESHOLD) {
@@ -86,6 +97,149 @@
       return 0;
     };
   }
+
+  // 技能检定：技能已学会即成功，未学会即失败。
+  function learnedSkillCheck(skillId) {
+    return async (context) => {
+      const learned = context.state.getSkill(skillId);
+      await showSkillResult(context, skillId, learned, learned ? "已掌握" : "尚未掌握");
+      return learned ? 0 : 1;
+    };
+  }
+
+  // 当前项目约定：医学解锁后同步获得急救。
+  // skills.json 按用户要求暂不改写，因此这里用候选规则校正旧的医学自动阈值，
+  // 同时保留通过 learnSkill 手动获得医学时的同步行为。
+  function medicineCandidateUnlocked(context) {
+    const state = context.state;
+    const candidateThreshold = state.getAttribute("education") + state.getAttribute("insight") >= 13;
+    return candidateThreshold || (state.getSkill("medicine") && state.skillOverrides.medicine === true);
+  }
+
+  function conditionalSanCheck(attribute, passLoss, failLoss, condition) {
+    const check = sanCheck(attribute, passLoss, failLoss);
+    return async (context) => (condition(context) ? check(context) : 0);
+  }
+
+  // 已经进入剧本结局的 SAN 扣损：先记录结局原因，再执行剧本规定的 SAN 检定。
+  // 这样即使扣损把 SAN 降到 0，结束页仍显示对应的剧情结局，而不是误跳 SAN 归零页。
+  function endingSanCheck(reason, passLoss, failLoss) {
+    const check = sanCheck("san", passLoss, failLoss);
+    return async (context) => {
+      context.state.flags.ending_reason = reason;
+      return check(context);
+    };
+  }
+
+  // 幸运半值路线：奇数向下取整，再加 1d6 与阈值比较。
+  async function luckHalfCheck(context, threshold, label) {
+    const luck = context.state.getAttribute("luck");
+    const halfLuck = Math.floor(luck / 2);
+    const roll = rollDie(6);
+    const total = halfLuck + roll;
+    const success = total >= threshold;
+    await context.ui.inspect.show({
+      title: success ? "检定成功" : "检定失败",
+      text: `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}，1d6 掷出 ${roll}，合计 ${total}，需要达到 ${threshold}。`
+    });
+    return success ? 0 : 1;
+  }
+
+  // ==== 本批剧本候选检定 ====
+
+  registerDice("ev001_insight_01", attrCheck("insight"));
+  registerDice("ev004_insight_01", attrCheck("insight"));
+  registerDice("skill_scouting", learnedSkillCheck("scouting"));
+  registerDice("ev011_insight_01", attrCheck("insight"));
+  registerDice("skill_first_aid", async (context) => {
+    const success = context.state.getSkill("firstAid") || medicineCandidateUnlocked(context);
+    await showSkillResult(context, "firstAid", success, success ? "已掌握（医学解锁后同步获得）" : "尚未掌握");
+    return success ? 0 : 1;
+  });
+  registerDice("skill_medicine", learnedSkillCheck("medicine"));
+  registerDice("skill_talk", learnedSkillCheck("talk"));
+  registerDice("ev016_strength_01", attrCheck("strength"));
+
+  // E-018：背起乘务员走话术路线，否则走侦察路线。
+  registerDice("ev018_route_01", async (context) => {
+    if (context.state.flags.carried_crew) {
+      const success = context.state.getSkill("talk");
+      await showSkillResult(context, "talk", success, success ? "已掌握，乘务员愿意配合" : "尚未掌握，话术路线失败");
+      return success ? 0 : 1;
+    }
+    const success = context.state.getSkill("scouting");
+    await showSkillResult(context, "scouting", success, success ? "已掌握，找到了钥匙线索" : "尚未掌握，未找到钥匙");
+    return success ? 2 : 3;
+  });
+
+  // E-022：拥有潜行直接成功；否则使用幸运半值检定。
+  registerDice("ev022_stealth_or_luck_01", async (context) => {
+    if (context.state.getSkill("stealth")) {
+      await showSkillResult(context, "stealth", true, "已掌握，直接通过");
+      return 0;
+    }
+    return luckHalfCheck(context, 9, "潜行失败后的幸运检定");
+  });
+
+  registerDice("ev023_agility_01", attrCheck("agility"));
+  registerDice("ev023_throw_after_agility_fail_01", (context) => luckHalfCheck(context, 9, "敏捷失败后的投掷检定"));
+  registerDice("ev024_agility_01", attrCheck("agility"));
+
+  // E-025：返回 0=单只、1=两只，对应事件的两个结果分支。
+  registerDice("ev025_clicker_count_01", async (context) => {
+    const luck = context.state.getAttribute("luck");
+    if (luck < 7) {
+      await context.ui.inspect.show({
+        title: "数量判定",
+        text: `幸运 ${luck} < 7，固定遭遇两只 Clicker。`
+      });
+      return 1;
+    }
+    const roll = rollDie(6);
+    const one = roll >= 3;
+    await context.ui.inspect.show({
+      title: "数量判定",
+      text: `幸运 ${luck}，1d6 掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`
+    });
+    return one ? 0 : 1;
+  });
+  registerDice("ev025_strength_01", attrCheck("strength"));
+
+  // 便签正面、背面、地图均调查完成且敏捷至少为 5 时解锁侦察。
+  registerDice("ev_scouting_unlock_01", async (context) => {
+    const flags = context.state.flags;
+    const success = flags.note_front_seen && flags.note_back_seen && flags.map_seen
+      && context.state.getAttribute("agility") >= 5 ? 0 : 1;
+    await context.ui.inspect.show({
+      title: success === 0 ? "技能解锁成功" : "技能尚未解锁",
+      text: success === 0 ? "你掌握了侦察。" : "还需要调查便签正面、便签背面和电车示意图，且敏捷至少为 5。"
+    });
+    return success;
+  });
+
+  registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
+  registerDice("ev010_san_01", sanCheck("san", 0, 1));
+  registerDice("ev010_join_route_01", async (context) => (
+    context.state.flags.ev008_scouting_ok ? 0 : 1
+  ));
+  registerDice("ev011_san_01", sanCheck("san", 0, 1));
+  registerDice("ev014_san_01", sanCheck("san", 0, { count: 1, sides: 2 }));
+  registerDice("ev021_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
+  registerDice(
+    "ev021_extra_san_01",
+    conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => !context.state.flags.visited_carriage_07)
+  );
+  registerDice("ev028_talk_or_strength_01", async (context) => {
+    const talk = context.state.getSkill("talk");
+    const strength = context.state.getAttribute("strength");
+    const success = talk || strength >= 8;
+    await context.ui.inspect.show({
+      title: success ? "结局判定成功" : "结局判定失败",
+      text: `话术：${talk ? "已掌握" : "未掌握"}；力量：${strength}，需要话术已掌握或力量达到 8。`
+    });
+    return success ? 0 : 1;
+  });
+  registerDice("ev030_san_01", endingSanCheck("bad_end", { count: 1, sides: 4 }, { count: 1, sides: 10 }));
 
   // ==== 游戏内检定条目（编号必须全局唯一、长期稳定，被 events.json 的 check.dice 引用）====
 

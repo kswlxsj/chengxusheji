@@ -236,13 +236,25 @@
       const initialTotal = definitions.reduce((sum, definition) => sum + definition.initial, 0);
       const targetTotal = initialTotal + totalPoints;
       let remaining = totalPoints;
+      // 新游戏默认均衡填满全部可分配点数，方便直接开始测试；玩家仍可在确认前手动调整。
+      while (remaining > 0) {
+        let changed = false;
+        for (const definition of definitions) {
+          if (remaining <= 0) break;
+          if (values[definition.id] >= definition.max) continue;
+          values[definition.id] += 1;
+          remaining -= 1;
+          changed = true;
+        }
+        if (!changed) throw new Error("属性上限不足以分配全部初始属性点");
+      }
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop attribute-allocation-backdrop";
       const heading = document.createElement("h1");
       heading.textContent = "分配属性点";
       const introduction = document.createElement("p");
       introduction.className = "allocation-introduction";
-      introduction.textContent = `请将 ${totalPoints} 点全部分配完毕。普通属性最高为 10，SAN 初始为 5。`;
+      introduction.textContent = `已自动均衡分配 ${totalPoints} 点，可直接确认；也可以继续调整。普通属性最高为 10，SAN 初始为 5。`;
       const summary = document.createElement("div");
       summary.className = "allocation-summary";
       const remainingText = document.createElement("p");

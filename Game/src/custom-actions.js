@@ -14,5 +14,13 @@
         shell.classList.remove("flash");
       }
     });
+
+    engine.registerCustomAction("endGame", async (params, context) => {
+      const reason = params.reason;
+      if (!["true_end", "bad_end"].includes(reason)) {
+        throw new Error(`未知结局类型：${reason || "空"}`);
+      }
+      context.state.flags.ending_reason = reason;
+    });
   };
 })(window.TrainGame);

@@ -5,5 +5,33 @@
     "image": "assets/note.svg",
     "description": "一张已经褪色的车票，背面写着无法辨认的日期。",
     "inspectEvent": "E_903"
+  },
+  {
+    "id": "bottle",
+    "name": "瓶子",
+    "image": "assets/placeholder-bottle.svg",
+    "description": "一个可以用来制造声响、转移 Clicker 注意的瓶子。",
+    "inspectEvent": "E_023_BOTTLE"
+  },
+  {
+    "id": "newspaper",
+    "name": "报纸",
+    "image": "assets/newspaper-05.png",
+    "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
+    "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
+  },
+  {
+    "id": "crew_keys",
+    "name": "驾驶室与操作面板钥匙",
+    "image": "assets/placeholder-key.svg",
+    "description": "驾驶室钥匙和操作面板钥匙。",
+    "inspectEvent": "E_ITEM_KEYS_INSPECT"
+  },
+  {
+    "id": "phone",
+    "name": "手机",
+    "image": "assets/phone.png",
+    "description": "一部手机。",
+    "inspectEvent": "E_ITEM_PHONE_INSPECT"
   }
 ]

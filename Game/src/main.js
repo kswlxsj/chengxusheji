@@ -22,12 +22,14 @@
     scene,
     ui,
     items: data.items,
-    shouldTerminate: (currentState) => currentState.getAttribute("san") <= 0,
+    shouldTerminate: (currentState) => Boolean(currentState.flags.ending_reason)
+      || currentState.getAttribute("san") <= 0,
     onTerminate: () => {
       if (ending) return;
       ending = true;
       flow.clearTransfer();
-      flow.navigate("ending", { reason: "san" }, true);
+      const reason = state.flags.ending_reason || "san";
+      flow.navigate("ending", { reason }, true);
     }
   });
   const gameShell = document.querySelector("#game-shell");

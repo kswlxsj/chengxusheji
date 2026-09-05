@@ -1,0 +1,6 @@
+<!-- placeholder: 钥匙图标，正式素材待替换 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="钥匙占位图标">
+  <rect width="160" height="160" rx="18" fill="#242a33"/>
+  <circle cx="58" cy="63" r="28" fill="none" stroke="#d8b36a" stroke-width="12"/>
+  <path d="M78 83 133 138M108 113l13-13M119 124l13-13" fill="none" stroke="#d8b36a" stroke-linecap="round" stroke-width="12"/>
+</svg>

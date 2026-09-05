@@ -17,13 +17,32 @@
   <main class="site-shell content-page ending-page">
     <section class="page-panel compact-panel">
       <p class="page-kicker">旅程终止</p>
-      <h1>你的理智已归于虚无</h1>
-      <p class="page-introduction">SAN 已降至 0。本次游戏已经结束，你可以返回主页或读取上一次保存的稳定状态。</p>
+      <h1 id="ending-title">你的理智已归于虚无</h1>
+      <p id="ending-description" class="page-introduction">SAN 已降至 0。本次游戏已经结束，你可以返回主页或读取上一次保存的稳定状态。</p>
       <nav class="page-actions horizontal-actions">
         <a href="home.html">返回主页</a>
         <a href="save-manager.html">读取存档</a>
       </nav>
     </section>
   </main>
+  <script>
+    const endingText = {
+      true_end: {
+        title: "终点站已到",
+        description: "列车恢复正常，你们从共同的噩梦中醒来。本次游戏已经结束。"
+      },
+      bad_end: {
+        title: "意识与身体一同消失",
+        description: "列车驶入黑暗，恐怖的记忆挥之不去。本次游戏已经结束。"
+      },
+      san: {
+        title: "你的理智已归于虚无",
+        description: "SAN 已降至 0。本次游戏已经结束。"
+      }
+    };
+    const ending = endingText[new URLSearchParams(window.location.search).get("reason")] || endingText.san;
+    document.querySelector("#ending-title").textContent = ending.title;
+    document.querySelector("#ending-description").textContent = `${ending.description}你可以返回主页或读取上一次保存的稳定状态。`;
+  </script>
 </body>
 </html>

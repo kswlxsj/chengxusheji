@@ -236,6 +236,7 @@ assert.equal(inspectedItem.image, "assets/note.svg", "物品调查应读取注�
 assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
+assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定应已注册");
 
 function createEngineUi() {
   return {
@@ -256,6 +257,96 @@ function createEngineScene() {
   };
 }
 
+const originalRandom = sandbox.Math.random;
+
+function createRegisteredStateWith(values = {}) {
+  const state = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  state.completeAttributeAllocation({
+    strength: 7,
+    agility: 7,
+    education: 7,
+    insight: 7,
+    will: 10,
+    luck: 10,
+    constitution: 3,
+    san: 5,
+    ...values
+  });
+  return state;
+}
+
+// 当前项目约定：医学达到教育+灵感 >= 13 后同步视为已掌握急救；不能误用旧的教育 >= 7 自动条件。
+const firstAidLowState = createRegisteredStateWith({ education: 7, insight: 3, constitution: 7 });
+const firstAidHighInsightState = createRegisteredStateWith({ education: 6, insight: 7, constitution: 4 });
+const firstAidContext = (state) => ({
+  state,
+  attributes: state.attributeDefinitions,
+  skills: state.skillDefinitions,
+  ui: createEngineUi()
+});
+assert.equal(
+  await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidLowState), []),
+  1,
+  "教育 7、灵感 3 不应因旧医学阈值而获得急救"
+);
+assert.equal(
+  await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidHighInsightState), []),
+  0,
+  "教育 6、灵感 7 达到医学候选阈值后应同步获得急救"
+);
+
+// E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。
+const routeState = createRegisteredStateWith();
+routeState.flags.ev008_scouting_ok = false;
+assert.equal(await Game.Dice.get("ev010_join_route_01")(firstAidContext(routeState), ["E_011", "E_012"]), 1);
+routeState.flags.ev008_scouting_ok = true;
+assert.equal(await Game.Dice.get("ev010_join_route_01")(firstAidContext(routeState), ["E_011", "E_012"]), 0);
+
+// 正式结局动作应在后续动作执行前触发终止，并保留结局原因。
+const endingState = createState();
+endingState.completeAttributeAllocation({ strength: 4, insight: 1 });
+let endingCalls = 0;
+const endingEngine = new Game.EventEngine({
+  events: [{
+    id: "E_TRUE_END",
+    actions: [
+      { type: "custom", name: "endGame", params: { reason: "true_end" } },
+      { type: "setFlag", key: "continued", value: true }
+    ]
+  }],
+  state: endingState,
+  items: [],
+  scene: createEngineScene(),
+  ui: createEngineUi(),
+  shouldTerminate: (currentState) => Boolean(currentState.flags.ending_reason)
+    || currentState.getAttribute("strength") <= 0,
+  onTerminate: () => { endingCalls += 1; }
+});
+Game.registerProjectActions(endingEngine);
+await endingEngine.play("E_TRUE_END");
+assert.equal(endingState.flags.ending_reason, "true_end");
+assert.equal(endingState.flags.continued, undefined, "结局后的动作不应继续执行");
+assert.equal(endingCalls, 1);
+
+// E-030 的 SAN 1d4/1d10 应真实掷骰，并标记为 Bad End；即使 SAN 归零也不能改跳 SAN 结局。
+const badEndingState = createRegisteredStateWith({ san: 5 });
+const badEndingUi = createEngineUi();
+const badEndingEngine = new Game.EventEngine({
+  events: [],
+  state: badEndingState,
+  items: [],
+  scene: {},
+  ui: badEndingUi
+});
+try {
+  sandbox.Math.random = () => 0;
+  await badEndingEngine.actions.get("check")({ type: "check", dice: "ev030_san_01" });
+  assert.equal(badEndingState.flags.ending_reason, "bad_end");
+  assert.equal(badEndingState.getAttribute("san"), 4, "E-030 失败应按 1d10 扣损，骰点为 1 时扣 1");
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
 // 确定性掷骰：骰点恒为 6（成功线）或恒为 1（失败线），验证真实检定条目。
 const realUi = createEngineUi();
 const realUiInspects = [];
@@ -269,7 +360,6 @@ const realDiceEngine = new Game.EventEngine({
   scene: {},
   ui: realUi
 });
-const originalRandom = sandbox.Math.random;
 try {
   // ev005 灵感检定：属性 7，骰点 6 成功、骰点 1 失败，走 outcomes 分支。
   sandbox.Math.random = () => 0.999;

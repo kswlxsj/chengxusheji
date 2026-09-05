@@ -2,19 +2,47 @@
   {
     "id": "E_901",
     "actions": [
-      { "type": "changeScene", "scene": "carriage_06" },
-      { "type": "dialogue", "text": "你在规律的铁轨声中醒来。车厢里没有别人。" },
-      { "type": "dialogue", "text": "试着调查门上的便签，或者直接触碰车厢门。" },
-      { "type": "setFlag", "key": "gameStarted", "value": true }
+      {
+        "type": "changeScene",
+        "scene": "carriage_06"
+      },
+      {
+        "type": "dialogue",
+        "text": "你在规律的铁轨声中醒来。车厢里没有别人。"
+      },
+      {
+        "type": "dialogue",
+        "text": "试着调查门上的便签，或者直接触碰车厢门。"
+      },
+      {
+        "type": "setFlag",
+        "key": "gameStarted",
+        "value": true
+      }
     ]
   },
   {
     "id": "E_902",
     "actions": [
-      { "type": "dialogue", "text": "便签被潮气浸得发软，背面却粘着一张旧车票。" },
-      { "type": "addItem", "item": "old_ticket" },
-      { "type": "setObjectState", "object": "note_06", "patch": { "hidden": true } },
-      { "type": "dialogue", "text": "你获得了【旧车票】。便签从门上消失了。" }
+      {
+        "type": "dialogue",
+        "text": "便签被潮气浸得发软，背面却粘着一张旧车票。"
+      },
+      {
+        "type": "addItem",
+        "item": "old_ticket"
+      },
+      {
+        "type": "setObjectState",
+        "object": "note_06",
+        "patch": {
+          "hidden": true
+        }
+      },
+      {
+        "type": "dialogue",
+        "text": "你获得了【旧车票】。便签从门上消失了。"
+      }
     ]
   },
   {
@@ -23,20 +51,32 @@
       {
         "type": "check",
         "dice": "ev005_insight_01",
-        "outcomes": ["E_005_S", "E_005_F"]
+        "outcomes": [
+          "E_005_S",
+          "E_005_F"
+        ]
       }
     ]
   },
   {
     "id": "E_005_S",
     "actions": [
-      { "type": "dialogue", "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。" },
+      {
+        "type": "dialogue",
+        "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。"
+      },
       {
         "type": "choice",
         "prompt": "",
         "options": [
-          { "label": "继续前进", "next": "E_006A" },
-          { "label": "放弃前进", "next": "E_009" }
+          {
+            "label": "继续前进",
+            "next": "E_006A"
+          },
+          {
+            "label": "放弃前进",
+            "next": "E_009"
+          }
         ]
       }
     ]
@@ -44,15 +84,24 @@
   {
     "id": "E_005_F",
     "actions": [
-      { "type": "dialogue", "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。" }
+      {
+        "type": "dialogue",
+        "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。"
+      }
     ],
     "next": "E_006B"
   },
   {
     "id": "E_006A",
     "actions": [
-      { "type": "changeScene", "scene": "carriage_07" },
-      { "type": "dialogue", "text": "车厢内部，被撕裂的人类肢体散落一地。" },
+      {
+        "type": "changeScene",
+        "scene": "carriage_07"
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢内部，被撕裂的人类肢体散落一地。"
+      },
       {
         "type": "check",
         "dice": "ev006a_san_01"
@@ -62,8 +111,14 @@
   {
     "id": "E_006B",
     "actions": [
-      { "type": "changeScene", "scene": "carriage_07" },
-      { "type": "dialogue", "text": "车厢内部，被撕裂的人类肢体散落一地。" },
+      {
+        "type": "changeScene",
+        "scene": "carriage_07"
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢内部，被撕裂的人类肢体散落一地。"
+      },
       {
         "type": "check",
         "dice": "ev006b_san_01"
@@ -73,21 +128,61 @@
   {
     "id": "E_007",
     "actions": [
-      { "type": "dialogue", "text": "尸体被浓浓的血浆覆盖着，四周散落着大大小小的尸块。" },
-      { "type": "dialogue", "text": "（检定：医学）" }
+      {
+        "type": "dialogue",
+        "text": "尸体被浓浓的血浆覆盖着，四周散落着大大小小的尸块。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_medicine",
+        "outcomes": [
+          "E_007_S",
+          "E_007_F"
+        ]
+      }
     ]
   },
   {
     "id": "E_008",
     "actions": [
-      { "type": "dialogue", "text": "你颤抖着望向车厢深处" },
-      { "type": "dialogue", "text": "（检定：侦查）" },
-      { "type": "dialogue", "text": "在不安的驱使下，你来到五号车厢。" }
+      {
+        "type": "dialogue",
+        "text": "你颤抖着望向车厢深处"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_008_S",
+          "E_008_F"
+        ]
+      }
     ]
   },
   {
     "id": "E_009",
-    "actions": []
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_05"
+      },
+      {
+        "type": "dialogue",
+        "text": "5号车厢仍是正常车厢的模样，四周散落着各种各样的物品。"
+      },
+      {
+        "type": "dialogue",
+        "text": "呼...呼...太好了。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_009_S",
+          "E_009_F"
+        ]
+      }
+    ]
   },
   {
     "id": "E_903",
@@ -112,8 +207,1482 @@
   {
     "id": "E_905",
     "actions": [
-      { "type": "changeScene", "scene": "carriage_06" },
-      { "type": "dialogue", "text": "你回到了 6 号车厢。已经拿走的便签不会重新出现。" }
+      {
+        "type": "changeScene",
+        "scene": "carriage_06"
+      },
+      {
+        "type": "dialogue",
+        "text": "你回到了 6 号车厢。已经拿走的便签不会重新出现。"
+      }
+    ]
+  },
+  {
+    "id": "E_001",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "2013年的某天，你们搭乘本日的1号线末班电车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "目的地是终点站，车上的乘客无论是在加班后也好，还是参加了酒会后也好，都各自拖着疲累的身躯在车厢里陷入了深沉的睡眠。"
+      },
+      {
+        "type": "dialogue",
+        "text": "由于睡得太熟，直到现在才醒来的你发现车厢里除了他们没有其他的乘客。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你并不清楚自己睡了多久，但电车还在继续奔走。"
+      },
+      {
+        "type": "dialogue",
+        "text": "窗外没有任何街灯或照明，有如在漆黑的隧道中。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你发现所在车厢的门扉上贴着一张便签。"
+      },
+      {
+        "type": "check",
+        "dice": "ev001_insight_01",
+        "outcomes": [
+          "E_001_S",
+          "E_001_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_001_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你察觉到现在明明早应该到了终点站了，不祥的预感在你心头笼罩。"
+      }
+    ]
+  },
+  {
+    "id": "E_001_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你没发现任何异常，或许你只是睡过了站。"
+      }
+    ]
+  },
+  {
+    "id": "E_002",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "门扉上贴着便签，写着："
+      },
+      {
+        "type": "dialogue",
+        "text": "「只管前进吧 已经没有退路了」"
+      },
+      {
+        "type": "dialogue",
+        "text": "这是......什么意思？"
+      },
+      {
+        "type": "setFlag",
+        "key": "note_front_seen",
+        "value": true
+      },
+      {
+        "type": "setObjectState",
+        "object": "note_06",
+        "patch": {
+          "hidden": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "E_003",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "撕下便签查看背面，上面写着："
+      },
+      {
+        "type": "dialogue",
+        "text": "「第三个箱子里有藏着钥匙」"
+      },
+      {
+        "type": "dialogue",
+        "text": "箱子？这里哪有箱子。"
+      },
+      {
+        "type": "setFlag",
+        "key": "note_back_seen",
+        "value": true
+      },
+      {
+        "type": "setObjectState",
+        "object": "note_back_06",
+        "patch": {
+          "hidden": true
+        }
+      }
+    ],
+    "next": "E_SCOUTING_UNLOCK"
+  },
+  {
+    "id": "E_004",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "门扉旁有电车示意图。"
+      },
+      {
+        "type": "check",
+        "dice": "ev004_insight_01",
+        "outcomes": [
+          "E_004_S",
+          "E_004_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_004_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你仔细查看这张地图，忽然发觉哪里不对————"
+      },
+      {
+        "type": "dialogue",
+        "text": "7号车厢以后的地图是被人蓄意涂掉的。"
+      },
+      {
+        "type": "setFlag",
+        "key": "map_seen",
+        "value": true
+      },
+      {
+        "type": "setObjectState",
+        "object": "map_06",
+        "patch": {
+          "hidden": true
+        }
+      }
+    ],
+    "next": "E_SCOUTING_UNLOCK"
+  },
+  {
+    "id": "E_004_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你努力查看这张地图，只能看出7号车厢以后的部分看不清楚。"
+      },
+      {
+        "type": "setFlag",
+        "key": "map_seen",
+        "value": true
+      },
+      {
+        "type": "setObjectState",
+        "object": "map_06",
+        "patch": {
+          "hidden": true
+        }
+      }
+    ],
+    "next": "E_SCOUTING_UNLOCK"
+  },
+  {
+    "id": "E_007_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你观察尸体，发现距离死亡时间并未过去很久。"
+      },
+      {
+        "type": "setFlag",
+        "key": "visited_carriage_07",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "E_007_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你观察尸体，但并未发现任何异常。"
+      },
+      {
+        "type": "setFlag",
+        "key": "visited_carriage_07",
+        "value": true
+      }
+    ]
+  },
+  {
+    "id": "E_008_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "眼前的景象让你动弹不得。"
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢深处有巨大类似嘴巴的东西正在啃蚀车厢——那是某个比电车还要巨大的存在。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（主角表情：惊恐）这，这是什么！"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev008_scouting_ok",
+        "value": true
+      },
+      {
+        "type": "check",
+        "dice": "ev008_san_01"
+      },
+      {
+        "type": "setFlag",
+        "key": "visited_carriage_07",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "在不安的驱使下，你来到五号车厢。"
+      }
+    ],
+    "next": "E_009"
+  },
+  {
+    "id": "E_008_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "原本应有8号车厢门的地方只剩一片漆黑，你感到莫名的不适。"
+      },
+      {
+        "type": "dialogue",
+        "text": "这是什么情况？"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev008_scouting_ok",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "visited_carriage_07",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "在不安的驱使下，你来到五号车厢。"
+      }
+    ],
+    "next": "E_009"
+  },
+  {
+    "id": "E_009_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "在杂乱无章的物品中，你找到一份报纸。"
+      },
+      {
+        "type": "dialogue",
+        "text": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。"
+      },
+      {
+        "type": "dialogue",
+        "text": "昨晚1号线末班车...？"
+      },
+      {
+        "type": "addItem",
+        "item": "newspaper"
+      }
+    ],
+    "next": "E_010"
+  },
+  {
+    "id": "E_009_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
+      },
+      {
+        "type": "check",
+        "dice": "ev010_join_route_01",
+        "outcomes": [
+          "E_011",
+          "E_012"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_010",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_010_S",
+          "E_010_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_010_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你发现报纸的日期是第二天。"
+      },
+      {
+        "type": "dialogue",
+        "text": "它所报道的，正是你现在乘坐的这一班车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你顿时毛骨悚然，先前不祥的预感得到了验证。"
+      }
+    ],
+    "next": "E_010_JOIN"
+  },
+  {
+    "id": "E_010_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你没看出有什么异常，或许是今晚遇到的事情太多，让你有些晕字。"
+      },
+      {
+        "type": "dialogue",
+        "text": "装神弄鬼的，到底在说什么。"
+      }
+    ],
+    "next": "E_010_JOIN"
+  },
+  {
+    "id": "E_010_JOIN",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev010_san_01"
+      },
+      {
+        "type": "check",
+        "dice": "ev010_join_route_01",
+        "outcomes": [
+          "E_011",
+          "E_012"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_011",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你忽然感觉背后有哪里不对，于是你转身看去。"
+      },
+      {
+        "type": "check",
+        "dice": "ev011_insight_01",
+        "outcomes": [
+          "E_011_S",
+          "E_011_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_011_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "（主角表情：惊恐）你不可置信地看着。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你的眼前，6号车厢已消失近半。"
+      },
+      {
+        "type": "dialogue",
+        "text": "那个大嘴怪物，追上来了！"
+      },
+      {
+        "type": "check",
+        "dice": "ev011_san_01"
+      }
+    ],
+    "next": "E_011_JOIN"
+  },
+  {
+    "id": "E_011_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你没发现什么特别的东西，过量的恐惧与紧张已麻痹了你的神经。"
+      }
+    ],
+    "next": "E_011_JOIN"
+  },
+  {
+    "id": "E_011_JOIN",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_04"
+      },
+      {
+        "type": "dialogue",
+        "text": "当你回过神来，你发现5号车厢居然已经不见了大半，残缺的车厢不断摇晃，四周布满着令人绝望的黑暗。"
+      },
+      {
+        "type": "dialogue",
+        "text": "本能驱使着你向前跑去，你来到4号车厢。"
+      }
+    ],
+    "next": "E_012"
+  },
+  {
+    "id": "E_012",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_04"
+      },
+      {
+        "type": "dialogue",
+        "text": "一进入车厢，你就发现一名重伤昏迷的乘务员倒在地上。"
+      }
+    ]
+  },
+  {
+    "id": "E_013",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "skill_first_aid",
+        "outcomes": [
+          "E_013_S",
+          "E_013_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_013_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "乘务员苏醒过来。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "啊...呃...天哪..."
+      }
+    ],
+    "next": "E_014"
+  },
+  {
+    "id": "E_013_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+      },
+      {
+        "type": "dialogue",
+        "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+      }
+    ],
+    "next": "E_017"
+  },
+  {
+    "id": "E_014",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "乘务员表情十分痛苦，脸上不停地冒着冷汗，但你惊讶地发现她居然还能发出声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "或许这就是逃离这里的钥匙。"
+      },
+      {
+        "type": "dialogue",
+        "text": "您好，您还能说话吗，您知道这里发生了什么吗。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "看...看起来像是人的怪物，突然间袭击了我们."
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "他们向着乘客一个一个咬去，有如野兽在捕食一般。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "那场面简直像是人间地狱，到处都是惨叫。我当时在逃跑时候也被咬到了，万幸的是我跑了出来"
+      },
+      {
+        "type": "dialogue",
+        "text": "你不敢相信这样人吃人的故事，但乘务员腿上的咬伤又强迫着你相信。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你硬着头皮，想要追问更多信息。"
+      },
+      {
+        "type": "check",
+        "dice": "ev014_san_01"
+      }
+    ],
+    "next": "E_014_TALK"
+  },
+  {
+    "id": "E_014_TALK",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "skill_talk",
+        "outcomes": [
+          "E_014_TALK_S",
+          "E_014_TALK_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_014_TALK_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "那，那些怪物是怎么样的，您能想起来吗？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "样子...跑得太匆忙，我记不清了。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "但我记得他们对于声音似乎很敏感，我当时被咬伤的时候，疼的把手边的一个东西甩到了墙壁上，吸引了他们的注意力。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "呃啊..."
+      }
+    ],
+    "next": "E_015"
+  },
+  {
+    "id": "E_014_TALK_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "冲击性的消息把你的脑子搅成一团乱麻，你不知道你该问什么。"
+      }
+    ],
+    "next": "E_015"
+  },
+  {
+    "id": "E_015",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "乘务员看着列车还在行进，突然想到了什么。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "我原本...保管着驾驶室钥匙和操作面板钥匙，放在随身黑色包里。"
+      },
+      {
+        "type": "dialogue",
+        "text": "钥匙！？在哪里？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "逃跑...逃跑时背带被切断了，没时间去捡。"
+      },
+      {
+        "type": "dialogue",
+        "text": "天呐...那大概掉在哪里您记得吗。"
+      },
+      {
+        "type": "dialogue",
+        "text": "乘务员皱起眉头，努力回想。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "大概在... 3号车厢前门附近。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "...请想办法停车逃跑，拜托了。"
+      }
+    ],
+    "next": "E_016"
+  },
+  {
+    "id": "E_016",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你心下了然，生命的重量压得你有些喘不过气。"
+      },
+      {
+        "type": "dialogue",
+        "text": "看来不得不去3号车厢找钥匙了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "看着眼前腿部重伤的乘务员，你内心万般纠结。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "背起乘务员",
+            "next": "E_016_CARRY_CHECK"
+          },
+          {
+            "label": "留下乘务员",
+            "next": "E_017"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_016_CARRY_CHECK",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev016_strength_01",
+        "outcomes": [
+          "E_016_CARRY_SUCCESS",
+          "E_016_CARRY_FAIL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_016_CARRY_SUCCESS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你深呼吸，将乘务员的手环在自己的脖子上，自己则用手托着她。"
+      },
+      {
+        "type": "dialogue",
+        "text": "这么多年的体测可不是白测的！咿呀————你成功背起乘务员。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": true
+      }
+    ],
+    "next": "E_017"
+  },
+  {
+    "id": "E_016_CARRY_FAIL",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "作为多年来的体育苦手，你着实无法背起一名成年女性。"
+      },
+      {
+        "type": "dialogue",
+        "text": "在乘务员鼓励的眼神下，你强忍着泪光，独自向3号车厢走去。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": false
+      }
+    ],
+    "next": "E_017"
+  },
+  {
+    "id": "E_017",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢内散落大量行李，你们的行动受阻。"
+      },
+      {
+        "type": "dialogue",
+        "text": "无奈之下，你拼尽全力瞪大双眼寻找。"
+      },
+      {
+        "type": "dialogue",
+        "text": "功夫不负有心人，你找到了那个黑色背包。"
+      }
+    ],
+    "next": "E_018"
+  },
+  {
+    "id": "E_018",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev018_route_01",
+        "outcomes": [
+          "E_018_PASSENGER_TALK_S",
+          "E_018_PASSENGER_TALK_F",
+          "E_018_NO_PASSENGER_SCOUT_S",
+          "E_018_NO_PASSENGER_SCOUT_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_018_PASSENGER_TALK_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "乘务员一阵翻找，找到了那两个钥匙。"
+      },
+      {
+        "type": "dialogue",
+        "text": "不知怎的，你认为应该由你来保管它们。"
+      },
+      {
+        "type": "dialogue",
+        "text": "让我来保管钥匙吧，我现在还有体力，神智也算清晰。"
+      },
+      {
+        "type": "dialogue",
+        "text": "乘务员想了想，把钥匙递给你。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得钥匙）"
+      },
+      {
+        "type": "addItem",
+        "item": "crew_keys"
+      }
+    ],
+    "next": "E_018_SEARCH"
+  },
+  {
+    "id": "E_018_PASSENGER_TALK_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "乘务员一阵翻找，找到了那两个钥匙。"
+      },
+      {
+        "type": "dialogue",
+        "text": "不知怎的，你认为应该由你来保管它们。"
+      },
+      {
+        "type": "dialogue",
+        "text": "让我来保管钥匙吧。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "没事，我来拿着吧。"
+      }
+    ],
+    "next": "E_018_SEARCH"
+  },
+  {
+    "id": "E_018_NO_PASSENGER_SCOUT_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你一阵翻找，终于找到钥匙。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得钥匙）"
+      },
+      {
+        "type": "addItem",
+        "item": "crew_keys"
+      }
+    ],
+    "next": "E_018_SEARCH"
+  },
+  {
+    "id": "E_018_NO_PASSENGER_SCOUT_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你翻找了半天，最后还是没有找到钥匙。"
+      },
+      {
+        "type": "dialogue",
+        "text": "无奈之下，你只能暂时拿着黑色背包。"
+      }
+    ],
+    "next": "E_018_SEARCH"
+  },
+  {
+    "id": "E_018_SEARCH",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你决定再在四周找找，或许有能用的东西。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_018_SEARCH_S",
+          "E_018_SEARCH_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_018_SEARCH_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你找了一部手机。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得手机）"
+      },
+      {
+        "type": "addItem",
+        "item": "phone"
+      }
+    ],
+    "next": "E_019"
+  },
+  {
+    "id": "E_018_SEARCH_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你什么都没找到。"
+      }
+    ],
+    "next": "E_019"
+  },
+  {
+    "id": "E_019",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你向2号车厢看去，一片漆黑。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_019_S",
+          "E_019_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_019_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你感觉黑暗中有人影行走，差不多有两三只。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得手机）"
+      },
+      {
+        "type": "addItem",
+        "item": "phone"
+      }
+    ],
+    "next": "E_020"
+  },
+  {
+    "id": "E_019_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你觉得很黑，什么都看不清。"
+      }
+    ],
+    "next": "E_020"
+  },
+  {
+    "id": "E_020",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_02"
+      },
+      {
+        "type": "dialogue",
+        "text": "四周毫无光源。"
+      },
+      {
+        "type": "dialogue",
+        "text": "在一片漆黑中，你听到明显的喘息声。"
+      }
+    ],
+    "next": "E_021"
+  },
+  {
+    "id": "E_021",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你看到了，你看到了那个怪物—————那个无眼，头部异形的怪物。"
+      },
+      {
+        "type": "check",
+        "dice": "ev021_san_01"
+      },
+      {
+        "type": "check",
+        "dice": "ev021_extra_san_01"
+      }
+    ],
+    "next": "E_022"
+  },
+  {
+    "id": "E_022",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev022_stealth_or_luck_01",
+        "outcomes": [
+          "E_022_S",
+          "E_022_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_022_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你谨慎通过，到达先头车厢门前。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得手机）"
+      },
+      {
+        "type": "addItem",
+        "item": "phone"
+      }
+    ],
+    "next": "E_026"
+  },
+  {
+    "id": "E_022_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你踩到尸体发出声响，怪物们注意到了你。"
+      }
+    ],
+    "next": "E_023"
+  },
+  {
+    "id": "E_023",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "进入这个车厢后，你在附近捡起一个瓶子。"
+      },
+      {
+        "type": "addItem",
+        "item": "bottle"
+      },
+      {
+        "type": "learnSkill",
+        "skill": "throwing"
+      },
+      {
+        "type": "choice",
+        "prompt": "你要怎么通过这个车厢？",
+        "options": [
+          {
+            "label": "直接冲过去",
+            "next": "E_023_AGILITY_CHECK"
+          },
+          {
+            "label": "投掷瓶子",
+            "next": "E_023_THROW_FIRST"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_023_AGILITY_CHECK",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev023_agility_01",
+        "outcomes": [
+          "E_023_AGILITY_SUCCESS",
+          "E_023_AGILITY_FAIL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_023_AGILITY_SUCCESS",
+    "actions": [],
+    "next": "E_026"
+  },
+  {
+    "id": "E_023_AGILITY_FAIL",
+    "actions": [
+      {
+        "type": "choice",
+        "prompt": "敏捷冲刺失败了，你要改用投掷吗？",
+        "options": [
+          {
+            "label": "投掷瓶子",
+            "next": "E_023_THROW_AFTER_AGILITY_FAIL"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_023_THROW_FIRST",
+    "actions": [],
+    "next": "E_026"
+  },
+  {
+    "id": "E_023_THROW_AFTER_AGILITY_FAIL",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev023_throw_after_agility_fail_01",
+        "outcomes": [
+          "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
+          "E_023_THROW_AFTER_AGILITY_FAIL_FAIL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
+    "actions": [],
+    "next": "E_026"
+  },
+  {
+    "id": "E_023_THROW_AFTER_AGILITY_FAIL_FAIL",
+    "actions": [],
+    "next": "E_024"
+  },
+  {
+    "id": "E_023_BOTTLE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "这是一个可以用来制造声响、转移 Clicker 注意的瓶子。"
+      }
+    ]
+  },
+  {
+    "id": "E_024",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev024_agility_01",
+        "outcomes": [
+          "E_026",
+          "E_025"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_025",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev025_clicker_count_01",
+        "outcomes": [
+          "E_025_SINGLE",
+          "E_025_MULTI"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_025_SINGLE",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev025_strength_01",
+        "outcomes": [
+          "E_025_ESCAPE",
+          "E_031"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_025_MULTI",
+    "actions": [],
+    "next": "E_031"
+  },
+  {
+    "id": "E_025_ESCAPE",
+    "actions": [],
+    "next": "E_026"
+  },
+  {
+    "id": "E_026",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "front_carriage"
+      },
+      {
+        "type": "dialogue",
+        "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "使用钥匙开门",
+            "next": "E_026_WITH_KEYS",
+            "when": {
+              "hasItem": "crew_keys"
+            }
+          },
+          {
+            "label": "再次侦查",
+            "next": "E_026_NO_KEYS",
+            "when": {
+              "not": {
+                "hasItem": "crew_keys"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_026_WITH_KEYS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你使用钥匙开门。"
+      }
+    ],
+    "next": "E_027"
+  },
+  {
+    "id": "E_026_NO_KEYS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "（若仍未获得钥匙，再过一次侦查，再不过进入结局C E-031）"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_027",
+          "E_031"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_027",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "打开操作面板，有两根拉杆："
+      },
+      {
+        "type": "dialogue",
+        "text": "左杆（刹车/起步装置）——在下位"
+      },
+      {
+        "type": "dialogue",
+        "text": "右杆（油门）——在中间"
+      },
+      {
+        "type": "dialogue",
+        "text": "基本操作：右杆下拉加速，上拉减速。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "下拉加速",
+            "next": "E_028",
+            "when": {
+              "flag": "carried_crew",
+              "equals": true
+            }
+          },
+          {
+            "label": "下拉加速",
+            "next": "E_029",
+            "when": {
+              "not": {
+                "flag": "carried_crew",
+                "equals": true
+              }
+            }
+          },
+          {
+            "label": "上拉减速",
+            "next": "E_030"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_028",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev028_talk_or_strength_01",
+        "outcomes": [
+          "E_029",
+          "E_030"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_029",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "电车加速到极致，视野被刺眼白光覆盖。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你睁开眼，发现自己仍坐在6号车厢，喇叭播报终点站已到。"
+      },
+      {
+        "type": "dialogue",
+        "text": "站务人员走来询问：你们脸色不好，没事吧？"
+      },
+      {
+        "type": "dialogue",
+        "text": "那是一场共同的噩梦。恐怖的记忆慢慢淡忘。"
+      },
+      {
+        "type": "custom",
+        "name": "endGame",
+        "params": {
+          "reason": "true_end"
+        }
+      }
+    ]
+  },
+  {
+    "id": "E_030",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
+      },
+      {
+        "type": "dialogue",
+        "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
+      },
+      {
+        "type": "dialogue",
+        "text": "意识与身体一同消失……"
+      },
+      {
+        "type": "dialogue",
+        "text": "在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你发现背包里多了一个背带切断的黑色包。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（SAN 减少 1d4/1d10）"
+      },
+      {
+        "type": "check",
+        "dice": "ev030_san_01"
+      }
+    ]
+  },
+  {
+    "id": "E_SCOUTING_UNLOCK",
+    "actions": [
+      {
+        "type": "check",
+        "dice": "ev_scouting_unlock_01",
+        "outcomes": [
+          "E_SCOUTING_UNLOCK_SUCCESS",
+          "E_SCOUTING_UNLOCK_FAIL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_SCOUTING_UNLOCK_SUCCESS",
+    "actions": [
+      {
+        "type": "learnSkill",
+        "skill": "scouting"
+      }
+    ]
+  },
+  {
+    "id": "E_SCOUTING_UNLOCK_FAIL",
+    "actions": []
+  },
+  {
+    "id": "E_ITEM_NEWSPAPER_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "newspaper",
+        "title": "报纸",
+        "text": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。"
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_KEYS_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "crew_keys",
+        "title": "驾驶室与操作面板钥匙",
+        "text": "驾驶室钥匙和操作面板钥匙。"
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_PHONE_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "phone",
+        "title": "手机",
+        "text": "一部手机。"
+      }
+    ]
+  },
+  {
+    "id": "E_DOOR_04",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "通往3号车厢的门",
+        "text": "这扇门通往3号车厢。先完成4号车厢的乘务员事件，剧情会自动进入下一节车厢。",
+        "image": "assets/door.svg"
+      }
+    ]
+  },
+  {
+    "id": "E_DOOR_03",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "通往2号车厢的门",
+        "text": "这扇门通往2号车厢。完成当前车厢的调查后，剧情会继续向前。",
+        "image": "assets/door.svg"
+      }
+    ]
+  },
+  {
+    "id": "E_DOOR_02",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "通往先头车厢的门",
+        "text": "这扇门通往先头车厢。先处理当前车厢的Clicker事件，之后才能继续前进。",
+        "image": "assets/door.svg"
+      }
+    ]
+  },
+  {
+    "id": "E_DOOR_FRONT",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "驾驶室门",
+        "text": "你已经来到先头车厢。驾驶室门在这里，操作面板决定接下来的结局。",
+        "image": "assets/door.svg"
+      }
+    ]
+  },
+  {
+    "id": "E_031",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "在隔离室中醒来，蜷缩在墙角。"
+      },
+      {
+        "type": "dialogue",
+        "text": "医生对警察摇了摇头，表情无奈：每天都要镇定剂，突然就疯掉了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你因在梦中经历了无法承受的恐怖，醒来后歇斯底里，被送进精神病院。"
+      },
+      {
+        "type": "dialogue",
+        "text": "无人知晓你们在逃避什么。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（SAN 归零）"
+      },
+      {
+        "type": "modifyAttribute",
+        "attribute": "san",
+        "amount": -10
+      }
     ]
   }
 ]

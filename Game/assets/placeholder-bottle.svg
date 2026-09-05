@@ -1,0 +1,7 @@
+<!-- placeholder: 可用于制造声响的瓶子图标，正式素材待替换 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="瓶子占位图标">
+  <rect width="160" height="160" rx="20" fill="#182230"/>
+  <path d="M66 32h28v18c0 7 16 13 16 28v47c0 10-8 18-18 18H68c-10 0-18-8-18-18V78c0-15 16-21 16-28V32Z" fill="#6ea8c8" stroke="#d9f2ff" stroke-width="6"/>
+  <path d="M65 32h30M58 76h44" stroke="#d9f2ff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M65 96h30" stroke="#31546e" stroke-width="7" stroke-linecap="round"/>
+</svg>
