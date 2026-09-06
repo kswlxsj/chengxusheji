@@ -1,7 +1,7 @@
 window.GAME_DATA = {
   "meta": {
     "formatVersion": 3,
-    "title": "常暗之厢（框架演示）",
+    "title": "末班列车框架演示",
     "coverImage": "assets/cover-placeholder.svg",
     "startEvent": "E_001",
     "initialScene": "carriage_06",
@@ -18,7 +18,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_06",
       "name": "6 号车厢",
-      "background": "assets/carriage-06.png",
+      "background": "assets/carriage-06.svg",
       "objects": [
         {
           "id": "note_06",
@@ -44,7 +44,7 @@ window.GAME_DATA = {
         },
         {
           "id": "door_06",
-          "name": "通往前车厢的门",
+          "name": "通往7号车厢的门",
           "image": "assets/door.svg",
           "position": {
             "x": 4,
@@ -54,6 +54,19 @@ window.GAME_DATA = {
           },
           "zIndex": 11,
           "clickEvent": "E_005"
+        },
+        {
+          "id": "door_06_to_05",
+          "name": "通往5号车厢的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 76,
+            "y": 21,
+            "width": 20,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_009"
         },
         {
           "id": "note_back_06",
@@ -89,12 +102,11 @@ window.GAME_DATA = {
           "id": "map_06",
           "name": "电车示意图",
           "image": "assets/map-06.png",
-          "fullCanvas": true,
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 54,
+            "y": 38,
+            "width": 14,
+            "height": 18
           },
           "zIndex": 12,
           "clickEvent": "E_004",
@@ -155,14 +167,15 @@ window.GAME_DATA = {
         },
         {
           "id": "deep_07",
-          "name": "车厢深处",
-          "image": "assets/deep-07.svg",
+          "name": "通往8号方向的门",
+          "image": "assets/door.svg",
           "position": {
-            "x": 78,
-            "y": 25,
+            "x": 76,
+            "y": 21,
             "width": 20,
-            "height": 45
+            "height": 63
           },
+          "zIndex": 11,
           "clickEvent": "E_008"
         }
       ]
@@ -173,21 +186,17 @@ window.GAME_DATA = {
       "background": "assets/carriage-05-03.png",
       "objects": [
         {
-          "id": "newspaper_05",
-          "name": "报纸",
-          "image": "assets/newspaper-05.png",
-          "fullCanvas": true,
+          "id": "door_05_to_06",
+          "name": "通往6号车厢的门",
+          "image": "assets/door.svg",
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 3,
+            "y": 21,
+            "width": 18,
+            "height": 63
           },
-          "zIndex": 12,
-          "clickEvent": "E_ITEM_NEWSPAPER_INSPECT",
-          "visibleWhen": {
-            "hasItem": "newspaper"
-          }
+          "zIndex": 11,
+          "clickEvent": "E_GO_05_06"
         },
         {
           "id": "door_05",
@@ -200,7 +209,77 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_011"
+          "clickEvent": "E_012"
+        },
+        {
+          "id": "clutter_05_a",
+          "name": "散落的行李",
+          "image": "assets/clutter-05.svg",
+          "position": {
+            "x": 13,
+            "y": 57,
+            "width": 16,
+            "height": 20
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_A"
+        },
+        {
+          "id": "tool_clutter_05",
+          "name": "倒下的背包",
+          "image": "assets/clutter-05.svg",
+          "position": {
+            "x": 31,
+            "y": 43,
+            "width": 15,
+            "height": 18
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_SEARCH_TOOLS",
+          "visibleWhen": {
+            "not": {
+              "objectState": {
+                "objectId": "tool_clutter_05",
+                "property": "hidden",
+                "equals": true
+              }
+            }
+          }
+        },
+        {
+          "id": "clue_clutter_05",
+          "name": "可疑的纸堆",
+          "image": "assets/clutter-05.svg",
+          "position": {
+            "x": 47,
+            "y": 46,
+            "width": 16,
+            "height": 19
+          },
+          "zIndex": 13,
+          "clickEvent": "E_05_SEARCH_NEWS",
+          "visibleWhen": {
+            "not": {
+              "objectState": {
+                "objectId": "clue_clutter_05",
+                "property": "hidden",
+                "equals": true
+              }
+            }
+          }
+        },
+        {
+          "id": "clutter_05_c",
+          "name": "堆叠的杂物",
+          "image": "assets/clutter-05.svg",
+          "position": {
+            "x": 59,
+            "y": 59,
+            "width": 14,
+            "height": 17
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_C"
         }
       ]
     },
@@ -209,6 +288,19 @@ window.GAME_DATA = {
       "name": "4 号车厢",
       "background": "assets/carriage-04.png",
       "objects": [
+        {
+          "id": "door_04_to_05",
+          "name": "通往5号车厢的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 3,
+            "y": 21,
+            "width": 20,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_GO_04_05"
+        },
         {
           "id": "door_04",
           "name": "通往3号车厢的门",
@@ -226,12 +318,11 @@ window.GAME_DATA = {
           "id": "crew_04",
           "name": "重伤的乘务员",
           "image": "assets/crew-04.png",
-          "fullCanvas": true,
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 31,
+            "y": 51,
+            "width": 18,
+            "height": 20
           },
           "zIndex": 12,
           "clickEvent": "E_013"
@@ -243,6 +334,19 @@ window.GAME_DATA = {
       "name": "3 号车厢",
       "background": "assets/carriage-05-03.png",
       "objects": [
+        {
+          "id": "door_03_to_04",
+          "name": "通往4号车厢的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 3,
+            "y": 21,
+            "width": 20,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_GO_03_04"
+        },
         {
           "id": "door_03",
           "name": "通往2号车厢的门",
@@ -260,12 +364,11 @@ window.GAME_DATA = {
           "id": "black_bag_03",
           "name": "黑色背包",
           "image": "assets/black-bag-03.png",
-          "fullCanvas": true,
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 43,
+            "y": 48,
+            "width": 17,
+            "height": 15
           },
           "zIndex": 12,
           "clickEvent": "E_017"
@@ -278,6 +381,25 @@ window.GAME_DATA = {
       "background": "assets/carriage-02.png",
       "objects": [
         {
+          "id": "dark_hint_02",
+          "name": "黑暗中的喘息",
+          "image": "assets/deep-07.svg",
+          "position": {
+            "x": 36,
+            "y": 24,
+            "width": 28,
+            "height": 48
+          },
+          "zIndex": 12,
+          "clickEvent": "E_02_DARK",
+          "visibleWhen": {
+            "not": {
+              "flag": "light_used",
+              "equals": true
+            }
+          }
+        },
+        {
           "id": "door_02",
           "name": "通往先头车厢的门",
           "image": "assets/door.svg",
@@ -288,21 +410,47 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_DOOR_02"
+          "clickEvent": "E_GO_02_FRONT_DOOR"
         },
         {
           "id": "clicker_02",
           "name": "Clicker",
           "image": "assets/clicker-02.png",
-          "fullCanvas": true,
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 70,
+            "y": 44,
+            "width": 18,
+            "height": 25
           },
           "zIndex": 12,
-          "clickEvent": "E_021"
+          "clickEvent": "E_021",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "light_used",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "clicker_cleared",
+                  "equals": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "door_02_to_03",
+          "name": "通往3号车厢的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 70,
+            "y": 21,
+            "width": 22,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_GO_02_03"
         }
       ]
     },
@@ -312,31 +460,33 @@ window.GAME_DATA = {
       "background": "assets/front-carriage.png",
       "objects": [
         {
-          "id": "driver_door_27",
-          "name": "驾驶室门",
+          "id": "door_front_to_02",
+          "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 3,
             "y": 21,
-            "width": 22,
+            "width": 20,
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_DOOR_FRONT"
+          "clickEvent": "E_GO_FRONT_02"
         },
         {
           "id": "control_27",
-          "name": "操作面板",
+          "name": "前进与停车把手",
           "image": "assets/control-lever.png",
-          "fullCanvas": true,
           "position": {
-            "x": 0,
-            "y": 0,
-            "width": 100,
-            "height": 100
+            "x": 42,
+            "y": 38,
+            "width": 18,
+            "height": 25
           },
           "zIndex": 12,
-          "clickEvent": "E_027"
+          "clickEvent": "E_027",
+          "visibleWhen": {
+            "hasItem": "crew_keys"
+          }
         }
       ]
     }
@@ -417,10 +567,19 @@ window.GAME_DATA = {
               "next": "E_006A"
             },
             {
-              "label": "放弃前进",
-              "next": "E_009"
+              "label": "留在6号车厢",
+              "next": "E_005_STAY"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "E_005_STAY",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你从门前退开，决定先留在6号车厢再作打算。"
         }
       ]
     },
@@ -516,14 +675,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "呼...呼...太好了。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_009_S",
-            "E_009_F"
-          ]
         }
       ]
     },
@@ -671,8 +822,7 @@ window.GAME_DATA = {
             "hidden": true
           }
         }
-      ],
-      "next": "E_SCOUTING_UNLOCK"
+      ]
     },
     {
       "id": "E_004",
@@ -714,8 +864,7 @@ window.GAME_DATA = {
             "hidden": true
           }
         }
-      ],
-      "next": "E_SCOUTING_UNLOCK"
+      ]
     },
     {
       "id": "E_004_F",
@@ -736,8 +885,7 @@ window.GAME_DATA = {
             "hidden": true
           }
         }
-      ],
-      "next": "E_SCOUTING_UNLOCK"
+      ]
     },
     {
       "id": "E_007_S",
@@ -798,10 +946,9 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "在不安的驱使下，你来到五号车厢。"
+          "text": "你不敢继续停留，打算沿来路退回6号车厢。"
         }
-      ],
-      "next": "E_009"
+      ]
     },
     {
       "id": "E_008_F",
@@ -826,10 +973,9 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "在不安的驱使下，你来到五号车厢。"
+          "text": "你不敢继续停留，打算沿来路退回6号车厢。"
         }
-      ],
-      "next": "E_009"
+      ]
     },
     {
       "id": "E_009_S",
@@ -849,6 +995,13 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "newspaper"
+        },
+        {
+          "type": "setObjectState",
+          "object": "clue_clutter_05",
+          "patch": {
+            "hidden": true
+          }
         }
       ],
       "next": "E_010"
@@ -859,14 +1012,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
-        },
-        {
-          "type": "check",
-          "dice": "ev010_join_route_01",
-          "outcomes": [
-            "E_011",
-            "E_012"
-          ]
         }
       ]
     },
@@ -897,9 +1042,12 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你顿时毛骨悚然，先前不祥的预感得到了验证。"
+        },
+        {
+          "type": "check",
+          "dice": "ev010_san_01"
         }
-      ],
-      "next": "E_010_JOIN"
+      ]
     },
     {
       "id": "E_010_F",
@@ -911,9 +1059,12 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "装神弄鬼的，到底在说什么。"
+        },
+        {
+          "type": "check",
+          "dice": "ev010_san_01"
         }
-      ],
-      "next": "E_010_JOIN"
+      ]
     },
     {
       "id": "E_010_JOIN",
@@ -1051,8 +1202,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
         }
-      ],
-      "next": "E_017"
+      ]
     },
     {
       "id": "E_014",
@@ -1214,9 +1364,23 @@ window.GAME_DATA = {
             },
             {
               "label": "留下乘务员",
-              "next": "E_017"
+              "next": "E_016_LEAVE"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "E_016_LEAVE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你把乘务员留在4号车厢，决定先去3号车厢寻找钥匙。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carried_crew",
+          "value": false
         }
       ]
     },
@@ -1249,8 +1413,7 @@ window.GAME_DATA = {
           "key": "carried_crew",
           "value": true
         }
-      ],
-      "next": "E_017"
+      ]
     },
     {
       "id": "E_016_CARRY_FAIL",
@@ -1268,16 +1431,11 @@ window.GAME_DATA = {
           "key": "carried_crew",
           "value": false
         }
-      ],
-      "next": "E_017"
+      ]
     },
     {
       "id": "E_017",
       "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
-        },
         {
           "type": "dialogue",
           "text": "车厢内散落大量行李，你们的行动受阻。"
@@ -1335,8 +1493,7 @@ window.GAME_DATA = {
           "type": "addItem",
           "item": "crew_keys"
         }
-      ],
-      "next": "E_018_SEARCH"
+      ]
     },
     {
       "id": "E_018_PASSENGER_TALK_F",
@@ -1358,8 +1515,7 @@ window.GAME_DATA = {
           "speaker": "乘务员",
           "text": "没事，我来拿着吧。"
         }
-      ],
-      "next": "E_018_SEARCH"
+      ]
     },
     {
       "id": "E_018_NO_PASSENGER_SCOUT_S",
@@ -1376,8 +1532,7 @@ window.GAME_DATA = {
           "type": "addItem",
           "item": "crew_keys"
         }
-      ],
-      "next": "E_018_SEARCH"
+      ]
     },
     {
       "id": "E_018_NO_PASSENGER_SCOUT_F",
@@ -1390,53 +1545,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "无奈之下，你只能暂时拿着黑色背包。"
         }
-      ],
-      "next": "E_018_SEARCH"
-    },
-    {
-      "id": "E_018_SEARCH",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你决定再在四周找找，或许有能用的东西。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_018_SEARCH_S",
-            "E_018_SEARCH_F"
-          ]
-        }
       ]
-    },
-    {
-      "id": "E_018_SEARCH_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你找了一部手机。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得手机）"
-        },
-        {
-          "type": "addItem",
-          "item": "phone"
-        }
-      ],
-      "next": "E_019"
-    },
-    {
-      "id": "E_018_SEARCH_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你什么都没找到。"
-        }
-      ],
-      "next": "E_019"
     },
     {
       "id": "E_019",
@@ -1517,7 +1626,26 @@ window.GAME_DATA = {
           "dice": "ev021_extra_san_01"
         }
       ],
-      "next": "E_022"
+      "next": "E_02_DECIDE"
+    },
+    {
+      "id": "E_02_DECIDE",
+      "actions": [
+        {
+          "type": "choice",
+          "prompt": "Clicker正挡在车厢中段，你打算怎么处理？",
+          "options": [
+            {
+              "label": "蹑手蹑脚地通过",
+              "next": "E_022"
+            },
+            {
+              "label": "制造声响引开并清掉Clicker",
+              "next": "E_023"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "E_022",
@@ -1546,9 +1674,13 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "phone"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
         }
-      ],
-      "next": "E_026"
+      ]
     },
     {
       "id": "E_022_F",
@@ -1565,7 +1697,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "进入这个车厢后，你在附近捡起一个瓶子。"
+          "text": "你在附近的杂物里捡起一个空瓶子。"
         },
         {
           "type": "addItem",
@@ -1577,7 +1709,7 @@ window.GAME_DATA = {
         },
         {
           "type": "choice",
-          "prompt": "你要怎么通过这个车厢？",
+          "prompt": "你要怎么通过或引开Clicker？",
           "options": [
             {
               "label": "直接冲过去",
@@ -1606,8 +1738,13 @@ window.GAME_DATA = {
     },
     {
       "id": "E_023_AGILITY_SUCCESS",
-      "actions": [],
-      "next": "E_026"
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        }
+      ]
     },
     {
       "id": "E_023_AGILITY_FAIL",
@@ -1626,8 +1763,26 @@ window.GAME_DATA = {
     },
     {
       "id": "E_023_THROW_FIRST",
-      "actions": [],
-      "next": "E_026"
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+        },
+        {
+          "type": "dialogue",
+          "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
+        }
+      ]
     },
     {
       "id": "E_023_THROW_AFTER_AGILITY_FAIL",
@@ -1644,8 +1799,22 @@ window.GAME_DATA = {
     },
     {
       "id": "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
-      "actions": [],
-      "next": "E_026"
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
+        }
+      ]
     },
     {
       "id": "E_023_THROW_AFTER_AGILITY_FAIL_FAIL",
@@ -1668,7 +1837,7 @@ window.GAME_DATA = {
           "type": "check",
           "dice": "ev024_agility_01",
           "outcomes": [
-            "E_026",
+            "E_023_AGILITY_SUCCESS",
             "E_025"
           ]
         }
@@ -1707,8 +1876,13 @@ window.GAME_DATA = {
     },
     {
       "id": "E_025_ESCAPE",
-      "actions": [],
-      "next": "E_026"
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        }
+      ]
     },
     {
       "id": "E_026",
@@ -1719,25 +1893,32 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
-        },
+          "text": "到达先头车厢，这里昏暗安静，车厢前方能看到操作把手。"
+        }
+      ]
+    },
+    {
+      "id": "E_GO_02_FRONT_DOOR",
+      "actions": [
         {
           "type": "choice",
-          "prompt": "",
+          "prompt": "要打开通往先头车厢的门吗？",
           "options": [
             {
-              "label": "使用钥匙开门",
-              "next": "E_026_WITH_KEYS",
+              "label": "推开安全门",
+              "next": "E_026",
               "when": {
-                "hasItem": "crew_keys"
+                "flag": "carriage_02_passed",
+                "equals": true
               }
             },
             {
-              "label": "再次侦查",
-              "next": "E_026_NO_KEYS",
+              "label": "强行推门",
+              "next": "E_026_BLOCKED",
               "when": {
                 "not": {
-                  "hasItem": "crew_keys"
+                  "flag": "carriage_02_passed",
+                  "equals": true
                 }
               }
             }
@@ -1746,29 +1927,11 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_026_WITH_KEYS",
+      "id": "E_026_BLOCKED",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你使用钥匙开门。"
-        }
-      ],
-      "next": "E_027"
-    },
-    {
-      "id": "E_026_NO_KEYS",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "（若仍未获得钥匙，再过一次侦查，再不过进入结局C E-031）"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_027",
-            "E_031"
-          ]
+          "text": "Clicker还堵在通往先头车厢的门前，你无法安全开门通过。"
         }
       ]
     },
@@ -1789,14 +1952,14 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "基本操作：右杆下拉加速，上拉减速。"
+          "text": "现在，你可以选择让列车继续前进，或者把它停下。"
         },
         {
           "type": "choice",
-          "prompt": "",
+          "prompt": "你准备让列车前进还是停下？",
           "options": [
             {
-              "label": "下拉加速",
+              "label": "前进",
               "next": "E_028",
               "when": {
                 "flag": "carried_crew",
@@ -1804,7 +1967,7 @@ window.GAME_DATA = {
               }
             },
             {
-              "label": "下拉加速",
+              "label": "前进",
               "next": "E_029",
               "when": {
                 "not": {
@@ -1814,7 +1977,7 @@ window.GAME_DATA = {
               }
             },
             {
-              "label": "上拉减速",
+              "label": "停下",
               "next": "E_030"
             }
           ]
@@ -1896,32 +2059,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_SCOUTING_UNLOCK",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev_scouting_unlock_01",
-          "outcomes": [
-            "E_SCOUTING_UNLOCK_SUCCESS",
-            "E_SCOUTING_UNLOCK_FAIL"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_SCOUTING_UNLOCK_SUCCESS",
-      "actions": [
-        {
-          "type": "learnSkill",
-          "skill": "scouting"
-        }
-      ]
-    },
-    {
-      "id": "E_SCOUTING_UNLOCK_FAIL",
-      "actions": []
-    },
-    {
       "id": "E_ITEM_NEWSPAPER_INSPECT",
       "actions": [
         {
@@ -1947,10 +2084,23 @@ window.GAME_DATA = {
       "id": "E_ITEM_PHONE_INSPECT",
       "actions": [
         {
-          "type": "inspect",
-          "item": "phone",
-          "title": "手机",
-          "text": "一部手机。"
+          "type": "custom",
+          "name": "useLight",
+          "params": {
+            "item": "phone"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_FLASHLIGHT_INSPECT",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "useLight",
+          "params": {
+            "item": "flashlight"
+          }
         }
       ]
     },
@@ -1958,10 +2108,12 @@ window.GAME_DATA = {
       "id": "E_DOOR_04",
       "actions": [
         {
-          "type": "inspect",
-          "title": "通往3号车厢的门",
-          "text": "这扇门通往3号车厢。先完成4号车厢的乘务员事件，剧情会自动进入下一节车厢。",
-          "image": "assets/door.svg"
+          "type": "changeScene",
+          "scene": "carriage_03"
+        },
+        {
+          "type": "dialogue",
+          "text": "你推开门，走进3号车厢。车厢里到处是散落的行李。"
         }
       ]
     },
@@ -1969,32 +2121,192 @@ window.GAME_DATA = {
       "id": "E_DOOR_03",
       "actions": [
         {
-          "type": "inspect",
-          "title": "通往2号车厢的门",
-          "text": "这扇门通往2号车厢。完成当前车厢的调查后，剧情会继续向前。",
-          "image": "assets/door.svg"
+          "type": "changeScene",
+          "scene": "carriage_02"
+        },
+        {
+          "type": "dialogue",
+          "text": "你推开门走进2号车厢。四周毫无光源，只能听见明显的喘息声。"
         }
       ]
     },
     {
-      "id": "E_DOOR_02",
+      "id": "E_GO_05_06",
       "actions": [
         {
-          "type": "inspect",
-          "title": "通往先头车厢的门",
-          "text": "这扇门通往先头车厢。先处理当前车厢的Clicker事件，之后才能继续前进。",
-          "image": "assets/door.svg"
+          "type": "changeScene",
+          "scene": "carriage_06"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，返回6号车厢。"
         }
       ]
     },
     {
-      "id": "E_DOOR_FRONT",
+      "id": "E_GO_04_05",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_05"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，回到5号车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_GO_03_04",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_04"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，返回4号车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_GO_02_03",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_03"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，返回3号车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_GO_FRONT_02",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_02"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，回到2号车厢。"
+        }
+      ]
+    },
+    {
+      "id": "E_02_DARK",
       "actions": [
         {
           "type": "inspect",
-          "title": "驾驶室门",
-          "text": "你已经来到先头车厢。驾驶室门在这里，操作面板决定接下来的结局。",
-          "image": "assets/door.svg"
+          "title": "黑暗中的喘息",
+          "text": "太暗了，看不清怪物在哪里。也许手机闪光灯或手电筒能把这里照亮。"
+        }
+      ]
+    },
+    {
+      "id": "E_05_SEARCH_NEWS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你决定仔细翻找这堆杂物。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_scouting",
+          "outcomes": [
+            "E_009_S",
+            "E_009_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_05_SEARCH_TOOLS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你决定仔细翻找这只倒下的背包。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_scouting",
+          "outcomes": [
+            "E_05_TOOLS_SUCCESS",
+            "E_05_TOOLS_FAIL"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_05_TOOLS_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "背包里有一部手机和一支还能发光的手电筒。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（获得手机和手电筒）"
+        },
+        {
+          "type": "addItem",
+          "item": "phone"
+        },
+        {
+          "type": "addItem",
+          "item": "flashlight"
+        },
+        {
+          "type": "setObjectState",
+          "object": "tool_clutter_05",
+          "patch": {
+            "hidden": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_05_TOOLS_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "背包里只有一些旧衣物，没有能用来照明的东西。"
+        }
+      ]
+    },
+    {
+      "id": "E_05_JUNK_A",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你伸手翻动散落的行李和衣物。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_scouting"
+        },
+        {
+          "type": "dialogue",
+          "text": "你仔细翻过，仍然只是一堆普通杂物。"
+        }
+      ]
+    },
+    {
+      "id": "E_05_JUNK_C",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你拨开堆叠的杂物开始寻找。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_scouting"
+        },
+        {
+          "type": "dialogue",
+          "text": "这里没有夹着报纸之类的线索。"
         }
       ]
     },
@@ -2047,7 +2359,7 @@ window.GAME_DATA = {
     {
       "id": "newspaper",
       "name": "报纸",
-      "image": "assets/newspaper-icon.png",
+      "image": "assets/newspaper-05.png",
       "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
       "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
     },
@@ -2064,6 +2376,13 @@ window.GAME_DATA = {
       "image": "assets/phone.png",
       "description": "一部手机。",
       "inspectEvent": "E_ITEM_PHONE_INSPECT"
+    },
+    {
+      "id": "flashlight",
+      "name": "手电筒",
+      "image": "assets/flashlight.svg",
+      "description": "一支还能发光的手电筒。",
+      "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
     }
   ],
   "attributes": {
@@ -2183,8 +2502,8 @@ window.GAME_DATA = {
       "initial": false,
       "autoTrigger": {
         "attribute": "education",
-        "operator": "gte",
-        "value": 7
+        "operator": "gt",
+        "value": 5
       }
     },
     {

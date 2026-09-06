@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="手电筒占位图标">
+  <rect width="160" height="160" rx="18" fill="#242a33"/>
+  <rect x="25" y="84" width="94" height="24" rx="10" fill="#525c66" stroke="#b7a173" stroke-width="6"/>
+  <circle cx="62" cy="95" r="7" fill="#d8b36a"/>
+  <rect x="25" y="96" width="94" height="30" rx="10" fill="#262c35" stroke="#b7a173" stroke-width="6"/>
+  <path d="M121 84 112 124M134 84l9 40" stroke="#d8b36a" stroke-linecap="round" stroke-width="8"/>
+  <rect x="119" y="84" width="26" height="48" rx="12" fill="#3a4149" stroke="#b7a173" stroke-width="6"/>
+  <ellipse cx="132" cy="88" rx="12" ry="7" fill="#f1d68a" opacity=".85"/>
+</svg>

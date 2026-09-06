@@ -62,7 +62,7 @@
       slot.type = "button";
       slot.className = `inventory-slot${item ? " occupied" : " empty"}`;
       slot.disabled = !item || startupLocked || paused || engine.busy;
-      slot.title = item ? `${item.name}（点击调查）` : `空物品格 ${index + 1}`;
+      slot.title = item ? `${item.name}（点击使用/调查）` : `空物品格 ${index + 1}`;
       slot.setAttribute("aria-label", slot.title);
 
       const shortcut = document.createElement("span");
@@ -342,7 +342,24 @@
   });
 
   sceneRoot.addEventListener("click", () => {
-    if (engine.busy && !paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
+    if (engine.busy) {
+      if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
+      return;
+    }
+    if (paused || state.getSkill("scouting")) return;
+    const nextCount = (Number(state.flags.scoutClickCount) || 0) + 1;
+    state.flags.scoutClickCount = nextCount;
+    if (nextCount >= 3) {
+      state.learnSkill("scouting");
+      engine.adoptStableState();
+      updateHud();
+      void ui.inspect.show({
+        title: "技能解锁",
+        text: "连续点击三次后，你凭借细致观察学会了侦察。"
+      });
+      return;
+    }
+    engine.adoptStableState();
   });
 
   scene.load(data.meta.initialScene);

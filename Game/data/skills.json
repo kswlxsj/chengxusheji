@@ -40,8 +40,8 @@
     "initial": false,
     "autoTrigger": {
       "attribute": "education",
-      "operator": "gte",
-      "value": 7
+      "operator": "gt",
+      "value": 5
     }
   },
   {

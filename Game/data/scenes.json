@@ -2,7 +2,7 @@
   {
     "id": "carriage_06",
     "name": "6 号车厢",
-    "background": "assets/carriage-06.png",
+    "background": "assets/carriage-06.svg",
     "objects": [
       {
         "id": "note_06",
@@ -28,7 +28,7 @@
       },
       {
         "id": "door_06",
-        "name": "通往前车厢的门",
+        "name": "通往7号车厢的门",
         "image": "assets/door.svg",
         "position": {
           "x": 4,
@@ -38,6 +38,19 @@
         },
         "zIndex": 11,
         "clickEvent": "E_005"
+      },
+      {
+        "id": "door_06_to_05",
+        "name": "通往5号车厢的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 76,
+          "y": 21,
+          "width": 20,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_009"
       },
       {
         "id": "note_back_06",
@@ -73,12 +86,11 @@
         "id": "map_06",
         "name": "电车示意图",
         "image": "assets/map-06.png",
-        "fullCanvas": true,
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 54,
+          "y": 38,
+          "width": 14,
+          "height": 18
         },
         "zIndex": 12,
         "clickEvent": "E_004",
@@ -139,14 +151,15 @@
       },
       {
         "id": "deep_07",
-        "name": "车厢深处",
-        "image": "assets/deep-07.svg",
+        "name": "通往8号方向的门",
+        "image": "assets/door.svg",
         "position": {
-          "x": 78,
-          "y": 25,
+          "x": 76,
+          "y": 21,
           "width": 20,
-          "height": 45
+          "height": 63
         },
+        "zIndex": 11,
         "clickEvent": "E_008"
       }
     ]
@@ -157,21 +170,17 @@
     "background": "assets/carriage-05-03.png",
     "objects": [
       {
-        "id": "newspaper_05",
-        "name": "报纸",
-        "image": "assets/newspaper-05.png",
-        "fullCanvas": true,
+        "id": "door_05_to_06",
+        "name": "通往6号车厢的门",
+        "image": "assets/door.svg",
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 3,
+          "y": 21,
+          "width": 18,
+          "height": 63
         },
-        "zIndex": 12,
-        "clickEvent": "E_ITEM_NEWSPAPER_INSPECT",
-        "visibleWhen": {
-          "hasItem": "newspaper"
-        }
+        "zIndex": 11,
+        "clickEvent": "E_GO_05_06"
       },
       {
         "id": "door_05",
@@ -184,7 +193,77 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_011"
+        "clickEvent": "E_012"
+      },
+      {
+        "id": "clutter_05_a",
+        "name": "散落的行李",
+        "image": "assets/clutter-05.svg",
+        "position": {
+          "x": 13,
+          "y": 57,
+          "width": 16,
+          "height": 20
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_A"
+      },
+      {
+        "id": "tool_clutter_05",
+        "name": "倒下的背包",
+        "image": "assets/clutter-05.svg",
+        "position": {
+          "x": 31,
+          "y": 43,
+          "width": 15,
+          "height": 18
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_SEARCH_TOOLS",
+        "visibleWhen": {
+          "not": {
+            "objectState": {
+              "objectId": "tool_clutter_05",
+              "property": "hidden",
+              "equals": true
+            }
+          }
+        }
+      },
+      {
+        "id": "clue_clutter_05",
+        "name": "可疑的纸堆",
+        "image": "assets/clutter-05.svg",
+        "position": {
+          "x": 47,
+          "y": 46,
+          "width": 16,
+          "height": 19
+        },
+        "zIndex": 13,
+        "clickEvent": "E_05_SEARCH_NEWS",
+        "visibleWhen": {
+          "not": {
+            "objectState": {
+              "objectId": "clue_clutter_05",
+              "property": "hidden",
+              "equals": true
+            }
+          }
+        }
+      },
+      {
+        "id": "clutter_05_c",
+        "name": "堆叠的杂物",
+        "image": "assets/clutter-05.svg",
+        "position": {
+          "x": 59,
+          "y": 59,
+          "width": 14,
+          "height": 17
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_C"
       }
     ]
   },
@@ -193,6 +272,19 @@
     "name": "4 号车厢",
     "background": "assets/carriage-04.png",
     "objects": [
+      {
+        "id": "door_04_to_05",
+        "name": "通往5号车厢的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 3,
+          "y": 21,
+          "width": 20,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_04_05"
+      },
       {
         "id": "door_04",
         "name": "通往3号车厢的门",
@@ -210,12 +302,11 @@
         "id": "crew_04",
         "name": "重伤的乘务员",
         "image": "assets/crew-04.png",
-        "fullCanvas": true,
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 31,
+          "y": 51,
+          "width": 18,
+          "height": 20
         },
         "zIndex": 12,
         "clickEvent": "E_013"
@@ -227,6 +318,19 @@
     "name": "3 号车厢",
     "background": "assets/carriage-05-03.png",
     "objects": [
+      {
+        "id": "door_03_to_04",
+        "name": "通往4号车厢的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 3,
+          "y": 21,
+          "width": 20,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_03_04"
+      },
       {
         "id": "door_03",
         "name": "通往2号车厢的门",
@@ -244,12 +348,11 @@
         "id": "black_bag_03",
         "name": "黑色背包",
         "image": "assets/black-bag-03.png",
-        "fullCanvas": true,
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 43,
+          "y": 48,
+          "width": 17,
+          "height": 15
         },
         "zIndex": 12,
         "clickEvent": "E_017"
@@ -262,6 +365,25 @@
     "background": "assets/carriage-02.png",
     "objects": [
       {
+        "id": "dark_hint_02",
+        "name": "黑暗中的喘息",
+        "image": "assets/deep-07.svg",
+        "position": {
+          "x": 36,
+          "y": 24,
+          "width": 28,
+          "height": 48
+        },
+        "zIndex": 12,
+        "clickEvent": "E_02_DARK",
+        "visibleWhen": {
+          "not": {
+            "flag": "light_used",
+            "equals": true
+          }
+        }
+      },
+      {
         "id": "door_02",
         "name": "通往先头车厢的门",
         "image": "assets/door.svg",
@@ -272,21 +394,47 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_DOOR_02"
+        "clickEvent": "E_GO_02_FRONT_DOOR"
       },
       {
         "id": "clicker_02",
         "name": "Clicker",
         "image": "assets/clicker-02.png",
-        "fullCanvas": true,
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 70,
+          "y": 44,
+          "width": 18,
+          "height": 25
         },
         "zIndex": 12,
-        "clickEvent": "E_021"
+        "clickEvent": "E_021",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "light_used",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "clicker_cleared",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "door_02_to_03",
+        "name": "通往3号车厢的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 70,
+          "y": 21,
+          "width": 22,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_02_03"
       }
     ]
   },
@@ -296,31 +444,33 @@
     "background": "assets/front-carriage.png",
     "objects": [
       {
-        "id": "driver_door_27",
-        "name": "驾驶室门",
+        "id": "door_front_to_02",
+        "name": "通往2号车厢的门",
         "image": "assets/door.svg",
         "position": {
-          "x": 70,
+          "x": 3,
           "y": 21,
-          "width": 22,
+          "width": 20,
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_DOOR_FRONT"
+        "clickEvent": "E_GO_FRONT_02"
       },
       {
         "id": "control_27",
-        "name": "操作面板",
+        "name": "前进与停车把手",
         "image": "assets/control-lever.png",
-        "fullCanvas": true,
         "position": {
-          "x": 0,
-          "y": 0,
-          "width": 100,
-          "height": 100
+          "x": 42,
+          "y": 38,
+          "width": 18,
+          "height": 25
         },
         "zIndex": 12,
-        "clickEvent": "E_027"
+        "clickEvent": "E_027",
+        "visibleWhen": {
+          "hasItem": "crew_keys"
+        }
       }
     ]
   }

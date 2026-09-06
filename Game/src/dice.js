@@ -45,6 +45,15 @@
     });
   }
 
+  async function confirmSkillUse(context, skillId) {
+    const name = skillName(context, skillId);
+    const selected = await context.ui.choice.choose(`是否要使用【${name}】？`, [
+      { label: "使用", value: true },
+      { label: "不使用", value: false }
+    ]);
+    return Boolean(selected && selected.value === true);
+  }
+
   // 标准 d6 属性检定：1d6 + 属性值 >= 阈值（默认 11）即成功。
   // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
   function attrCheck(attribute, threshold = DEFAULT_THRESHOLD) {
@@ -98,21 +107,41 @@
     };
   }
 
-  // 技能检定：技能已学会即成功，未学会即失败。
+  // 技能检定：先询问是否使用；技能未学会或玩家放弃时直接视为失败。
   function learnedSkillCheck(skillId) {
     return async (context) => {
       const learned = context.state.getSkill(skillId);
-      await showSkillResult(context, skillId, learned, learned ? "已掌握" : "尚未掌握");
+      if (!learned) {
+        await showSkillResult(context, skillId, false, "尚未掌握");
+        return 1;
+      }
+      if (!(await confirmSkillUse(context, skillId))) {
+        await showSkillResult(context, skillId, false, "已放弃使用");
+        return 1;
+      }
+      await showSkillResult(context, skillId, true, "已掌握");
       return learned ? 0 : 1;
     };
   }
 
-  // 当前项目约定：医学解锁后同步获得急救。
-  // skills.json 按用户要求暂不改写，因此这里用候选规则校正旧的医学自动阈值，
-  // 同时保留通过 learnSkill 手动获得医学时的同步行为。
+  // 侦察成功 = 已掌握侦察 + 灵感检定成功；使用前同样先确认。
+  async function scoutingSkillCheck(context) {
+    if (!context.state.getSkill("scouting")) {
+      await showSkillResult(context, "scouting", false, "尚未掌握");
+      return 1;
+    }
+    if (!(await confirmSkillUse(context, "scouting"))) {
+      await showSkillResult(context, "scouting", false, "已放弃使用");
+      return 1;
+    }
+    await showSkillResult(context, "scouting", true, "已掌握，开始观察");
+    return attrCheck("insight")(context);
+  }
+
+  // 当前项目约定：教育 > 5 解锁医学，并同步视为掌握急救。
   function medicineCandidateUnlocked(context) {
     const state = context.state;
-    const candidateThreshold = state.getAttribute("education") + state.getAttribute("insight") >= 13;
+    const candidateThreshold = state.getAttribute("education") > 5;
     return candidateThreshold || (state.getSkill("medicine") && state.skillOverrides.medicine === true);
   }
 
@@ -149,12 +178,20 @@
 
   registerDice("ev001_insight_01", attrCheck("insight"));
   registerDice("ev004_insight_01", attrCheck("insight"));
-  registerDice("skill_scouting", learnedSkillCheck("scouting"));
+  registerDice("skill_scouting", scoutingSkillCheck);
   registerDice("ev011_insight_01", attrCheck("insight"));
   registerDice("skill_first_aid", async (context) => {
-    const success = context.state.getSkill("firstAid") || medicineCandidateUnlocked(context);
-    await showSkillResult(context, "firstAid", success, success ? "已掌握（医学解锁后同步获得）" : "尚未掌握");
-    return success ? 0 : 1;
+    const usable = context.state.getSkill("firstAid") || medicineCandidateUnlocked(context);
+    if (!usable) {
+      await showSkillResult(context, "firstAid", false, "尚未掌握");
+      return 1;
+    }
+    if (!(await confirmSkillUse(context, "firstAid"))) {
+      await showSkillResult(context, "firstAid", false, "已放弃使用");
+      return 1;
+    }
+    await showSkillResult(context, "firstAid", true, "已掌握（医学解锁后同步获得）");
+    return 0;
   });
   registerDice("skill_medicine", learnedSkillCheck("medicine"));
   registerDice("skill_talk", learnedSkillCheck("talk"));
@@ -163,22 +200,20 @@
   // E-018：背起乘务员走话术路线，否则走侦察路线。
   registerDice("ev018_route_01", async (context) => {
     if (context.state.flags.carried_crew) {
-      const success = context.state.getSkill("talk");
-      await showSkillResult(context, "talk", success, success ? "已掌握，乘务员愿意配合" : "尚未掌握，话术路线失败");
-      return success ? 0 : 1;
+      return learnedSkillCheck("talk")(context);
     }
-    const success = context.state.getSkill("scouting");
-    await showSkillResult(context, "scouting", success, success ? "已掌握，找到了钥匙线索" : "尚未掌握，未找到钥匙");
-    return success ? 2 : 3;
+    const result = await scoutingSkillCheck(context);
+    return result === 0 ? 2 : 3;
   });
 
   // E-022：拥有潜行直接成功；否则使用幸运半值检定。
   registerDice("ev022_stealth_or_luck_01", async (context) => {
-    if (context.state.getSkill("stealth")) {
+    if (!context.state.getSkill("stealth")) return luckHalfCheck(context, 9, "潜行失败后的幸运检定");
+    if (await confirmSkillUse(context, "stealth")) {
       await showSkillResult(context, "stealth", true, "已掌握，直接通过");
       return 0;
     }
-    return luckHalfCheck(context, 9, "潜行失败后的幸运检定");
+    return luckHalfCheck(context, 9, "放弃潜行后的幸运检定");
   });
 
   registerDice("ev023_agility_01", attrCheck("agility"));
@@ -205,18 +240,6 @@
   });
   registerDice("ev025_strength_01", attrCheck("strength"));
 
-  // 便签正面、背面、地图均调查完成且敏捷至少为 5 时解锁侦察。
-  registerDice("ev_scouting_unlock_01", async (context) => {
-    const flags = context.state.flags;
-    const success = flags.note_front_seen && flags.note_back_seen && flags.map_seen
-      && context.state.getAttribute("agility") >= 5 ? 0 : 1;
-    await context.ui.inspect.show({
-      title: success === 0 ? "技能解锁成功" : "技能尚未解锁",
-      text: success === 0 ? "你掌握了侦察。" : "还需要调查便签正面、便签背面和电车示意图，且敏捷至少为 5。"
-    });
-    return success;
-  });
-
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev010_join_route_01", async (context) => (
@@ -230,12 +253,13 @@
     conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => !context.state.flags.visited_carriage_07)
   );
   registerDice("ev028_talk_or_strength_01", async (context) => {
-    const talk = context.state.getSkill("talk");
+    const canTalk = context.state.getSkill("talk");
+    const talkUsed = canTalk && (await confirmSkillUse(context, "talk"));
     const strength = context.state.getAttribute("strength");
-    const success = talk || strength >= 8;
+    const success = talkUsed || strength >= 8;
     await context.ui.inspect.show({
       title: success ? "结局判定成功" : "结局判定失败",
-      text: `话术：${talk ? "已掌握" : "未掌握"}；力量：${strength}，需要话术已掌握或力量达到 8。`
+      text: `话术：${talkUsed ? "已使用" : "未使用"}；力量：${strength}，需要话术成功或力量达到 8。`
     });
     return success ? 0 : 1;
   });

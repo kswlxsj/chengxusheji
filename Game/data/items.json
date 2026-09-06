@@ -16,7 +16,7 @@
   {
     "id": "newspaper",
     "name": "报纸",
-    "image": "assets/newspaper-icon.png",
+    "image": "assets/newspaper-05.png",
     "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
     "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
   },
@@ -33,5 +33,12 @@
     "image": "assets/phone.png",
     "description": "一部手机。",
     "inspectEvent": "E_ITEM_PHONE_INSPECT"
+  },
+  {
+    "id": "flashlight",
+    "name": "手电筒",
+    "image": "assets/flashlight.svg",
+    "description": "一支还能发光的手电筒。",
+    "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
   }
 ]

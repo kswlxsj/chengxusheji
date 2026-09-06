@@ -217,7 +217,7 @@ registeredState.completeAttributeAllocation({
 });
 assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达到14时应触发话术");
 assert.equal(registeredState.getSkill("stealth"), true, "敏捷与力量之和达到14时应触发潜行");
-assert.equal(registeredState.getSkill("medicine"), true, "教育达到7时应触发医学");
+assert.equal(registeredState.getSkill("medicine"), true, "教育超过5时应触发医学");
 
 let inspectedItem = null;
 const inspectEngine = new Game.EventEngine({
@@ -242,6 +242,7 @@ function createEngineUi() {
   return {
     dialog: { showLine: async () => {} },
     inspect: { show: async () => {} },
+    choice: { choose: async () => ({ value: true }) },
     closeDialog: () => {},
     cancelPending: () => {},
     setPaused: () => {},
@@ -275,9 +276,27 @@ function createRegisteredStateWith(values = {}) {
   return state;
 }
 
-// 当前项目约定：医学达到教育+灵感 >= 13 后同步视为已掌握急救；不能误用旧的教育 >= 7 自动条件。
-const firstAidLowState = createRegisteredStateWith({ education: 7, insight: 3, constitution: 7 });
-const firstAidHighInsightState = createRegisteredStateWith({ education: 6, insight: 7, constitution: 4 });
+// 当前项目约定：教育 > 5 解锁医学，并同步视为已掌握急救。
+const firstAidLowState = createRegisteredStateWith({
+  strength: 7,
+  agility: 7,
+  education: 5,
+  insight: 9,
+  will: 10,
+  luck: 10,
+  constitution: 3,
+  san: 5
+});
+const firstAidHighInsightState = createRegisteredStateWith({
+  strength: 7,
+  agility: 7,
+  education: 6,
+  insight: 8,
+  will: 10,
+  luck: 10,
+  constitution: 3,
+  san: 5
+});
 const firstAidContext = (state) => ({
   state,
   attributes: state.attributeDefinitions,
@@ -287,12 +306,21 @@ const firstAidContext = (state) => ({
 assert.equal(
   await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidLowState), []),
   1,
-  "教育 7、灵感 3 不应因旧医学阈值而获得急救"
+  "教育 5 不应解锁医学或急救"
 );
 assert.equal(
   await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidHighInsightState), []),
   0,
-  "教育 6、灵感 7 达到医学候选阈值后应同步获得急救"
+  "教育 6 应解锁医学并同步视为掌握急救"
+);
+const declinedFirstAidUi = {
+  ...createEngineUi(),
+  choice: { choose: async () => ({ value: false }) }
+};
+assert.equal(
+  await Game.Dice.get("skill_first_aid")({ ...firstAidContext(firstAidHighInsightState), ui: declinedFirstAidUi }, []),
+  1,
+  "使用技能前询问时，放弃使用应视为检定失败"
 );
 
 // E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。

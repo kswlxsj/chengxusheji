@@ -96,12 +96,7 @@
         "position": { "$ref": "#/$defs/position" },
         "zIndex": { "type": "integer" },
         "clickEvent": { "$ref": "#/$defs/id" },
-        "visibleWhen": { "$ref": "#/$defs/condition" },
-        "fullCanvas": {
-          "type": "boolean",
-          "default": false,
-          "description": "整幅画布贴图：该图与场景背景同尺寸画布、四周带透明边（透明边含位置信息）。渲染时与背景共用同一画布→屏幕映射整幅叠放；position 固定为 {x:0,y:0,width:100,height:100}，点击与悬停由运行时不透明像素判定。"
-        }
+        "visibleWhen": { "$ref": "#/$defs/condition" }
       },
       "additionalProperties": false
     }

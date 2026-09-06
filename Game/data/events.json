@@ -74,10 +74,19 @@
             "next": "E_006A"
           },
           {
-            "label": "放弃前进",
-            "next": "E_009"
+            "label": "留在6号车厢",
+            "next": "E_005_STAY"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "E_005_STAY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你从门前退开，决定先留在6号车厢再作打算。"
       }
     ]
   },
@@ -173,14 +182,6 @@
       {
         "type": "dialogue",
         "text": "呼...呼...太好了。"
-      },
-      {
-        "type": "check",
-        "dice": "skill_scouting",
-        "outcomes": [
-          "E_009_S",
-          "E_009_F"
-        ]
       }
     ]
   },
@@ -328,8 +329,7 @@
           "hidden": true
         }
       }
-    ],
-    "next": "E_SCOUTING_UNLOCK"
+    ]
   },
   {
     "id": "E_004",
@@ -371,8 +371,7 @@
           "hidden": true
         }
       }
-    ],
-    "next": "E_SCOUTING_UNLOCK"
+    ]
   },
   {
     "id": "E_004_F",
@@ -393,8 +392,7 @@
           "hidden": true
         }
       }
-    ],
-    "next": "E_SCOUTING_UNLOCK"
+    ]
   },
   {
     "id": "E_007_S",
@@ -455,10 +453,9 @@
       },
       {
         "type": "dialogue",
-        "text": "在不安的驱使下，你来到五号车厢。"
+        "text": "你不敢继续停留，打算沿来路退回6号车厢。"
       }
-    ],
-    "next": "E_009"
+    ]
   },
   {
     "id": "E_008_F",
@@ -483,10 +480,9 @@
       },
       {
         "type": "dialogue",
-        "text": "在不安的驱使下，你来到五号车厢。"
+        "text": "你不敢继续停留，打算沿来路退回6号车厢。"
       }
-    ],
-    "next": "E_009"
+    ]
   },
   {
     "id": "E_009_S",
@@ -506,6 +502,13 @@
       {
         "type": "addItem",
         "item": "newspaper"
+      },
+      {
+        "type": "setObjectState",
+        "object": "clue_clutter_05",
+        "patch": {
+          "hidden": true
+        }
       }
     ],
     "next": "E_010"
@@ -516,14 +519,6 @@
       {
         "type": "dialogue",
         "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
-      },
-      {
-        "type": "check",
-        "dice": "ev010_join_route_01",
-        "outcomes": [
-          "E_011",
-          "E_012"
-        ]
       }
     ]
   },
@@ -554,9 +549,12 @@
       {
         "type": "dialogue",
         "text": "你顿时毛骨悚然，先前不祥的预感得到了验证。"
+      },
+      {
+        "type": "check",
+        "dice": "ev010_san_01"
       }
-    ],
-    "next": "E_010_JOIN"
+    ]
   },
   {
     "id": "E_010_F",
@@ -568,9 +566,12 @@
       {
         "type": "dialogue",
         "text": "装神弄鬼的，到底在说什么。"
+      },
+      {
+        "type": "check",
+        "dice": "ev010_san_01"
       }
-    ],
-    "next": "E_010_JOIN"
+    ]
   },
   {
     "id": "E_010_JOIN",
@@ -708,8 +709,7 @@
         "type": "dialogue",
         "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
       }
-    ],
-    "next": "E_017"
+    ]
   },
   {
     "id": "E_014",
@@ -871,9 +871,23 @@
           },
           {
             "label": "留下乘务员",
-            "next": "E_017"
+            "next": "E_016_LEAVE"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "E_016_LEAVE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你把乘务员留在4号车厢，决定先去3号车厢寻找钥匙。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": false
       }
     ]
   },
@@ -906,8 +920,7 @@
         "key": "carried_crew",
         "value": true
       }
-    ],
-    "next": "E_017"
+    ]
   },
   {
     "id": "E_016_CARRY_FAIL",
@@ -925,16 +938,11 @@
         "key": "carried_crew",
         "value": false
       }
-    ],
-    "next": "E_017"
+    ]
   },
   {
     "id": "E_017",
     "actions": [
-      {
-        "type": "changeScene",
-        "scene": "carriage_03"
-      },
       {
         "type": "dialogue",
         "text": "车厢内散落大量行李，你们的行动受阻。"
@@ -992,8 +1000,7 @@
         "type": "addItem",
         "item": "crew_keys"
       }
-    ],
-    "next": "E_018_SEARCH"
+    ]
   },
   {
     "id": "E_018_PASSENGER_TALK_F",
@@ -1015,8 +1022,7 @@
         "speaker": "乘务员",
         "text": "没事，我来拿着吧。"
       }
-    ],
-    "next": "E_018_SEARCH"
+    ]
   },
   {
     "id": "E_018_NO_PASSENGER_SCOUT_S",
@@ -1033,8 +1039,7 @@
         "type": "addItem",
         "item": "crew_keys"
       }
-    ],
-    "next": "E_018_SEARCH"
+    ]
   },
   {
     "id": "E_018_NO_PASSENGER_SCOUT_F",
@@ -1047,53 +1052,7 @@
         "type": "dialogue",
         "text": "无奈之下，你只能暂时拿着黑色背包。"
       }
-    ],
-    "next": "E_018_SEARCH"
-  },
-  {
-    "id": "E_018_SEARCH",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你决定再在四周找找，或许有能用的东西。"
-      },
-      {
-        "type": "check",
-        "dice": "skill_scouting",
-        "outcomes": [
-          "E_018_SEARCH_S",
-          "E_018_SEARCH_F"
-        ]
-      }
     ]
-  },
-  {
-    "id": "E_018_SEARCH_S",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你找了一部手机。"
-      },
-      {
-        "type": "dialogue",
-        "text": "（获得手机）"
-      },
-      {
-        "type": "addItem",
-        "item": "phone"
-      }
-    ],
-    "next": "E_019"
-  },
-  {
-    "id": "E_018_SEARCH_F",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你什么都没找到。"
-      }
-    ],
-    "next": "E_019"
   },
   {
     "id": "E_019",
@@ -1174,7 +1133,26 @@
         "dice": "ev021_extra_san_01"
       }
     ],
-    "next": "E_022"
+    "next": "E_02_DECIDE"
+  },
+  {
+    "id": "E_02_DECIDE",
+    "actions": [
+      {
+        "type": "choice",
+        "prompt": "Clicker正挡在车厢中段，你打算怎么处理？",
+        "options": [
+          {
+            "label": "蹑手蹑脚地通过",
+            "next": "E_022"
+          },
+          {
+            "label": "制造声响引开并清掉Clicker",
+            "next": "E_023"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "E_022",
@@ -1203,9 +1181,13 @@
       {
         "type": "addItem",
         "item": "phone"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_02_passed",
+        "value": true
       }
-    ],
-    "next": "E_026"
+    ]
   },
   {
     "id": "E_022_F",
@@ -1222,7 +1204,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "进入这个车厢后，你在附近捡起一个瓶子。"
+        "text": "你在附近的杂物里捡起一个空瓶子。"
       },
       {
         "type": "addItem",
@@ -1234,7 +1216,7 @@
       },
       {
         "type": "choice",
-        "prompt": "你要怎么通过这个车厢？",
+        "prompt": "你要怎么通过或引开Clicker？",
         "options": [
           {
             "label": "直接冲过去",
@@ -1263,8 +1245,13 @@
   },
   {
     "id": "E_023_AGILITY_SUCCESS",
-    "actions": [],
-    "next": "E_026"
+    "actions": [
+      {
+        "type": "setFlag",
+        "key": "carriage_02_passed",
+        "value": true
+      }
+    ]
   },
   {
     "id": "E_023_AGILITY_FAIL",
@@ -1283,8 +1270,26 @@
   },
   {
     "id": "E_023_THROW_FIRST",
-    "actions": [],
-    "next": "E_026"
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+      },
+      {
+        "type": "dialogue",
+        "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_02_passed",
+        "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "clicker_cleared",
+        "value": true
+      }
+    ]
   },
   {
     "id": "E_023_THROW_AFTER_AGILITY_FAIL",
@@ -1301,8 +1306,22 @@
   },
   {
     "id": "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
-    "actions": [],
-    "next": "E_026"
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_02_passed",
+        "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "clicker_cleared",
+        "value": true
+      }
+    ]
   },
   {
     "id": "E_023_THROW_AFTER_AGILITY_FAIL_FAIL",
@@ -1325,7 +1344,7 @@
         "type": "check",
         "dice": "ev024_agility_01",
         "outcomes": [
-          "E_026",
+          "E_023_AGILITY_SUCCESS",
           "E_025"
         ]
       }
@@ -1364,8 +1383,13 @@
   },
   {
     "id": "E_025_ESCAPE",
-    "actions": [],
-    "next": "E_026"
+    "actions": [
+      {
+        "type": "setFlag",
+        "key": "carriage_02_passed",
+        "value": true
+      }
+    ]
   },
   {
     "id": "E_026",
@@ -1376,25 +1400,32 @@
       },
       {
         "type": "dialogue",
-        "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
-      },
+        "text": "到达先头车厢，这里昏暗安静，车厢前方能看到操作把手。"
+      }
+    ]
+  },
+  {
+    "id": "E_GO_02_FRONT_DOOR",
+    "actions": [
       {
         "type": "choice",
-        "prompt": "",
+        "prompt": "要打开通往先头车厢的门吗？",
         "options": [
           {
-            "label": "使用钥匙开门",
-            "next": "E_026_WITH_KEYS",
+            "label": "推开安全门",
+            "next": "E_026",
             "when": {
-              "hasItem": "crew_keys"
+              "flag": "carriage_02_passed",
+              "equals": true
             }
           },
           {
-            "label": "再次侦查",
-            "next": "E_026_NO_KEYS",
+            "label": "强行推门",
+            "next": "E_026_BLOCKED",
             "when": {
               "not": {
-                "hasItem": "crew_keys"
+                "flag": "carriage_02_passed",
+                "equals": true
               }
             }
           }
@@ -1403,29 +1434,11 @@
     ]
   },
   {
-    "id": "E_026_WITH_KEYS",
+    "id": "E_026_BLOCKED",
     "actions": [
       {
         "type": "dialogue",
-        "text": "你使用钥匙开门。"
-      }
-    ],
-    "next": "E_027"
-  },
-  {
-    "id": "E_026_NO_KEYS",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "（若仍未获得钥匙，再过一次侦查，再不过进入结局C E-031）"
-      },
-      {
-        "type": "check",
-        "dice": "skill_scouting",
-        "outcomes": [
-          "E_027",
-          "E_031"
-        ]
+        "text": "Clicker还堵在通往先头车厢的门前，你无法安全开门通过。"
       }
     ]
   },
@@ -1446,14 +1459,14 @@
       },
       {
         "type": "dialogue",
-        "text": "基本操作：右杆下拉加速，上拉减速。"
+        "text": "现在，你可以选择让列车继续前进，或者把它停下。"
       },
       {
         "type": "choice",
-        "prompt": "",
+        "prompt": "你准备让列车前进还是停下？",
         "options": [
           {
-            "label": "下拉加速",
+            "label": "前进",
             "next": "E_028",
             "when": {
               "flag": "carried_crew",
@@ -1461,7 +1474,7 @@
             }
           },
           {
-            "label": "下拉加速",
+            "label": "前进",
             "next": "E_029",
             "when": {
               "not": {
@@ -1471,7 +1484,7 @@
             }
           },
           {
-            "label": "上拉减速",
+            "label": "停下",
             "next": "E_030"
           }
         ]
@@ -1553,32 +1566,6 @@
     ]
   },
   {
-    "id": "E_SCOUTING_UNLOCK",
-    "actions": [
-      {
-        "type": "check",
-        "dice": "ev_scouting_unlock_01",
-        "outcomes": [
-          "E_SCOUTING_UNLOCK_SUCCESS",
-          "E_SCOUTING_UNLOCK_FAIL"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E_SCOUTING_UNLOCK_SUCCESS",
-    "actions": [
-      {
-        "type": "learnSkill",
-        "skill": "scouting"
-      }
-    ]
-  },
-  {
-    "id": "E_SCOUTING_UNLOCK_FAIL",
-    "actions": []
-  },
-  {
     "id": "E_ITEM_NEWSPAPER_INSPECT",
     "actions": [
       {
@@ -1604,10 +1591,23 @@
     "id": "E_ITEM_PHONE_INSPECT",
     "actions": [
       {
-        "type": "inspect",
-        "item": "phone",
-        "title": "手机",
-        "text": "一部手机。"
+        "type": "custom",
+        "name": "useLight",
+        "params": {
+          "item": "phone"
+        }
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_FLASHLIGHT_INSPECT",
+    "actions": [
+      {
+        "type": "custom",
+        "name": "useLight",
+        "params": {
+          "item": "flashlight"
+        }
       }
     ]
   },
@@ -1615,10 +1615,12 @@
     "id": "E_DOOR_04",
     "actions": [
       {
-        "type": "inspect",
-        "title": "通往3号车厢的门",
-        "text": "这扇门通往3号车厢。先完成4号车厢的乘务员事件，剧情会自动进入下一节车厢。",
-        "image": "assets/door.svg"
+        "type": "changeScene",
+        "scene": "carriage_03"
+      },
+      {
+        "type": "dialogue",
+        "text": "你推开门，走进3号车厢。车厢里到处是散落的行李。"
       }
     ]
   },
@@ -1626,32 +1628,192 @@
     "id": "E_DOOR_03",
     "actions": [
       {
-        "type": "inspect",
-        "title": "通往2号车厢的门",
-        "text": "这扇门通往2号车厢。完成当前车厢的调查后，剧情会继续向前。",
-        "image": "assets/door.svg"
+        "type": "changeScene",
+        "scene": "carriage_02"
+      },
+      {
+        "type": "dialogue",
+        "text": "你推开门走进2号车厢。四周毫无光源，只能听见明显的喘息声。"
       }
     ]
   },
   {
-    "id": "E_DOOR_02",
+    "id": "E_GO_05_06",
     "actions": [
       {
-        "type": "inspect",
-        "title": "通往先头车厢的门",
-        "text": "这扇门通往先头车厢。先处理当前车厢的Clicker事件，之后才能继续前进。",
-        "image": "assets/door.svg"
+        "type": "changeScene",
+        "scene": "carriage_06"
+      },
+      {
+        "type": "dialogue",
+        "text": "你穿过门，返回6号车厢。"
       }
     ]
   },
   {
-    "id": "E_DOOR_FRONT",
+    "id": "E_GO_04_05",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_05"
+      },
+      {
+        "type": "dialogue",
+        "text": "你穿过门，回到5号车厢。"
+      }
+    ]
+  },
+  {
+    "id": "E_GO_03_04",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_04"
+      },
+      {
+        "type": "dialogue",
+        "text": "你穿过门，返回4号车厢。"
+      }
+    ]
+  },
+  {
+    "id": "E_GO_02_03",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
+      },
+      {
+        "type": "dialogue",
+        "text": "你穿过门，返回3号车厢。"
+      }
+    ]
+  },
+  {
+    "id": "E_GO_FRONT_02",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_02"
+      },
+      {
+        "type": "dialogue",
+        "text": "你穿过门，回到2号车厢。"
+      }
+    ]
+  },
+  {
+    "id": "E_02_DARK",
     "actions": [
       {
         "type": "inspect",
-        "title": "驾驶室门",
-        "text": "你已经来到先头车厢。驾驶室门在这里，操作面板决定接下来的结局。",
-        "image": "assets/door.svg"
+        "title": "黑暗中的喘息",
+        "text": "太暗了，看不清怪物在哪里。也许手机闪光灯或手电筒能把这里照亮。"
+      }
+    ]
+  },
+  {
+    "id": "E_05_SEARCH_NEWS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你决定仔细翻找这堆杂物。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_009_S",
+          "E_009_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_05_SEARCH_TOOLS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你决定仔细翻找这只倒下的背包。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_05_TOOLS_SUCCESS",
+          "E_05_TOOLS_FAIL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_05_TOOLS_SUCCESS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "背包里有一部手机和一支还能发光的手电筒。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得手机和手电筒）"
+      },
+      {
+        "type": "addItem",
+        "item": "phone"
+      },
+      {
+        "type": "addItem",
+        "item": "flashlight"
+      },
+      {
+        "type": "setObjectState",
+        "object": "tool_clutter_05",
+        "patch": {
+          "hidden": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "E_05_TOOLS_FAIL",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "背包里只有一些旧衣物，没有能用来照明的东西。"
+      }
+    ]
+  },
+  {
+    "id": "E_05_JUNK_A",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你伸手翻动散落的行李和衣物。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting"
+      },
+      {
+        "type": "dialogue",
+        "text": "你仔细翻过，仍然只是一堆普通杂物。"
+      }
+    ]
+  },
+  {
+    "id": "E_05_JUNK_C",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你拨开堆叠的杂物开始寻找。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting"
+      },
+      {
+        "type": "dialogue",
+        "text": "这里没有夹着报纸之类的线索。"
       }
     ]
   },

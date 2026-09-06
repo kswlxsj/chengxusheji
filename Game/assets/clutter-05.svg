@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180" role="img" aria-label="车厢杂物占位图">
+  <rect x="16" y="110" width="128" height="54" rx="10" fill="#392d22" stroke="#8a704f" stroke-width="7" transform="rotate(-4 80 137)"/>
+  <path d="M42 134h76M62 117l9-12M70 150l8-10M120 117l-9-10" stroke="#9b7f58" stroke-width="7" stroke-linecap="round"/>
+  <rect x="116" y="90" width="74" height="68" rx="12" fill="#28313a" stroke="#6d7b88" stroke-width="7" transform="rotate(7 153 124)"/>
+  <path d="M135 126h37M146 108l10 13M135 144l12 7M183 111l-6 15" stroke="#8fa0ad" stroke-width="7" stroke-linecap="round"/>
+  <path d="M58 92c0-26 18-40 44-38 23 2 37 17 36 39-13-6-22-9-34-9 4-10 1-18-10-20-10-2-19 3-22 12-15 7-15 14-14 16z" fill="#5b3f2e" stroke="#8a6845" stroke-width="6"/>
+  <ellipse cx="172" cy="57" rx="22" ry="13" fill="#6a4a34" stroke="#96704b" stroke-width="6"/>
+</svg>

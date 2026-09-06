@@ -186,12 +186,6 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds) {
       objectIds.add(object.id);
       assert(object.clickEvent && eventIds.has(object.clickEvent), `物件 ${object.id} 引用了不存在的事件`);
       assert(object.position && ["x", "y", "width", "height"].every((key) => Number.isFinite(object.position[key])), `物件 ${object.id} 的 position 无效`);
-      if (object.fullCanvas) {
-        assert(typeof object.fullCanvas === "boolean", `物件 ${object.id} 的 fullCanvas 必须是布尔值`);
-        const { x, y, width, height } = object.position || {};
-        assert(x === 0 && y === 0 && width === 100 && height === 100,
-          `整幅画布贴图物件 ${object.id} 的 position 必须固定为 {x:0,y:0,width:100,height:100}`);
-      }
     }
   }
 
