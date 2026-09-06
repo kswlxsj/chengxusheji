@@ -47,7 +47,7 @@
 
 任何内容维护都应遵守同一条工作流，先做内容后校验，不要跳过编译：
 
-1. 在 `assets/` 放入素材（透明背景的 PNG、WebP 或 SVG；背景建议 16:9）。
+1. 在 `assets/` 放入素材（透明背景的 PNG、WebP 或 SVG；场景背景按“正方形画布、内容居中排版”制作，运行时按 16:9 舞台居中裁切显示，见下文 scenes.json 一节的素材约定）。
 2. 修改对应的 `data/*.json`，**不要编辑编译产物** `data/compiled-game-data.js`。
 3. 根据 VS Code Schema 提示修正字段和类型（六份 JSON 已关联对应 Schema）。
 4. 运行 `npm run compile`，修正编译器报告的跨文件引用错误。
@@ -58,7 +58,7 @@
 
 - ID 必须匹配 `^[A-Za-z][A-Za-z0-9_-]*$`。
 - 各注册表内不能重名；**物件 ID 在所有场景之间也必须全局唯一**。
-- 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如开场 `E_901`），避免未来与剧本编号冲突。
+- 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如 `E_901`，不与剧本编号冲突）。
 - 检定（骰子）编号建议 `ev<事件编号原样，保留零填充>_<语义>_<序号>`（如 `ev005_insight_01`）；该编号对应 `src/dice.js` 中**唯一**一条检定规则，须匹配 ID 格式、全局唯一且长期稳定。Schema 校验格式；编译器通过 vm 加载 `src/dice.js` 校验事件引用确实已注册。
 - 素材路径相对于项目根目录（仓库内为 `Game/`），如 `assets/radio.svg`，不能写本机绝对路径。
 - 示例代码中的 `//` 注释只用于说明，实际 JSON 文件中不能保留注释。
@@ -92,7 +92,7 @@
 
 ### 剧本转换 skill（内容维护者）
 
-仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源，AI 工作流树）与 `Game/skills/script-to-game-data/conversion-rules.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/review-checklist-template.md`，手把手使用教程见 `Game/docs/skill-tutorials/script-to-game-data.md`，较早运行留档见 `Game/docs/conversion-reviews/review-checklist-2026-09-04-1849.md`（旧版格式）。要点：
+仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源，AI 工作流树）与 `Game/skills/script-to-game-data/conversion-rules.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/review-checklist-template.md`，手把手使用教程见 `Game/docs/skill-tutorials/script-to-game-data.md`，较早运行留档见 `Game/docs/conversion-reviews/review-checklist-2026-09-05-1454.md`（E-005~E-008 批，旧版格式）。要点：
 
 - **输入由使用者指定**（一个或多个文件）；未指定时执行者会停下询问，不默认任何路径。
 - **执行节奏为强制三段确认闸门**：①候选阶段只产出候选与审查清单，默认不写 `data/`；②审查清单面向使用者呈现**人话提问 + 素材指定区**（agent 内部细节收在文末执行台账）——使用者逐条勾选答复（同意 / 需要调整 / 本次跳过）、逐行指定素材（沿用 / 新建 / 委托占位补位 / 暂缓并注明影响），agent 校验全部完成后才继续；③落地（landing）前须逐文件确认改动方案，写入白名单 JSON 并真实编译通过后，经使用者终审才提交 git。任何闸门未获明确批准，执行者不得跳过或合并。
@@ -172,7 +172,7 @@
 | `type` | 必填字段 | 可选字段 | 行为 |
 | --- | --- | --- | --- |
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。 |
-| `inspect` | `title`, `text` | `image` | 打开调查窗口并等待关闭。 |
+| `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
 | `changeScene` | `scene` | — | 关闭对话并加载场景。 |
@@ -290,7 +290,7 @@
 ### 编译流程与数据红线
 
 - 修改任何 `data/*.json` 后必须运行 `npm run compile`，否则改动不会进入数据包；浏览器端修改后需强制刷新。
-- 注册表变化会让既有 v2 存档因键不一致而读取失败（参见[示例五](#复杂维护工作示例)的迁移策略）。
+- 注册表变化（新增/删除属性或技能等）会让旧存档因键不一致而读取失败，需要在[示例五](#复杂维护工作示例)的迁移策略下处理。
 - 编译器的检查范围、常见报错排错与提交前检查清单见 `Game/README.md` 的「测试排错与交付」，本文不重复。
 
 ## 运行时接口参考
@@ -635,7 +635,7 @@ game.saves.listSlots()
 3. 修改 `data/skills.json`，新增 `strong_body`，其 `autoTrigger` 为 `stamina gte 7`。
 4. 运行 `npm run compile` 和 `npm test`。
 5. 开新游戏。属性窗口和 HUD 应出现体力；体力达到 7 后，控制台执行 `game.state.getSkill("strong_body")` 应为 `true`。
-6. 注册表变化会让既有 v2 存档因键不一致而读取失败；正式升级需按下一例制定迁移策略。
+6. 注册表变化（如新增属性或技能）会让旧存档因键不一致而读取失败；正式升级需按下一例制定迁移策略。
 
 ### 示例五：修改存档结构或兼容规则
 
