@@ -58,6 +58,8 @@
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
 - 稳定状态存档：事件中保存的是该事件开始前最近的完整状态。
 - SAN 归零后立即终止事件并进入结束页。
+- 游戏内全部位图（场景背景、物件、物品栏图标、插图、封面）默认最近邻插值（`image-rendering: pixelated`），放大呈像素游戏的硬边感。
+- 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 六份内容 JSON 的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
@@ -77,7 +79,7 @@
 - 云存档和服务器同步。
 - 独立物品栏窗口、物品详情和主动使用；当前 HUD 只显示物品名称。
 - 通用 NPC 注册系统。
-- Canvas 或透明像素级不规则命中；当前点击区域是图片外接矩形。
+- 完整场景物件的透明像素级命中：仅 `fullCanvas` 整幅画布贴图物件支持不透明像素命中；普通矩形物件（裁紧贴图）仍是图片外接矩形。
 - 恢复到事件中间某句文本的协程式存档。
 - 任意表达式求值器、可视化编辑器和完整 Markdown 剧本转换器。
 - 完整浏览器端自动化测试；现有测试聚焦状态、技能、条件、存档和部分动作。
@@ -178,12 +180,31 @@ Game/
 ├─ .vscode/
 │  └─ settings.json
 ├─ assets/
+│  ├─ carriage-02.png
+│  ├─ carriage-04.png
+│  ├─ carriage-05-03.png
+│  ├─ carriage-06.png
+│  ├─ carriage-07.png
 │  ├─ carriage-06.svg
 │  ├─ carriage-07.svg
 │  ├─ cover-placeholder.svg
 │  ├─ door.svg
 │  ├─ note.svg
-│  └─ radio.svg
+│  ├─ radio.svg
+│  ├─ corpse-07.svg
+│  ├─ deep-07.svg
+│  ├─ front-carriage.png
+│  ├─ black-bag-03.png
+│  ├─ clicker-02.png
+│  ├─ control-lever.png
+│  ├─ crew-04.png
+│  ├─ map-06.png
+│  ├─ newspaper-05.png
+│  ├─ newspaper-icon.png
+│  ├─ phone.png
+│  ├─ placeholder-bottle.svg
+│  ├─ placeholder-key.svg
+│  └─ …
 ├─ data/
 │  ├─ attributes.json
 │  ├─ compiled-game-data.js
@@ -323,14 +344,19 @@ Game/
 
 | 文件 | 用途 |
 | --- | --- |
-| `carriage-06.svg` | 6 号车厢示例背景。 |
-| `carriage-07.svg` | 7 号车厢示例背景。 |
-| `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
-| `door.svg` | 两个车厢门共用的透明物件贴图。 |
+| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png`、`newspaper-05.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
+| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）。 |
+| `phone.png` | 手机物件/物品栏图标。 |
+| `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
+| `door.svg` | 各车厢门共用的透明物件贴图。 |
 | `note.svg` | 便签贴图，同时暂作旧车票图片。 |
 | `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
+| `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
+| `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
+| `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
-建议背景为 16:9；物件使用边界裁紧的透明 PNG、WebP 或 SVG。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
+背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
 
 ### `data/`
 
