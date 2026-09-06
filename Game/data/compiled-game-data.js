@@ -18,7 +18,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_06",
       "name": "6 号车厢",
-      "background": "assets/carriage-06.svg",
+      "background": "assets/carriage-06.png",
       "objects": [
         {
           "id": "note_06",
@@ -102,11 +102,12 @@ window.GAME_DATA = {
           "id": "map_06",
           "name": "电车示意图",
           "image": "assets/map-06.png",
+          "fullCanvas": true,
           "position": {
-            "x": 54,
-            "y": 38,
-            "width": 14,
-            "height": 18
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_004",
@@ -318,11 +319,12 @@ window.GAME_DATA = {
           "id": "crew_04",
           "name": "重伤的乘务员",
           "image": "assets/crew-04.png",
+          "fullCanvas": true,
           "position": {
-            "x": 31,
-            "y": 51,
-            "width": 18,
-            "height": 20
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_013"
@@ -364,11 +366,12 @@ window.GAME_DATA = {
           "id": "black_bag_03",
           "name": "黑色背包",
           "image": "assets/black-bag-03.png",
+          "fullCanvas": true,
           "position": {
-            "x": 43,
-            "y": 48,
-            "width": 17,
-            "height": 15
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_017"
@@ -416,11 +419,12 @@ window.GAME_DATA = {
           "id": "clicker_02",
           "name": "Clicker",
           "image": "assets/clicker-02.png",
+          "fullCanvas": true,
           "position": {
-            "x": 70,
-            "y": 44,
-            "width": 18,
-            "height": 25
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_021",
@@ -476,11 +480,12 @@ window.GAME_DATA = {
           "id": "control_27",
           "name": "前进与停车把手",
           "image": "assets/control-lever.png",
+          "fullCanvas": true,
           "position": {
-            "x": 42,
-            "y": 38,
-            "width": 18,
-            "height": 25
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_027",
@@ -2359,7 +2364,7 @@ window.GAME_DATA = {
     {
       "id": "newspaper",
       "name": "报纸",
-      "image": "assets/newspaper-05.png",
+      "image": "assets/newspaper-icon.png",
       "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
       "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
     },
