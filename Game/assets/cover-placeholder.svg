@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
-  <title id="title">末班列车占位封面</title>
+  <title id="title">常暗之厢占位封面</title>
   <desc id="description">昏暗夜色中的列车与占位封面文字</desc>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -24,6 +24,6 @@
   <g fill="#090a0d" stroke="#75664f" stroke-width="8">
     <circle cx="420" cy="715" r="58"/><circle cx="1120" cy="715" r="58"/>
   </g>
-  <text x="800" y="235" fill="#e7dcc8" font-family="Microsoft YaHei, sans-serif" font-size="92" text-anchor="middle" letter-spacing="18">末班列车</text>
+  <text x="800" y="235" fill="#e7dcc8" font-family="Microsoft YaHei, sans-serif" font-size="92" text-anchor="middle" letter-spacing="18">常暗之厢</text>
   <text x="800" y="315" fill="#a99982" font-family="Microsoft YaHei, sans-serif" font-size="28" text-anchor="middle" letter-spacing="8">封面图片占位符</text>
 </svg>
