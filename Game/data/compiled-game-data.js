@@ -1,7 +1,7 @@
 window.GAME_DATA = {
   "meta": {
     "formatVersion": 3,
-    "title": "末班列车框架演示",
+    "title": "常暗之厢（框架演示）",
     "coverImage": "assets/cover-placeholder.svg",
     "startEvent": "E_001",
     "initialScene": "carriage_06",
