@@ -440,6 +440,14 @@ a { color: inherit; }
 .dialog-text { margin: 9px 0 0; font-size: clamp(17px, 1.7vw, 25px); line-height: 1.65; }
 .dialog-hint { position: absolute; right: 18px; bottom: 14px; opacity: .65; font-size: 13px; }
 
+/* 玩家快速连点推进对白时，浏览器会把连点识别成双击/三击而选中
+   对话框文本与说话人标题，观感很差；此处统一禁止对话框内的文本选中。 */
+.dialog-window,
+.dialog-window * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .window-controls {
   position: absolute;
   left: 18px;
