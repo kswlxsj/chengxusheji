@@ -282,6 +282,9 @@
           const event = this.events.get(nextId);
           if (!event) throw new Error(`事件不存在：${nextId}`);
           this.state.currentEventId = nextId;
+          // 每个事件开始时把“快进”重置为关闭，开关状态不跨事件记忆：
+          // 避免上一事件遗留的快进让新事件自动连跳，玩家来不及关闭。
+          this.ui.dialog.setFast(false);
           nextId = null;
 
           for (const action of event.actions || []) {

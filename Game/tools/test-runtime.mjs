@@ -240,7 +240,7 @@ assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定
 
 function createEngineUi() {
   return {
-    dialog: { showLine: async () => {} },
+    dialog: { showLine: async () => {}, setFast: () => {} },
     inspect: { show: async () => {} },
     choice: { choose: async () => ({ value: true }) },
     closeDialog: () => {},

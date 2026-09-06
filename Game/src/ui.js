@@ -157,8 +157,15 @@
     setFast(value) {
       this.fast = value;
       this.fastButton.setAttribute("aria-pressed", String(value));
-      if (value && this.player.running) this.player.finish();
-      if (value && this.advance) this.scheduleAdvance();
+      if (value) {
+        if (this.player.running) this.player.finish();
+        if (this.advance) this.scheduleAdvance();
+        return;
+      }
+      // 关闭快进：取消快进排程的自动连跳，避免已排程的连跳“收不住”；
+      // 若“自动”仍开启，则改按自动节奏重新排程。
+      if (this.advance && this.auto) this.scheduleAdvance();
+      else this.clearAutoTimer();
     }
 
     setPaused(value) {
