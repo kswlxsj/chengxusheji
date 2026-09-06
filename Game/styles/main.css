@@ -1,3 +1,14 @@
+/* ============================================================================
+   常暗之厢 全站样式表 main.css
+   以下 8 个页面共用本文件：index.html（登录）、register.html（注册）、
+   home.html（主页）、settings.html（设置）、ending.html（结束）、
+   save-manager.html（存档管理）、save-write.html（选择槽位）、game.html（游戏）。
+   样式按「页面 / 界面区域」分节，新增规则请就近加入对应分节；
+   公共设计令牌与全局基础统一维护在第 1 节。
+   ============================================================================ */
+
+/* ============ 1. 设计令牌与全局基础（配色变量、重置、body 与元素级样式） ============ */
+
 :root {
   color-scheme: dark;
   font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
@@ -24,6 +35,8 @@ button { font: inherit; }
 button:disabled { cursor: not-allowed; opacity: .48; }
 a { color: inherit; }
 
+/* ============ 2. 页面舞台外壳与整幅封面（16:9 外壳 .site-shell、封面图 .page-cover） ============ */
+
 .site-shell {
   position: relative;
   width: min(100vw, 160vh);
@@ -41,6 +54,8 @@ a { color: inherit; }
   object-fit: cover;
   opacity: .72;
 }
+
+/* ============ 3. 主页封面/标题与跨页按钮（home-page、home-content、.page-panel h1、.page-actions/.page-footer/.slot-actions） ============ */
 
 .home-page::after {
   content: "";
@@ -90,6 +105,8 @@ a { color: inherit; }
 .page-footer button:hover,
 .slot-actions button:not(:disabled):hover { background: #423a30; }
 
+/* ============ 4. 内容页通用面板（设置/结束/存档等页共用的 .content-page、.page-panel 布局） ============ */
+
 .content-page {
   display: grid;
   place-items: center;
@@ -114,6 +131,8 @@ a { color: inherit; }
 .page-error { min-height: 1.5em; color: #ffb7a7; }
 .page-footer { display: flex; justify-content: flex-end; margin-top: 24px; }
 .horizontal-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* ============ 5. 认证页（登录 / 注册）：auth-* 表单与提示 ============ */
 
 .auth-page { overflow: auto; }
 .auth-panel { width: min(520px, 100%); }
@@ -153,6 +172,8 @@ a { color: inherit; }
 .auth-user-status { margin: -18px 0 20px; color: rgba(236,229,216,.78); }
 .auth-user-status strong { color: var(--accent); }
 
+/* ============ 6. 存档页（存档管理 / 选择槽位写入）：save-slot 卡片与可选槽 ============ */
+
 .save-slot-list { display: grid; gap: 12px; }
 .save-slot-card {
   display: flex;
@@ -179,6 +200,8 @@ a { color: inherit; }
 .selectable-slot strong { color: var(--accent); font-size: 1.15em; }
 .selectable-slot span { opacity: .78; }
 .selectable-slot:hover { border-color: var(--accent); background: rgba(213,173,109,.1); }
+
+/* ============ 7. 游戏页（game.html）：舞台与场景物件（#game-shell、场景层与物件） ============ */
 
 #game-shell {
   position: relative;
@@ -232,6 +255,8 @@ a { color: inherit; }
   filter: none;
   transform: none;
 }
+
+/* ============ 8. 游戏页：HUD 顶部信息条与底部物品栏（#hud、#inventory-bar 等） ============ */
 
 #hud {
   position: absolute;
@@ -334,6 +359,8 @@ a { color: inherit; }
   white-space: nowrap;
 }
 
+/* ============ 9. 游戏页：窗口/菜单内按钮通用外观（HUD、对话框、菜单等按钮基础样式） ============ */
+
 .hud-actions button,
 .window-controls button,
 .choice-list button,
@@ -356,6 +383,8 @@ a { color: inherit; }
 .attribute-stepper button:not(:disabled):hover,
 .allocation-actions button:not(:disabled):hover,
 .menu-actions button:not(:disabled):hover { background: #423a30; }
+
+/* ============ 10. 游戏页：窗口层、对话框与控件（#window-layer、.game-window、.dialog-*） ============ */
 
 #window-layer { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
 
@@ -391,6 +420,8 @@ a { color: inherit; }
 
 .window-controls button { padding: 4px 9px; }
 .window-controls button[aria-pressed="true"] { color: #17120a; background: var(--accent); }
+
+/* ============ 11. 游戏页：模态遮罩与菜单窗口（.modal-backdrop、.menu-backdrop、菜单内容布局） ============ */
 
 .modal-backdrop {
   position: absolute;
@@ -470,6 +501,8 @@ a { color: inherit; }
 
 .confirm-backdrop { background: rgba(0,0,0,.88); }
 
+/* ============ 12. 游戏页：选择、调查与属性分配弹窗（.choice-window、.inspect-*、.attribute-allocation-*） ============ */
+
 .choice-window,
 .inspect-window { width: min(650px, 90%); padding: 24px; }
 .choice-window h2,
@@ -521,6 +554,8 @@ a { color: inherit; }
 .allocation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 .allocation-actions button { padding: 9px 16px; }
 
+/* ============ 13. 游戏页：Toast 提示与全屏演出动画（#toast、flash 等） ============ */
+
 #toast {
   position: absolute;
   z-index: 100;
@@ -538,6 +573,8 @@ a { color: inherit; }
 #game-shell.flash { animation: flash 420ms ease; }
 #game-shell.paused { animation-play-state: paused; }
 @keyframes flash { 35% { filter: brightness(2.4) contrast(1.25); } }
+
+/* ============ 14. 窄屏适配（@media (max-width: 700px)） ============ */
 
 @media (max-width: 700px) {
   #attributes { display: none; }
