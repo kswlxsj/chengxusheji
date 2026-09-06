@@ -21,6 +21,10 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
+/* 像素游戏：游戏内全部位图（场景背景、物件、物品栏图标、插图、封面等）默认使用最近邻插值，
+   避免浏览器默认的平滑（线性）插值在放大时出现模糊。SVG 矢量不受该属性影响。 */
+img { image-rendering: pixelated; }
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -239,6 +243,32 @@ a { color: inherit; }
   object-fit: contain;
   pointer-events: none;
 }
+
+/* fullCanvas 整幅画布贴图：视觉层与背景共用同一张画布→舞台的映射整幅叠放（如同把图层贴回背景），
+   只由脚本按不透明像素控制高亮；命中层是贴图内容包围盒上的透明按钮，交互也由脚本按像素判定。 */
+.scene-object-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.scene-object-art.is-hot,
+.scene-object-art.is-focused {
+  filter: brightness(1.35) drop-shadow(0 0 10px #ffe7ad);
+  transition: filter 120ms ease;
+}
+
+.scene-object-hit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.scene-object-hit.is-hot { cursor: pointer; }
 
 .scene-object:hover,
 .scene-object:focus-visible {
