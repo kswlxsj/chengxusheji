@@ -41,8 +41,15 @@ for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scen
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
 
-assert.equal(Auth.register("ab", "123456").ok, false, "用户名过短时不应注册");
-assert.equal(Auth.register("Alice", "12345").ok, false, "密码过短时不应注册");
+assert.equal(Auth.register("", "password").ok, false, "空用户名不应注册");
+assert.equal(Auth.register("   ", "password").ok, false, "纯空格用户名不应注册");
+assert.equal(Auth.register("empty-password", "").ok, false, "空密码不应注册");
+assert.equal(Auth.register("a", "1").ok, true, "单字符用户名和密码应能注册");
+assert.equal(Auth.login("a", "1").ok, true, "单字符用户名和密码应能登录");
+Auth.logout();
+assert.equal(Auth.register("username-with-more-than-20-characters", " ").ok, true, "长用户名和空格密码应能注册");
+assert.equal(Auth.login("username-with-more-than-20-characters", " ").ok, true, "空格密码应按原值登录");
+Auth.logout();
 const aliceRegistration = Auth.register("  Alice  ", "secret1");
 assert.equal(aliceRegistration.ok, true);
 assert.equal(aliceRegistration.message, "");

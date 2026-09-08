@@ -19,12 +19,12 @@
   }
 
   function validateUsername(username) {
-    if (username.length < 3 || username.length > 20) return "用户名须为 3–20 个字符";
+    if (!username) return "请输入用户名";
     return "";
   }
 
   function validatePassword(password) {
-    if (typeof password !== "string" || password.length < 6) return "密码至少需要 6 个字符";
+    if (typeof password !== "string" || password.length === 0) return "请输入密码";
     return "";
   }
 
@@ -47,7 +47,9 @@
 
   function login(rawUsername, password) {
     const username = normalizeUsername(rawUsername);
-    if (!username || typeof password !== "string") return result(false, "请输入用户名和密码");
+    if (!username || typeof password !== "string" || password.length === 0) {
+      return result(false, "请输入用户名和密码");
+    }
 
     try {
       const storedPassword = window.localStorage.getItem(accountKey(username));

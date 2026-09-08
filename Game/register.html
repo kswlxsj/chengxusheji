@@ -15,12 +15,12 @@
       <p class="page-introduction">创建一个保存在此浏览器中的本地账号。</p>
       <form id="register-form" class="auth-form" novalidate>
         <label for="register-username">用户名</label>
-        <input id="register-username" name="username" type="text" minlength="3" maxlength="20" autocomplete="username" required autofocus>
-        <p class="field-hint">去除首尾空格后须为 3–20 个字符，区分大小写。</p>
+        <input id="register-username" name="username" type="text" autocomplete="username" required autofocus>
+        <p class="field-hint">去除首尾空格后不能为空，区分大小写。</p>
         <label for="register-password">密码</label>
-        <input id="register-password" name="password" type="password" minlength="6" autocomplete="new-password" required>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" required>
         <label for="register-confirm-password">确认密码</label>
-        <input id="register-confirm-password" name="confirmPassword" type="password" minlength="6" autocomplete="new-password" required>
+        <input id="register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required>
         <p id="auth-error" class="page-error auth-error" role="alert" aria-live="polite"></p>
         <button type="submit">注册</button>
       </form>
