@@ -77,6 +77,9 @@ a { color: inherit; }
   translate: 0 -50%;
 }
 
+#game-title {
+  display: none !important;
+}
 .home-content h1,
 .page-panel h1 {
   margin: 0 0 28px;
@@ -108,6 +111,68 @@ a { color: inherit; }
 .page-footer a:hover,
 .page-footer button:hover,
 .slot-actions button:not(:disabled):hover { background: #423a30; }
+
+/* CODEX ADD START */
+.home-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.home-action {
+  padding: 12px 20px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #272a2f;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home-action:hover {
+  background: #423a30;
+}
+
+.home-action-new-game {
+  justify-self: stretch;
+  position: relative;
+  top: 180px;          /* 单独往下移 */
+  left: -0px;  
+  width: 30%;/* 单独往右移 */
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+.home-action-save-manager {
+  justify-self: stretch;
+  position: relative;
+  top: 190px;          /* 单独往下移 */
+  left: -0px;  
+  width: 30%;
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+.home-action-settings {
+   justify-self: stretch;
+  position: relative;
+  top: 50px;          /* 单独往下移 */
+  left: 280px;  
+  width: 50%;
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+.home-action-group-intro {
+  justify-self: stretch;
+  position: relative;
+  top: 70px;          /* 单独往下移 */
+  left: 280px;  
+  width: 50%;
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+/* CODEX ADD END */
 
 /* ============ 4. 内容页通用面板（设置/结束/存档等页共用的 .content-page、.page-panel 布局） ============ */
 
@@ -173,7 +238,11 @@ a { color: inherit; }
 .field-hint { color: rgba(236,229,216,.62); font-size: .86em; line-height: 1.55; }
 .field-hint { margin: -4px 0 4px; }
 .auth-notice { margin: 16px 0 0; }
-.auth-user-status { margin: -18px 0 20px; color: rgba(236,229,216,.78); }
+.auth-user-status { 
+  margin: -18px 0 20px; color: rgba(236,229,216,.78); 
+ margin-top: 100px;     /* 往下移（正值） */
+  margin-bottom: 30px;  /* 加大与按钮的间距 */
+}
 .auth-user-status strong { color: var(--accent); }
 
 /* ============ 6. 存档页（存档管理 / 选择槽位写入）：save-slot 卡片与可选槽 ============ */
@@ -821,3 +890,83 @@ a { color: inherit; }
   .horizontal-actions { grid-template-columns: 1fr; }
   .auth-page { aspect-ratio: auto; min-height: 100vh; }
 }
+
+/* CODEX ADD START */
+#start-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #090b0e;
+  pointer-events: none;
+}
+
+body.codex-start-video-ready .home-page {
+  background: transparent;
+}
+
+body.codex-start-video-ready #home-cover {
+  opacity: 0;
+}
+
+#codex-ending-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow: hidden;
+  background: #000;
+}
+
+#codex-ending-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+#codex-ending-actions {
+  position: absolute;
+  left: 50%;
+  bottom: 7vh;
+  z-index: 2;
+  display: flex;
+  gap: 14px;
+  translate: -50% 0;
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+.codex-ending-button {
+  padding: 12px 26px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #272a2f;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .45);
+  cursor: pointer;
+}
+
+.codex-ending-button:hover {
+  background: #423a30;
+}
+
+#codex-ending-restart {
+  color: #17120a;
+  border-color: var(--accent);
+  background: var(--accent);
+  font-weight: 700;
+    opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+#codex-ending-restart:hover {
+  background: var(--accent);
+  filter: brightness(1.08);
+}
+/* CODEX ADD END */

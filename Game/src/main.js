@@ -29,7 +29,9 @@
       ending = true;
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
-      flow.navigate("ending", { reason }, true);
+      // CODEX ADD START
+      showEndingOverlay(reason);
+      // CODEX ADD END
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -43,6 +45,64 @@
   let paused = false;
   let pauseTask = null;
   let activeSlot = requestedSlot;
+
+  // CODEX ADD START
+  function showEndingOverlay(reason) {
+    const overlay = document.querySelector("#codex-ending-overlay");
+    const video = document.querySelector("#codex-ending-video");
+    const skipButton = document.querySelector("#codex-ending-skip");
+    const restartButton = document.querySelector("#codex-ending-restart");
+    if (!overlay || !video || !skipButton || !restartButton) {
+      flow.navigate("ending", { reason }, true);
+      return;
+    }
+    if (!overlay.hidden) return;
+
+    startupLocked = true;
+    paused = true;
+    gameShell.classList.add("paused");
+    engine.setPaused(true);
+    scene.setInteractionEnabled(false);
+    ui.closePauseMenus();
+    updateHud();
+
+    video.pause();
+    video.currentTime = 0;
+    overlay.hidden = false;
+    skipButton.hidden = false;
+    restartButton.hidden = true;
+
+    let completed = false;
+    const completeEnding = () => {
+      if (completed) return;
+      completed = true;
+      video.pause();
+      skipButton.hidden = true;
+      restartButton.hidden = false;
+      restartButton.focus();
+    };
+    const returnToMainMenu = () => {
+      flow.clearTransfer();
+      flow.navigate("home", {}, true);
+    };
+    const tryPlay = () => {
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
+    };
+
+    video.addEventListener("ended", completeEnding, { once: true });
+    video.addEventListener("error", () => {
+      video.style.display = "none";
+      completeEnding();
+    }, { once: true });
+    skipButton.addEventListener("click", completeEnding, { once: true });
+    restartButton.addEventListener("click", returnToMainMenu, { once: true });
+    overlay.addEventListener("pointerdown", tryPlay, { once: true });
+    tryPlay();
+  }
+  // CODEX ADD END
 
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);

@@ -14,17 +14,28 @@
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
 </head>
 <body>
+  <!-- CODEX ADD START -->
+  <video
+    id="start-video"
+    src="../Assets/Image/UI/start.mov"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+  ></video>
+  <!-- CODEX ADD END -->
   <main class="site-shell home-page" aria-label="主界面">
     <img id="home-cover" class="page-cover" alt="">
     <section class="home-content">
       <h1 id="game-title">常暗之厢</h1>
       <p class="auth-user-status">当前用户：<strong id="current-user"></strong></p>
-      <nav class="page-actions" aria-label="主菜单">
-        <a href="save-write.html?intent=new">新的游戏</a>
-        <a href="save-manager.html">存档管理</a>
-        <a href="settings.html">设置</a>
-        <a href="GroupIntro/index.html">小组介绍</a>
-        <button id="logout-button" type="button">退出登录</button>
+      <nav class="home-actions" aria-label="主菜单">
+        <a class="home-action home-action-new-game" href="save-write.html?intent=new">新的游戏</a>
+        <a class="home-action home-action-save-manager" href="save-manager.html">存档管理</a>
+        <a class="home-action home-action-settings" href="settings.html">设置</a>
+        <a class="home-action home-action-group-intro" href="GroupIntro/index.html">小组介绍</a>
       </nav>
     </section>
   </main>
@@ -34,6 +45,48 @@
   <script src="src/page-flow.js"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/home.js"></script>
-  <!-- 初始化主页数据渲染、当前用户展示和退出登录逻辑。 -->
+  <!-- 初始化主页数据渲染和当前用户展示。 -->
+
+  <!-- CODEX ADD START -->
+  <script>
+    (function () {
+      "use strict";
+
+      const video = document.getElementById("start-video");
+      if (!video) return;
+
+      function tryPlay() {
+        video.muted = true;
+        video.loop = true;
+        video.setAttribute("muted", "");
+        video.setAttribute("loop", "");
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {});
+        }
+      }
+
+      function reveal() {
+        document.body.classList.add("codex-start-video-ready");
+        tryPlay();
+      }
+
+      if (video.readyState >= 2) {
+        reveal();
+      } else {
+        video.addEventListener("canplay", reveal, { once: true });
+        video.addEventListener("loadeddata", reveal, { once: true });
+      }
+
+      video.addEventListener("ended", function () {
+        video.currentTime = 0;
+        tryPlay();
+      });
+
+      document.addEventListener("pointerdown", reveal, { once: true });
+      document.addEventListener("keydown", reveal, { once: true });
+    })();
+  </script>
+  <!-- CODEX ADD END -->
 </body>
 </html>

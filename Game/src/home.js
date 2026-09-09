@@ -8,8 +8,4 @@
   cover.src = data.meta.coverImage;
   cover.alt = `${data.meta.title}封面`;
   document.querySelector("#current-user").textContent = Game.Auth.currentUser() || "";
-  document.querySelector("#logout-button").addEventListener("click", () => {
-    Game.Auth.logout();
-    window.location.replace(new URL("index.html", window.location.href));
-  });
 })(window.TrainGame, window.GAME_DATA);

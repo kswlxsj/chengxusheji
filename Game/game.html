@@ -37,6 +37,22 @@
     <div id="toast" role="status" aria-live="polite"></div>
   </main>
 
+  <!-- CODEX ADD START -->
+  <div id="codex-ending-overlay" hidden>
+    <video
+      id="codex-ending-video"
+      src="../Assets/Image/UI/end.mov"
+      playsinline
+      preload="auto"
+      aria-label="结局视频"
+    ></video>
+    <div id="codex-ending-actions">
+      <button id="codex-ending-skip" class="codex-ending-button" type="button">跳过</button>
+      <button id="codex-ending-restart" class="codex-ending-button codex-ending-restart" type="button" hidden>重新开始</button>
+    </div>
+  </div>
+  <!-- CODEX ADD END -->
+
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
   <script src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
