@@ -34,7 +34,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/dice.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
@@ -558,4 +558,156 @@ assert.equal(diceTerminalState.getAttribute("strength"), 0);
 assert.equal(diceTerminalState.flags.continued, undefined, "骰子检定触发终止后不应继续执行");
 assert.equal(diceTerminalCalls, 1);
 
-console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档与终止状态。");
+// ==== 小游戏（minigame 动作：注册表索引、结算动作列表、宿主竞态、回滚）====
+
+function registerStubMinigame(id, run) {
+  Game.Minigames.register(id, { title: `测试小游戏 ${id}`, run });
+}
+
+function createMgEngine(events, options = {}) {
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const engine = new Game.EventEngine({
+    events,
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: createEngineUi(),
+    ...options
+  });
+  return { state, engine };
+}
+
+// 1) 结算动作列表由解释器顺序执行，之后当前事件继续、事件链结束才落稳定快照。
+registerStubMinigame("mg_test_settle", async () => [
+  { type: "setFlag", key: "mg_settled", value: true },
+  { type: "modifyAttribute", attribute: "strength", amount: 1 }
+]);
+{
+  const { state, engine } = createMgEngine([{
+    id: "E_MG_SETTLE",
+    actions: [
+      { type: "minigame", game: "mg_test_settle" },
+      { type: "setFlag", key: "after_minigame", value: true }
+    ]
+  }]);
+  assert.equal(await engine.play("E_MG_SETTLE"), true, "结算正常的小游戏事件应成功结束");
+  assert.equal(state.flags.mg_settled, true, "小游戏返回的结算动作列表应被顺序执行");
+  assert.equal(state.getAttribute("strength"), 5, "结算中的属性修改应生效");
+  assert.equal(state.flags.after_minigame, true, "小游戏动作之后的动作应继续执行");
+  assert.equal(engine.getStableSnapshot().flags.mg_settled, true, "事件链结束后结算应进入稳定快照");
+}
+
+// 2) 小游戏未返回结算（undefined/null/空数组）时不改动状态、事件照常继续。
+registerStubMinigame("mg_test_no_settlement", async () => undefined);
+{
+  const { state, engine } = createMgEngine([{
+    id: "E_MG_NONE",
+    actions: [
+      { type: "minigame", game: "mg_test_no_settlement" },
+      { type: "setFlag", key: "tail_flag", value: true }
+    ]
+  }]);
+  assert.equal(await engine.play("E_MG_NONE"), true);
+  assert.equal(state.flags.tail_flag, true, "无结算时事件应继续执行后续动作");
+  assert.equal(state.flags.mg_settled, undefined, "无结算不应写入任何状态");
+}
+
+// 3) 引用未注册的小游戏编号：动作报错。
+{
+  const { engine } = createMgEngine([{ id: "E_MG_MISSING", actions: [] }]);
+  await assert.rejects(
+    () => engine.actions.get("minigame")({ type: "minigame", game: "mg_not_registered" }),
+    /未注册/,
+    "未注册的小游戏编号应报错"
+  );
+}
+
+// 4) 结算列表含未知动作类型：整条事件回滚到稳定点。
+registerStubMinigame("mg_test_bad_settlement", async () => [
+  { type: "setFlag", key: "partial_flag", value: true },
+  { type: "notARealAction" }
+]);
+{
+  const { state, engine } = createMgEngine([{
+    id: "E_MG_BAD",
+    actions: [{ type: "minigame", game: "mg_test_bad_settlement" }]
+  }]);
+  assert.equal(await engine.play("E_MG_BAD"), false, "结算出错的事件应回滚并返回 false");
+  assert.equal(state.flags.partial_flag, undefined, "结算列表前段写入的状态应随回滚撤销");
+}
+
+// 5) 结算动作列表超限：报错回滚。
+registerStubMinigame("mg_test_oversize", async () =>
+  Array.from({ length: 101 }, () => ({ type: "setFlag", key: "overflow", value: true }))
+);
+{
+  const { state, engine } = createMgEngine([{
+    id: "E_MG_OVER",
+    actions: [{ type: "minigame", game: "mg_test_oversize" }]
+  }]);
+  assert.equal(await engine.play("E_MG_OVER"), false, "超长结算列表应回滚");
+  assert.equal(state.flags.overflow, undefined);
+}
+
+// 6) 结算列表不允许嵌套小游戏（宿主窗口为单实例，禁止覆盖）。
+registerStubMinigame("mg_test_nested", async () => [
+  { type: "minigame", game: "mg_test_settle" }
+]);
+{
+  const { state, engine } = createMgEngine([{
+    id: "E_MG_NESTED",
+    actions: [{ type: "minigame", game: "mg_test_nested" }]
+  }]);
+  assert.equal(await engine.play("E_MG_NESTED"), false, "结算里嵌套小游戏应报错回滚");
+}
+
+// 7) 宿主竞态：模块不返回（玩家点“退出小游戏”）时由宿主退出结算接管，事件继续。
+registerStubMinigame("mg_test_quit", async (context) => {
+  context.onQuit(() => [{ type: "setFlag", key: "quit_settled", value: true }]);
+  return new Promise(() => {}); // 挂起：模拟模块自身不结束，只等退出按钮
+});
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const fakeHost = {
+    opened: false,
+    quitProvider: null,
+    openAndStage() { this.opened = true; return null; },
+    setQuitProvider(provider) { this.quitProvider = provider; },
+    quitPromise() {
+      if (!this.resolveQuit) {
+        this.quit = new Promise((resolve) => { this.resolveQuit = resolve; });
+      }
+      return this.quit;
+    },
+    close() { this.opened = false; }
+  };
+  const quitEngine = new Game.EventEngine({
+    events: [{
+      id: "E_MG_QUIT",
+      actions: [
+        { type: "minigame", game: "mg_test_quit" },
+        { type: "setFlag", key: "after_quit", value: true }
+      ]
+    }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: { ...createEngineUi(), minigame: fakeHost }
+  });
+  const timer = setTimeout(() => {
+    // 模拟玩家点击“退出小游戏”：宿主用模块注册的退出结算解析竞态。
+    fakeHost.resolveQuit(fakeHost.quitProvider ? fakeHost.quitProvider() : undefined);
+  }, 0);
+  try {
+    assert.equal(await quitEngine.play("E_MG_QUIT"), true, "退出小游戏应正常结束事件");
+    assert.equal(fakeHost.opened, false, "事件结束后宿主窗口应已关闭");
+    assert.equal(state.flags.quit_settled, true, "退出结算动作列表应被解释器执行");
+    assert.equal(state.flags.after_quit, true, "退出小游戏后事件应继续执行后续动作");
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。");
