@@ -38,6 +38,9 @@
     }
   }
 
+  // 小游戏结算动作列表的长度上限，防止模块返回无界列表拖垮事件链。
+  const MINIGAME_SETTLEMENT_LIMIT = 100;
+
   class EventEngine {
     constructor({ events, state, scene, ui, items, shouldTerminate = () => false, onTerminate = () => {} }) {
       this.events = new Map(events.map((event) => [event.id, event]));
@@ -152,6 +155,67 @@
         const handler = this.customActions.get(action.name);
         await handler(action.params || {}, this.context());
       });
+
+      // 小游戏动作：JSON 只写注册表索引（仿 check→dice.js 的分离架构，不做分支假设）。
+      // 小游戏模块可自由选择返回或不返回一个动作列表；解释器拿到动作列表时按当前事件的
+      // 语义顺序执行（含暂停/取消/终止检查，见 runAction），列表为空或未返回则无事发生。
+      this.registerAction("minigame", async (action) => {
+        if (!Game.Minigames) throw new Error("小游戏系统未加载：缺少 src/minigames.js");
+        const spec = Game.Minigames.get(action.game);
+        const host = this.ui.minigame || null;
+        const stage = host ? host.openAndStage(spec.title) : null;
+        const context = this.context();
+        const cleanups = [];
+        const gameContext = {
+          ...context,
+          stage,
+          // 注册“退出小游戏”按钮的结算提供者；未注册时退出视为放弃、无结算。
+          onQuit: (provider) => {
+            if (host && typeof provider === "function") host.setQuitProvider(provider);
+          },
+          // 模块在此登记收尾函数（取消 rAF/移除监听/释放 GL 等），宿主关闭后统一执行一次。
+          registerCleanup: (fn) => {
+            if (typeof fn === "function") cleanups.push(fn);
+          }
+        };
+        let settlement = null;
+        try {
+          const running = Promise.resolve(spec.run(gameContext));
+          if (!host) {
+            settlement = await running;
+          } else {
+            // 自然结束与“退出”按钮二者取其先；退出先行时 running 的后发拒绝被吞掉，
+            // 只记日志，不打断剧情（正常路径的失败仍会经 Promise.race 抛给事件链回滚）。
+            const quit = host.quitPromise();
+            settlement = await Promise.race([
+              running.then((value) => ({ value })),
+              quit.then((value) => ({ value }))
+            ]).then((winner) => winner.value);
+            running.catch((error) => console.error("小游戏运行异常：", error));
+          }
+        } finally {
+          for (const cleanup of cleanups) {
+            try { cleanup(); } catch (error) { console.error("小游戏收尾失败：", error); }
+          }
+          if (host) host.close();
+        }
+        if (!Array.isArray(settlement) || settlement.length === 0) return null;
+        if (settlement.length > MINIGAME_SETTLEMENT_LIMIT) {
+          throw new Error(`小游戏 ${action.game} 返回的结算动作超过 ${MINIGAME_SETTLEMENT_LIMIT} 条`);
+        }
+        let result = null;
+        for (const item of settlement) {
+          if (!item || typeof item !== "object" || typeof item.type !== "string") {
+            throw new Error(`小游戏 ${action.game} 返回了无效的结算动作`);
+          }
+          if (item.type === "minigame") {
+            throw new Error("小游戏结算动作里不能再嵌套小游戏");
+          }
+          result = await this.runAction(item);
+          if (result && result.stop) break;
+        }
+        return result;
+      });
     }
 
     context() {
@@ -167,6 +231,18 @@
         wait: (milliseconds) => this.wait(milliseconds, run),
         throwIfCancelled: () => this.assertActive(run)
       };
+    }
+
+    // 执行单个动作的公共步骤：暂停等待 → 调处理器 → 校验运行仍有效 → 刷新状态 → 终止检查。
+    // 事件主循环与小游戏结算动作列表共用同一语义，避免两套行为分叉。
+    async runAction(action) {
+      const run = this.activeRun;
+      await this.waitWhilePaused(run);
+      const result = await this.actions.get(action.type)(action, this.context());
+      this.assertActive(run);
+      this.onStateChanged();
+      if (this.shouldTerminate(this.state)) throw new TerminalStateReached();
+      return result;
     }
 
     getStableSnapshot() {
@@ -288,11 +364,7 @@
           nextId = null;
 
           for (const action of event.actions || []) {
-            await this.waitWhilePaused(run);
-            const result = await this.actions.get(action.type)(action, this.context());
-            this.assertActive(run);
-            this.onStateChanged();
-            if (this.shouldTerminate(this.state)) throw new TerminalStateReached();
+            const result = await this.runAction(action);
             if (result && result.stop) {
               nextId = result.next || null;
               break;
