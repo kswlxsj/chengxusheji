@@ -56,6 +56,7 @@
 - 以小游戏注册表（`TrainGame.Minigames`，仿 dice.js 的“JSON 只写编号”分离架构）接入“事件内小游戏”：事件用 `{ "type": "minigame", "game": "<编号>" }` 触发，小游戏模块结束时可返回**结算动作列表**，由事件引擎按当前事件普通动作的语义顺序执行；宿主窗口 `MinigameWindow`（模态居中近满屏、游戏画面变暗、标题栏含“退出小游戏”）内可自绘任意 DOM/canvas/WebGL 画面，小游戏进行中游戏本体冻结、系统暂停与 Esc 被屏蔽。
 - 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；演示触发物 `mg3d_demo_spot_06` 默认隐藏（验收与删除方法见 `docs/API使用说明.md` 示例九）。
 - 战斗轮卡牌小游戏 `card_battle`（简单）/`card_battle_hard`（困难）（`src/minigame-games/card-battle.js`），提供四张牌单出/双出、敌人候选牌展示、回血克制、组合技和敌人濒死无限体力规则；当前独立试玩页为 `常暗之厢-战斗轮-卡牌试作.html`，正式剧情可通过 `minigame` 动作接线。
+- 剧情小游戏 `crew_negotiation`（乘务员安抚与交涉，`src/minigame-games/crew-negotiation.js`）：接入 E_014 初见乘务员的交涉，三轮 × 每轮两个选项，正确选项对最终检定加成 +30%、错误选项 +10%；小游戏只通过结算动作 `setFlag ev014_negotiation_bonus` 传出加成，最终百分比检定（基础 40% + 加成、封顶 100%，`src/dice.js` 的 `ev014_negotiation_final_01`）在游戏本体的 `E_014_TALK` 中执行并按成功/失败分流。
 - 独立登录、注册、标题主页、游戏、存档管理/写入、结束及占位信息页。
 - 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
@@ -129,7 +130,7 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：7 个场景，107 个事件，6 个物品，8 个属性，6 个技能，3 个小游戏。
+编译完成：7 个场景，107 个事件，6 个物品，8 个属性，6 个技能，4 个小游戏。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
 ```
 
@@ -203,6 +204,10 @@ Game/
 │  ├─ clicker-02.png
 │  ├─ control-lever.png
 │  ├─ crew-04.png
+│  ├─ crew-portrait.png
+│  ├─ pc-portrait.png
+│  ├─ miniGame/
+│  │  └─ 交涉背景.png
 │  ├─ map-06.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
@@ -316,7 +321,8 @@ Game/
 │  ├─ main.js
 │  ├─ minigame-games/
 │  │  ├─ webgl3d-demo.js
-│  │  └─ card-battle.js
+│  │  ├─ card-battle.js
+│  │  └─ crew-negotiation.js
 │  ├─ minigames.js
 │  ├─ namespace.js
 │  ├─ page-flow.js
@@ -368,6 +374,8 @@ Game/
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
+| `crew-portrait.png`、`pc-portrait.png` | 乘务员与玩家（PC）的人物半身立绘，供 `crew_negotiation` 小游戏左右两侧使用（由仓库根 `Assets/Image/Portrait/` 源文件复制并改名复用）。 |
+| `miniGame/交涉背景.png` | `crew_negotiation` 小游戏的中央背景图（由美工放置于 `assets/miniGame/`）。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
 背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
@@ -443,7 +451,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`。 |
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
-| `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`card-battle.js` 为战斗轮卡牌小游戏。 |
+| `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示；`card-battle.js` 为战斗轮卡牌小游戏；`crew-negotiation.js` 为“乘务员安抚与交涉”剧情小游戏。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |

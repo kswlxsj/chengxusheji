@@ -628,6 +628,104 @@ a { color: inherit; }
 .mg-webgl-done:not(:disabled) { color: #17120a; background: var(--accent); }
 .mg-webgl-done:disabled { opacity: .55; }
 
+/* ============ 11d. 乘务员安抚与交涉小游戏（.mg-negotiation-*，属于 crew_negotiation 模块） ============ */
+
+/* 整幅舞台：中央背景铺底，左右立绘列 + 中央交互列叠加。 */
+.mg-negotiation-root { position: absolute; inset: 0; overflow: hidden; }
+
+.mg-negotiation-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mg-negotiation-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: clamp(120px, 17vw, 250px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 10px;
+}
+
+.mg-negotiation-side-left { left: 0; }
+.mg-negotiation-side-right { right: 0; }
+
+.mg-negotiation-portrait {
+  max-width: 100%;
+  max-height: 88%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .65));
+}
+
+/* 中央交互区：轮次 / 对话记录（聊天式自动上滚）/ 选项。 */
+.mg-negotiation-center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(100px, 16vw, 235px);
+  right: clamp(100px, 16vw, 235px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.3vw, 16px);
+  padding: clamp(10px, 1.8vw, 22px);
+}
+
+.mg-negotiation-round {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-shadow: 0 1px 4px #000;
+  font-size: clamp(14px, 1.5vw, 20px);
+}
+
+.mg-negotiation-history {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(10px, 1.4vw, 18px);
+  background: rgba(10, 12, 16, .78);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.mg-negotiation-line { margin: 0 0 10px; line-height: 1.55; font-size: clamp(13px, 1.3vw, 17px); text-shadow: 0 1px 3px #000; }
+
+.mg-negotiation-speaker { font-weight: 700; margin-right: 4px; }
+.mg-negotiation-speaker-crew { color: var(--accent); }
+.mg-negotiation-speaker-pc { color: #bcd7ee; }
+
+.mg-negotiation-options {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+}
+
+.mg-negotiation-option {
+  width: 100%;
+  padding: clamp(9px, 1.2vw, 14px) clamp(12px, 1.6vw, 20px);
+  text-align: left;
+  background: rgba(16, 19, 24, .92);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1.5;
+  font-size: clamp(13px, 1.3vw, 17px);
+  transition: background .15s ease, border-color .15s ease, transform .08s ease;
+}
+
+.mg-negotiation-option:hover { background: rgba(45, 38, 24, .92); border-color: var(--accent); transform: translateY(-1px); }
+.mg-negotiation-option:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 /* ============ 12. 游戏页：选择、调查与属性分配弹窗（.choice-window、.inspect-*、.attribute-allocation-*） ============ */
 
 .choice-window,
