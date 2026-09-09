@@ -248,19 +248,20 @@
     <details class="rules-panel" open>
       <summary>规则说明</summary>
       <div class="rules-content">
-        <p><strong>目标：</strong>你的生命值为 8，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
+        <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
         <p><strong>出牌：</strong>选 1 张牌免费；选 2 张牌同时出牌，消耗 1 点体力。点牌后再点“出牌”。</p>
         <p><strong>单牌：</strong>攻击造成 2 伤害；回血恢复 3 生命，但被斩击或必杀命中时回复量都 −3；防御抵挡 1 点伤害并反弹 1 点伤害；必杀造成 3 伤害并冷却 3 回合。</p>
         <p><strong>四种双牌技能：</strong></p>
         <ul>
-          <li>攻击＋回血：吸血斩，2 伤害＋回复 1；组合技不受单牌克制。</li>
+          <li>攻击＋回血：吸血斩，2 伤害＋回复 1；若对手出了攻击或必杀，回血效果 −3。</li>
           <li>攻击＋防御，或防御＋必杀：盾击，2 伤害＋1 护盾＋反弹 1。</li>
-          <li>攻击＋必杀：破阵爆发，造成 4 伤害。</li>
-          <li>回血＋防御，或回血＋必杀：稳住阵脚，回复 2＋1 护盾＋反弹 1。</li>
+          <li>攻击＋必杀：双斩，造成 4 伤害。</li>
+          <li>回血＋防御：稳住阵脚，回复 2＋1 护盾＋反弹 1；若对手出了攻击或必杀，回血效果 −3。</li>
+          <li>回血＋必杀：吸血斩，2 伤害＋回复 1；若对手出了攻击或必杀，回血效果 −3。</li>
         </ul>
         <p><strong>体力：</strong>你初始 0 点，最多 3 点；每 2 回合开始恢复 1 点，单牌不消耗体力。双牌消耗 1 点体力，防御不产额外体力，但会抵挡 1 点并反弹 1 点伤害。</p>
-        <p><strong>组合技：</strong>组合技是独立技能，不参与单牌之间的克制；组合技伤害不会被防御挡住或反弹。只有单牌回血会被同回合的斩击或必杀各 −3；含必杀的组合会进入冷却。</p>
-        <p><strong>敌人：</strong>敌人也使用四张牌和同样的组合技；初始 0 点体力，每 2 回合恢复 1 点，最多 3 点。每回合出 1 个单牌或组合技；必杀及含必杀的组合技消耗 1 点体力并有冷却。敌人生命值降到 3 或更低后，体力变为无限，可以连续使用组合技；必杀仍受 3 回合冷却。点击敌人行动框，可查看本回合可能出的 2 个选项；你出牌后，敌人会根据你的牌和当前局面从中选 1 个。</p>
+        <p><strong>组合技：</strong>组合技伤害不会被防御挡住或反弹；但只要一方的出牌包含回血，遇到对方包含攻击或必杀的牌（单牌或组合技），回血效果都直接 −3。必杀单出才是必杀；放进组合技时按攻击处理，因此“回血＋必杀”=“回血＋攻击”，造成 2 点伤害并回复 1 点，且不进入必杀冷却。</p>
+        <p><strong>敌人：</strong>敌人也使用四张牌和同样的组合技；初始 0 点体力，每 2 回合恢复 1 点，最多 3 点。每回合出 1 个单牌或组合技；双牌消耗 1 点体力，只有单出必杀才有 3 回合冷却。敌人生命值降到 3 或更低后，体力变为无限，可以连续使用组合技；单出必杀仍受 3 回合冷却。点击敌人行动框，可查看本回合可能出的 2 个选项；你出牌后，敌人会根据你的牌和当前局面从中选 1 个。</p>
       </div>
     </details>
 
@@ -279,7 +280,7 @@
       <section class="fighter player" aria-label="玩家">
         <div class="player-face" aria-hidden="true">♟</div>
         <div class="name"><small>调查员</small><strong>你</strong></div>
-        <div class="player-status"><span id="hearts" class="hearts" aria-label="生命值 8 / 8"></span><span id="player-hp">8 / 8</span></div>
+        <div class="player-status"><span id="hearts" class="hearts" aria-label="生命值 10 / 10"></span><span id="player-hp">10 / 10</span></div>
         <div id="shield" class="shield" hidden>护盾 0</div>
       </section>
     </section>
@@ -315,7 +316,7 @@
   <script>
     "use strict";
 
-     const MAX_PLAYER_HP = 8;
+     const MAX_PLAYER_HP = 10;
      const MAX_ENEMY_HP = 10;
      const ENEMY_INFINITE_ENERGY_HP = 3;
      const MAX_ENERGY = 3;
@@ -325,12 +326,12 @@
       { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 斩击 −3，必杀 −3 · 免费", cost: 0, recovery: 3 },
       { id: "defend", label: "防御", cards: ["defend"], detail: "抵挡 1＋反弹 1 · 免费", cost: 0, shield: 1, counter: 1 },
       { id: "ultimate", label: "必杀", cards: ["ultimate"], detail: "造成 3 点伤害 · 消耗 1 体力", cost: 1, damage: 3, ultimate: true },
-      { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1 · 不受单牌克制", cost: 1, damage: 2, recovery: 1, combo: true },
+      { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1", cost: 1, damage: 2, recovery: 1, combo: true },
       { id: "attack+defend", label: "攻击＋防御", cards: ["attack", "defend"], detail: "盾击：2 伤害＋1 护盾＋反弹 1", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
-      { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：2 伤害＋1 护盾＋反弹 1", cost: 1, damage: 2, shield: 1, counter: 1, ultimate: true, combo: true },
-      { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "破阵爆发：4 伤害", cost: 1, damage: 4, ultimate: true, combo: true },
+      { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：2 伤害＋1 护盾＋反弹 1（必杀按攻击处理）", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
+      { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "双斩：4 伤害（必杀按攻击处理）", cost: 1, damage: 4, combo: true },
       { id: "defend+heal", label: "防御＋回血", cards: ["defend", "heal"], detail: "稳住阵脚：恢复 2＋1 护盾＋反弹 1", cost: 1, recovery: 2, shield: 1, counter: 1, combo: true },
-      { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "稳住阵脚：恢复 2＋1 护盾＋反弹 1", cost: 1, recovery: 2, shield: 1, counter: 1, ultimate: true, combo: true }
+      { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "吸血斩：2 伤害＋恢复 1（必杀按攻击处理）", cost: 1, damage: 2, recovery: 1, combo: true }
     ];
 
     const elements = {
@@ -366,7 +367,7 @@
 
     function pickEnemyCandidates(energy, ultimateCooldown, enemyHp) {
       const infiniteEnergy = hasInfiniteEnemyEnergy(enemyHp);
-      const available = enemyActions.filter((action) => (infiniteEnergy || action.cost <= energy) && (!action.cards.includes("ultimate") || ultimateCooldown === 0));
+      const available = enemyActions.filter((action) => (infiniteEnergy || action.cost <= energy) && (!action.ultimate || ultimateCooldown === 0));
       return [...available].sort(() => Math.random() - 0.5).slice(0, 2);
     }
 
@@ -376,7 +377,7 @@
       const playerThreatens = selected.includes("attack") || selected.includes("ultimate");
       const playerHeals = selected.length === 1 && selected.includes("heal");
       const has = (cardId) => action.cards.includes(cardId);
-      if (has("attack")) {
+      if (has("attack") || (has("ultimate") && action.combo)) {
         score += !action.combo && playerHeals ? 7 : 2;
         score += context.playerHp <= 3 ? 4 : 0;
       }
@@ -391,7 +392,7 @@
         score += context.playerHp > 4 ? 1 : 0;
         score += playerThreatens ? 7 : 0;
       }
-      if (has("ultimate")) {
+      if (has("ultimate") && !action.combo) {
         score += context.playerHp <= 3 ? 10 : context.playerHp <= 5 ? 5 : 1;
         score += !action.combo && playerHeals ? 4 : 0;
       }
@@ -471,20 +472,19 @@
       } else messages.push("你没有受到伤害");
     }
 
-    function getRecoveryPenalty(cards, combo = false) {
-      if (combo) return 0;
+    function getRecoveryPenalty(cards) {
       if (cards.includes("ultimate")) return 3;
       if (cards.includes("attack")) return 3;
       return 0;
     }
 
     function recoveryCounterName(cards) {
-      return cards.includes("ultimate") ? "必杀" : "斩击";
+      return cards.includes("ultimate") ? "必杀" : "攻击";
     }
 
     function healEnemy(amount, messages, penalty = 0, counterName = "斩击") {
       const effectiveAmount = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`敌人的回血被${counterName}压制 ${penalty} 点`);
+      if (penalty > 0) messages.push(`敌人的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effectiveAmount}）`);
       const before = state.enemyHp;
       state.enemyHp = clamp(state.enemyHp + effectiveAmount, 0, MAX_ENEMY_HP);
       const recovered = state.enemyHp - before;
@@ -497,7 +497,7 @@
 
     function healPlayer(amount, messages, penalty = 0, counterName = "斩击") {
       const effectiveAmount = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`你的回血被${counterName}压制 ${penalty} 点`);
+      if (penalty > 0) messages.push(`你的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effectiveAmount}）`);
       const before = state.playerHp;
       state.playerHp = clamp(state.playerHp + effectiveAmount, 0, MAX_PLAYER_HP);
       const recovered = state.playerHp - before;
@@ -513,7 +513,7 @@
         return;
       }
       if (cardId === "heal") {
-        const penalty = getRecoveryPenalty(state.enemyAction.cards, state.enemyAction.combo);
+        const penalty = getRecoveryPenalty(state.enemyAction.cards);
         healPlayer(3, messages, penalty, recoveryCounterName(state.enemyAction.cards));
         return;
       }
@@ -532,10 +532,10 @@
       const key = [...cardIds].sort().join("+");
       let effectiveDamage = 0;
       let effectiveHeal = 0;
-      if (key === "attack+heal") {
+      if (key === "attack+heal" || key === "heal+ultimate") {
         messages.push("组合技：吸血斩");
         effectiveDamage = damageEnemy(2, messages, { combo: true });
-        effectiveHeal = healPlayer(1, messages);
+        effectiveHeal = healPlayer(1, messages, getRecoveryPenalty(state.enemyAction.cards), recoveryCounterName(state.enemyAction.cards));
       } else if (key === "attack+defend" || key === "defend+ultimate") {
         messages.push("组合技：盾击");
         effectiveDamage = damageEnemy(2, messages, { combo: true });
@@ -545,11 +545,9 @@
       } else if (key === "attack+ultimate") {
         messages.push("组合技：破阵爆发");
         effectiveDamage = damageEnemy(4, messages, { combo: true });
-        state.ultimateCooldown = 3;
-        messages.push("必杀进入 3 回合冷却");
-      } else if (key === "defend+heal" || key === "heal+ultimate") {
+      } else if (key === "defend+heal") {
         messages.push("组合技：稳住阵脚");
-        effectiveHeal = healPlayer(2, messages);
+        effectiveHeal = healPlayer(2, messages, getRecoveryPenalty(state.enemyAction.cards), recoveryCounterName(state.enemyAction.cards));
         state.shield = 1;
         state.counter = 1;
         messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
@@ -577,6 +575,8 @@
       if (state.counter > 0 && action.damage && !action.combo) {
         state.enemyHp = clamp(state.enemyHp - state.counter, 0, MAX_ENEMY_HP);
         messages.push(`反击造成 ${state.counter} 点伤害`);
+      } else if (state.counter > 0 && action.damage && action.combo) {
+        messages.push("敌人的组合技伤害不触发防御反弹");
       }
       if (state.enemyHp <= 0) {
         clearTemporaryDefense();
@@ -584,7 +584,7 @@
       }
       if (action.damage) damagePlayer(action.damage, messages, { combo: action.combo });
       if (action.recovery) {
-        const penalty = getRecoveryPenalty(state.selected, state.selected.length === 2);
+        const penalty = getRecoveryPenalty(state.selected);
         healEnemy(action.recovery, messages, penalty, recoveryCounterName(state.selected));
       }
       clearTemporaryDefense();
@@ -666,13 +666,13 @@
       elements.playSelected.textContent = state.selected.length === 2 ? "同时出牌（-1 体力）" : "出一张（免费）";
       elements.cards.forEach((button) => {
         const cardId = button.dataset.card;
-        const locked = cardId === "ultimate" && state.ultimateCooldown > 0;
+      const locked = cardId === "ultimate" && state.ultimateCooldown > 0 && state.selected.length === 0;
         const selected = state.selected.includes(cardId);
         button.disabled = state.busy || state.ended || locked;
         button.classList.toggle("locked", locked);
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
-        button.title = locked ? `必杀冷却中，还剩 ${state.ultimateCooldown} 回合` : `选择${cardNames[cardId]}`;
+      button.title = locked ? `必杀单出冷却中，还剩 ${state.ultimateCooldown} 回合；可作为组合中的攻击使用` : `选择${cardNames[cardId]}`;
       });
     }
 

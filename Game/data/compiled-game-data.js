@@ -1752,8 +1752,8 @@ window.GAME_DATA = {
           "type": "check",
           "dice": "ev023_agility_01",
           "outcomes": [
-            "E_023_AGILITY_SUCCESS",
-            "E_023_AGILITY_FAIL"
+            "E_023_CARD_BATTLE_EASY",
+            "E_023_CARD_BATTLE_HARD"
           ]
         }
       ]
@@ -1769,17 +1769,38 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_AGILITY_FAIL",
+      "id": "E_023_CARD_BATTLE_EASY",
       "actions": [
         {
-          "type": "choice",
-          "prompt": "敏捷冲刺失败了，你要改用投掷吗？",
-          "options": [
-            {
-              "label": "投掷瓶子",
-              "next": "E_023_THROW_AFTER_AGILITY_FAIL"
-            }
-          ]
+          "type": "dialogue",
+          "text": "你抓住空隙冲向Clicker。敏捷检定成功，战斗轮进入简单模式。"
+        },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle"
+        }
+      ]
+    },
+    {
+      "id": "E_023_CARD_BATTLE_HARD",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你的动作惊动了Clicker。战斗轮进入困难模式。"
+        },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle_hard"
         }
       ]
     },

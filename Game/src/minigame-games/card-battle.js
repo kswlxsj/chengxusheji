@@ -4,22 +4,21 @@
   // 战斗轮卡牌小游戏：四张牌中可出一张或同时出两张。
   // 顶层只注册编号；DOM、事件监听和计时器全部延迟到 run()，以便编译器在 node:vm 中收集注册表。
 
-  const MAX_PLAYER_HP = 8;
+  const MAX_PLAYER_HP = 10;
   const MAX_ENEMY_HP = 10;
   const MAX_ENERGY = 3;
-  const ENEMY_INFINITE_ENERGY_HP = 3;
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
   const enemyActions = [
     { id: "attack", label: "攻击", cards: ["attack"], detail: "造成 2 点伤害 · 免费", cost: 0, damage: 2 },
     { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 斩击 −3，必杀 −3 · 免费", cost: 0, recovery: 3 },
     { id: "defend", label: "防御", cards: ["defend"], detail: "抵挡 1＋反弹 1 · 免费", cost: 0, shield: 1, counter: 1 },
     { id: "ultimate", label: "必杀", cards: ["ultimate"], detail: "造成 3 点伤害 · 消耗 1 体力", cost: 1, damage: 3, ultimate: true },
-    { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1 · 不受单牌克制", cost: 1, damage: 2, recovery: 1, combo: true },
+    { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1", cost: 1, damage: 2, recovery: 1, combo: true },
     { id: "attack+defend", label: "攻击＋防御", cards: ["attack", "defend"], detail: "盾击：2 伤害＋1 护盾＋反弹 1", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
-    { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：2 伤害＋1 护盾＋反弹 1", cost: 1, damage: 2, shield: 1, counter: 1, ultimate: true, combo: true },
-    { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "破阵爆发：4 伤害", cost: 1, damage: 4, ultimate: true, combo: true },
+    { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：2 伤害＋1 护盾＋反弹 1（必杀按攻击处理）", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
+    { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "双斩：4 伤害（必杀按攻击处理）", cost: 1, damage: 4, combo: true },
     { id: "defend+heal", label: "防御＋回血", cards: ["defend", "heal"], detail: "稳住阵脚：恢复 2＋1 护盾＋反弹 1", cost: 1, recovery: 2, shield: 1, counter: 1, combo: true },
-    { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "稳住阵脚：恢复 2＋1 护盾＋反弹 1", cost: 1, recovery: 2, shield: 1, counter: 1, ultimate: true, combo: true }
+    { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "吸血斩：2 伤害＋恢复 1（必杀按攻击处理）", cost: 1, damage: 2, recovery: 1, combo: true }
   ];
 
   const styleText = `
@@ -85,10 +84,11 @@
     <details class="cb-rules" open>
       <summary>规则说明</summary>
       <div class="cb-rule-body">
-        <p><strong>目标：</strong>你的生命值为 8，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
+        <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
         <p><strong>出牌：</strong>选 1 张牌免费；选 2 张牌同时出牌，消耗 1 点体力。双方每 2 回合恢复 1 点体力。</p>
-        <p><strong>克制：</strong>单牌回血恢复 3，但被斩击或必杀命中时回复量都 −3；防御抵挡 1 点并反弹 1 点。组合技独立结算，不受单牌克制，组合技伤害也不会被防御挡住或反弹。</p>
-        <p><strong>濒死：</strong>敌人生命值降到 3 或更低后体力变为无限，可连续使用组合技；必杀仍受 3 回合冷却。</p>
+        <p><strong>克制：</strong>回血恢复 3，但只要对手出了攻击或必杀（单牌或组合技），回血效果都 −3；防御抵挡 1 点并反弹 1 点。组合技伤害不会被防御挡住或反弹。</p>
+        <p><strong>组合：</strong>必杀单出才是必杀；放进组合技时按攻击处理，因此“回血＋必杀”=“回血＋攻击”，造成 2 点伤害并回复 1 点，且不进入必杀冷却。</p>
+        <p><strong>濒死：</strong><span data-infinite-rule></span></p>
       </div>
     </details>
     <section class="cb-arena" aria-label="战斗区域">
@@ -103,7 +103,7 @@
       <div class="cb-vs" aria-hidden="true">VS</div>
       <section class="cb-fighter" aria-label="玩家">
         <div class="cb-fighter-name"><small>调查员</small><strong>你</strong></div>
-        <div class="cb-hp-line"><span data-player-hp>8 / 8</span><div class="cb-hp-track"><span class="cb-hp-fill" data-player-fill></span></div></div>
+        <div class="cb-hp-line"><span data-player-hp>10 / 10</span><div class="cb-hp-track"><span class="cb-hp-fill" data-player-fill></span></div></div>
         <div class="cb-resource"><span>体力</span><span class="cb-orbs" data-player-orbs aria-label="体力 0 / 3"></span></div>
         <div class="cb-face" aria-hidden="true">♟</div>
         <div class="cb-status" data-shield hidden></div>
@@ -128,15 +128,15 @@
     return Math.max(min, Math.min(max, value));
   }
 
-  function hasInfiniteEnemyEnergy(enemyHp) {
-    return enemyHp <= ENEMY_INFINITE_ENERGY_HP;
+  function hasInfiniteEnemyEnergy(enemyHp, threshold) {
+    return enemyHp <= threshold;
   }
 
-  function pickEnemyCandidates(energy, ultimateCooldown, enemyHp) {
-    const infiniteEnergy = hasInfiniteEnemyEnergy(enemyHp);
+  function pickEnemyCandidates(energy, ultimateCooldown, enemyHp, threshold) {
+    const infiniteEnergy = hasInfiniteEnemyEnergy(enemyHp, threshold);
     const available = enemyActions.filter((action) =>
       (infiniteEnergy || action.cost <= energy) &&
-      (!action.cards.includes("ultimate") || ultimateCooldown === 0)
+      (!action.ultimate || ultimateCooldown === 0)
     );
     return [...available].sort(() => Math.random() - 0.5).slice(0, 2);
   }
@@ -147,7 +147,7 @@
     const playerThreatens = selected.includes("attack") || selected.includes("ultimate");
     const playerHeals = selected.length === 1 && selected.includes("heal");
     const has = (cardId) => action.cards.includes(cardId);
-    if (has("attack")) {
+    if (has("attack") || (has("ultimate") && action.combo)) {
       score += !action.combo && playerHeals ? 7 : 2;
       score += context.playerHp <= 3 ? 4 : 0;
     }
@@ -160,7 +160,7 @@
       score += context.energy >= 1 ? 2 : 0;
       score += playerThreatens ? 7 : 0;
     }
-    if (has("ultimate")) {
+    if (has("ultimate") && !action.combo) {
       score += context.playerHp <= 3 ? 10 : context.playerHp <= 5 ? 5 : 1;
       score += !action.combo && playerHeals ? 4 : 0;
     }
@@ -173,16 +173,15 @@
     return ranked.length < 2 || Math.random() < 0.6 ? ranked[0] : ranked[1];
   }
 
-  function recoveryPenalty(cards, combo) {
-    if (combo) return 0;
+  function recoveryPenalty(cards) {
     return cards.includes("attack") || cards.includes("ultimate") ? 3 : 0;
   }
 
   function recoveryCounterName(cards) {
-    return cards.includes("ultimate") ? "必杀" : "斩击";
+    return cards.includes("ultimate") ? "必杀" : "攻击";
   }
 
-  function run(context) {
+  function run(context, enemyInfiniteEnergyHp = 3) {
     if (!context.stage) return Promise.resolve(null);
 
     const stage = context.stage;
@@ -191,6 +190,7 @@
     const root = document.createElement("section");
     root.className = "card-battle";
     root.innerHTML = template;
+    root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 3 回合冷却。`;
     stage.append(style, root);
 
     const elements = {
@@ -226,7 +226,7 @@
       ultimateCooldown: 0,
       enemyUltimateCooldown: 0,
       selected: [],
-      enemyCandidates: pickEnemyCandidates(0, 0, MAX_ENEMY_HP),
+      enemyCandidates: pickEnemyCandidates(0, 0, MAX_ENEMY_HP, enemyInfiniteEnergyHp),
       enemyAction: null,
       enemyPlayed: null,
       lastPlayed: null,
@@ -273,7 +273,7 @@
       elements.round.textContent = `回合 ${state.round}`;
       elements.enemyHp.textContent = `${state.enemyHp} / ${MAX_ENEMY_HP}`;
       elements.enemyFill.style.width = `${state.enemyHp / MAX_ENEMY_HP * 100}%`;
-      const enemyInfinite = hasInfiniteEnemyEnergy(state.enemyHp);
+      const enemyInfinite = hasInfiniteEnemyEnergy(state.enemyHp, enemyInfiniteEnergyHp);
       renderOrbs(elements.enemyOrbs, state.enemyEnergy, enemyInfinite ? "敌人体力无限" : "敌人体力", enemyInfinite);
       renderOrbs(elements.playerOrbs, state.energy, "体力");
       renderOrbs(elements.readoutOrbs, state.energy, "体力");
@@ -301,12 +301,12 @@
       elements.play.textContent = state.selected.length === 2 ? "同时出牌（-1 体力）" : "出一张（免费）";
       elements.cards.forEach((button) => {
         const cardId = button.dataset.card;
-        const locked = cardId === "ultimate" && state.ultimateCooldown > 0;
+        const locked = cardId === "ultimate" && state.ultimateCooldown > 0 && state.selected.length === 0;
         const selected = state.selected.includes(cardId);
         button.disabled = state.busy || state.ended || locked;
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
-        button.title = locked ? `必杀冷却中，还剩 ${state.ultimateCooldown} 回合` : `选择${cardNames[cardId]}`;
+        button.title = locked ? `必杀单出冷却中，还剩 ${state.ultimateCooldown} 回合；可作为组合中的攻击使用` : `选择${cardNames[cardId]}`;
       });
     }
 
@@ -323,10 +323,10 @@
         messages.push(`敌人的防御反弹了 ${state.enemyCounter} 点伤害`);
         state.enemyCounter = 0;
       }
-      const wasAboveThreshold = state.enemyHp > ENEMY_INFINITE_ENERGY_HP;
+      const wasAboveThreshold = state.enemyHp > enemyInfiniteEnergyHp;
       state.enemyHp = clamp(state.enemyHp - damage, 0, MAX_ENEMY_HP);
       if (damage > 0) messages.push(`你造成了 ${damage} 点伤害`);
-      if (wasAboveThreshold && state.enemyHp <= ENEMY_INFINITE_ENERGY_HP && state.enemyHp > 0) {
+      if (wasAboveThreshold && state.enemyHp <= enemyInfiniteEnergyHp && state.enemyHp > 0) {
         messages.push("敌人濒死，体力变为无限");
       }
     }
@@ -343,7 +343,7 @@
 
     function healPlayer(amount, messages, penalty = 0, counterName = "斩击") {
       const effective = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`你的回血被${counterName}压制 ${penalty} 点`);
+      if (penalty > 0) messages.push(`你的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effective}）`);
       const before = state.playerHp;
       state.playerHp = clamp(state.playerHp + effective, 0, MAX_PLAYER_HP);
       const recovered = state.playerHp - before;
@@ -354,7 +354,7 @@
 
     function healEnemy(amount, messages, penalty = 0, counterName = "斩击") {
       const effective = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`敌人的回血被${counterName}压制 ${penalty} 点`);
+      if (penalty > 0) messages.push(`敌人的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effective}）`);
       const before = state.enemyHp;
       state.enemyHp = clamp(state.enemyHp + effective, 0, MAX_ENEMY_HP);
       const recovered = state.enemyHp - before;
@@ -366,7 +366,7 @@
     function resolveSingle(cardId, messages) {
       if (cardId === "attack") return damageEnemy(2, messages);
       if (cardId === "heal") {
-        const penalty = recoveryPenalty(state.enemyAction.cards, state.enemyAction.combo);
+        const penalty = recoveryPenalty(state.enemyAction.cards);
         return healPlayer(3, messages, penalty, recoveryCounterName(state.enemyAction.cards));
       }
       if (cardId === "defend") {
@@ -382,10 +382,11 @@
 
     function resolveCombo(cardIds, messages) {
       const key = [...cardIds].sort().join("+");
-      if (key === "attack+heal") {
+      if (key === "attack+heal" || key === "heal+ultimate") {
         messages.push("组合技：吸血斩");
         damageEnemy(2, messages, true);
-        healPlayer(1, messages);
+        const penalty = recoveryPenalty(state.enemyAction.cards);
+        healPlayer(1, messages, penalty, recoveryCounterName(state.enemyAction.cards));
       } else if (key === "attack+defend" || key === "defend+ultimate") {
         messages.push("组合技：盾击");
         damageEnemy(2, messages, true);
@@ -395,11 +396,10 @@
       } else if (key === "attack+ultimate") {
         messages.push("组合技：破阵爆发");
         damageEnemy(4, messages, true);
-        state.ultimateCooldown = 3;
-        messages.push("必杀进入 3 回合冷却");
-      } else if (key === "defend+heal" || key === "heal+ultimate") {
+      } else if (key === "defend+heal") {
         messages.push("组合技：稳住阵脚");
-        healPlayer(2, messages);
+        const penalty = recoveryPenalty(state.enemyAction.cards);
+        healPlayer(2, messages, penalty, recoveryCounterName(state.enemyAction.cards));
         state.shield = 1;
         state.counter = 1;
         messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
@@ -421,7 +421,7 @@
 
     function resolveEnemyAction(messages) {
       const action = state.enemyAction;
-      if (!hasInfiniteEnemyEnergy(state.enemyHp)) state.enemyEnergy = clamp(state.enemyEnergy - action.cost, 0, MAX_ENERGY);
+      if (!hasInfiniteEnemyEnergy(state.enemyHp, enemyInfiniteEnergyHp)) state.enemyEnergy = clamp(state.enemyEnergy - action.cost, 0, MAX_ENERGY);
       state.enemyPlayed = action;
       state.lastPlayed = action;
       messages.push(`敌人出牌：${action.label}（${action.detail}）`);
@@ -432,11 +432,13 @@
       if (state.counter > 0 && action.damage && !action.combo) {
         state.enemyHp = clamp(state.enemyHp - state.counter, 0, MAX_ENEMY_HP);
         messages.push(`反击造成 ${state.counter} 点伤害`);
+      } else if (state.counter > 0 && action.damage && action.combo) {
+        messages.push("敌人的组合技伤害不触发防御反弹");
       }
       if (state.enemyHp <= 0) return;
       if (action.damage) damagePlayer(action.damage, messages, action.combo);
       if (action.recovery) {
-        const penalty = recoveryPenalty(state.selected, state.selected.length === 2);
+        const penalty = recoveryPenalty(state.selected);
         healEnemy(action.recovery, messages, penalty, recoveryCounterName(state.selected));
       }
       clearTemporaryDefense();
@@ -449,13 +451,17 @@
       messages.push(won ? "战斗胜利" : "你被击倒了");
       say(messages);
       render();
+      const settlement = won ? [
+        { type: "setFlag", key: "card_battle_won", value: true },
+        { type: "setFlag", key: "carriage_02_passed", value: true },
+        { type: "setFlag", key: "clicker_cleared", value: true },
+        { type: "dialogue", text: "你在战斗轮中击倒了无眼者，成功通过 2 号车厢。" }
+      ] : [
+        { type: "setFlag", key: "card_battle_won", value: false },
+        { type: "dialogue", text: "无眼者抓住了你的破绽，战斗轮失败。" }
+      ];
       resultTimer = schedule(() => {
-        resolveSettlement(won ? [
-          { type: "setFlag", key: "card_battle_won", value: true },
-          { type: "dialogue", text: "你在战斗轮中击倒了无眼者。" }
-        ] : [
-          { type: "dialogue", text: "无眼者抓住了你的破绽，战斗轮失败。" }
-        ]);
+        resolveSettlement(settlement);
       }, 420);
     }
 
@@ -474,7 +480,7 @@
           state.energy = clamp(state.energy + 1, 0, MAX_ENERGY);
           state.enemyEnergy = clamp(state.enemyEnergy + 1, 0, MAX_ENERGY);
         }
-        state.enemyCandidates = pickEnemyCandidates(state.enemyEnergy, state.enemyUltimateCooldown, state.enemyHp);
+        state.enemyCandidates = pickEnemyCandidates(state.enemyEnergy, state.enemyUltimateCooldown, state.enemyHp, enemyInfiniteEnergyHp);
         state.enemyAction = null;
         state.enemyPlayed = null;
         state.intentRevealed = false;
@@ -543,8 +549,17 @@
     return finished;
   }
 
+  function createRun(enemyInfiniteEnergyHp) {
+    return (context) => run(context, enemyInfiniteEnergyHp);
+  }
+
   Game.Minigames.register("card_battle", {
-    title: "战斗轮 · 双牌试作",
-    run
+    title: "战斗轮 · 双牌试作（简单模式）",
+    run: createRun(3)
+  });
+
+  Game.Minigames.register("card_battle_hard", {
+    title: "战斗轮 · 双牌试作（困难模式）",
+    run: createRun(5)
   });
 })(window.TrainGame);
