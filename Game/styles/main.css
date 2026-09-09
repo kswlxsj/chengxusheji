@@ -664,7 +664,7 @@ a { color: inherit; }
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .65));
 }
 
-/* 中央交互区：轮次 / 对话记录 / 当前问题 / 选项。 */
+/* 中央交互区：轮次 / 对话记录（聊天式自动上滚）/ 选项。 */
 .mg-negotiation-center {
   position: absolute;
   top: 0;
@@ -703,13 +703,6 @@ a { color: inherit; }
 .mg-negotiation-speaker { font-weight: 700; margin-right: 4px; }
 .mg-negotiation-speaker-crew { color: var(--accent); }
 .mg-negotiation-speaker-pc { color: #bcd7ee; }
-
-.mg-negotiation-prompt {
-  padding: clamp(10px, 1.4vw, 18px);
-  background: rgba(10, 12, 16, .88);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
 
 .mg-negotiation-options {
   display: flex;

@@ -111,14 +111,13 @@
     right.append(pcImage);
     root.append(right);
 
-    // 中央交互区：轮次指示 + 对话记录 + 当前问题 + 选项。
+    // 中央交互区：轮次指示 + 对话记录（聊天式自动上滚）+ 选项。
     const center = createEl("div", "mg-negotiation-center");
     const roundIndicator = createEl("div", "mg-negotiation-round");
     const history = createEl("div", "mg-negotiation-history");
     history.setAttribute("aria-live", "polite");
-    const promptBox = createEl("div", "mg-negotiation-prompt");
     const optionsBox = createEl("div", "mg-negotiation-options");
-    center.append(roundIndicator, history, promptBox, optionsBox);
+    center.append(roundIndicator, history, optionsBox);
     root.append(center);
 
     function addLine(container, speaker, text) {
@@ -156,12 +155,13 @@
       firstButton?.focus();
     }
 
-    function showPrompt() {
+    // 新的一轮：把乘务员的提问追加进对话记录（自动上滚到最新一行），并渲染两个选项。
+    function showRound() {
       const round = ROUNDS[currentRound];
       if (!round) return;
       roundIndicator.textContent = `第 ${currentRound + 1} / ${ROUNDS.length} 轮`;
-      promptBox.replaceChildren();
-      addLine(promptBox, round.speaker, round.prompt);
+      addLine(history, round.speaker, round.prompt);
+      history.scrollTop = history.scrollHeight;
       renderOptions();
     }
 
@@ -174,8 +174,7 @@
     async function choose(option) {
       if (resolved || currentRound >= ROUNDS.length) return;
       const round = ROUNDS[currentRound];
-      // 把本轮完成的一问一答写进对话记录，然后推进轮次。
-      addLine(history, round.speaker, round.prompt);
+      // 玩家的回应与乘务员的反应也逐条追加进对话记录，像聊天软件那样自动上滚。
       addLine(history, "你", option.label);
       addLine(history, round.speaker, option.correct ? round.reaction.good : round.reaction.bad);
       history.scrollTop = history.scrollHeight;
@@ -187,7 +186,7 @@
         finish();
         return;
       }
-      showPrompt();
+      showRound();
     }
 
     // 提前退出：交涉中断，加成记为 0；若已在最后一轮作答后退出，则按已取得的实际加成结算。
@@ -203,7 +202,7 @@
       root.remove();
     });
 
-    showPrompt();
+    showRound();
     return finished;
   }
 
