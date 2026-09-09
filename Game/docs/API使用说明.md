@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.1.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.2.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -36,6 +36,7 @@
   - [SceneManager（场景渲染与物件点击）](#scenemanager场景渲染与物件点击)
   - [EventEngine 与 Registry（事件引擎）](#eventengine-与-registry事件引擎)
   - [自定义动作上下文](#自定义动作上下文)
+  - [小游戏：TrainGame.Minigames 注册表与 minigame 动作](#小游戏traingame-minigames-注册表与-minigame-动作)
   - [UI：GameWindow / TextPlayer / UIManager](#ui-gamewindow-textplayer-uimanager)
   - [浏览器调试入口](#浏览器调试入口)
 - [复杂维护工作示例](#复杂维护工作示例)
@@ -184,6 +185,7 @@
 | `addItem` | `item` | — | 加入已注册物品；重复获得不会生成第二份。 |
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
+| `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
 
 检定记录按 `dice` 编号存于状态 `checkResults`。每个 `dice` 编号对应 `src/dice.js` 里唯一一条可编程检定规则，且必须全局唯一、长期稳定（规则或剧情修改不能改编号，旧记录才可追溯）。引擎每次执行检定后自动合并写入最小记录 `{ dice, outcome }`：`outcomes` 非空时 `outcome` 为函数返回的下标，为空时为 `null`；检定函数可在返回前先写入补充字段，引擎合并保留。`outcomes` 里的分支事件不要依赖数组位置之外的信息——编剧插入动作后位置会变。
 
@@ -301,7 +303,7 @@
 
 | 接口 | 用法 |
 | --- | --- |
-| `TrainGame.version` | 当前运行时版本 `0.1.0`。 |
+| `TrainGame.version` | 当前运行时版本 `0.2.0`。 |
 | `deepClone(value)` | JSON 深拷贝；不适用函数、DOM 或循环引用。 |
 | `delay(ms)` | 普通延迟；事件演出应改用 `context.wait()`。 |
 | `evaluateCondition(condition, state)` | 计算通用条件；未知条件警告并返回 `false`。 |
@@ -481,6 +483,39 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 建议：需要重复使用的低层能力（标准 1d6 属性检定、SAN 扣损掷骰等）做成 dice.js 内部的工厂函数，具体检定条目一行引用，保持条目独立可读。新增检定 = 改 `src/dice.js`（追加条目）+ 在 `events.json` 引用其编号与 `outcomes`；编译器通过 node:vm 加载 `src/dice.js` 校验引用与注册唯一性，运行时对未注册编号同样报错回滚。
 
+### 小游戏：TrainGame.Minigames 注册表与 minigame 动作
+
+`Game/src/minigames.js` 暴露 `TrainGame.Minigames`：`register(id, spec)`（拒绝重复）、`get(id)` / `has(id)` / `list()`。events.json 的 `minigame` 动作只写注册表索引——仿 `check`→`dice.js` 的“JSON 只写编号、机制全在 JS”分离架构，但**不做分支事件假设**：模块结束时可自由选择返回或不返回一个**结算动作列表**，解释器按当前事件内普通动作的语义顺序执行该列表；没有分支时小游戏动作本身不跳转。
+
+```json
+{ "type": "minigame", "game": "webgl3d_demo" }
+```
+
+`spec` 契约：
+
+| 字段 | 说明 |
+| --- | --- |
+| `title` | 宿主窗口标题栏文案。 |
+| `run(context)` | 把玩法画面挂进 `context.stage` 并开始运行；小游戏自然结束时 resolve，返回值可为结算动作列表（数组）或 `undefined`。 |
+
+`run` 收到的 `context` 在[动作上下文](#自定义动作上下文)基础上追加：
+
+| 字段 | 说明 |
+| --- | --- |
+| `stage` | 宿主窗口内容区 DOM 元素（`ui.minigame` 的 `.minigame-stage`）；自动化测试等无 DOM 环境为 `null`，模块应跳过画面直接返回。 |
+| `onQuit(provider)` | 注册“退出小游戏”按钮的结算提供者（`() => 结算动作列表 | undefined`，可返回 Promise）；未注册时点退出视为放弃、无结算。 |
+| `registerCleanup(fn)` | 登记收尾函数（取消 rAF、移除监听、释放 GL 上下文等），宿主关闭后由引擎统一执行一次。 |
+
+语义与安全边界：
+
+- **结算动作列表与普通动作同语义**：由引擎逐个执行，同样经过暂停等待、取消/终止检查（SAN 归零仍会触发终止流程）、`onStateChanged` 与稳定快照回滚；列表内动作支持 `{ next, stop }` 跳转分支。列表上限 **100 条**，且不允许再包含 `minigame` 动作（宿主为单实例）。
+- 过程状态一律经 `context.state` 接口读写；异步等待用 `context.wait()`、等待后写状态前调用 `throwIfCancelled()`（与自定义动作同一套安全边界）。**推荐写法规约**：玩法过程不改游戏状态（内部计时/尝试次数等留在模块闭包），结果一律以结算动作列表表达，可被引擎整体回滚与存档稳定点保护。
+- 宿主窗口为 `ui.minigame`（`MinigameWindow`）：模态居中、接近占满 16:9 舞台、四边留白，打开时游戏本体画面变暗；小游戏进行中系统暂停与 Esc 被屏蔽（`pauseButton.disabled` 与键位守卫都检查 `ui.minigame.isOpen()`），标题栏“退出小游戏”按钮保证玩家随时可离开。
+- 编译器通过 node:vm 加载 `src/minigames.js` 与全部 `src/minigame-games/*.js` 收集注册编号，校验 `minigame` 动作的 `game` 引用；**模块文件必须顶层只做注册、运行期再触碰 DOM**，否则编译期加载会失败。
+- 取消/报错路径：`UIManager.cancelPending()` 会关闭小游戏宿主（`ui.minigame.close()`），等待中的引擎竞态随即解除，状态回滚到稳定点，不会留下残留窗口。
+
+接入一个小游戏的完整步骤见[示例九：接入一个小游戏](#示例九接入一个小游戏)。
+
 ### UI：GameWindow / TextPlayer / UIManager
 
 `new TrainGame.GameWindow(root, className)` 是窗口基类，负责窗口元素的基础生命周期与内容装载：
@@ -540,7 +575,8 @@ class NoticeWindow extends TrainGame.GameWindow {
 | `ui.inspect.show({ title, text, image })` | 显示调查并等待关闭。 |
 | `ui.mainMenu/pauseMenu/confirmMenu.choose(config)` | 显示菜单并返回选项值。 |
 | `ui.closeDialog()` / `setPaused(value)` | 关闭对话 / 暂停文字。 |
-| `ui.cancelPending()` / `closePauseMenus()` | 取消剧情窗口 / 关闭暂停相关菜单。 |
+| `ui.cancelPending()` / `closePauseMenus()` | 取消剧情窗口（含小游戏宿主）/ 关闭暂停相关菜单。 |
+| `ui.minigame.openAndStage(title)` / `isOpen()` / `close()` | 打开小游戏宿主并返回内容区 / 判断宿主是否打开（用于屏蔽暂停）/ 关闭宿主并释放运行句柄。宿主即 `MinigameWindow`：模态居中、游戏画面变暗、标题栏含“退出小游戏”，契约见小游戏一节。 |
 | `ui.toast(message)` | 显示约 1.8 秒提示。 |
 
 菜单配置含 `title`、可选 `coverImage/backdropClass` 和 `options`；选项可含 `label/value/disabled/description`。
@@ -677,6 +713,35 @@ game.saves.listSlots()
 7. 在 `events.json` 加真实调用并从 UI 验证。
 
 只用一次的能力应保持为 `custom`，不要扩大通用协议。
+
+### 示例九：接入一个小游戏
+
+目标：新增一个小游戏 `clock_puzzle`（齿轮对位），在某个事件里作为动作触发，成功后发旗标与奖励对话，失败（退出）时事件继续。
+
+1. **注册模块**：在 `src/minigame-games/clock-puzzle.js` 顶层调用 `Game.Minigames.register("clock_puzzle", { title: "...", run })`。文件顶层只做注册；`run(context)` 内再建 DOM/画布。`src/minigames.js` 与模块文件都必须在 `main.js` 之前加载（在 `game.html` 加 `<script>`）。
+2. **编写玩法**：在 `run` 里把界面挂进 `context.stage`；自然结束（玩家完成/超时等）时 resolve 结算动作列表，例如：
+   ```javascript
+   function run(context) {
+     if (!context.stage) return Promise.resolve(null); // 无 DOM 测试环境直接跳过
+     let resolveFinish;
+     const finished = new Promise((resolve) => { resolveFinish = resolve; });
+     // ...绘制与交互...
+     const onComplete = () => resolveFinish([
+       { type: "setFlag", key: "clock_puzzle_done", value: true },
+       { type: "dialogue", text: "齿轮咔哒一声咬合复位。" }
+     ]);
+     // 退出按钮：返回放弃结算（可省，缺省即放弃、无结算）
+     context.onQuit(() => [{ type: "dialogue", text: "你放下了齿轮。" }]);
+     // 收尾：取消 rAF/监听、释放资源
+     context.registerCleanup(() => { cancelAnimationFrame(handle); });
+     return finished;
+   }
+   ```
+3. **接线**：在 `data/events.json` 需要的动作位置写 `{ "type": "minigame", "game": "clock_puzzle" }`；需要按结果分流时，由模块在结算列表里用 `choice`/`check` 表达，或在结算里写旗标后由后续 `choice` 条件分流。
+4. **编译校验**：运行 `npm run compile`，确认事件数量正确且没有“小游戏动作引用了未注册的编号”报错（编译器通过 node:vm 加载注册表与模块收集编号）。
+5. **测试与文档**：按 `tools/test-runtime.mjs` 的小游戏段落补充回归（结算执行、无结算继续、未注册报错、非法结算回滚），运行 `npm run check`；按本节开头“变更协议时的联动清单”检查是否需同步文档/README。
+
+> 仓库自带的 `webgl3d_demo`（`src/minigame-games/webgl3d-demo.js`）是原生 WebGL 3D 技术演示：它同时验证“事件动作 → 宿主窗口内自绘独立可交互画面 → 3D canvas → 完成/退出两条结算路径 → 结算动作列表被执行”。演示触发物 `mg3d_demo_spot_06` 默认不可见（`visibleWhen` 检查旗标 `mg3d_demo_visible`），验收时进入游戏后在控制台执行 `game.state.flags.mg3d_demo_visible = true; game.scene.refresh();` 再点击该装置。该物件与事件 `E_MG3D_DEMO`、素材 `assets/mg3d-demo-spot.svg` 构成独立演示块，正式剧情不需要时可整体删除。
 
 ## 相关文档
 

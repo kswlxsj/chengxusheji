@@ -2,7 +2,7 @@
   "use strict";
 
   window.TrainGame = {
-    version: "0.1.0",
+    version: "0.2.0",
     deepClone(value) {
       return JSON.parse(JSON.stringify(value));
     },

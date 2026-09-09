@@ -41,7 +41,7 @@
 
 ## 当前开发进度
 
-当前运行时版本为 **v0.1.0**，数据格式版本为 **3**，存档版本为 **3**。
+当前运行时版本为 **v0.2.0**，数据格式版本为 **3**，存档版本为 **3**。
 
 ### 已完成
 
@@ -53,6 +53,8 @@
 - 场景、旗标、属性、技能、物品和物件状态修改。
 - 技能按属性自动触发，以及手动永久覆盖自动触发。
 - 可暂停、可取消的自定义异步演出。
+- 以小游戏注册表（`TrainGame.Minigames`，仿 dice.js 的“JSON 只写编号”分离架构）接入“事件内小游戏”：事件用 `{ "type": "minigame", "game": "<编号>" }` 触发，小游戏模块结束时可返回**结算动作列表**，由事件引擎按当前事件普通动作的语义顺序执行；宿主窗口 `MinigameWindow`（模态居中近满屏、游戏画面变暗、标题栏含“退出小游戏”）内可自绘任意 DOM/canvas/WebGL 画面，小游戏进行中游戏本体冻结、系统暂停与 Esc 被屏蔽。
+- 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；演示触发物 `mg3d_demo_spot_06` 默认隐藏（验收与删除方法见 `docs/API使用说明.md` 示例九）。
 - 独立登录、注册、标题主页、游戏、存档管理/写入、结束及占位信息页。
 - 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
@@ -126,8 +128,8 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：7 个场景，105 个事件，6 个物品，8 个属性，6 个技能。
-运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档与终止状态。
+编译完成：7 个场景，106 个事件，6 个物品，8 个属性，6 个技能，1 个小游戏。
+运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
 ```
 
 ## 运行原理
@@ -201,6 +203,7 @@ Game/
 │  ├─ control-lever.png
 │  ├─ crew-04.png
 │  ├─ map-06.png
+│  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
 │  ├─ newspaper-icon.png
 │  ├─ phone.png
@@ -310,6 +313,9 @@ Game/
 │  ├─ home.js
 │  ├─ login.js
 │  ├─ main.js
+│  ├─ minigame-games/
+│  │  └─ webgl3d-demo.js
+│  ├─ minigames.js
 │  ├─ namespace.js
 │  ├─ page-flow.js
 │  ├─ register.js
@@ -359,6 +365,7 @@ Game/
 | `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
+| `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
 背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
@@ -433,11 +440,13 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `events.js` | 注册表、取消机制、终止条件、内置动作与 `EventEngine`。 |
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`。 |
+| `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
+| `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
 | `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
-| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏（含侦察技能连续点击三次解锁）。 |
+| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏（含侦察技能连续点击三次解锁）；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
 
 ### 其他目录和根文件
 
