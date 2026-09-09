@@ -120,6 +120,23 @@ window.GAME_DATA = {
               }
             }
           }
+        },
+        {
+          "id": "mg3d_demo_spot_06",
+          "name": "（开发演示）陀螺仪校准装置",
+          "image": "assets/mg3d-demo-spot.svg",
+          "position": {
+            "x": 50,
+            "y": 60,
+            "width": 13,
+            "height": 17
+          },
+          "zIndex": 13,
+          "clickEvent": "E_MG3D_DEMO",
+          "visibleWhen": {
+            "flag": "mg3d_demo_visible",
+            "equals": true
+          }
         }
       ]
     },
@@ -2342,6 +2359,23 @@ window.GAME_DATA = {
           "type": "modifyAttribute",
           "attribute": "san",
           "amount": -10
+        }
+      ]
+    },
+    {
+      "id": "E_MG3D_DEMO",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你注意到驾驶台上一个不显眼的球形陀螺仪校准装置（WebGL 3D 小游戏演示）。"
+        },
+        {
+          "type": "minigame",
+          "game": "webgl3d_demo"
+        },
+        {
+          "type": "dialogue",
+          "text": "演示结束，剧情继续。"
         }
       ]
     }

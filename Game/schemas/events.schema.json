@@ -211,6 +211,12 @@
           "required": ["type", "name"],
           "properties": { "type": { "const": "custom" }, "name": { "$ref": "#/$defs/id" }, "params": { "type": "object" } },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "game"],
+          "properties": { "type": { "const": "minigame" }, "game": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
         }
       ]
     }

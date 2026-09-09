@@ -1846,5 +1846,22 @@
         "amount": -10
       }
     ]
+  },
+  {
+    "id": "E_MG3D_DEMO",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你注意到驾驶台上一个不显眼的球形陀螺仪校准装置（WebGL 3D 小游戏演示）。"
+      },
+      {
+        "type": "minigame",
+        "game": "webgl3d_demo"
+      },
+      {
+        "type": "dialogue",
+        "text": "演示结束，剧情继续。"
+      }
+    ]
   }
 ]

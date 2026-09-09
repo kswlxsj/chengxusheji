@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -22,6 +22,25 @@ async function loadDiceIds() {
   const TrainGame = sandbox.window.TrainGame;
   if (!TrainGame?.Dice) throw new Error("无法读取 src/dice.js 的检定编号清单：Game.Dice 未注册");
   return new Set(TrainGame.Dice.keys());
+}
+
+// 在 node:vm 沙箱中加载小游戏注册表与全部小游戏模块，读取注册编号清单
+//（src/minigames.js 导出 Game.Minigames，src/minigame-games/*.js 顶层注册模块；
+//  模块文件必须顶层只注册、运行期再触碰 DOM，才能被此处安全加载）。
+async function loadMinigameIds() {
+  const sandbox = { window: {} };
+  vm.createContext(sandbox);
+  for (const file of ["src/namespace.js", "src/minigames.js"]) {
+    vm.runInContext(await readFile(resolve(projectRoot, file), "utf8"), sandbox, { filename: file });
+  }
+  const gamesDir = resolve(projectRoot, "src/minigame-games");
+  const gameFiles = (await readdir(gamesDir)).filter((name) => name.endsWith(".js")).sort();
+  for (const name of gameFiles) {
+    vm.runInContext(await readFile(resolve(gamesDir, name), "utf8"), sandbox, { filename: `src/minigame-games/${name}` });
+  }
+  const TrainGame = sandbox.window.TrainGame;
+  if (!TrainGame?.Minigames) throw new Error("无法读取 src/minigames.js 的小游戏编号清单：Game.Minigames 未注册");
+  return new Set(TrainGame.Minigames.list());
 }
 
 function assert(condition, message) {
@@ -133,7 +152,7 @@ function validateCondition(condition, references, label) {
   assert("equals" in condition.objectState, `${label}的物件状态缺少 equals`);
 }
 
-function validate(meta, scenes, events, items, attributeData, skills, diceIds) {
+function validate(meta, scenes, events, items, attributeData, skills, diceIds, minigameIds) {
   assert(meta.formatVersion === 3, "当前编译器只支持 formatVersion=3");
   assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
   assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
@@ -203,7 +222,7 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds) {
   const actionTypes = new Set([
     "dialogue", "inspect", "choice", "check", "changeScene", "setFlag",
     "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem",
-    "setObjectState", "custom"
+    "setObjectState", "custom", "minigame"
   ]);
   for (const event of events) {
     assert(Array.isArray(event.actions), `事件缺少 actions：${event.id}`);
@@ -247,6 +266,10 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds) {
       if (action.type === "custom") {
         assert(typeof action.name === "string" && action.name, `事件 ${event.id} 的自定义动作缺少 name`);
       }
+      if (action.type === "minigame") {
+        assert(typeof action.game === "string" && minigameIds.has(action.game),
+          `事件 ${event.id} 的小游戏动作引用了未注册的编号：${action.game || "空"}`);
+      }
     }
   }
 }
@@ -261,9 +284,10 @@ const [meta, scenes, events, items, attributes, skills] = await Promise.all([
 ]);
 
 const diceIds = await loadDiceIds();
-validate(meta, scenes, events, items, attributes, skills, diceIds);
+const minigameIds = await loadMinigameIds();
+validate(meta, scenes, events, items, attributes, skills, diceIds, minigameIds);
 const bundle = JSON.stringify({ meta, scenes, events, items, attributes, skills }, null, 2)
   .replaceAll("\u2028", "\\u2028")
   .replaceAll("\u2029", "\\u2029");
 await writeFile(resolve(projectRoot, "data/compiled-game-data.js"), `window.GAME_DATA = ${bundle};\n`, "utf8");
-console.log(`编译完成：${scenes.length} 个场景，${events.length} 个事件，${items.length} 个物品，${attributes.attributes.length} 个属性，${skills.length} 个技能。`);
+console.log(`编译完成：${scenes.length} 个场景，${events.length} 个事件，${items.length} 个物品，${attributes.attributes.length} 个属性，${skills.length} 个技能，${minigameIds.size} 个小游戏。`);

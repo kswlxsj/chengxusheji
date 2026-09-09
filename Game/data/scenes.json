@@ -104,6 +104,23 @@
             }
           }
         }
+      },
+      {
+        "id": "mg3d_demo_spot_06",
+        "name": "（开发演示）陀螺仪校准装置",
+        "image": "assets/mg3d-demo-spot.svg",
+        "position": {
+          "x": 50,
+          "y": 60,
+          "width": 13,
+          "height": 17
+        },
+        "zIndex": 13,
+        "clickEvent": "E_MG3D_DEMO",
+        "visibleWhen": {
+          "flag": "mg3d_demo_visible",
+          "equals": true
+        }
       }
     ]
   },
