@@ -1275,8 +1275,12 @@ window.GAME_DATA = {
       "id": "E_014_TALK",
       "actions": [
         {
+          "type": "minigame",
+          "game": "crew_negotiation"
+        },
+        {
           "type": "check",
-          "dice": "skill_talk",
+          "dice": "ev014_negotiation_final_01",
           "outcomes": [
             "E_014_TALK_S",
             "E_014_TALK_F"

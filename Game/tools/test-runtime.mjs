@@ -710,4 +710,27 @@ registerStubMinigame("mg_test_quit", async (context) => {
   }
 }
 
+// ==== 乘务员交涉最终检定（ev014_negotiation_final_01：40% 基础 + 加成，封顶 100%）====
+{
+  const inspectSink = [];
+  const negotiationContext = (bonus) => {
+    const state = createState();
+    state.completeAttributeAllocation({ strength: 4, insight: 1 });
+    if (bonus != null) state.flags.ev014_negotiation_bonus = bonus;
+    return { state, ui: { ...createEngineUi(), inspect: { show: async (payload) => { inspectSink.push(payload); } } } };
+  };
+  // 加成 90 → 成功率 100%，必然成功（返回下标 0）。
+  assert.equal(
+    await Game.Dice.get("ev014_negotiation_final_01")(negotiationContext(90), ["E_014_TALK_S", "E_014_TALK_F"]),
+    0, "加成 90（成功率 100%）应必然成功"
+  );
+  // 无旗标（默认 0 加成）→ 返回合法下标（0 或 1），并弹出一次检定窗口。
+  inspectSink.length = 0;
+  const noBonusIndex = await Game.Dice.get("ev014_negotiation_final_01")(
+    negotiationContext(), ["E_014_TALK_S", "E_014_TALK_F"]
+  );
+  assert.ok(noBonusIndex === 0 || noBonusIndex === 1, "无交加成时应返回合法结果下标");
+  assert.equal(inspectSink.length, 1, "最终检定应弹出一次结果窗口");
+}
+
 console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。");
