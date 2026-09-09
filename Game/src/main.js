@@ -91,7 +91,8 @@
     document.querySelector("#save-slot").textContent = activeSlot ? `槽位 ${activeSlot}` : "未绑定槽位";
     hud.hidden = startupLocked;
     inventoryBar.hidden = startupLocked;
-    pauseButton.disabled = startupLocked;
+    // 小游戏期间屏蔽系统暂停：暂停按钮与 Esc 均由玩法窗口接管（见 pauseGame / keydown）。
+    pauseButton.disabled = startupLocked || ui.minigame.isOpen();
     updateInventoryBar();
   }
 
@@ -224,7 +225,7 @@
   }
 
   function pauseGame() {
-    if (startupLocked || paused) return;
+    if (startupLocked || paused || ui.minigame.isOpen()) return;
     paused = true;
     gameShell.classList.add("paused");
     engine.setPaused(true);
@@ -335,7 +336,8 @@
   pauseButton.addEventListener("click", pauseGame);
 
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape" || startupLocked || event.repeat) return;
+    // 小游戏进行中屏蔽系统暂停：Esc 由玩法窗口/退出按钮接管（minigame 期间暂停不可用）。
+    if (event.key !== "Escape" || startupLocked || ui.minigame.isOpen() || event.repeat) return;
     event.preventDefault();
     if (paused) resumeGame();
     else pauseGame();

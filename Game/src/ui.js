@@ -525,6 +525,98 @@
     }
   }
 
+  // 小游戏宿主窗口：通用模态外壳（深色变暗遮罩 + 居中近满屏内容区 + 标题栏“退出小游戏”）。
+  // 只提供外壳与生命周期，具体玩法由小游戏模块在 stage 里自绘；
+  // 引擎通过 openAndStage/quitPromise/close 与宿主协作，退出按钮保证玩家随时可离开。
+  class MinigameWindow extends GameWindow {
+    constructor(root) {
+      super(root, "minigame-window");
+      this.backdrop = null;
+      this.running = false;
+      this.quitProvider = null;
+      this.pendingQuit = null;
+      this.stage = null;
+    }
+
+    isOpen() {
+      return this.running;
+    }
+
+    // 打开宿主并返回玩法内容区；模块把自绘 UI 挂进 stage。标题来自注册表 spec.title。
+    openAndStage(title) {
+      this.close();
+      const backdrop = document.createElement("div");
+      backdrop.className = "modal-backdrop minigame-backdrop";
+      const titlebar = document.createElement("header");
+      titlebar.className = "minigame-titlebar";
+      const heading = document.createElement("h2");
+      heading.className = "minigame-title";
+      heading.textContent = title || "小游戏";
+      const exit = document.createElement("button");
+      exit.type = "button";
+      exit.className = "minigame-exit";
+      exit.textContent = "退出小游戏";
+      exit.setAttribute("aria-label", "退出小游戏并返回剧情");
+      exit.addEventListener("click", () => this.requestQuit());
+      titlebar.append(heading, exit);
+      this.stage = document.createElement("div");
+      this.stage.className = "minigame-stage";
+      this.element.replaceChildren(titlebar, this.stage);
+      backdrop.append(this.element);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+      this.running = true;
+      return this.stage;
+    }
+
+    // 模块经 context.onQuit 注册退出结算提供者：返回值（可为 Promise）作为退出时的结算。
+    setQuitProvider(provider) {
+      this.quitProvider = provider;
+    }
+
+    // 引擎等待“玩家点退出”的 Promise；未点退出前保持挂起，close 时兜底解析为 undefined。
+    quitPromise() {
+      if (!this.pendingQuit) {
+        const pending = {};
+        pending.promise = new Promise((resolve) => { pending.resolve = resolve; });
+        this.pendingQuit = pending;
+      }
+      return this.pendingQuit.promise;
+    }
+
+    async requestQuit() {
+      if (!this.running) return;
+      let settlement;
+      try {
+        settlement = this.quitProvider ? await this.quitProvider() : undefined;
+      } catch (error) {
+        console.error("小游戏退出结算失败：", error);
+      }
+      this.resolveQuit(settlement);
+      this.close();
+    }
+
+    resolveQuit(settlement) {
+      if (this.pendingQuit && this.pendingQuit.resolve) {
+        const resolve = this.pendingQuit.resolve;
+        this.pendingQuit.resolve = null;
+        resolve(settlement);
+      }
+    }
+
+    close() {
+      // 无论自然结束、点退出还是取消，都要解除等待中的引擎竞态。
+      this.resolveQuit(undefined);
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      this.running = false;
+      this.quitProvider = null;
+      this.pendingQuit = null;
+      this.stage = null;
+      super.close();
+    }
+  }
+
   class UIManager {
     constructor(root) {
       this.root = root;
@@ -535,6 +627,7 @@
       this.mainMenu = new MenuWindow(root, "main-menu-window");
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
       this.confirmMenu = new MenuWindow(root, "confirm-menu-window");
+      this.minigame = new MinigameWindow(root);
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
     }
@@ -551,6 +644,7 @@
       this.dialog.close();
       this.choice.close(null);
       this.inspect.close();
+      this.minigame.close();
     }
 
     closePauseMenus() {
@@ -568,5 +662,6 @@
 
   Game.GameWindow = GameWindow;
   Game.TextPlayer = TextPlayer;
+  Game.MinigameWindow = MinigameWindow;
   Game.UIManager = UIManager;
 })(window.TrainGame);

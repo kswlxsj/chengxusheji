@@ -410,6 +410,7 @@ a { color: inherit; }
 .window-controls button:hover,
 .choice-list button:hover,
 .inspect-close:hover,
+.minigame-exit:hover,
 .attribute-stepper button:not(:disabled):hover,
 .allocation-actions button:not(:disabled):hover,
 .menu-actions button:not(:disabled):hover { background: #423a30; }
@@ -538,6 +539,94 @@ a { color: inherit; }
 }
 
 .confirm-backdrop { background: rgba(0,0,0,.88); }
+
+/* ============ 11b. 游戏页：小游戏宿主窗口（.minigame-backdrop、.minigame-window、.minigame-stage） ============ */
+
+/* 小游戏进行时游戏本体画面变暗：深色遮罩铺满舞台；窗口居中且接近占满，四边留适当间距。 */
+.minigame-backdrop { padding: 3.2%; background: rgba(1, 2, 4, .82); }
+
+.minigame-window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: #161a20;
+}
+
+.minigame-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
+  background: rgba(0, 0, 0, .35);
+}
+
+.minigame-title {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(15px, 1.6vw, 22px);
+  letter-spacing: .06em;
+}
+
+.minigame-exit { padding: 7px 14px; font-size: clamp(12px, 1.1vw, 15px); }
+
+.minigame-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #101318;
+}
+
+/* ============ 11c. WebGL 3D 演示小游戏（.mg-webgl-*，属于 webgl3d_demo 模块） ============ */
+
+.mg-webgl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.mg-webgl-canvas:active { cursor: grabbing; }
+
+.mg-webgl-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 18px;
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, .55));
+}
+
+.mg-webgl-overlay p { margin: 0; text-shadow: 0 1px 4px #000; }
+
+.mg-webgl-hint { max-width: 68%; font-size: clamp(12px, 1.2vw, 16px); opacity: .92; }
+
+.mg-webgl-readout { color: var(--accent); font-weight: 700; font-size: clamp(14px, 1.5vw, 20px); }
+
+.mg-webgl-attempts { opacity: .75; font-size: clamp(12px, 1.1vw, 15px); }
+
+.mg-webgl-done {
+  pointer-events: auto;
+  margin-top: 8px;
+  padding: 10px 26px;
+  font-size: clamp(14px, 1.5vw, 19px);
+}
+
+.mg-webgl-done:not(:disabled) { color: #17120a; background: var(--accent); }
+.mg-webgl-done:disabled { opacity: .55; }
 
 /* ============ 12. 游戏页：选择、调查与属性分配弹窗（.choice-window、.inspect-*、.attribute-allocation-*） ============ */
 
