@@ -54,7 +54,7 @@
       "use strict";
 
       // 临时关闭首页开始视频；恢复时改为 true 即可重新启用。
-      const START_VIDEO_ENABLED = false;
+      const START_VIDEO_ENABLED = true;
       const video = document.getElementById("start-video");
       if (!video || !START_VIDEO_ENABLED) return;
       video.src = video.dataset.src;
