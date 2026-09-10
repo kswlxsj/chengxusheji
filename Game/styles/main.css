@@ -172,6 +172,21 @@ a { color: inherit; }
     opacity: 0 !important;
   pointer-events: auto !important;
 }
+
+/* 悬停、键盘聚焦和按下时显示真实点击区域，方便确认菜单是否命中。 */
+.home-action:hover,
+.home-action:focus-visible,
+.home-action:active {
+  opacity: .28 !important;
+  border: 2px solid var(--accent);
+  background: rgba(213, 173, 109, .28);
+  box-shadow: inset 0 0 22px rgba(213, 173, 109, .18), 0 0 12px rgba(213, 173, 109, .45);
+}
+
+.home-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -6px;
+}
 /* CODEX ADD END */
 
 /* ============ 4. 内容页通用面板（设置/结束/存档等页共用的 .content-page、.page-panel 布局） ============ */
