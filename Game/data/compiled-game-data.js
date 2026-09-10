@@ -23,12 +23,13 @@ window.GAME_DATA = {
         {
           "id": "note_06",
           "name": "门上的便签",
-          "image": "assets/note.svg",
+          "image": "assets/note-06.png",
+          "fullCanvas": true,
           "position": {
-            "x": 71,
-            "y": 32,
-            "width": 7,
-            "height": 11
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_002",
@@ -47,9 +48,9 @@ window.GAME_DATA = {
           "name": "通往7号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 4,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -60,9 +61,9 @@ window.GAME_DATA = {
           "name": "通往5号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 76,
+            "x": 89,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -71,12 +72,13 @@ window.GAME_DATA = {
         {
           "id": "note_back_06",
           "name": "便签背面",
-          "image": "assets/note.svg",
+          "image": "assets/note-06.png",
+          "fullCanvas": true,
           "position": {
-            "x": 71,
-            "y": 32,
-            "width": 7,
-            "height": 11
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 13,
           "clickEvent": "E_003",
@@ -148,12 +150,13 @@ window.GAME_DATA = {
         {
           "id": "radio_07",
           "name": "损坏的收音机",
-          "image": "assets/radio.svg",
+          "image": "assets/radio-07.png",
+          "fullCanvas": true,
           "position": {
-            "x": 50,
-            "y": 54,
-            "width": 13,
-            "height": 18
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_904"
@@ -163,9 +166,9 @@ window.GAME_DATA = {
           "name": "返回 6 号车厢",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 14,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -174,12 +177,13 @@ window.GAME_DATA = {
         {
           "id": "corpse_07",
           "name": "尸体",
-          "image": "assets/corpse-07.svg",
+          "image": "assets/corpse-07.png",
+          "fullCanvas": true,
           "position": {
-            "x": 20,
-            "y": 55,
-            "width": 25,
-            "height": 20
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "clickEvent": "E_007"
         },
@@ -188,9 +192,9 @@ window.GAME_DATA = {
           "name": "通往8号方向的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 76,
+            "x": 89,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -201,16 +205,16 @@ window.GAME_DATA = {
     {
       "id": "carriage_05",
       "name": "5 号车厢",
-      "background": "assets/carriage-05-03.png",
+      "background": "assets/carriage-05.png",
       "objects": [
         {
           "id": "door_05_to_06",
           "name": "通往6号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 18,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -221,9 +225,9 @@ window.GAME_DATA = {
           "name": "通往4号车厢",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -232,12 +236,27 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_a",
           "name": "散落的行李",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/bag-05-a.png",
+          "fullCanvas": true,
           "position": {
-            "x": 13,
-            "y": 57,
-            "width": 16,
-            "height": 20
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_A"
+        },
+        {
+          "id": "clutter_05_b",
+          "name": "遗落的提包",
+          "image": "assets/bag-05-b.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_JUNK_A"
@@ -245,12 +264,13 @@ window.GAME_DATA = {
         {
           "id": "tool_clutter_05",
           "name": "倒下的背包",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/black-bag-03.png",
+          "fullCanvas": true,
           "position": {
-            "x": 31,
-            "y": 43,
-            "width": 15,
-            "height": 18
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_SEARCH_TOOLS",
@@ -267,12 +287,13 @@ window.GAME_DATA = {
         {
           "id": "clue_clutter_05",
           "name": "可疑的纸堆",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/newspaper-05.png",
+          "fullCanvas": true,
           "position": {
-            "x": 47,
-            "y": 46,
-            "width": 16,
-            "height": 19
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 13,
           "clickEvent": "E_05_SEARCH_NEWS",
@@ -289,12 +310,27 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_c",
           "name": "堆叠的杂物",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/trash-05-b.png",
+          "fullCanvas": true,
           "position": {
-            "x": 59,
-            "y": 59,
-            "width": 14,
-            "height": 17
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_C"
+        },
+        {
+          "id": "clutter_05_d",
+          "name": "散落的垃圾袋",
+          "image": "assets/trash-05-a.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_JUNK_C"
@@ -311,9 +347,9 @@ window.GAME_DATA = {
           "name": "通往5号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -324,9 +360,9 @@ window.GAME_DATA = {
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -351,16 +387,16 @@ window.GAME_DATA = {
     {
       "id": "carriage_03",
       "name": "3 号车厢",
-      "background": "assets/carriage-05-03.png",
+      "background": "assets/carriage-03.png",
       "objects": [
         {
           "id": "door_03_to_04",
           "name": "通往4号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -371,9 +407,9 @@ window.GAME_DATA = {
           "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -424,9 +460,9 @@ window.GAME_DATA = {
           "name": "通往先头车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 4,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -465,9 +501,9 @@ window.GAME_DATA = {
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -485,9 +521,9 @@ window.GAME_DATA = {
           "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,

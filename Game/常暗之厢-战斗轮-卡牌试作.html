@@ -19,12 +19,12 @@
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
     body {
-      min-width: 320px;
       min-height: 100vh;
       margin: 0;
       display: grid;
       place-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: hidden;
       color: var(--ink);
       background: #07080a;
       font-family: "Courier New", "Microsoft YaHei", monospace;
@@ -86,6 +86,8 @@
       top: 70px;
       right: 2.8%;
       width: min(350px, 38%);
+      max-height: calc(100% - 86px);
+      overflow: auto;
       border: 1px solid rgba(239, 180, 95, .58);
       background: rgba(13, 13, 16, .94);
       box-shadow: 0 8px 24px rgba(0,0,0,.55);
@@ -125,7 +127,7 @@
     .intent-button:hover:not(:disabled) { color: var(--ink); }
     .intent-button:disabled { cursor: default; }
     .intent-mark { display: inline-grid; place-items: center; width: 21px; height: 21px; color: #17100a; background: var(--gold); font-weight: 700; }
-    .last-play { display: inline-flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 5px 8px; max-width: min(330px, 92%); margin: 7px auto 0; padding: 5px 9px; color: var(--ink); border: 1px solid rgba(225, 92, 87, .5); background: rgba(45, 17, 19, .8); font-size: clamp(10px, .92vw, 13px); }
+    .last-play { display: none; }
     .last-play[hidden] { display: none; }
     .last-play-kicker { color: var(--red); font-size: .82em; letter-spacing: .08em; }
     .last-play-name { color: #ffd18a; }
@@ -210,12 +212,12 @@
     @media (max-width: 700px) {
       body { overflow: auto; }
       .game { min-height: 100vh; height: auto; aspect-ratio: auto; overflow: auto; }
-      .game::before { inset: 70px 2% 290px; }
+      .game::before { display: none; }
       .topbar { position: relative; min-height: 54px; padding: 0 10px; }
       .title { font-size: 12px; }
       .round { gap: 6px; font-size: 11px; }
-      .rules-panel { top: 64px; right: 10px; width: min(350px, calc(100% - 20px)); }
-      .arena { position: relative; top: auto; left: auto; right: auto; bottom: auto; grid-template-columns: 1fr 36px 1fr; gap: 2%; min-height: 390px; padding: 28px 8px 14px; }
+      .rules-panel { position: relative; top: auto; right: auto; width: auto; max-height: none; margin: 10px 10px 0; }
+      .arena { position: relative; top: auto; left: auto; right: auto; bottom: auto; grid-template-columns: 1fr 36px 1fr; gap: 2%; min-height: 340px; padding: 24px 8px 14px; }
       .name { gap: 5px; }
       .name strong { font-size: 16px; }
       .name small { font-size: 9px; }
@@ -228,8 +230,8 @@
       .hand { position: relative; left: auto; right: auto; bottom: auto; padding: 18px 10px 22px; }
       .hand-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
       .hand-copy { max-width: 100%; }
-      .cards { gap: 5px; }
-      .card { min-height: 136px; padding: 6px 6px 8px; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .card { min-height: 150px; padding: 8px; }
       .symbol { font-size: 38px; }
       .card-name { font-size: 13px; }
       .detail { font-size: 9px; }
@@ -245,7 +247,7 @@
       <div class="round"><span id="round">回合 1</span><button id="restart" type="button">重开</button></div>
     </header>
 
-    <details class="rules-panel" open>
+    <details class="rules-panel">
       <summary>规则说明</summary>
       <div class="rules-content">
         <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
@@ -315,6 +317,8 @@
 
   <script>
     "use strict";
+
+    document.querySelector(".rules-panel").open = false;
 
      const MAX_PLAYER_HP = 10;
      const MAX_ENEMY_HP = 10;

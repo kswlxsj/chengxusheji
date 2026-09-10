@@ -1,0 +1,27 @@
+{"kind":"deck","id":"pr/qe4hb1","name":"Deck"}
+{"kind":"layout","layoutId":"c1e52699-0a8c-4a3f-a801-87918550253d","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"aa3b3a81-7b53-4bba-83eb-e16922dedf07","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/1fjwfs","slide":1,"title":"项目架构总览","textShapes":15}
+{"kind":"textbox","id":"sh/fqx4vet8","slide":1,"name":"project-label","text":"项目架构总览","textPreview":"项目架构总览","textChars":6,"textLines":1,"bbox":[56,32,220,24]}
+{"kind":"textbox","id":"sh/0r6lojat","slide":1,"name":"slide-title","text":"内容与运行分层，让剧情、素材和状态各有边界","textPreview":"内容与运行分层，让剧情、素材和状态各有边界","textChars":21,"textLines":1,"bbox":[56,60,1168,66]}
+{"kind":"textbox","id":"sh/1szmxoby","slide":1,"name":"slide-subtitle","text":"固定流程剧情解释器：Scene + Object + Event + State","textPreview":"固定流程剧情解释器：Scene + Object + Event + State","textChars":40,"textLines":1,"bbox":[56,134,820,28]}
+{"kind":"shape","id":"sh/qlo3i9sb","slide":1,"name":"header-rule","bbox":[56,174,1168,1]}
+{"kind":"shape","id":"sh/rmx4retw","slide":1,"name":"stage-content","bbox":[56,184,360,296]}
+{"kind":"textbox","id":"sh/sn6lkjah","slide":1,"name":"stage-content-kicker","text":"01  内容源","textPreview":"01  内容源","textChars":7,"textLines":1,"bbox":[80,208,312,24]}
+{"kind":"textbox","id":"sh/dofmt4b2","slide":1,"name":"stage-content-title","text":"内容层","textPreview":"内容层","textChars":3,"textLines":1,"bbox":[80,240,312,40]}
+{"kind":"textbox","id":"sh/ih43epsf","slide":1,"name":"stage-content-body","text":"data/*.json\n场景、事件、物品、属性、技能\n\nGame/assets\n背景、StillLife、图标\n\n职责：声明“显示什么、发生什么”","textPreview":"data/*.json | 场景、事件、物品、属性、技能 |  | Game/assets | 背景、StillLife、图标 |  | 职责：声明“显示什么、发生什么”","textChars":73,"textLines":7,"bbox":[80,300,312,150]}
+{"kind":"shape","id":"sh/3id4nut0","slide":1,"name":"stage-compile","bbox":[460,184,360,296]}
+{"kind":"textbox","id":"sh/r6x83q5k","slide":1,"name":"stage-compile-kicker","text":"02  编译与校验","textPreview":"02  编译与校验","textChars":9,"textLines":1,"bbox":[484,208,312,24]}
+{"kind":"textbox","id":"sh/65o7al4z","slide":1,"name":"stage-compile-title","text":"编译层","textPreview":"编译层","textChars":3,"textLines":1,"bbox":[484,240,312,40]}
+{"kind":"textbox","id":"sh/t8fq50na","slide":1,"name":"stage-compile-body","text":"schemas/\n编辑器提示与字段约束\n\ncompile-data.mjs\n检查 ID、引用、条件与动作\n输出 window.GAME_DATA","textPreview":"schemas/ | 编辑器提示与字段约束 |  | compile-data.mjs | 检查 ID、引用、条件与动作 | 输出 window.GAME_DATA","textChars":72,"textLines":6,"bbox":[484,300,312,150]}
+{"kind":"shape","id":"sh/s76pcvmp","slide":1,"name":"stage-runtime","bbox":[864,184,360,296]}
+{"kind":"textbox","id":"sh/fax87a5g","slide":1,"name":"stage-runtime-kicker","text":"03  浏览器运行","textPreview":"03  浏览器运行","textChars":9,"textLines":1,"bbox":[888,208,312,24]}
+{"kind":"textbox","id":"sh/e9o7e54v","slide":1,"name":"stage-runtime-title","text":"运行层","textPreview":"运行层","textChars":3,"textLines":1,"bbox":[888,240,312,40]}
+{"kind":"textbox","id":"sh/1wzq90nm","slide":1,"name":"stage-runtime-body","text":"SceneManager  场景与点击\nEventEngine  顺序动作与分支\nGameState  属性、物品、旗标、物件状态\nUIManager  对话、选择、调查与窗口","textPreview":"SceneManager  场景与点击 | EventEngine  顺序动作与分支 | GameState  属性、物品、旗标、物件状态 | UIManager  对话、选择、调查与窗口","textChars":88,"textLines":4,"bbox":[888,300,312,150]}
+{"kind":"shape","id":"sh/gbqpgvm1","slide":1,"bbox":[416,332,44,0]}
+{"kind":"shape","id":"sh/vedov65c","slide":1,"bbox":[820,332,44,0]}
+{"kind":"shape","id":"sh/ud47214r","slide":1,"name":"execution-band","bbox":[56,520,1168,144]}
+{"kind":"textbox","id":"sh/ytsba9of","slide":1,"name":"execution-title","text":"一次点击，如何穿过系统","textPreview":"一次点击，如何穿过系统","textChars":11,"textLines":1,"bbox":[80,540,320,36]}
+{"kind":"textbox","id":"sh/zulsjep0","slide":1,"name":"execution-flow","text":"场景物件  →  clickEvent  →  EventEngine.play()  →  动作执行 / 状态更新  →  稳定快照","textPreview":"场景物件  →  clickEvent  →  EventEngine.play()  →  动作执行 / 状态更新  →  稳定快照","textChars":67,"textLines":1,"bbox":[80,585,1112,28]}
+{"kind":"textbox","id":"sh/kvutcj65","slide":1,"name":"execution-boundary","text":"事件执行期间锁定场景交互；完整结束后才开放并保存，报错或取消则回滚。","textPreview":"事件执行期间锁定场景交互；完整结束后才开放并保存，报错或取消则回滚。","textChars":34,"textLines":1,"bbox":[80,620,1112,24]}
+{"kind":"notes","id":"nt/1fjwfs","slide":1,"text":"核心结论：项目把内容声明、编译校验和浏览器运行严格分开，JSON 不执行任意 JavaScript。\n一次点击链路：SceneManager 取得 clickEvent，EventEngine 顺序执行动作，GameState 与 UI 更新，完整事件结束后写入稳定快照。\n来源：Game/README.md（项目定位、运行原理、模块职责与边界）。\n来源：Game/docs/API使用说明.md（数据接口、编译流程与运行时接口）。"}

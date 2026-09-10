@@ -22,55 +22,56 @@
   ];
 
   const styleText = `
-    .card-battle { box-sizing: border-box; width: 100%; min-height: 100%; padding: 18px; color: #f6ead5; background: #17100d; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 6px; overflow: auto; scrollbar-width: none; color: #f6ead5; background: #17100d; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
     .card-battle button { font: inherit; }
-    .cb-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: #efb45f; letter-spacing: .08em; }
-    .cb-topbar strong { font-size: clamp(18px, 2.4vw, 29px); }
+    .cb-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; color: #efb45f; letter-spacing: .08em; }
+    .cb-topbar strong { font-size: clamp(17px, 2.1vw, 25px); }
     .cb-round { color: #bba98f; font-size: 14px; }
-    .cb-rules { margin-bottom: 12px; border: 1px solid rgba(239, 180, 95, .35); background: rgba(53, 37, 26, .58); }
-    .cb-rules summary { padding: 8px 12px; color: #efb45f; cursor: pointer; }
+    .cb-rules { margin: 0; border: 1px solid rgba(239, 180, 95, .35); background: rgba(53, 37, 26, .58); }
+    .cb-rules summary { padding: 6px 10px; color: #efb45f; cursor: pointer; }
     .cb-rule-body { padding: 0 12px 10px; color: #d5c6ae; font-size: 13px; line-height: 1.55; }
     .cb-rule-body p { margin: 6px 0; }
-    .cb-arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; min-height: 210px; padding: 18px; border: 1px solid rgba(239, 180, 95, .28); background: radial-gradient(circle at 50% 45%, rgba(124, 61, 34, .36), transparent 58%), #241610; }
-    .cb-fighter { min-width: 0; padding: 12px; border: 1px solid rgba(239, 180, 95, .2); background: rgba(15, 11, 9, .48); }
-    .cb-fighter-name { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
-    .cb-fighter-name small { color: #9d8e78; }
-    .cb-fighter-name strong { color: #f6ead5; font-size: 18px; }
-    .cb-hp-line { display: grid; gap: 5px; color: #efb45f; font-size: 14px; }
-    .cb-hp-track { height: 10px; overflow: hidden; border: 1px solid rgba(239, 180, 95, .38); background: #120d0a; }
+    .cb-arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; flex: 1 1 198px; min-height: 198px; padding: 12px; border: 1px solid rgba(239, 180, 95, .28); background: radial-gradient(circle at 50% 45%, rgba(124, 61, 34, .36), transparent 58%), #241610; }
+    .cb-fighter { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 10px; border: 1px solid rgba(239, 180, 95, .2); background: rgba(15, 11, 9, .48); }
+    .cb-fighter-name { display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px; }
+    .cb-fighter-name small { color: #9d8e78; font-size: 11px; }
+    .cb-fighter-name strong { color: #f6ead5; font-size: 16px; }
+    .cb-hp-line { display: grid; gap: 3px; color: #efb45f; font-size: 12px; }
+    .cb-hp-track { height: 8px; overflow: hidden; border: 1px solid rgba(239, 180, 95, .38); background: #120d0a; }
     .cb-hp-fill { display: block; height: 100%; background: linear-gradient(90deg, #b6372c, #efb45f); transition: width .2s ease; }
-    .cb-resource { display: flex; align-items: center; gap: 8px; margin-top: 9px; color: #9d8e78; font-size: 13px; }
-    .cb-orbs { display: flex; gap: 3px; min-height: 24px; color: rgba(85, 208, 212, .22); font-size: 20px; }
+    .cb-resource { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: #9d8e78; font-size: 11px; }
+    .cb-orbs { display: flex; gap: 3px; min-height: 17px; color: rgba(85, 208, 212, .22); font-size: 16px; }
     .cb-orbs .full { color: #55d0d4; text-shadow: 0 0 8px rgba(85, 208, 212, .7); }
     .cb-orbs .infinite-energy { color: #efb45f; text-shadow: 0 0 8px rgba(239, 180, 95, .75); font-weight: 700; }
-    .cb-face { margin-top: 10px; color: #a7a4a1; font-size: 48px; line-height: 1; text-align: center; }
-    .cb-vs { color: #efb45f; font-size: 25px; letter-spacing: .12em; }
-    .cb-intent { width: 100%; margin-top: 10px; padding: 7px 8px; border: 1px solid rgba(85, 208, 212, .5); color: #bceff0; background: rgba(22, 63, 66, .42); cursor: pointer; font-size: 12px; }
+    .cb-face { margin: auto 0; color: #a7a4a1; font-size: 26px; line-height: 1; text-align: center; }
+    .cb-vs { color: #efb45f; font-size: 22px; letter-spacing: .12em; }
+    .cb-intent { width: 100%; flex: 0 0 auto; margin-top: auto; padding: 5px 8px; border: 1px solid rgba(85, 208, 212, .5); color: #bceff0; background: rgba(22, 63, 66, .42); cursor: pointer; font-size: 10px; }
     .cb-intent:disabled { cursor: not-allowed; opacity: .65; }
-    .cb-last-play { margin-top: 8px; padding: 7px 8px; border-left: 2px solid #efb45f; color: #d5c6ae; background: rgba(239, 180, 95, .08); font-size: 12px; }
+    .cb-last-play { display: none; }
     .cb-last-play strong, .cb-last-play span { display: block; }
     .cb-last-kicker { color: #9d8e78; font-size: 10px; }
     .cb-last-detail { margin-top: 2px; color: #bba98f; }
-    .cb-readout { display: flex; align-items: flex-start; gap: 14px; min-height: 54px; margin: 12px 0; padding: 10px 12px; border: 1px solid rgba(239, 180, 95, .28); background: rgba(53, 37, 26, .45); }
+    .cb-readout { display: flex; align-items: flex-start; gap: 12px; min-height: 40px; margin: 0; padding: 7px 10px; border: 1px solid rgba(239, 180, 95, .28); background: rgba(53, 37, 26, .45); }
     .cb-energy-label { display: block; margin-bottom: 2px; color: #9d8e78; font-size: 11px; }
     .cb-log { margin: 0; color: #f6ead5; font-size: 13px; line-height: 1.45; }
-    .cb-hand { padding: 12px; border: 1px solid rgba(239, 180, 95, .28); background: rgba(36, 22, 16, .68); }
-    .cb-hand-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; color: #efb45f; }
+    .cb-hand { padding: 10px; border: 1px solid rgba(239, 180, 95, .28); background: rgba(36, 22, 16, .68); }
+    .cb-hand-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #efb45f; }
     .cb-selected { display: block; margin-top: 3px; color: #bba98f; font-size: 12px; }
     .cb-play, .cb-restart { padding: 8px 12px; border: 1px solid rgba(239, 180, 95, .65); color: #17100a; background: #efb45f; cursor: pointer; }
     .cb-play:disabled { cursor: not-allowed; opacity: .4; }
     .cb-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .cb-card { min-height: 112px; padding: 8px; border: 1px solid rgba(239, 180, 95, .38); color: #f6ead5; background: #66300f; cursor: pointer; text-align: left; }
+    .cb-card { min-height: 80px; padding: 6px 7px; border: 1px solid rgba(239, 180, 95, .38); color: #f6ead5; background: #66300f; cursor: pointer; text-align: left; }
     .cb-card:hover:not(:disabled), .cb-card.selected { border-color: #efb45f; box-shadow: 0 0 0 2px rgba(239, 180, 95, .22) inset; background: #8d451a; }
     .cb-card:disabled { cursor: not-allowed; opacity: .4; }
     .cb-card .key { display: block; color: #efb45f; font-size: 11px; }
-    .cb-card .symbol { display: block; margin: 5px 0; color: #55d0d4; font-size: 30px; line-height: 1; }
+    .cb-card .symbol { display: block; margin: 3px 0; color: #55d0d4; font-size: 23px; line-height: 1; }
     .cb-card .name { display: block; font-weight: 700; }
-    .cb-card .detail { display: block; margin-top: 5px; color: #d5c6ae; font-size: 10px; line-height: 1.3; }
+    .cb-card .detail { display: block; margin-top: 4px; color: #d5c6ae; font-size: 9px; line-height: 1.25; }
     .cb-status { margin-top: 8px; color: #bba98f; font-size: 11px; }
     @media (max-width: 680px) {
-      .card-battle { padding: 10px; }
+      .card-battle { display: block; padding: 10px; }
       .cb-arena { grid-template-columns: 1fr; gap: 7px; min-height: 0; }
       .cb-vs { text-align: center; }
       .cb-face { display: none; }
@@ -81,7 +82,7 @@
 
   const template = `
     <header class="cb-topbar"><strong>战斗轮 · 双牌试作</strong><span class="cb-round" data-round>回合 1</span></header>
-    <details class="cb-rules" open>
+    <details class="cb-rules">
       <summary>规则说明</summary>
       <div class="cb-rule-body">
         <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
@@ -190,6 +191,7 @@
     const root = document.createElement("section");
     root.className = "card-battle";
     root.innerHTML = template;
+    root.querySelector(".cb-rules").open = false;
     root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 3 回合冷却。`;
     stage.append(style, root);
 

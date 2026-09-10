@@ -65,6 +65,7 @@
 - 游戏内全部位图（场景背景、物件、物品栏图标、插图、封面）默认最近邻插值（`image-rendering: pixelated`），放大呈像素游戏的硬边感。
 - 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 底部常驻物品快捷栏：渲染持有物品的图标与名称（含数字快捷键），点击物品运行其 `inspectEvent` 做调查/使用；手机与手电筒的调查事件经项目 `useLight` 自定义动作提供“照亮”选择。
+- 全站循环 BGM：`assets/audio/bgm.mp3` 自动循环播放，并通过 `sessionStorage` 在页面切换时恢复播放进度。
 - 六份内容 JSON 的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
@@ -188,15 +189,22 @@ Game/
 ├─ assets/
 │  ├─ carriage-02.png
 │  ├─ carriage-04.png
+│  ├─ carriage-03.png
+│  ├─ carriage-05.png
 │  ├─ carriage-05-03.png
 │  ├─ carriage-06.png
 │  ├─ carriage-07.png
 │  ├─ carriage-06.svg
 │  ├─ carriage-07.svg
+│  ├─ bag-05-a.png
+│  ├─ bag-05-b.png
+│  ├─ trash-05-a.png
+│  ├─ trash-05-b.png
 │  ├─ cover-placeholder.svg
 │  ├─ door.svg
 │  ├─ note.svg
 │  ├─ radio.svg
+│  ├─ corpse-07.png
 │  ├─ corpse-07.svg
 │  ├─ deep-07.svg
 │  ├─ front-carriage.png
@@ -208,11 +216,15 @@ Game/
 │  ├─ pc-portrait.png
 │  ├─ miniGame/
 │  │  └─ 交涉背景.png
+│  ├─ audio/
+│  │  └─ bgm.mp3
 │  ├─ map-06.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
 │  ├─ newspaper-icon.png
+│  ├─ note-06.png
 │  ├─ phone.png
+│  ├─ radio-07.png
 │  ├─ placeholder-bottle.svg
 │  ├─ placeholder-key.svg
 │  ├─ clutter-05.svg
@@ -313,6 +325,7 @@ Game/
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
+│  ├─ bgm.js
 │  ├─ custom-actions.js
 │  ├─ dice.js
 │  ├─ events.js
@@ -361,24 +374,27 @@ Game/
 
 | 文件 | 用途 |
 | --- | --- |
-| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
-| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
-| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
+| `carriage-02/03/04/05/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 最新版源文件一致，16:9 画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `carriage-05-03.png` | 早期 5 号、3 号车厢共用背景，已不再被场景引用，保留作历史素材。 |
+| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png`、`bag-05-a.png`、`bag-05-b.png`、`trash-05-a.png`、`trash-05-b.png`、`newspaper-05.png`、`note-06.png`、`radio-07.png` | 美工按“背景图层蒙版”整幅导出的最新版物件贴图（`fullCanvas: true`，与背景同为 16:9 画布、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
+| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）。 |
 | `phone.png` | 手机物件/物品栏图标。 |
-| `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
-| `clutter-05.svg` | 5 号车厢散落杂物（行李/纸堆等）共用的物件贴图。 |
+| `corpse-07.png` | 7 号车厢尸体最新版整幅画布贴图；`corpse-07.svg` 为早期占位图，保留作历史素材。 |
+| `deep-07.svg` | 7 号车厢深处占位贴图。 |
+| `clutter-05.svg` | 5 号车厢早期通用杂物贴图，已被独立 StillLife 蒙版取代，保留作历史素材。 |
 | `door.svg` | 各车厢门共用的透明物件贴图。 |
 | `flashlight.svg` | 手电筒物品图标。 |
-| `note.svg` | 便签贴图，同时暂作旧车票图片。 |
-| `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
+| `note.svg` | 旧车票物品图标；场景便签已改用 `note-06.png`。 |
+| `radio.svg` | 收音机调查窗口插图；场景物件已改用 `radio-07.png`。 |
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
 | `crew-portrait.png`、`pc-portrait.png` | 乘务员与玩家（PC）的人物半身立绘，供 `crew_negotiation` 小游戏左右两侧使用（由仓库根 `Assets/Image/Portrait/` 源文件复制并改名复用）。 |
 | `miniGame/交涉背景.png` | `crew_negotiation` 小游戏的中央背景图（由美工放置于 `assets/miniGame/`）。 |
+| `audio/bgm.mp3` | 全站循环背景音乐；由 `src/bgm.js` 播放，并在页面切换时恢复播放进度。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
-背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
+背景采用 16:9 画布、内容居中排版；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
 
 ### `data/`
 
@@ -443,6 +459,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
+| `bgm.js` | 创建全站循环 BGM 播放器；记录并恢复跨页播放进度，首次用户交互后自动重试面对浏览器自动播放限制。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |

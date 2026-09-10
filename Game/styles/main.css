@@ -311,6 +311,7 @@ a { color: inherit; }
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+  visibility: hidden;
 }
 
 /* fullCanvas 整幅画布贴图：视觉层与背景共用同一张画布→舞台的映射整幅叠放（如同把图层贴回背景），
