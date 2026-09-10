@@ -135,6 +135,79 @@
     ]
   },
   {
+    "id": "E_0008",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "在你的一番努力下，收音机终于可以接收频道了。"
+      },
+      {
+        "type": "minigame",
+        "game": "radio_tuning"
+      },
+      {
+        "type": "check",
+        "dice": "ev0008_radio_tuning",
+        "outcomes": [
+          "E_0008_S",
+          "E_0008_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_0008_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你听到收音机传到了混杂着电流声的人声:"
+      },
+      {
+        "type": "dialogue",
+        "text": "7月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
+      },
+      {
+        "type": "dialogue",
+        "text": "嘶嘶...目前，有16名幸存者获救...但精神都遭遇了..."
+      },
+      {
+        "type": "dialogue",
+        "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔————咔————"
+      }
+    ],
+    "next": "E_008"
+  },
+  {
+    "id": "E_0008_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你听到收音机传到了混杂着电流声的人声:"
+      },
+      {
+        "type": "dialogue",
+        "text": "吃炸鸡时，外面那层酥壳是至关重要的...嘶嘶"
+      },
+      {
+        "type": "dialogue",
+        "text": "嘶嘶...它牢牢锁住鸡肉里面的汁水...一口咬下去，咔咔的响声让人心情愉悦..."
+      },
+      {
+        "type": "dialogue",
+        "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔————咔————"
+      }
+    ],
+    "next": "E_008"
+  },
+  {
     "id": "E_007",
     "actions": [
       {

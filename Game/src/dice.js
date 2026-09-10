@@ -241,6 +241,15 @@
   registerDice("ev025_strength_01", attrCheck("strength"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
+  // E-0008：调频小游戏结束后按结果旗标分流，避免再掷一次随机骰子。
+  registerDice("ev0008_radio_tuning", async (context) => {
+    const success = context.state.flags.ev0008_radio_tuned === true;
+    await context.ui.inspect.show({
+      title: success ? "调频成功" : "调频失败",
+      text: success ? "指针稳定锁定了频道，收音机开始播放隐藏广播。" : "你没能稳定锁定频道，只听见一阵嘶嘶的电流声。"
+    });
+    return success ? 0 : 1;
+  });
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev010_join_route_01", async (context) => (
     context.state.flags.ev008_scouting_ok ? 0 : 1
