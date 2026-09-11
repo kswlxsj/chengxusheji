@@ -709,10 +709,6 @@ window.GAME_DATA = {
       "id": "E_0008",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "在你的一番努力下，收音机终于可以接收频道了。"
-        },
-        {
           "type": "minigame",
           "game": "radio_tuning"
         },
