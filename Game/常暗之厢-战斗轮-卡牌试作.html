@@ -38,7 +38,9 @@
       overflow: hidden;
       background:
         radial-gradient(circle at 50% 38%, rgba(113, 54, 40, .25), transparent 34%),
-        linear-gradient(145deg, #181116, #090b0e 58%, #11161a);
+        linear-gradient(rgba(6, 7, 9, .56), rgba(6, 7, 9, .7)),
+        url("assets/ui/card-battle/background.png") center / cover no-repeat,
+        #090b0e;
       box-shadow: 0 0 50px #000;
     }
 
@@ -118,9 +120,10 @@
     .name small { color: var(--muted); font-size: clamp(10px, 1vw, 14px); letter-spacing: .12em; }
     .name strong { color: var(--gold); font-size: clamp(16px, 2vw, 29px); }
     .hp-line { display: flex; align-items: center; gap: 10px; width: min(260px, 94%); margin: 10px auto 0; color: var(--red); font-size: clamp(11px, 1vw, 15px); }
-    .hp-track { flex: 1; height: 12px; padding: 2px; border: 1px solid rgba(225, 92, 87, .75); background: rgba(0,0,0,.65); }
-    .hp-fill { display: block; width: 100%; height: 100%; background: var(--red); transition: width 220ms ease; }
-    .enemy-face { display: grid; place-items: center; height: clamp(130px, 20vh, 220px); margin-top: 5px; color: #c9c5bf; font-family: Georgia, serif; font-size: clamp(90px, 13vw, 180px); line-height: 1; filter: grayscale(1) drop-shadow(0 12px 10px rgba(0,0,0,.75)); }
+    .hp-track { position: relative; flex: 1; height: 18px; padding: 0; border: 0; background: url("assets/ui/card-battle/hp-bar.png") center / 100% 100% no-repeat; }
+    .hp-fill { position: absolute; left: 13px; top: 6px; display: block; height: 6px; background: var(--red); transition: width 220ms ease; }
+    .enemy-face { display: grid; place-items: center; height: clamp(130px, 20vh, 220px); margin-top: 5px; }
+    .enemy-face img { width: clamp(90px, 10vw, 150px); height: clamp(90px, 10vw, 150px); object-fit: contain; filter: drop-shadow(0 12px 10px rgba(0,0,0,.75)); }
     .player-face { display: grid; place-items: end center; height: clamp(90px, 13vh, 145px); margin-bottom: 3px; color: #dbb29e; font-size: clamp(60px, 8vw, 106px); line-height: 1; filter: drop-shadow(0 9px 8px rgba(0,0,0,.7)); }
     .intent { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 6px 10px; color: var(--muted); border: 1px dashed rgba(239, 180, 95, .55); background: rgba(19, 13, 15, .76); font-size: clamp(10px, 1vw, 14px); }
     .intent-button { display: inline-flex; align-items: center; gap: 8px; padding: 0; color: inherit; border: 0; background: transparent; cursor: pointer; font: inherit; text-align: left; }
@@ -173,17 +176,21 @@
     .hand-copy { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
     .hand-copy strong { color: var(--gold); font-size: clamp(13px, 1.3vw, 18px); }
     .selected-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(7px, 1vw, 14px); }
+    .cards { display: grid; grid-template-columns: repeat(4, 82px); justify-content: center; gap: clamp(7px, 1vw, 14px); }
     .card {
       position: relative;
-      display: grid;
-      grid-template-rows: auto 1fr auto auto;
-      min-height: clamp(112px, 16vh, 174px);
-      padding: 8px 10px 11px;
+      width: 82px;
+      aspect-ratio: 3 / 4;
+      min-height: 0;
+      padding: 0;
+      overflow: hidden;
       color: #fff4e8;
-      border: 2px solid rgba(255,255,255,.24);
-      border-radius: 3px;
-      box-shadow: inset 0 0 0 2px rgba(0,0,0,.3), 0 7px 17px rgba(0,0,0,.42);
+      border: 0;
+      background-color: transparent;
+      background-image: var(--card-art), url("assets/ui/card-battle/card-base.png");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
       cursor: pointer;
       font: inherit;
       text-align: left;
@@ -191,16 +198,17 @@
     }
     .card:hover:not(:disabled), .card:focus-visible:not(:disabled) { transform: translateY(-7px); filter: brightness(1.15); outline: 2px solid rgba(255,233,181,.78); outline-offset: 2px; }
     .card:disabled { cursor: not-allowed; }
-    .card.selected { border-color: var(--gold); outline: 3px solid rgba(239, 180, 95, .34); transform: translateY(-7px); filter: brightness(1.13); }
+    .card.selected { outline: 3px solid rgba(239, 180, 95, .34); transform: translateY(-7px); filter: brightness(1.13); }
     .card.locked { filter: grayscale(.55); opacity: .5; }
-    .attack { background: linear-gradient(145deg, #9e382b, #491c20); }
-    .heal { background: linear-gradient(145deg, #227b83, #173d54); }
-    .defend { background: linear-gradient(145deg, #3f8153, #1c4e38); }
-    .ultimate { background: linear-gradient(145deg, #9a3b7d, #54245e); }
-    .key { justify-self: end; color: rgba(255,255,255,.58); font-size: clamp(10px, 1vw, 14px); }
-    .symbol { align-self: center; justify-self: center; font-size: clamp(38px, 5vw, 70px); font-weight: 900; line-height: 1; text-shadow: 3px 3px 0 rgba(0,0,0,.3); }
-    .card-name { padding-top: 5px; border-top: 1px solid rgba(255,255,255,.3); font-size: clamp(14px, 1.4vw, 20px); font-weight: 700; }
-    .detail { min-height: 1.3em; margin-top: 5px; color: rgba(255,244,232,.74); font-size: clamp(10px, .9vw, 13px); line-height: 1.3; }
+    .card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/ui/card-battle/card-base.png") center / contain no-repeat; opacity: .9; }
+    .attack { --card-art: url("assets/ui/card-battle/attack.png"); }
+    .heal { --card-art: url("assets/ui/card-battle/heal.png"); }
+    .defend { --card-art: url("assets/ui/card-battle/defend.png"); }
+    .ultimate { --card-art: url("assets/ui/card-battle/ultimate.png"); }
+    .key { position: absolute; z-index: 2; top: 7px; right: 8px; display: grid; place-items: center; width: 19px; height: 19px; color: #17100a; background: rgba(239, 180, 95, .95); font-size: 10px; font-weight: 700; }
+    .symbol { display: none; }
+    .card-name { position: absolute; z-index: 2; right: 5px; bottom: 6px; left: 5px; color: #fff4e8; font-size: 11px; font-weight: 700; text-align: center; text-shadow: 0 1px 3px #000, 0 0 3px #000; }
+    .detail { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
     .result { position: absolute; z-index: 9; inset: 0; display: grid; place-items: center; padding: 7%; background: rgba(5,6,8,.8); backdrop-filter: blur(3px); }
     .result-panel { width: min(510px, 100%); padding: clamp(24px, 4vw, 42px); border: 2px solid var(--gold); background: rgba(19,17,19,.97); box-shadow: 0 0 38px rgba(0,0,0,.8); text-align: center; }
@@ -230,11 +238,8 @@
       .hand { position: relative; left: auto; right: auto; bottom: auto; padding: 18px 10px 22px; }
       .hand-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
       .hand-copy { max-width: 100%; }
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-      .card { min-height: 150px; padding: 8px; }
-      .symbol { font-size: 38px; }
-      .card-name { font-size: 13px; }
-      .detail { font-size: 9px; }
+      .cards { grid-template-columns: repeat(2, 82px); gap: 8px; }
+      .card { width: 82px; }
       .play-selected { width: 100%; padding: 9px; }
       .result { position: fixed; }
     }
@@ -272,7 +277,7 @@
         <div class="name"><small>敌人</small><strong>无眼者</strong></div>
         <div class="hp-line"><span id="enemy-hp">10 / 10</span><div class="hp-track"><span id="enemy-fill" class="hp-fill"></span></div></div>
         <div class="enemy-resource"><span>体力</span><span id="enemy-orbs" class="orbs enemy-orbs" aria-label="敌人体力 0 / 3"></span></div>
-        <div class="enemy-face" aria-hidden="true">☠</div>
+        <div class="enemy-face" aria-hidden="true"><img src="assets/ui/card-battle/enemy.png" alt=""></div>
         <div class="intent"><button id="enemy-intent" class="intent-button" type="button" aria-expanded="false"><span class="intent-mark">?</span><span id="enemy-intent-label">点击查看两张候选牌</span></button></div>
         <div id="enemy-last-play" class="last-play" hidden><span class="last-play-kicker">上回合出牌</span><strong id="enemy-last-play-name" class="last-play-name"></strong><span id="enemy-last-play-detail" class="last-play-detail"></span></div>
       </section>
@@ -282,7 +287,7 @@
       <section class="fighter player" aria-label="玩家">
         <div class="player-face" aria-hidden="true">♟</div>
         <div class="name"><small>调查员</small><strong>你</strong></div>
-        <div class="player-status"><span id="hearts" class="hearts" aria-label="生命值 10 / 10"></span><span id="player-hp">10 / 10</span></div>
+        <div class="hp-line"><span id="player-hp">10 / 10</span><div class="hp-track"><span id="player-fill" class="hp-fill"></span></div></div>
         <div id="shield" class="shield" hidden>护盾 0</div>
       </section>
     </section>
@@ -349,8 +354,8 @@
       enemyLastPlay: document.querySelector("#enemy-last-play"),
       enemyLastPlayName: document.querySelector("#enemy-last-play-name"),
       enemyLastPlayDetail: document.querySelector("#enemy-last-play-detail"),
-      hearts: document.querySelector("#hearts"),
       playerHp: document.querySelector("#player-hp"),
+      playerFill: document.querySelector("#player-fill"),
       shield: document.querySelector("#shield"),
       orbs: document.querySelector("#orbs"),
       log: document.querySelector("#log"),
@@ -603,7 +608,7 @@
     function render() {
       elements.round.textContent = `回合 ${state.round}`;
       elements.enemyHp.textContent = `${state.enemyHp} / ${MAX_ENEMY_HP}`;
-      elements.enemyFill.style.width = `${state.enemyHp / MAX_ENEMY_HP * 100}%`;
+      elements.enemyFill.style.width = `calc((100% - 26px) * ${state.enemyHp / MAX_ENEMY_HP})`;
       elements.enemyOrbs.replaceChildren();
       if (hasInfiniteEnemyEnergy(state.enemyHp)) {
         elements.enemyOrbs.classList.add("infinite");
@@ -643,15 +648,7 @@
         elements.enemyLastPlayDetail.textContent = state.enemyLastPlayed.detail;
       }
       elements.playerHp.textContent = `${state.playerHp} / ${MAX_PLAYER_HP}`;
-      elements.hearts.replaceChildren();
-      for (let index = 0; index < MAX_PLAYER_HP; index += 1) {
-        const heart = document.createElement("span");
-        heart.className = index < state.playerHp ? "" : "empty";
-        heart.textContent = "♥";
-        heart.setAttribute("aria-hidden", "true");
-        elements.hearts.append(heart);
-      }
-      elements.hearts.setAttribute("aria-label", `生命值 ${state.playerHp} / ${MAX_PLAYER_HP}`);
+      elements.playerFill.style.width = `calc((100% - 26px) * ${state.playerHp / MAX_PLAYER_HP})`;
       elements.shield.hidden = state.shield <= 0;
       elements.shield.textContent = `护盾 ${state.shield}${state.counter > 0 ? ` · 反击 ${state.counter}` : ""}`;
       elements.orbs.replaceChildren();

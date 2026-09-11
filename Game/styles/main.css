@@ -8,10 +8,17 @@
    ============================================================================ */
 
 /* ============ 1. 设计令牌与全局基础（配色变量、重置、body 与元素级样式） ============ */
-
+/* 方舟像素字体 12px 等宽 简体中文 */
+@font-face {
+  font-family: "Ark Pixel 12px";
+  src: url("../../Assets/fonts/ark-pixel-12px-monospaced-zh_cn.otf.woff2") format("woff2");
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
+}
 :root {
   color-scheme: dark;
-  font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --ink: #ece5d8;
   --panel: rgba(16, 19, 24, 0.92);
   --line: #8e7b5f;
