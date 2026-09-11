@@ -40,7 +40,7 @@
   const inventorySlots = document.querySelector("#inventory-slots");
   const pauseButton = document.querySelector("#pause-button");
   const itemDefinitions = new Map(data.items.map((item) => [item.id, item]));
-  const minimumInventorySlots = 9;
+  const minimumInventorySlots = 10;
   let startupLocked = true;
   let paused = false;
   let pauseTask = null;

@@ -249,6 +249,10 @@ a { color: inherit; }
   white-space: nowrap;
 }
 
+body.home-op-active .home-page .auth-user-status {
+  visibility: hidden;
+}
+
 /* 主页开场：四张全屏图片依次交叉淡入，结束后开放主页交互。 */
 .home-op {
   position: fixed;
@@ -256,11 +260,41 @@ a { color: inherit; }
   z-index: 3000;
   overflow: hidden;
   background: #000;
-  opacity: 1;
-  transition: opacity 600ms ease;
 }
 
-.home-op.is-leaving { opacity: 0; }
+.home-op-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.home-op-blackout {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1000ms ease;
+}
+
+.home-op.is-blackening .home-op-blackout {
+  opacity: 1;
+}
+
+.home-op.is-revealing {
+  background: transparent;
+}
+
+.home-op.is-revealing .home-op-stage,
+.home-op.is-revealing .home-op-caption,
+.home-op.is-revealing .home-op-actions {
+  visibility: hidden;
+}
+
+.home-op.is-revealing .home-op-blackout {
+  opacity: 0;
+  transition-duration: 2000ms;
+}
 
 .home-op-frame {
   position: absolute;
@@ -274,25 +308,6 @@ a { color: inherit; }
 }
 
 .home-op-frame.is-active { opacity: 1; }
-
-.home-op-progress {
-  position: absolute;
-  z-index: 2;
-  left: clamp(18px, 4vw, 64px);
-  bottom: clamp(20px, 4vw, 54px);
-  display: flex;
-  gap: 7px;
-}
-
-.home-op-progress span {
-  width: clamp(24px, 3vw, 42px);
-  height: 3px;
-  background: rgba(236, 229, 216, .32);
-  transition: background 240ms ease;
-}
-
-.home-op-progress span.is-past { background: rgba(236, 229, 216, .68); }
-.home-op-progress span.is-active { background: var(--accent); }
 
 .home-op-skip {
   position: absolute;
@@ -436,10 +451,14 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 9px 12px;
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(7, 9, 12, .72);
-  backdrop-filter: blur(6px);
+  padding: 7px 28px;
+  color: var(--ink);
+  border: 0;
+  background-color: transparent;
+  background-image: url("../assets/ui/hp-bar.png");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   font-size: clamp(12px, 1.2vw, 16px);
 }
 
@@ -466,38 +485,30 @@ a { color: inherit; }
 
 #inventory-slots {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(48px, 1fr);
-  gap: 5px;
-  padding: 7px;
-  overflow-x: auto;
-  border: 2px solid rgba(142, 123, 95, .9);
-  border-radius: 8px;
-  background: rgba(10, 12, 15, .84);
-  box-shadow: 0 8px 24px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.06);
-  backdrop-filter: blur(6px);
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  padding: 0;
+  overflow: hidden;
+  background: url("../assets/ui/beibao.png") left center / 10% 100% repeat-x;
 }
 
 .inventory-slot {
   position: relative;
   aspect-ratio: 1;
-  min-width: 48px;
-  padding: 5px 4px 3px;
+  min-width: 0;
+  padding: 8px 4px 4px;
   overflow: hidden;
-  color: var(--ink);
-  border: 1px solid rgba(213, 173, 109, .48);
-  border-radius: 4px;
-  background: linear-gradient(145deg, rgba(58, 52, 43, .94), rgba(27, 29, 33, .96));
-  box-shadow: inset 0 0 10px rgba(0,0,0,.5);
+  color: #3d352d;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .inventory-slot.empty { opacity: .58; }
 .inventory-slot.occupied { cursor: pointer; }
 .inventory-slot.occupied:not(:disabled):hover,
 .inventory-slot.occupied:not(:disabled):focus-visible {
-  border-color: #f1c77f;
   outline: 2px solid rgba(241, 199, 127, .42);
-  background: linear-gradient(145deg, #514532, #292b2f);
+  background: rgba(241, 199, 127, .16);
   translate: 0 -2px;
 }
 
@@ -515,7 +526,7 @@ a { color: inherit; }
   position: absolute;
   top: 2px;
   left: 4px;
-  color: rgba(236, 229, 216, .6);
+  color: rgba(61, 53, 45, .72);
   font-size: 10px;
 }
 
@@ -944,8 +955,7 @@ a { color: inherit; }
   #attributes { display: none; }
   #hud { gap: 8px; }
   #inventory-bar { width: 94%; bottom: 1.5%; }
-  #inventory-slots { gap: 3px; padding: 5px; }
-  .inventory-slot { min-width: 42px; }
+  .inventory-slot { min-width: 0; }
   .inspect-content { grid-template-columns: 1fr; }
   .main-menu-window .menu-content { width: 62%; }
   .attribute-allocation-row { grid-template-columns: 1fr; }
@@ -964,7 +974,7 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .home-op,
   .home-op-frame,
-  .home-op-progress span {
+  .home-op-blackout {
     transition-duration: 1ms;
   }
 }
@@ -1048,12 +1058,6 @@ body.codex-start-video-ready #home-cover {
   filter: brightness(1.08);
 }
 
-#inventory-bar {
-  background-image: url("../Game/assets/ui/beibao.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 .home-op-frame {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -1067,23 +1071,46 @@ body.codex-start-video-ready #home-cover {
   opacity: 1;
 }
 
-/* 底部文字 */
-.home-op-caption {
+/* 全宽黑条：常驻，不参与动画 */
+.home-op-caption-bar {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 20px;          /* 根据进度条位置调整 */
-  text-align: center;
+  bottom: 0;
+  width: 100%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+.home-op-caption {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;      /* 水平 + 竖直居中 */
+  display: inline-block;      /* 宽度由内容决定 */
+  max-width: 90%;
+  min-height: 1.2em;
+  margin: 0;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  background: #000;
   color: #fff;
+  text-align: center;
   font-size: 15px;
   letter-spacing: 0.1em;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  white-space: nowrap;        /* 防止换行导致宽度跳动 */
 }
-.home-op-caption.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+
+@keyframes caption-char-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 按钮区 */
@@ -1121,6 +1148,8 @@ body.codex-start-video-ready .home-page .home-actions {
 }
 
 body.codex-start-video-ready .home-page .home-action {
+  --menu-marker-size: clamp(32px, 4.2vw, 76px);
+  --menu-marker-gap: clamp(6px, .7vw, 14px);
   position: absolute;
   display: block;
   width: auto;
@@ -1133,13 +1162,43 @@ body.codex-start-video-ready .home-page .home-action {
   opacity: 1 !important;
 }
 
+body.codex-start-video-ready .home-page .home-action::before,
+body.codex-start-video-ready .home-page .home-action::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: var(--menu-marker-size);
+  aspect-ratio: 1;
+  background: url("../assets/ui/initial-menu-marker.png") center / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(.82);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+body.codex-start-video-ready .home-page .home-action::before {
+  right: calc(100% + var(--menu-marker-gap));
+}
+
+body.codex-start-video-ready .home-page .home-action::after {
+  left: calc(100% + var(--menu-marker-gap));
+}
+
 body.codex-start-video-ready .home-page .home-action:hover,
 body.codex-start-video-ready .home-page .home-action:focus-visible {
   color: transparent;
-  border-color: rgba(213, 173, 109, .72);
-  background: rgba(213, 173, 109, .1);
-  outline: 1px solid rgba(213, 173, 109, .42);
-  outline-offset: 2px;
+  border-color: transparent;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+body.codex-start-video-ready .home-page .home-action:hover::before,
+body.codex-start-video-ready .home-page .home-action:hover::after,
+body.codex-start-video-ready .home-page .home-action:focus-visible::before,
+body.codex-start-video-ready .home-page .home-action:focus-visible::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
 body.codex-start-video-ready .home-page .home-action-new-game {
