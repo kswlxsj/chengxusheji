@@ -9,11 +9,6 @@
   const HOLD_DURATION = 3000;
   const RANGE_SPEED_SCALE = 1.08;
   const POINTER_STEP = 5 * 2.16;
-  const CHANNELS = [
-    "回收组记录：七号车厢清理完毕。尸块不是事故遗留物，而是上一批实验样本。",
-    "调度室记录：七号车厢的清理由‘钟表匠’下令。列车没有失控，它正在按名单运行。",
-    "不要找驾驶员。真正发出指令的人，在终点站下面。重复，不要找驾驶员。"
-  ];
 
   const STYLE_TEXT = `
     .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: Georgia, "Microsoft YaHei", sans-serif; }
@@ -74,7 +69,7 @@
         </div>
       </section>
       <section class="rt-result" data-result hidden>
-        <h2>信号捕获成功</h2><p>指针稳定达成，广播正在解码……</p><p data-broadcast>……</p>
+        <h2>信号捕获成功</h2><p>指针稳定达成，正在读取广播……</p>
       </section>
     </section>
   `;
@@ -103,7 +98,6 @@
     const holdFill = root.querySelector("[data-hold-fill]");
     const status = root.querySelector("[data-status]");
     const result = root.querySelector("[data-result]");
-    const broadcast = root.querySelector("[data-broadcast]");
 
     let pointerAngle = 0;
     let pointerDisplayAngle = 0;
@@ -151,13 +145,11 @@
       screen.textContent = "SIGNAL LOCKED";
       status.classList.add("stable");
       status.textContent = "稳定时间达成，正在解码广播……";
-      broadcast.textContent = `“${CHANNELS[Math.floor(Math.random() * CHANNELS.length)]}”`;
       result.hidden = false;
       await context.wait(720);
       resolveFinish([
         { type: "setFlag", key: RESULT_FLAG, value: true },
-        { type: "setFlag", key: "radio_07_done", value: true },
-        { type: "dialogue", text: "电流声突然停了。收音机里，传来一段断断续续的广播。" }
+        { type: "setFlag", key: "radio_07_done", value: true }
       ]);
     }
 

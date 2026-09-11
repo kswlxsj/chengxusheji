@@ -715,9 +715,16 @@ window.GAME_DATA = {
         {
           "type": "minigame",
           "game": "radio_tuning"
+        },
+        {
+          "type": "check",
+          "dice": "ev0008_radio_tuning",
+          "outcomes": [
+            "E_0008_S",
+            "E_0008_F"
+          ]
         }
-      ],
-      "next": "E_008"
+      ]
     },
     {
       "id": "E_0008_S",
