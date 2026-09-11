@@ -15,10 +15,33 @@
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
 </head>
 <body>
+  <div id="home-op" class="home-op">
+  <div class="home-op-stage">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+  </div>
+
+  <!-- 进度点 -->
+  <div class="home-op-progress">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- 底部文字（新增） -->
+  <p class="home-op-caption" id="home-op-caption"></p>
+
+  <!-- 操作区 -->
+  <div class="home-op-actions">
+    <button type="button" id="home-op-next">下一张</button>
+    <button type="button" id="home-op-skip">跳过</button>
+  </div>
+</div>
+
   <!-- CODEX ADD START -->
   <video
     id="start-video"
-    data-src="../Assets/Image/UI/start.mov"
+    src="assets/video/start.mp4"
     autoplay
     muted
     loop
@@ -47,6 +70,8 @@
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/home.js"></script>
   <!-- 初始化主页数据渲染和当前用户展示。 -->
+  <script src="src/home-op.js"></script>
+  <!-- 登录进入主页后先播放四张开场图片，再开放主页交互。 -->
 
   <!-- CODEX ADD START -->
   <script>
