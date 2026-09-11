@@ -219,6 +219,19 @@ Game/
 │  │  └─ 交涉背景.png
 │  ├─ audio/
 │  │  └─ bgm.mp3
+│  ├─ video/
+│  │  ├─ start.mp4
+│  │  └─ end.mp4
+│  ├─ ui/
+│  │  └─ card-battle/
+│  │     ├─ attack.png
+│  │     ├─ heal.png
+│  │     ├─ defend.png
+│  │     ├─ ultimate.png
+│  │     ├─ card-base.png
+│  │     ├─ hp-bar.png
+│  │     ├─ background.png
+│  │     └─ enemy.png
 │  ├─ map-06.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
@@ -394,6 +407,8 @@ Game/
 | `crew-portrait.png`、`pc-portrait.png` | 乘务员与玩家（PC）的人物半身立绘，供 `crew_negotiation` 小游戏左右两侧使用（由仓库根 `Assets/Image/Portrait/` 源文件复制并改名复用）。 |
 | `miniGame/交涉背景.png` | `crew_negotiation` 小游戏的中央背景图（由美工放置于 `assets/miniGame/`）。 |
 | `audio/bgm.mp3` | 全站循环背景音乐；由 `src/bgm.js` 播放，并在页面切换时恢复播放进度。 |
+| `video/start.mp4`、`video/end.mp4` | 主页开场循环视频与结局视频；使用游戏目录内的相对路径，静态服务器以 `Game/` 为根目录时可直接播放。 |
+| `ui/card-battle/` | 战斗轮卡牌小游戏的最新版 UI：背景、四张动作卡面、卡底、血条与敌人头像。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
 背景采用 16:9 画布、内容居中排版；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。

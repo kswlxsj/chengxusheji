@@ -7,7 +7,15 @@
   const MAX_PLAYER_HP = 10;
   const MAX_ENEMY_HP = 10;
   const MAX_ENERGY = 3;
+  const DESIGN_WIDTH = 1080;
+  const DESIGN_HEIGHT = 574;
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
+  const cardDetails = {
+    attack: "单出造成 2 点伤害",
+    heal: "单出恢复 3，遇到攻击或必杀时恢复量 -3",
+    defend: "单出抵挡 1 点并反弹 1 点",
+    ultimate: "单出造成 3 点伤害，冷却 3 回合"
+  };
   const enemyActions = [
     { id: "attack", label: "攻击", cards: ["attack"], detail: "造成 2 点伤害 · 免费", cost: 0, damage: 2 },
     { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 斩击 −3，必杀 −3 · 免费", cost: 0, recovery: 3 },
@@ -22,7 +30,8 @@
   ];
 
   const styleText = `
-    .card-battle { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 6px; overflow: auto; scrollbar-width: none; color: #f6ead5; background: #17100d; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle { position: absolute; top: 50%; left: 50%; box-sizing: border-box; width: 1080px; height: 574px; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/ui/card-battle/background.png"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; transform: translate(-50%, -50%) scale(var(--cb-scale, 1)); transform-origin: center; }
+    .card-battle.is-responsive { position: relative; top: auto; left: auto; width: 100%; height: 100%; padding: 10px; overflow: auto; transform: none; }
     .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
     .card-battle button { font: inherit; }
@@ -39,13 +48,15 @@
     .cb-fighter-name small { color: #9d8e78; font-size: 11px; }
     .cb-fighter-name strong { color: #f6ead5; font-size: 16px; }
     .cb-hp-line { display: grid; gap: 3px; color: #efb45f; font-size: 12px; }
-    .cb-hp-track { height: 8px; overflow: hidden; border: 1px solid rgba(239, 180, 95, .38); background: #120d0a; }
-    .cb-hp-fill { display: block; height: 100%; background: linear-gradient(90deg, #b6372c, #efb45f); transition: width .2s ease; }
+    .cb-hp-track { position: relative; height: 16px; padding: 0; border: 0; overflow: visible; background: url("assets/ui/card-battle/hp-bar.png") center / 100% 100% no-repeat; }
+    .cb-hp-fill { position: absolute; left: 13px; top: 5px; display: block; height: 6px; background: linear-gradient(90deg, #b6372c, #efb45f); transition: width .2s ease; }
     .cb-resource { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: #9d8e78; font-size: 11px; }
     .cb-orbs { display: flex; gap: 3px; min-height: 17px; color: rgba(85, 208, 212, .22); font-size: 16px; }
     .cb-orbs .full { color: #55d0d4; text-shadow: 0 0 8px rgba(85, 208, 212, .7); }
     .cb-orbs .infinite-energy { color: #efb45f; text-shadow: 0 0 8px rgba(239, 180, 95, .75); font-weight: 700; }
-    .cb-face { margin: auto 0; color: #a7a4a1; font-size: 26px; line-height: 1; text-align: center; }
+    .cb-face { flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: #a7a4a1; line-height: 1; text-align: center; }
+    .cb-enemy-face img { width: 100%; height: 100%; max-width: 52px; max-height: 52px; object-fit: contain; filter: drop-shadow(0 5px 5px rgba(0, 0, 0, .65)); }
+    .cb-player-face { font-size: 26px; }
     .cb-vs { color: #efb45f; font-size: 22px; letter-spacing: .12em; }
     .cb-intent { width: 100%; flex: 0 0 auto; margin-top: auto; padding: 5px 8px; border: 1px solid rgba(85, 208, 212, .5); color: #bceff0; background: rgba(22, 63, 66, .42); cursor: pointer; font-size: 10px; }
     .cb-intent:disabled { cursor: not-allowed; opacity: .65; }
@@ -61,22 +72,27 @@
     .cb-selected { display: block; margin-top: 3px; color: #bba98f; font-size: 12px; }
     .cb-play, .cb-restart { padding: 8px 12px; border: 1px solid rgba(239, 180, 95, .65); color: #17100a; background: #efb45f; cursor: pointer; }
     .cb-play:disabled { cursor: not-allowed; opacity: .4; }
-    .cb-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .cb-card { min-height: 80px; padding: 6px 7px; border: 1px solid rgba(239, 180, 95, .38); color: #f6ead5; background: #66300f; cursor: pointer; text-align: left; }
-    .cb-card:hover:not(:disabled), .cb-card.selected { border-color: #efb45f; box-shadow: 0 0 0 2px rgba(239, 180, 95, .22) inset; background: #8d451a; }
+    .cb-cards { display: grid; grid-template-columns: repeat(4, 82px); justify-content: center; gap: 10px; }
+    .cb-card { position: relative; width: 82px; aspect-ratio: 3 / 4; min-height: 0; padding: 0; overflow: hidden; border: 0; color: #f6ead5; background-color: transparent; background-image: var(--card-art), url("assets/ui/card-battle/card-base.png"); background-position: center; background-repeat: no-repeat; background-size: contain; cursor: pointer; text-align: left; transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease; }
+    .cb-card[data-card="attack"] { --card-art: url("assets/ui/card-battle/attack.png"); }
+    .cb-card[data-card="heal"] { --card-art: url("assets/ui/card-battle/heal.png"); }
+    .cb-card[data-card="defend"] { --card-art: url("assets/ui/card-battle/defend.png"); }
+    .cb-card[data-card="ultimate"] { --card-art: url("assets/ui/card-battle/ultimate.png"); }
+    .cb-card:hover:not(:disabled), .cb-card.selected { filter: brightness(1.14); transform: translateY(-3px); }
+    .cb-card.selected { outline: 3px solid rgba(239, 180, 95, .8); outline-offset: 2px; }
     .cb-card:disabled { cursor: not-allowed; opacity: .4; }
-    .cb-card .key { display: block; color: #efb45f; font-size: 11px; }
-    .cb-card .symbol { display: block; margin: 3px 0; color: #55d0d4; font-size: 23px; line-height: 1; }
-    .cb-card .name { display: block; font-weight: 700; }
-    .cb-card .detail { display: block; margin-top: 4px; color: #d5c6ae; font-size: 9px; line-height: 1.25; }
+    .cb-card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/ui/card-battle/card-base.png") center / contain no-repeat; opacity: .94; }
+    .cb-card .key { position: absolute; z-index: 2; top: 6px; right: 7px; display: grid; place-items: center; width: 18px; height: 18px; color: #17100a; background: rgba(239, 180, 95, .94); font-size: 10px; font-weight: 700; }
+    .cb-card .symbol { display: none; }
+    .cb-card .name { position: absolute; z-index: 2; right: 5px; bottom: 6px; left: 5px; color: #fff7e8; font-size: 11px; font-weight: 700; text-align: center; text-shadow: 0 1px 3px #000, 0 0 3px #000; }
+    .cb-card .detail { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .cb-status { margin-top: 8px; color: #bba98f; font-size: 11px; }
     @media (max-width: 680px) {
-      .card-battle { display: block; padding: 10px; }
       .cb-arena { grid-template-columns: 1fr; gap: 7px; min-height: 0; }
       .cb-vs { text-align: center; }
       .cb-face { display: none; }
-      .cb-cards { grid-template-columns: repeat(2, 1fr); }
-      .cb-card { min-height: 100px; }
+      .cb-cards { grid-template-columns: repeat(2, 82px); }
+      .cb-card { width: 82px; }
     }
   `;
 
@@ -97,7 +113,7 @@
         <div class="cb-fighter-name"><small>敌人</small><strong>无眼者</strong></div>
         <div class="cb-hp-line"><span data-enemy-hp>10 / 10</span><div class="cb-hp-track"><span class="cb-hp-fill" data-enemy-fill></span></div></div>
         <div class="cb-resource"><span>体力</span><span class="cb-orbs" data-enemy-orbs aria-label="敌人体力 0 / 3"></span></div>
-        <div class="cb-face" aria-hidden="true">☠</div>
+        <div class="cb-face cb-enemy-face" aria-hidden="true"><img src="assets/ui/card-battle/enemy.png" alt=""></div>
         <button class="cb-intent" type="button" data-intent aria-expanded="false">? 点击查看两张候选牌</button>
         <div class="cb-last-play" data-last-play hidden><span class="cb-last-kicker">上回合出牌</span><strong data-last-name></strong><span class="cb-last-detail" data-last-detail></span></div>
       </section>
@@ -106,7 +122,7 @@
         <div class="cb-fighter-name"><small>调查员</small><strong>你</strong></div>
         <div class="cb-hp-line"><span data-player-hp>10 / 10</span><div class="cb-hp-track"><span class="cb-hp-fill" data-player-fill></span></div></div>
         <div class="cb-resource"><span>体力</span><span class="cb-orbs" data-player-orbs aria-label="体力 0 / 3"></span></div>
-        <div class="cb-face" aria-hidden="true">♟</div>
+        <div class="cb-face cb-player-face" aria-hidden="true">♟</div>
         <div class="cb-status" data-shield hidden></div>
       </section>
     </section>
@@ -195,6 +211,28 @@
     root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 3 回合冷却。`;
     stage.append(style, root);
 
+    const resizeObserver = typeof ResizeObserver === "function"
+      ? new ResizeObserver(() => fitToStage())
+      : null;
+
+    function fitToStage() {
+      if (stage.clientWidth <= 700) {
+        root.classList.add("is-responsive");
+        root.style.removeProperty("--cb-scale");
+        return;
+      }
+      root.classList.remove("is-responsive");
+      const scale = Math.min(
+        stage.clientWidth / DESIGN_WIDTH,
+        stage.clientHeight / DESIGN_HEIGHT,
+        1
+      );
+      root.style.setProperty("--cb-scale", scale.toFixed(4));
+    }
+
+    resizeObserver?.observe(stage);
+    fitToStage();
+
     const elements = {
       round: root.querySelector("[data-round]"),
       enemyHp: root.querySelector("[data-enemy-hp]"),
@@ -274,13 +312,13 @@
     function render() {
       elements.round.textContent = `回合 ${state.round}`;
       elements.enemyHp.textContent = `${state.enemyHp} / ${MAX_ENEMY_HP}`;
-      elements.enemyFill.style.width = `${state.enemyHp / MAX_ENEMY_HP * 100}%`;
+      elements.enemyFill.style.width = `calc((100% - 26px) * ${state.enemyHp / MAX_ENEMY_HP})`;
       const enemyInfinite = hasInfiniteEnemyEnergy(state.enemyHp, enemyInfiniteEnergyHp);
       renderOrbs(elements.enemyOrbs, state.enemyEnergy, enemyInfinite ? "敌人体力无限" : "敌人体力", enemyInfinite);
       renderOrbs(elements.playerOrbs, state.energy, "体力");
       renderOrbs(elements.readoutOrbs, state.energy, "体力");
       elements.playerHp.textContent = `${state.playerHp} / ${MAX_PLAYER_HP}`;
-      elements.playerFill.style.width = `${state.playerHp / MAX_PLAYER_HP * 100}%`;
+      elements.playerFill.style.width = `calc((100% - 26px) * ${state.playerHp / MAX_PLAYER_HP})`;
       elements.shield.hidden = state.shield <= 0;
       elements.shield.textContent = `护盾 ${state.shield}${state.counter > 0 ? ` · 反击 ${state.counter}` : ""}`;
       if (state.enemyPlayed) {
@@ -308,7 +346,9 @@
         button.disabled = state.busy || state.ended || locked;
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
-        button.title = locked ? `必杀单出冷却中，还剩 ${state.ultimateCooldown} 回合；可作为组合中的攻击使用` : `选择${cardNames[cardId]}`;
+        button.title = locked
+          ? `必杀单出冷却中，还剩 ${state.ultimateCooldown} 回合；可作为组合中的攻击使用`
+          : `${cardNames[cardId]}：${cardDetails[cardId]}`;
       });
     }
 
@@ -530,6 +570,7 @@
       cleaned = true;
       if (transitionTimer !== null) window.clearTimeout(transitionTimer);
       if (resultTimer !== null) window.clearTimeout(resultTimer);
+      resizeObserver?.disconnect();
       elements.cards.forEach((button) => button.removeEventListener("click", onCardClick));
       elements.intent.removeEventListener("click", revealIntent);
       elements.play.removeEventListener("click", playSelected);
