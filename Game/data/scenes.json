@@ -143,7 +143,21 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_0008"
+        "clickEvent": "E_0008",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "radio_07_ready",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "radio_07_done",
+                "equals": true
+              }
+            }
+          ]
+        }
       },
       {
         "id": "return_door_07",

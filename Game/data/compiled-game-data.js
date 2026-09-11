@@ -159,7 +159,21 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_0008"
+          "clickEvent": "E_0008",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "radio_07_ready",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "radio_07_done",
+                  "equals": true
+                }
+              }
+            ]
+          }
         },
         {
           "id": "return_door_07",
@@ -1026,8 +1040,17 @@ window.GAME_DATA = {
           "text": "你观察尸体，发现距离死亡时间并未过去很久。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "radio_07_ready",
           "value": true
         }
       ]
@@ -1040,8 +1063,17 @@ window.GAME_DATA = {
           "text": "你观察尸体，但并未发现任何异常。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "radio_07_ready",
           "value": true
         }
       ]

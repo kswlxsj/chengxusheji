@@ -55,19 +55,19 @@
   <!-- CODEX ADD END -->
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js"></script>
+  <script src="data/compiled-game-data.js?v=radio-medical-flow-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   
-  <script src="src/state.js"></script>
+  <script src="src/state.js?v=radio-medical-flow-1"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
   <script src="src/ui.js"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
   
-  <script src="src/scene.js"></script>
+  <script src="src/scene.js?v=radio-medical-flow-1"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
   <script src="src/events.js"></script>
@@ -94,7 +94,7 @@
   <script src="src/minigame-games/crew-negotiation.js"></script>
   <!-- 乘务员安抚与交涉小游戏模块（属于 src/minigame-games/*.js）：顶层只注册、运行期再碰 DOM。 -->
 
-  <script src="src/main.js"></script>
+  <script src="src/main.js?v=radio-medical-flow-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

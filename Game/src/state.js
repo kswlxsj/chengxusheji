@@ -107,6 +107,16 @@
       this.inventory = clean.inventory;
       this.objectStates = clean.objectStates;
       this.checkResults = clean.checkResults;
+
+      // 兼容已经完成 7 号车厢尸体调查的旧存档：旧版本没有保存收音机可见标记，
+      // 但只要已经完成 E-007，就应当继续显示并允许点击收音机。
+      if (
+        clean.flags.visited_carriage_07 === true
+        && clean.flags.radio_07_ready !== true
+        && clean.flags.radio_07_done !== true
+      ) {
+        this.flags.radio_07_ready = true;
+      }
     }
 
     validateRegisteredKeys(values, definitions, label) {
