@@ -1,5 +1,12 @@
 [
   {
+    "id": "note_06_item",
+    "name": "便签",
+    "image": "assets/note.png",
+    "description": "从 6 号车厢门上取下来的便签。",
+    "inspectEvent": "E_NOTE_06_ITEM"
+  },
+  {
     "id": "old_ticket",
     "name": "旧车票",
     "image": "assets/note.svg",

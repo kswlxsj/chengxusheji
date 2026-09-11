@@ -12,7 +12,7 @@
       },
       {
         "type": "dialogue",
-        "text": "试着调查门上的便签，或者直接触碰车厢门。"
+        "text": "请先调查门上的便签和门旁的地图；两项调查完成后，通往7号车厢的门才会打开。"
       },
       {
         "type": "setFlag",
@@ -63,7 +63,39 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。"
+        "text": "诡异的气氛笼罩着这节6号车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "突然，你听到一阵怪异的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "像有人在很远的地方掰断什么东西。"
+      },
+      {
+        "type": "dialogue",
+        "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "再次观察周围乘客，你发现还是没有人醒来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你走到了通往7号车厢的门旁边。"
       },
       {
         "type": "choice",
@@ -95,7 +127,39 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。"
+        "text": "诡异的气氛笼罩着这节6号车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "突然，你听到一阵怪异的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔。"
+      },
+      {
+        "type": "dialogue",
+        "text": "像有人在很远的地方掰断什么东西。"
+      },
+      {
+        "type": "dialogue",
+        "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "再次观察周围乘客，你发现还是没有人醒来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你走到了通往7号车厢的门旁边。"
       }
     ],
     "next": "E_006B"
@@ -133,6 +197,75 @@
         "dice": "ev006b_san_01"
       }
     ]
+  },
+  {
+    "id": "E_0008",
+    "actions": [
+      {
+        "type": "minigame",
+        "game": "radio_tuning"
+      },
+      {
+        "type": "check",
+        "dice": "ev0008_radio_tuning",
+        "outcomes": [
+          "E_0008_S",
+          "E_0008_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_0008_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你听到收音机传到了混杂着电流声的人声:"
+      },
+      {
+        "type": "dialogue",
+        "text": "7月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
+      },
+      {
+        "type": "dialogue",
+        "text": "嘶嘶...目前，有16名幸存者获救...但精神都遭遇了..."
+      },
+      {
+        "type": "dialogue",
+        "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔————咔————"
+      }
+    ],
+    "next": "E_008"
+  },
+  {
+    "id": "E_0008_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你听到收音机传到了混杂着电流声的人声:"
+      },
+      {
+        "type": "dialogue",
+        "text": "吃炸鸡时，外面那层酥壳是至关重要的...嘶嘶"
+      },
+      {
+        "type": "dialogue",
+        "text": "嘶嘶...它牢牢锁住鸡肉里面的汁水...一口咬下去，咔咔的响声让人心情愉悦..."
+      },
+      {
+        "type": "dialogue",
+        "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "咔————咔————"
+      }
+    ],
+    "next": "E_008"
   },
   {
     "id": "E_007",
@@ -195,11 +328,25 @@
     ]
   },
   {
+    "id": "E_NOTE_06_ITEM",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "便签",
+        "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
+        "image": "assets/note.png",
+        "large": true
+      }
+    ]
+  },
+  {
     "id": "E_904",
     "actions": [
       {
-        "type": "minigame",
-        "game": "radio_tuning"
+        "type": "inspect",
+        "title": "损坏的收音机",
+        "text": "旋钮已经脱落，扬声器网罩后却有微弱的红光。这是由通用窗口基类派生的调查窗口。",
+        "image": "assets/radio.svg"
       }
     ]
   },
@@ -275,28 +422,16 @@
     "id": "E_002",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "门扉上贴着便签，写着："
-      },
-      {
-        "type": "dialogue",
-        "text": "「只管前进吧 已经没有退路了」"
-      },
-      {
-        "type": "dialogue",
-        "text": "这是......什么意思？"
+        "type": "inspect",
+        "title": "便签·正面",
+        "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+        "image": "assets/label-front.png",
+        "large": true
       },
       {
         "type": "setFlag",
         "key": "note_front_seen",
         "value": true
-      },
-      {
-        "type": "setObjectState",
-        "object": "note_06",
-        "patch": {
-          "hidden": true
-        }
       }
     ]
   },
@@ -304,16 +439,11 @@
     "id": "E_003",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "撕下便签查看背面，上面写着："
-      },
-      {
-        "type": "dialogue",
-        "text": "「第三个箱子里有藏着钥匙」"
-      },
-      {
-        "type": "dialogue",
-        "text": "箱子？这里哪有箱子。"
+        "type": "inspect",
+        "title": "便签·背面",
+        "text": "「第三个箱子里有藏着钥匙。」箱子？这里哪有箱子。",
+        "image": "assets/label-back.png",
+        "large": true
       },
       {
         "type": "setFlag",
@@ -326,6 +456,17 @@
         "patch": {
           "hidden": true
         }
+      },
+      {
+        "type": "setObjectState",
+        "object": "note_06",
+        "patch": {
+          "hidden": true
+        }
+      },
+      {
+        "type": "addItem",
+        "item": "note_06_item"
       }
     ]
   },
@@ -350,12 +491,11 @@
     "id": "E_004_S",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "你仔细查看这张地图，忽然发觉哪里不对————"
-      },
-      {
-        "type": "dialogue",
-        "text": "7号车厢以后的地图是被人蓄意涂掉的。"
+        "type": "inspect",
+        "title": "地图检定成功",
+        "text": "你仔细查看这张地图，发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
+        "image": "assets/map-success.png",
+        "large": true
       },
       {
         "type": "setFlag",
@@ -375,8 +515,11 @@
     "id": "E_004_F",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "你努力查看这张地图，只能看出7号车厢以后的部分看不清楚。"
+        "type": "inspect",
+        "title": "地图检定失败",
+        "text": "你努力查看这张地图，只能看出 7 号车厢以后的部分看不清楚。",
+        "image": "assets/map-failure.png",
+        "large": true
       },
       {
         "type": "setFlag",
@@ -400,13 +543,13 @@
         "text": "你观察尸体，发现距离死亡时间并未过去很久。"
       },
       {
+        "type": "dialogue",
+        "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+      },
+      {
         "type": "setFlag",
         "key": "visited_carriage_07",
         "value": true
-      },
-      {
-        "type": "dialogue",
-        "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
       },
       {
         "type": "setFlag",
@@ -423,13 +566,13 @@
         "text": "你观察尸体，但并未发现任何异常。"
       },
       {
+        "type": "dialogue",
+        "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+      },
+      {
         "type": "setFlag",
         "key": "visited_carriage_07",
         "value": true
-      },
-      {
-        "type": "dialogue",
-        "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
       },
       {
         "type": "setFlag",
@@ -776,8 +919,12 @@
     "id": "E_014_TALK",
     "actions": [
       {
+        "type": "minigame",
+        "game": "crew_negotiation"
+      },
+      {
         "type": "check",
-        "dice": "skill_talk",
+        "dice": "ev014_negotiation_final_01",
         "outcomes": [
           "E_014_TALK_S",
           "E_014_TALK_F"
@@ -1253,8 +1400,8 @@
         "type": "check",
         "dice": "ev023_agility_01",
         "outcomes": [
-          "E_023_AGILITY_SUCCESS",
-          "E_023_AGILITY_FAIL"
+          "E_023_CARD_BATTLE_EASY",
+          "E_023_CARD_BATTLE_HARD"
         ]
       }
     ]
@@ -1270,17 +1417,38 @@
     ]
   },
   {
-    "id": "E_023_AGILITY_FAIL",
+    "id": "E_023_CARD_BATTLE_EASY",
     "actions": [
       {
-        "type": "choice",
-        "prompt": "敏捷冲刺失败了，你要改用投掷吗？",
-        "options": [
-          {
-            "label": "投掷瓶子",
-            "next": "E_023_THROW_AFTER_AGILITY_FAIL"
-          }
-        ]
+        "type": "dialogue",
+        "text": "你抓住空隙冲向Clicker。敏捷检定成功，战斗轮进入简单模式。"
+      },
+      {
+        "type": "setFlag",
+        "key": "card_battle_won",
+        "value": false
+      },
+      {
+        "type": "minigame",
+        "game": "card_battle"
+      }
+    ]
+  },
+  {
+    "id": "E_023_CARD_BATTLE_HARD",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你的动作惊动了Clicker。战斗轮进入困难模式。"
+      },
+      {
+        "type": "setFlag",
+        "key": "card_battle_won",
+        "value": false
+      },
+      {
+        "type": "minigame",
+        "game": "card_battle_hard"
       }
     ]
   },
@@ -1511,11 +1679,14 @@
     "id": "E_028",
     "actions": [
       {
-        "type": "minigame",
-        "game": "conductor_tug"
+        "type": "check",
+        "dice": "ev028_talk_or_strength_01",
+        "outcomes": [
+          "E_029",
+          "E_030"
+        ]
       }
-    ],
-    "next": "E_030"
+    ]
   },
   {
     "id": "E_029",

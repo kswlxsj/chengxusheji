@@ -23,12 +23,19 @@ window.GAME_DATA = {
         {
           "id": "note_06",
           "name": "门上的便签",
-          "image": "assets/note.svg",
+          "image": "assets/note-06.png",
+          "fullCanvas": true,
           "position": {
-            "x": 71,
-            "y": 32,
-            "width": 7,
-            "height": 11
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 49.9298,
+            "y": 40.5,
+            "width": 3.7922,
+            "height": 6.75
           },
           "zIndex": 12,
           "clickEvent": "E_002",
@@ -47,22 +54,34 @@ window.GAME_DATA = {
           "name": "通往7号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 4,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_005"
+          "clickEvent": "E_005",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              }
+            ]
+          }
         },
         {
           "id": "door_06_to_05",
           "name": "通往5号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 76,
+            "x": 89,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -71,12 +90,19 @@ window.GAME_DATA = {
         {
           "id": "note_back_06",
           "name": "便签背面",
-          "image": "assets/note.svg",
+          "image": "assets/note-06.png",
+          "fullCanvas": true,
           "position": {
-            "x": 71,
-            "y": 32,
-            "width": 7,
-            "height": 11
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 49.9298,
+            "y": 40.5,
+            "width": 3.7922,
+            "height": 6.75
           },
           "zIndex": 13,
           "clickEvent": "E_003",
@@ -108,6 +134,12 @@ window.GAME_DATA = {
             "y": 0,
             "width": 100,
             "height": 100
+          },
+          "hitPosition": {
+            "x": 42.5562,
+            "y": 51.75,
+            "width": 5.2669,
+            "height": 7.125
           },
           "zIndex": 12,
           "clickEvent": "E_004",
@@ -148,15 +180,22 @@ window.GAME_DATA = {
         {
           "id": "radio_07",
           "name": "损坏的收音机",
-          "image": "assets/radio.svg",
+          "image": "assets/radio-07.png",
+          "fullCanvas": true,
           "position": {
-            "x": 50,
-            "y": 54,
-            "width": 13,
-            "height": 18
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 62.22,
+            "y": 63.5,
+            "width": 5.51,
+            "height": 9.06
           },
           "zIndex": 12,
-          "clickEvent": "E_904",
+          "clickEvent": "E_0008",
           "visibleWhen": {
             "all": [
               {
@@ -177,9 +216,9 @@ window.GAME_DATA = {
           "name": "返回 6 号车厢",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 14,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -188,12 +227,19 @@ window.GAME_DATA = {
         {
           "id": "corpse_07",
           "name": "尸体",
-          "image": "assets/corpse-07.svg",
+          "image": "assets/corpse-07.png",
+          "fullCanvas": true,
           "position": {
-            "x": 20,
-            "y": 55,
-            "width": 25,
-            "height": 20
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 75.5,
+            "y": 61.5,
+            "width": 13.5,
+            "height": 13.5
           },
           "clickEvent": "E_007"
         },
@@ -202,9 +248,9 @@ window.GAME_DATA = {
           "name": "通往8号方向的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 76,
+            "x": 89,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -215,16 +261,16 @@ window.GAME_DATA = {
     {
       "id": "carriage_05",
       "name": "5 号车厢",
-      "background": "assets/carriage-05-03.png",
+      "background": "assets/carriage-05.png",
       "objects": [
         {
           "id": "door_05_to_06",
           "name": "通往6号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 18,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -235,9 +281,9 @@ window.GAME_DATA = {
           "name": "通往4号车厢",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -246,12 +292,27 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_a",
           "name": "散落的行李",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/bag-05-a.png",
+          "fullCanvas": true,
           "position": {
-            "x": 13,
-            "y": 57,
-            "width": 16,
-            "height": 20
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_A"
+        },
+        {
+          "id": "clutter_05_b",
+          "name": "遗落的提包",
+          "image": "assets/bag-05-b.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_JUNK_A"
@@ -259,12 +320,13 @@ window.GAME_DATA = {
         {
           "id": "tool_clutter_05",
           "name": "倒下的背包",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/black-bag-03.png",
+          "fullCanvas": true,
           "position": {
-            "x": 31,
-            "y": 43,
-            "width": 15,
-            "height": 18
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_SEARCH_TOOLS",
@@ -281,12 +343,13 @@ window.GAME_DATA = {
         {
           "id": "clue_clutter_05",
           "name": "可疑的纸堆",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/newspaper-05.png",
+          "fullCanvas": true,
           "position": {
-            "x": 47,
-            "y": 46,
-            "width": 16,
-            "height": 19
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 13,
           "clickEvent": "E_05_SEARCH_NEWS",
@@ -303,12 +366,27 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_c",
           "name": "堆叠的杂物",
-          "image": "assets/clutter-05.svg",
+          "image": "assets/trash-05-b.png",
+          "fullCanvas": true,
           "position": {
-            "x": 59,
-            "y": 59,
-            "width": 14,
-            "height": 17
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_05_JUNK_C"
+        },
+        {
+          "id": "clutter_05_d",
+          "name": "散落的垃圾袋",
+          "image": "assets/trash-05-a.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
           },
           "zIndex": 12,
           "clickEvent": "E_05_JUNK_C"
@@ -325,9 +403,9 @@ window.GAME_DATA = {
           "name": "通往5号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -338,9 +416,9 @@ window.GAME_DATA = {
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -365,16 +443,16 @@ window.GAME_DATA = {
     {
       "id": "carriage_03",
       "name": "3 号车厢",
-      "background": "assets/carriage-05-03.png",
+      "background": "assets/carriage-03.png",
       "objects": [
         {
           "id": "door_03_to_04",
           "name": "通往4号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -385,9 +463,9 @@ window.GAME_DATA = {
           "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -438,9 +516,9 @@ window.GAME_DATA = {
           "name": "通往先头车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 4,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -479,9 +557,9 @@ window.GAME_DATA = {
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 70,
+            "x": 89,
             "y": 21,
-            "width": 22,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -499,9 +577,9 @@ window.GAME_DATA = {
           "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 3,
+            "x": 0,
             "y": 21,
-            "width": 20,
+            "width": 12,
             "height": 63
           },
           "zIndex": 11,
@@ -541,7 +619,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "试着调查门上的便签，或者直接触碰车厢门。"
+          "text": "请先调查门上的便签和门旁的地图；两项调查完成后，通往7号车厢的门才会打开。"
         },
         {
           "type": "setFlag",
@@ -592,7 +670,39 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。"
+          "text": "诡异的气氛笼罩着这节6号车厢。"
+        },
+        {
+          "type": "dialogue",
+          "text": "突然，你听到一阵怪异的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "像有人在很远的地方掰断什么东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "再次观察周围乘客，你发现还是没有人醒来。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你走到了通往7号车厢的门旁边。"
         },
         {
           "type": "choice",
@@ -624,7 +734,39 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。"
+          "text": "诡异的气氛笼罩着这节6号车厢。"
+        },
+        {
+          "type": "dialogue",
+          "text": "突然，你听到一阵怪异的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "像有人在很远的地方掰断什么东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "再次观察周围乘客，你发现还是没有人醒来。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你走到了通往7号车厢的门旁边。"
         }
       ],
       "next": "E_006B"
@@ -662,6 +804,75 @@ window.GAME_DATA = {
           "dice": "ev006b_san_01"
         }
       ]
+    },
+    {
+      "id": "E_0008",
+      "actions": [
+        {
+          "type": "minigame",
+          "game": "radio_tuning"
+        },
+        {
+          "type": "check",
+          "dice": "ev0008_radio_tuning",
+          "outcomes": [
+            "E_0008_S",
+            "E_0008_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_0008_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你听到收音机传到了混杂着电流声的人声:"
+        },
+        {
+          "type": "dialogue",
+          "text": "7月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
+        },
+        {
+          "type": "dialogue",
+          "text": "嘶嘶...目前，有16名幸存者获救...但精神都遭遇了..."
+        },
+        {
+          "type": "dialogue",
+          "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔————咔————"
+        }
+      ],
+      "next": "E_008"
+    },
+    {
+      "id": "E_0008_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你听到收音机传到了混杂着电流声的人声:"
+        },
+        {
+          "type": "dialogue",
+          "text": "吃炸鸡时，外面那层酥壳是至关重要的...嘶嘶"
+        },
+        {
+          "type": "dialogue",
+          "text": "嘶嘶...它牢牢锁住鸡肉里面的汁水...一口咬下去，咔咔的响声让人心情愉悦..."
+        },
+        {
+          "type": "dialogue",
+          "text": "你来不及思索，却听见7号车厢深处再次传来了刚才的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔————咔————"
+        }
+      ],
+      "next": "E_008"
     },
     {
       "id": "E_007",
@@ -724,11 +935,25 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_NOTE_06_ITEM",
+      "actions": [
+        {
+          "type": "inspect",
+          "title": "便签",
+          "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
+          "image": "assets/note.png",
+          "large": true
+        }
+      ]
+    },
+    {
       "id": "E_904",
       "actions": [
         {
-          "type": "minigame",
-          "game": "radio_tuning"
+          "type": "inspect",
+          "title": "损坏的收音机",
+          "text": "旋钮已经脱落，扬声器网罩后却有微弱的红光。这是由通用窗口基类派生的调查窗口。",
+          "image": "assets/radio.svg"
         }
       ]
     },
@@ -804,28 +1029,16 @@ window.GAME_DATA = {
       "id": "E_002",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "门扉上贴着便签，写着："
-        },
-        {
-          "type": "dialogue",
-          "text": "「只管前进吧 已经没有退路了」"
-        },
-        {
-          "type": "dialogue",
-          "text": "这是......什么意思？"
+          "type": "inspect",
+          "title": "便签·正面",
+          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+          "image": "assets/label-front.png",
+          "large": true
         },
         {
           "type": "setFlag",
           "key": "note_front_seen",
           "value": true
-        },
-        {
-          "type": "setObjectState",
-          "object": "note_06",
-          "patch": {
-            "hidden": true
-          }
         }
       ]
     },
@@ -833,16 +1046,11 @@ window.GAME_DATA = {
       "id": "E_003",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "撕下便签查看背面，上面写着："
-        },
-        {
-          "type": "dialogue",
-          "text": "「第三个箱子里有藏着钥匙」"
-        },
-        {
-          "type": "dialogue",
-          "text": "箱子？这里哪有箱子。"
+          "type": "inspect",
+          "title": "便签·背面",
+          "text": "「第三个箱子里有藏着钥匙。」箱子？这里哪有箱子。",
+          "image": "assets/label-back.png",
+          "large": true
         },
         {
           "type": "setFlag",
@@ -855,6 +1063,17 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "setObjectState",
+          "object": "note_06",
+          "patch": {
+            "hidden": true
+          }
+        },
+        {
+          "type": "addItem",
+          "item": "note_06_item"
         }
       ]
     },
@@ -879,12 +1098,11 @@ window.GAME_DATA = {
       "id": "E_004_S",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你仔细查看这张地图，忽然发觉哪里不对————"
-        },
-        {
-          "type": "dialogue",
-          "text": "7号车厢以后的地图是被人蓄意涂掉的。"
+          "type": "inspect",
+          "title": "地图检定成功",
+          "text": "你仔细查看这张地图，发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
+          "image": "assets/map-success.png",
+          "large": true
         },
         {
           "type": "setFlag",
@@ -904,8 +1122,11 @@ window.GAME_DATA = {
       "id": "E_004_F",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你努力查看这张地图，只能看出7号车厢以后的部分看不清楚。"
+          "type": "inspect",
+          "title": "地图检定失败",
+          "text": "你努力查看这张地图，只能看出 7 号车厢以后的部分看不清楚。",
+          "image": "assets/map-failure.png",
+          "large": true
         },
         {
           "type": "setFlag",
@@ -929,13 +1150,13 @@ window.GAME_DATA = {
           "text": "你观察尸体，发现距离死亡时间并未过去很久。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
         },
         {
           "type": "setFlag",
@@ -952,13 +1173,13 @@ window.GAME_DATA = {
           "text": "你观察尸体，但并未发现任何异常。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
         },
         {
           "type": "setFlag",
@@ -1305,8 +1526,12 @@ window.GAME_DATA = {
       "id": "E_014_TALK",
       "actions": [
         {
+          "type": "minigame",
+          "game": "crew_negotiation"
+        },
+        {
           "type": "check",
-          "dice": "skill_talk",
+          "dice": "ev014_negotiation_final_01",
           "outcomes": [
             "E_014_TALK_S",
             "E_014_TALK_F"
@@ -1782,8 +2007,8 @@ window.GAME_DATA = {
           "type": "check",
           "dice": "ev023_agility_01",
           "outcomes": [
-            "E_023_AGILITY_SUCCESS",
-            "E_023_AGILITY_FAIL"
+            "E_023_CARD_BATTLE_EASY",
+            "E_023_CARD_BATTLE_HARD"
           ]
         }
       ]
@@ -1799,17 +2024,38 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_AGILITY_FAIL",
+      "id": "E_023_CARD_BATTLE_EASY",
       "actions": [
         {
-          "type": "choice",
-          "prompt": "敏捷冲刺失败了，你要改用投掷吗？",
-          "options": [
-            {
-              "label": "投掷瓶子",
-              "next": "E_023_THROW_AFTER_AGILITY_FAIL"
-            }
-          ]
+          "type": "dialogue",
+          "text": "你抓住空隙冲向Clicker。敏捷检定成功，战斗轮进入简单模式。"
+        },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle"
+        }
+      ]
+    },
+    {
+      "id": "E_023_CARD_BATTLE_HARD",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你的动作惊动了Clicker。战斗轮进入困难模式。"
+        },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle_hard"
         }
       ]
     },
@@ -2040,11 +2286,14 @@ window.GAME_DATA = {
       "id": "E_028",
       "actions": [
         {
-          "type": "minigame",
-          "game": "conductor_tug"
+          "type": "check",
+          "dice": "ev028_talk_or_strength_01",
+          "outcomes": [
+            "E_029",
+            "E_030"
+          ]
         }
-      ],
-      "next": "E_030"
+      ]
     },
     {
       "id": "E_029",
@@ -2408,6 +2657,13 @@ window.GAME_DATA = {
     }
   ],
   "items": [
+    {
+      "id": "note_06_item",
+      "name": "便签",
+      "image": "assets/note.png",
+      "description": "从 6 号车厢门上取下来的便签。",
+      "inspectEvent": "E_NOTE_06_ITEM"
+    },
     {
       "id": "old_ticket",
       "name": "旧车票",

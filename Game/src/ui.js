@@ -422,8 +422,9 @@
       this.resolve = null;
     }
 
-    show({ title = "调查", text = "", image = null }) {
+    show({ title = "调查", text = "", image = null, large = false }) {
       this.close();
+      this.element.classList.toggle("inspect-large", large === true);
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop";
       const heading = document.createElement("h2");

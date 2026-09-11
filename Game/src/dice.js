@@ -278,4 +278,23 @@
 
   // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4）。
   registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
+
+  // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
+  registerDice("ev014_negotiation_final_01", async (context) => {
+    const bonus = Number(context.state.flags.ev014_negotiation_bonus) || 0;
+    const rate = Math.min(100, 40 + bonus);
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const success = roll <= rate;
+    await context.ui.inspect.show({
+      title: success ? "交涉检定成功" : "交涉检定失败",
+      text: `安抚与交涉：基础成功率 40% + 交涉加成 ${bonus}% = ${rate}%。`
+        + `掷出 ${roll}%，${success ? "乘务员终于放下了戒心。" : "乘务员仍有顾虑，没能完全打动她。"}`
+    });
+    return success ? 0 : 1;
+  });
+
+  // E_0008：收音机小游戏只写入成功标记，这里把标记转换成成功/失败剧情分支。
+  registerDice("ev0008_radio_tuning", async (context) => (
+    context.state.flags.ev0008_radio_tuned ? 0 : 1
+  ));
 })(window.TrainGame);

@@ -86,7 +86,8 @@
         await this.ui.inspect.show({
           title: action.title || item.name,
           text: action.text || item.description,
-          image: action.image || item.image
+          image: action.image || item.image,
+          large: action.large === true
         });
       });
 
