@@ -158,6 +158,12 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 62.22,
+            "y": 63.5,
+            "width": 5.51,
+            "height": 9.06
+          },
           "zIndex": 12,
           "clickEvent": "E_0008",
           "visibleWhen": {
@@ -709,16 +715,9 @@ window.GAME_DATA = {
         {
           "type": "minigame",
           "game": "radio_tuning"
-        },
-        {
-          "type": "check",
-          "dice": "ev0008_radio_tuning",
-          "outcomes": [
-            "E_0008_S",
-            "E_0008_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_008"
     },
     {
       "id": "E_0008_S",

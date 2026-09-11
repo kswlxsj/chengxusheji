@@ -400,6 +400,12 @@ a { color: inherit; }
   transition: filter 120ms ease;
 }
 
+.scene-object-art[data-object-id="radio_07"].is-hot,
+.scene-object-art[data-object-id="radio_07"].is-focused {
+  filter: drop-shadow(0 0 2px #fff0bf) drop-shadow(0 0 8px rgba(255, 210, 120, .92));
+  image-rendering: pixelated;
+}
+
 .scene-object-hit {
   padding: 0;
   border: 0;
