@@ -560,6 +560,21 @@ body.home-op-active .home-page .auth-user-status {
   outline: none;
 }
 
+/* 收音机只沿 SVG 贴图轮廓发光，避免把可点击区域的矩形边界一起照亮。 */
+.scene-object[data-object-id="radio_07"]:hover,
+.scene-object[data-object-id="radio_07"]:focus-visible {
+  filter: none;
+  transform: none;
+  outline: none;
+}
+
+.scene-object[data-object-id="radio_07"]:hover img,
+.scene-object[data-object-id="radio_07"]:focus-visible img {
+  filter: drop-shadow(0 0 2px #ffe7ad) drop-shadow(0 0 8px rgba(255, 174, 92, .95));
+  transform: scale(1.06);
+  transition: filter 120ms ease, transform 120ms ease;
+}
+
 .scene-object:disabled,
 .scene-object:disabled:hover,
 .scene-object:disabled:focus-visible {
