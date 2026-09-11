@@ -40,13 +40,23 @@ window.GAME_DATA = {
           "zIndex": 12,
           "clickEvent": "E_002",
           "visibleWhen": {
-            "not": {
-              "objectState": {
-                "objectId": "note_06",
-                "property": "hidden",
-                "equals": true
+            "all": [
+              {
+                "not": {
+                  "flag": "note_collected",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "objectState": {
+                    "objectId": "note_06",
+                    "property": "hidden",
+                    "equals": true
+                  }
+                }
               }
-            }
+            ]
           }
         },
         {
@@ -108,6 +118,12 @@ window.GAME_DATA = {
           "clickEvent": "E_003",
           "visibleWhen": {
             "all": [
+              {
+                "not": {
+                  "flag": "note_collected",
+                  "equals": true
+                }
+              },
               {
                 "flag": "note_front_seen",
                 "equals": true
@@ -1038,6 +1054,11 @@ window.GAME_DATA = {
         {
           "type": "setFlag",
           "key": "note_back_seen",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "note_collected",
           "value": true
         },
         {

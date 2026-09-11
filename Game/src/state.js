@@ -113,6 +113,7 @@
       if (this.flags.note_back_seen === true && !this.inventory.includes("note_06_item")) {
         this.inventory = [...this.inventory, "note_06_item"];
       }
+      if (this.inventory.includes("note_06_item")) this.flags.note_collected = true;
 
       // 兼容已经完成 7 号车厢尸体调查的旧存档：旧版本没有保存收音机可见标记，
       // 但只要已经完成 E-007，就应当继续显示并允许点击收音机。

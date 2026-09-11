@@ -24,13 +24,23 @@
         "zIndex": 12,
         "clickEvent": "E_002",
         "visibleWhen": {
-          "not": {
-            "objectState": {
-              "objectId": "note_06",
-              "property": "hidden",
-              "equals": true
+          "all": [
+            {
+              "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "objectState": {
+                  "objectId": "note_06",
+                  "property": "hidden",
+                  "equals": true
+                }
+              }
             }
-          }
+          ]
         }
       },
       {
@@ -92,6 +102,12 @@
         "clickEvent": "E_003",
         "visibleWhen": {
           "all": [
+            {
+              "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
             {
               "flag": "note_front_seen",
               "equals": true

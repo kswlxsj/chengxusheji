@@ -434,6 +434,11 @@
         "value": true
       },
       {
+        "type": "setFlag",
+        "key": "note_collected",
+        "value": true
+      },
+      {
         "type": "setObjectState",
         "object": "note_back_06",
         "patch": {
