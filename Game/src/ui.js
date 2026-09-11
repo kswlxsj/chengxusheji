@@ -432,12 +432,16 @@
       const content = document.createElement("div");
       content.className = "inspect-content";
       if (image) {
+        const media = document.createElement("div");
+        media.className = "inspect-media";
         const img = document.createElement("img");
         img.src = image;
         img.alt = title;
-        content.append(img);
+        media.append(img);
+        content.append(media);
       }
       const paragraph = document.createElement("p");
+      paragraph.className = "inspect-text";
       paragraph.textContent = text;
       content.append(paragraph);
       const close = document.createElement("button");

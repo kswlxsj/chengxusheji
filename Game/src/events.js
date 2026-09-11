@@ -160,6 +160,15 @@
         return { next: action.next, stop: true };
       });
 
+      // 条件成立时结束当前事件并进入指定事件；用于把物件调查完成状态接到剧情入口。
+      this.registerAction("conditionalJump", async (action) => {
+        if (!Game.evaluateCondition(action.when, this.state)) return null;
+        if (typeof action.next !== "string" || !action.next) {
+          throw new Error("条件跳转动作缺少目标事件编号");
+        }
+        return { next: action.next, stop: true };
+      });
+
       this.registerAction("custom", async (action) => {
         const handler = this.customActions.get(action.name);
         await handler(action.params || {}, this.context());

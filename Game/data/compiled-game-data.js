@@ -666,8 +666,13 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_005_S",
+      "id": "E_005_GUIDE",
       "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_guide_seen",
+          "value": true
+        },
         {
           "type": "dialogue",
           "text": "诡异的气氛笼罩着这节6号车厢。"
@@ -703,6 +708,16 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你走到了通往7号车厢的门旁边。"
+        }
+      ],
+      "next": "E_005"
+    },
+    {
+      "id": "E_005_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你闻到一股浓重的血腥味。直觉告诉你，门后的情况绝对不简单。"
         },
         {
           "type": "choice",
@@ -734,39 +749,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "诡异的气氛笼罩着这节6号车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "突然，你听到一阵怪异的声音。"
-        },
-        {
-          "type": "dialogue",
-          "text": "咔。"
-        },
-        {
-          "type": "dialogue",
-          "text": "咔。"
-        },
-        {
-          "type": "dialogue",
-          "text": "咔。"
-        },
-        {
-          "type": "dialogue",
-          "text": "像有人在很远的地方掰断什么东西。"
-        },
-        {
-          "type": "dialogue",
-          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
-        },
-        {
-          "type": "dialogue",
-          "text": "再次观察周围乘客，你发现还是没有人醒来。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你走到了通往7号车厢的门旁边。"
+          "text": "你闻到一股浓重的血腥味。但在好奇心的驱使下，你仍然决定进入7号车厢。"
         }
       ],
       "next": "E_006B"
@@ -1074,6 +1057,28 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "note_06_item"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1115,6 +1120,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1139,6 +1166,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
