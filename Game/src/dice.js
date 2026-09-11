@@ -38,6 +38,43 @@
     return context.skills.get(skill)?.name || skill;
   }
 
+  async function showDiceRollAnimation(context, rollValue, success, detailText) {
+ 
+  const modal = document.createElement("div");
+  modal.className = "check-roll-modal";
+
+  const wrapper = document.createElement("div");
+  const diceBox = document.createElement("div");
+  diceBox.className = "dice-box dice-rolling";
+
+  const diceImg = document.createElement("img");
+  diceImg.src = "assets/ui/dice.png";
+  diceBox.appendChild(diceImg);
+
+  const resultPanel = document.createElement("div");
+  resultPanel.className = "check-result-panel";
+  const resultText = document.createElement("div");
+  resultText.className = success ? "success" : "fail";
+  resultText.textContent = detailText;
+  resultPanel.appendChild(resultText);
+
+  wrapper.appendChild(diceBox);
+  wrapper.appendChild(resultPanel);
+  modal.appendChild(wrapper);
+  document.body.appendChild(modal);
+
+  await context.wait(1200);
+
+  diceBox.classList.remove("dice-rolling");
+  diceBox.classList.add("dice-result-static");
+  diceImg.src = `assets/ui/dice_0${rollValue}.png`;
+
+  await context.wait(2000);
+
+  modal.remove();
+}
+
+
   async function showSkillResult(context, skill, success, detail) {
     await context.ui.inspect.show({
       title: success ? "技能检定成功" : "技能检定失败",
@@ -57,18 +94,16 @@
   // 标准 d6 属性检定：1d6 + 属性值 >= 阈值（默认 11）即成功。
   // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
   function attrCheck(attribute, threshold = DEFAULT_THRESHOLD) {
-    return async (context) => {
-      const base = context.state.getAttribute(attribute);
-      const roll = rollDie(6);
-      const total = roll + base;
-      const success = total >= threshold;
-      await context.ui.inspect.show({
-        title: success ? "检定成功" : "检定失败",
-        text: `${attributeName(context, attribute)}：1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${threshold}。`
-      });
-      return success ? 0 : 1;
-    };
-  }
+  return async (context) => {
+    const base = context.state.getAttribute(attribute);
+    const roll = rollDie(6);
+    const total = roll + base;
+    const success = total >= threshold;
+    const msg = `${attributeName(context, attribute)} : 1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${threshold}。`;
+    await showDiceRollAnimation(context, roll, success, msg);
+    return success ? 0 : 1;
+  };
+}
 
   // SAN 类检定：先按 d6 属性检定判成败，再按“成功扣 passLoss / 失败扣 failLoss”扣减。
   // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣，弹提示）。返回 0。
@@ -98,10 +133,8 @@
       const roll = rollDie(6);
       const total = roll + base;
       const success = total >= DEFAULT_THRESHOLD;
-      await context.ui.inspect.show({
-        title: success ? "检定成功" : "检定失败",
-        text: `${attributeName(context, attribute)}：1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${DEFAULT_THRESHOLD}。`
-      });
+      const msg = `${attributeName(context, attribute)} : 1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${DEFAULT_THRESHOLD}。`;
+      await showDiceRollAnimation(context, roll, success, msg);
       apply(context, success ? passLoss : failLoss);
       return 0;
     };
@@ -167,10 +200,8 @@
     const roll = rollDie(6);
     const total = halfLuck + roll;
     const success = total >= threshold;
-    await context.ui.inspect.show({
-      title: success ? "检定成功" : "检定失败",
-      text: `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}，1d6 掷出 ${roll}，合计 ${total}，需要达到 ${threshold}。`
-    });
+    const msg = `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}, 1d6 掷出 ${roll}, 合计 ${total}, 需要达到 ${threshold}。`;
+    await showDiceRollAnimation(context, roll, success, msg);
     return success ? 0 : 1;
   }
 
@@ -232,10 +263,8 @@
     }
     const roll = rollDie(6);
     const one = roll >= 3;
-    await context.ui.inspect.show({
-      title: "数量判定",
-      text: `幸运 ${luck}，1d6 掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`
-    });
+    const msg = `幸运 ${luck}，1d6 掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`;
+    await showDiceRollAnimation(context, roll, true, msg);
     return one ? 0 : 1;
   });
   registerDice("ev025_strength_01", attrCheck("strength"));
