@@ -278,8 +278,6 @@
         document.body.classList.remove("home-op-active");
         page.inert = false;
         page.removeAttribute("aria-hidden");
-        const firstAction = document.querySelector(".home-action");
-        if (firstAction instanceof HTMLElement) firstAction.focus();
       }, BLACK_FADE_OUT_MS);
     }, BLACK_FADE_IN_MS + BLACK_HOLD_MS);
   }
