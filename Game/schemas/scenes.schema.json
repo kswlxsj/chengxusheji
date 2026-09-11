@@ -9,6 +9,18 @@
       "id": { "$ref": "#/$defs/id" },
       "name": { "type": "string", "minLength": 1 },
       "background": { "type": "string", "minLength": 1 },
+      "backgroundVariants": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["image", "visibleWhen"],
+          "properties": {
+            "image": { "type": "string", "minLength": 1 },
+            "visibleWhen": { "$ref": "#/$defs/condition" }
+          },
+          "additionalProperties": false
+        }
+      },
       "objects": { "type": "array", "items": { "$ref": "#/$defs/object" } }
     },
     "additionalProperties": false

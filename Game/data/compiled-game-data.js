@@ -19,6 +19,15 @@ window.GAME_DATA = {
       "id": "carriage_06",
       "name": "6 号车厢",
       "background": "assets/carriage-06.png",
+      "backgroundVariants": [
+        {
+          "image": "assets/carriage-06-note-removed.png",
+          "visibleWhen": {
+            "flag": "note_collected",
+            "equals": true
+          }
+        }
+      ],
       "objects": [
         {
           "id": "note_06",

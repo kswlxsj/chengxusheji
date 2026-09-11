@@ -146,7 +146,9 @@
       this.root.replaceChildren();
       const background = document.createElement("img");
       background.className = "scene-background";
-      background.src = scene.background;
+      const backgroundVariant = (scene.backgroundVariants || [])
+        .find((variant) => evaluateCondition(variant.visibleWhen, this.state));
+      background.src = backgroundVariant?.image || scene.background;
       background.alt = scene.name;
       this.root.append(background);
 

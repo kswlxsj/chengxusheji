@@ -199,6 +199,15 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
   const objectIds = new Set();
   for (const scene of scenes) {
     assert(typeof scene.background === "string", `场景缺少背景：${scene.id}`);
+    if (scene.backgroundVariants != null) {
+      assert(Array.isArray(scene.backgroundVariants), `场景 ${scene.id} 的背景变体必须是数组`);
+      for (const variant of scene.backgroundVariants) {
+        assertPlainObject(variant, `场景 ${scene.id} 存在无效背景变体`);
+        assertOnlyKeys(variant, ["image", "visibleWhen"], `场景 ${scene.id} 的背景变体`);
+        assert(typeof variant.image === "string" && variant.image,
+          `场景 ${scene.id} 的背景变体缺少 image`);
+      }
+    }
     for (const object of scene.objects || []) {
       assertId(object.id, `场景 ${scene.id} 存在无效物件 id`);
       assert(!objectIds.has(object.id), `物件 id 重复：${object.id}`);
@@ -216,6 +225,9 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
 
   const references = { attributeIds, skillIds, itemIds, objectIds };
   for (const scene of scenes) {
+    for (const variant of scene.backgroundVariants || []) {
+      validateCondition(variant.visibleWhen, references, `场景 ${scene.id} 的背景变体条件`);
+    }
     for (const object of scene.objects || []) validateCondition(object.visibleWhen, references, `物件 ${object.id}.visibleWhen`);
   }
 
