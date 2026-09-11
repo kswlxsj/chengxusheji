@@ -803,6 +803,59 @@ a { color: inherit; }
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .65));
 }
 
+/* ============ 11‑extra. 事件检定通用弹窗 ============ */
+
+.check-roll-modal {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 120;
+}
+
+.dice-box {
+    width: 128px;
+    height: 128px;
+}
+.dice-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+@keyframes diceRollShake {
+    0%   { transform: rotate(0deg)   scale(1);     }
+    25%  { transform: rotate(30deg)  scale(1.13);  }
+    50%  { transform: rotate(-24deg) scale(0.93);  }
+    75%  { transform: rotate(18deg)  scale(1.07);  }
+    100% { transform: rotate(0deg)   scale(1);     }
+}
+
+.dice-rolling {
+    animation: diceRollShake 0.42s infinite ease-in-out;
+}
+
+.dice-result-static {
+    animation: none;
+}
+
+.check-result-panel {
+    margin-top: 24px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 22px;
+}
+.check-result-panel .success {
+    color: #7aff96;
+}
+.check-result-panel .fail {
+    color: #ff7c7c;
+}
+
+
 /* 中央交互区：轮次 / 对话记录（聊天式自动上滚）/ 选项。 */
 .mg-negotiation-center {
   position: absolute;
