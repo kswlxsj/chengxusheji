@@ -159,6 +159,7 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "scene-object";
+        button.dataset.objectId = object.id;
         button.disabled = !this.interactionEnabled;
         button.title = object.name || object.id;
         button.setAttribute("aria-label", object.name || object.id);

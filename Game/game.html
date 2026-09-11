@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=radio-minigame-2">
-  <script src="src/bgm.js" defer></script>
+  <link rel="stylesheet" href="styles/main.css?v=radio-flow-2">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
 
@@ -38,36 +37,20 @@
     <div id="toast" role="status" aria-live="polite"></div>
   </main>
 
-  <!-- CODEX ADD START -->
-  <div id="codex-ending-overlay" hidden>
-    <video
-      id="codex-ending-video"
-      src="assets/video/end.mp4"
-      playsinline
-      preload="auto"
-      aria-label="结局视频"
-    ></video>
-    <div id="codex-ending-actions">
-      <button id="codex-ending-skip" class="codex-ending-button" type="button">跳过</button>
-      <button id="codex-ending-restart" class="codex-ending-button codex-ending-restart" type="button" hidden>重新开始</button>
-    </div>
-  </div>
-  <!-- CODEX ADD END -->
-
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js?v=radio-minigame-2"></script>
+  <script src="data/compiled-game-data.js?v=radio-flow-2"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   
-  <script src="src/state.js?v=radio-medical-flow-1"></script>
+  <script src="src/state.js?v=radio-flow-2"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
   <script src="src/ui.js"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
   
-  <script src="src/scene.js?v=radio-medical-flow-1"></script>
+  <script src="src/scene.js?v=radio-flow-2"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
   <script src="src/events.js"></script>
@@ -85,16 +68,13 @@
   <script src="src/minigame-games/webgl3d-demo.js"></script>
   <!-- 项目小游戏模块（src/minigame-games/*.js）：注册表条目，顶层只注册、运行期再碰 DOM。 -->
 
-  <script src="src/minigame-games/card-battle.js?v=20260911-bg"></script>
-  <!-- 战斗轮卡牌小游戏：四张牌单出/双出、敌人候选牌与濒死无限体力。 -->
+  <script src="src/minigame-games/conductor-tug.js"></script>
+  <!-- 终局控制杆争夺：仿星露谷钓鱼的垂直抓握区小游戏。 -->
 
-    <script src="src/minigame-games/radio-tuning.js?v=radio-minigame-2"></script>
-  <!-- E-0008 收音机调频小游戏：追踪移动频段并稳定解码广播。 -->
+  <script src="src/minigame-games/radio-tuning.js?v=radio-flow-2"></script>
+  <!-- 7号车厢收音机：直接调谐电流声，不经过属性检定。 -->
 
-  <script src="src/minigame-games/crew-negotiation.js"></script>
-  <!-- 乘务员安抚与交涉小游戏模块（属于 src/minigame-games/*.js）：顶层只注册、运行期再碰 DOM。 -->
-
-  <script src="src/main.js?v=radio-medical-flow-1"></script>
+  <script src="src/main.js"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

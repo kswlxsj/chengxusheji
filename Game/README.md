@@ -55,9 +55,7 @@
 - 可暂停、可取消的自定义异步演出。
 - 以小游戏注册表（`TrainGame.Minigames`，仿 dice.js 的“JSON 只写编号”分离架构）接入“事件内小游戏”：事件用 `{ "type": "minigame", "game": "<编号>" }` 触发，小游戏模块结束时可返回**结算动作列表**，由事件引擎按当前事件普通动作的语义顺序执行；宿主窗口 `MinigameWindow`（模态居中近满屏、游戏画面变暗、标题栏含“退出小游戏”）内可自绘任意 DOM/canvas/WebGL 画面，小游戏进行中游戏本体冻结、系统暂停与 Esc 被屏蔽。
 - 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；演示触发物 `mg3d_demo_spot_06` 默认隐藏（验收与删除方法见 `docs/API使用说明.md` 示例九）。
-- 战斗轮卡牌小游戏 `card_battle`（简单）/`card_battle_hard`（困难）（`src/minigame-games/card-battle.js`），提供四张牌单出/双出、敌人候选牌展示、回血克制、组合技和敌人濒死无限体力规则；当前独立试玩页为 `常暗之厢-战斗轮-卡牌试作.html`，正式剧情可通过 `minigame` 动作接线。
-- 收音机调频小游戏 `radio_tuning`（`src/minigame-games/radio-tuning.js`），接入 E-0008：追踪动态绿色频段并持续稳定 3 秒，成功/失败分别播放两段广播后进入原有 E-008 深处侦查。
-- 剧情小游戏 `crew_negotiation`（乘务员安抚与交涉，`src/minigame-games/crew-negotiation.js`）：接入 E_014 初见乘务员的交涉，三轮 × 每轮两个选项，正确选项对最终检定加成 +30%、错误选项 +10%；小游戏只通过结算动作 `setFlag ev014_negotiation_bonus` 传出加成，最终百分比检定（基础 40% + 加成、封顶 100%，`src/dice.js` 的 `ev014_negotiation_final_01`）在游戏本体的 `E_014_TALK` 中执行并按成功/失败分流。
+- 终局控制杆争夺小游戏 `conductor_tug`（`src/minigame-games/conductor-tug.js`）：仿星露谷钓鱼的垂直抓握区，玩家与列车员争夺控制权，成功/失败分别接入 `E_029` / `E_030`。
 - 独立登录、注册、标题主页、游戏、存档管理/写入、结束及占位信息页。
 - 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
@@ -66,7 +64,6 @@
 - 游戏内全部位图（场景背景、物件、物品栏图标、插图、封面）默认最近邻插值（`image-rendering: pixelated`），放大呈像素游戏的硬边感。
 - 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 底部常驻物品快捷栏：渲染持有物品的图标与名称（含数字快捷键），点击物品运行其 `inspectEvent` 做调查/使用；手机与手电筒的调查事件经项目 `useLight` 自定义动作提供“照亮”选择。
-- 全站循环 BGM：`assets/audio/bgm.mp3` 自动循环播放，并通过 `sessionStorage` 在页面切换时恢复播放进度。
 - 六份内容 JSON 的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
@@ -132,7 +129,7 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：7 个场景，110 个事件，6 个物品，8 个属性，6 个技能，5 个小游戏。
+编译完成：7 个场景，106 个事件，6 个物品，8 个属性，6 个技能，2 个小游戏。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
 ```
 
@@ -190,22 +187,15 @@ Game/
 ├─ assets/
 │  ├─ carriage-02.png
 │  ├─ carriage-04.png
-│  ├─ carriage-03.png
-│  ├─ carriage-05.png
 │  ├─ carriage-05-03.png
 │  ├─ carriage-06.png
 │  ├─ carriage-07.png
 │  ├─ carriage-06.svg
 │  ├─ carriage-07.svg
-│  ├─ bag-05-a.png
-│  ├─ bag-05-b.png
-│  ├─ trash-05-a.png
-│  ├─ trash-05-b.png
 │  ├─ cover-placeholder.svg
 │  ├─ door.svg
 │  ├─ note.svg
 │  ├─ radio.svg
-│  ├─ corpse-07.png
 │  ├─ corpse-07.svg
 │  ├─ deep-07.svg
 │  ├─ front-carriage.png
@@ -213,32 +203,11 @@ Game/
 │  ├─ clicker-02.png
 │  ├─ control-lever.png
 │  ├─ crew-04.png
-│  ├─ crew-portrait.png
-│  ├─ pc-portrait.png
-│  ├─ miniGame/
-│  │  └─ 交涉背景.png
-│  ├─ audio/
-│  │  └─ bgm.mp3
-│  ├─ video/
-│  │  ├─ start.mp4
-│  │  └─ end.mp4
-│  ├─ ui/
-│  │  └─ card-battle/
-│  │     ├─ attack.png
-│  │     ├─ heal.png
-│  │     ├─ defend.png
-│  │     ├─ ultimate.png
-│  │     ├─ card-base.png
-│  │     ├─ hp-bar.png
-│  │     ├─ background.png
-│  │     └─ enemy.png
 │  ├─ map-06.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
 │  ├─ newspaper-icon.png
-│  ├─ note-06.png
 │  ├─ phone.png
-│  ├─ radio-07.png
 │  ├─ placeholder-bottle.svg
 │  ├─ placeholder-key.svg
 │  ├─ clutter-05.svg
@@ -339,7 +308,6 @@ Game/
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
-│  ├─ bgm.js
 │  ├─ custom-actions.js
 │  ├─ dice.js
 │  ├─ events.js
@@ -347,10 +315,7 @@ Game/
 │  ├─ login.js
 │  ├─ main.js
 │  ├─ minigame-games/
-│  │  ├─ webgl3d-demo.js
-│  │  ├─ card-battle.js
-│  │  ├─ radio-tuning.js
-│  │  └─ crew-negotiation.js
+│  │  └─ webgl3d-demo.js
 │  ├─ minigames.js
 │  ├─ namespace.js
 │  ├─ page-flow.js
@@ -389,29 +354,22 @@ Game/
 
 | 文件 | 用途 |
 | --- | --- |
-| `carriage-02/03/04/05/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 最新版源文件一致，16:9 画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
-| `carriage-05-03.png` | 早期 5 号、3 号车厢共用背景，已不再被场景引用，保留作历史素材。 |
-| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png`、`bag-05-a.png`、`bag-05-b.png`、`trash-05-a.png`、`trash-05-b.png`、`newspaper-05.png`、`note-06.png`、`radio-07.png` | 美工按“背景图层蒙版”整幅导出的最新版物件贴图（`fullCanvas: true`，与背景同为 16:9 画布、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
-| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）。 |
+| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
+| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
 | `phone.png` | 手机物件/物品栏图标。 |
-| `corpse-07.png` | 7 号车厢尸体最新版整幅画布贴图；`corpse-07.svg` 为早期占位图，保留作历史素材。 |
-| `deep-07.svg` | 7 号车厢深处占位贴图。 |
-| `clutter-05.svg` | 5 号车厢早期通用杂物贴图，已被独立 StillLife 蒙版取代，保留作历史素材。 |
+| `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
+| `clutter-05.svg` | 5 号车厢散落杂物（行李/纸堆等）共用的物件贴图。 |
 | `door.svg` | 各车厢门共用的透明物件贴图。 |
 | `flashlight.svg` | 手电筒物品图标。 |
-| `note.svg` | 旧车票物品图标；场景便签已改用 `note-06.png`。 |
-| `radio.svg` | 收音机调查窗口插图；场景物件已改用 `radio-07.png`。 |
+| `note.svg` | 便签贴图，同时暂作旧车票图片。 |
+| `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
-| `crew-portrait.png`、`pc-portrait.png` | 乘务员与玩家（PC）的人物半身立绘，供 `crew_negotiation` 小游戏左右两侧使用（由仓库根 `Assets/Image/Portrait/` 源文件复制并改名复用）。 |
-| `miniGame/交涉背景.png` | `crew_negotiation` 小游戏的中央背景图（由美工放置于 `assets/miniGame/`）。 |
-| `audio/bgm.mp3` | 全站循环背景音乐；由 `src/bgm.js` 播放，并在页面切换时恢复播放进度。 |
-| `video/start.mp4`、`video/end.mp4` | 主页开场循环视频与结局视频；使用游戏目录内的相对路径，静态服务器以 `Game/` 为根目录时可直接播放。 |
-| `ui/card-battle/` | 战斗轮卡牌小游戏的最新版 UI：背景、四张动作卡面、卡底、血条与敌人头像。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
-背景采用 16:9 画布、内容居中排版；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
+背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
 
 ### `data/`
 
@@ -476,7 +434,6 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
-| `bgm.js` | 创建全站循环 BGM 播放器；记录并恢复跨页播放进度，首次用户交互后自动重试面对浏览器自动播放限制。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -485,7 +442,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`。 |
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
-| `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示；`card-battle.js` 为战斗轮卡牌小游戏；`radio-tuning.js` 为 E-0008 收音机调频小游戏；`crew-negotiation.js` 为“乘务员安抚与交涉”剧情小游戏。 |
+| `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |

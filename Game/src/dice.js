@@ -108,7 +108,8 @@
   }
 
   // 技能检定：先询问是否使用；技能未学会或玩家放弃时直接视为失败。
-  function learnedSkillCheck(skillId) {
+  function learnedSkillCheck(skillId, options = {}) {
+    const announceSuccess = options.announceSuccess !== false;
     return async (context) => {
       const learned = context.state.getSkill(skillId);
       if (!learned) {
@@ -119,7 +120,9 @@
         await showSkillResult(context, skillId, false, "已放弃使用");
         return 1;
       }
-      await showSkillResult(context, skillId, true, "已掌握");
+      if (announceSuccess) {
+        await showSkillResult(context, skillId, true, "已掌握");
+      }
       return learned ? 0 : 1;
     };
   }
@@ -193,7 +196,7 @@
     await showSkillResult(context, "firstAid", true, "已掌握（医学解锁后同步获得）");
     return 0;
   });
-  registerDice("skill_medicine", learnedSkillCheck("medicine"));
+  registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
   registerDice("skill_talk", learnedSkillCheck("talk"));
   registerDice("ev016_strength_01", attrCheck("strength"));
 
@@ -241,15 +244,6 @@
   registerDice("ev025_strength_01", attrCheck("strength"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
-  // E-0008：调频小游戏结束后按结果旗标分流，避免再掷一次随机骰子。
-  registerDice("ev0008_radio_tuning", async (context) => {
-    const success = context.state.flags.ev0008_radio_tuned === true;
-    await context.ui.inspect.show({
-      title: success ? "调频成功" : "调频失败",
-      text: success ? "指针稳定锁定了频道，收音机开始播放隐藏广播。" : "你没能稳定锁定频道，只听见一阵嘶嘶的电流声。"
-    });
-    return success ? 0 : 1;
-  });
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev010_join_route_01", async (context) => (
     context.state.flags.ev008_scouting_ok ? 0 : 1
@@ -284,21 +278,4 @@
 
   // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4）。
   registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
-
-  // E-014：乘务员安抚与交涉小游戏的“最终检定”在游戏本体这里执行。
-  // 小游戏三轮选项的加成写入 flags.ev014_negotiation_bonus（正确+30%，错误+10%，范围 30~90），
-  // 此处以“基础成功率 40% + 加成（封顶 100%）”的百分比掷骰判定：1..100 掷出 ≤ 成功率即成功。
-  // 加成缺失（如提前退出）时按 0 计入，即按基础成功率判定。
-  registerDice("ev014_negotiation_final_01", async (context) => {
-    const bonus = Number(context.state.flags.ev014_negotiation_bonus) || 0;
-    const rate = Math.min(100, 40 + bonus);
-    const roll = Math.floor(Math.random() * 100) + 1;
-    const success = roll <= rate;
-    await context.ui.inspect.show({
-      title: success ? "交涉检定成功" : "交涉检定失败",
-      text: `安抚与交涉：基础成功率 40% + 交涉加成 ${bonus}% = ${rate}%。`
-        + `掷出 ${roll}%，${success ? "乘务员终于放下了戒心。" : "乘务员仍有顾虑，没能完全打动她。"}`
-    });
-    return success ? 0 : 1;
-  });
 })(window.TrainGame);

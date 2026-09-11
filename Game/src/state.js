@@ -97,6 +97,16 @@
         if (!this.skillDefinitions.has(id) || locked !== true) throw new TypeError(`存档技能屏蔽状态无效：${id}`);
       }
 
+      // 旧存档迁移：收音机功能加入前，尸体医学检定已经会写入该检定记录，
+      // 但不会有 radio_07_ready 标记。恢复这类存档时补出收音机可见状态。
+      if (
+        Object.hasOwn(clean.checkResults, "skill_medicine")
+        && clean.flags.radio_07_ready !== true
+        && clean.flags.radio_07_done !== true
+      ) {
+        clean.flags.radio_07_ready = true;
+      }
+
       this.sceneId = clean.sceneId || null;
       this.currentEventId = clean.currentEventId || null;
       this.attributes = clean.attributes;
@@ -107,16 +117,6 @@
       this.inventory = clean.inventory;
       this.objectStates = clean.objectStates;
       this.checkResults = clean.checkResults;
-
-      // 兼容已经完成 7 号车厢尸体调查的旧存档：旧版本没有保存收音机可见标记，
-      // 但只要已经完成 E-007，就应当继续显示并允许点击收音机。
-      if (
-        clean.flags.visited_carriage_07 === true
-        && clean.flags.radio_07_ready !== true
-        && clean.flags.radio_07_done !== true
-      ) {
-        this.flags.radio_07_ready = true;
-      }
     }
 
     validateRegisteredKeys(values, definitions, label) {

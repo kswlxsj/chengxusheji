@@ -151,6 +151,14 @@
         this.state.setObjectState(action.object, action.patch);
       });
 
+      // 小游戏结算专用跳转动作：模块返回后把当前事件链切到指定事件。
+      this.registerAction("jump", async (action) => {
+        if (typeof action.next !== "string" || !action.next) {
+          throw new Error("跳转动作缺少目标事件编号");
+        }
+        return { next: action.next, stop: true };
+      });
+
       this.registerAction("custom", async (action) => {
         const handler = this.customActions.get(action.name);
         await handler(action.params || {}, this.context());
