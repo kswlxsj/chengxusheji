@@ -42,7 +42,7 @@
     .cb-rules summary { padding: 6px 10px; color: #efb45f; cursor: pointer; }
     .cb-rule-body { padding: 0 12px 10px; color: #d5c6ae; font-size: 13px; line-height: 1.55; }
     .cb-rule-body p { margin: 6px 0; }
-    .cb-arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; flex: 1 1 198px; min-height: 198px; padding: 12px; border: 1px solid rgba(239, 180, 95, .28); background: radial-gradient(circle at 50% 45%, rgba(124, 61, 34, .36), transparent 58%), #241610; }
+    .cb-arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; flex: 1 1 198px; min-height: 198px; padding: 12px; }
     .cb-fighter { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 10px; border: 1px solid rgba(239, 180, 95, .2); background: rgba(15, 11, 9, .48); }
     .cb-fighter-name { display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px; }
     .cb-fighter-name small { color: #9d8e78; font-size: 11px; }
