@@ -5,6 +5,13 @@
     "background": "assets/carriage-06.png",
     "backgroundVariants": [
       {
+        "image": "assets/carriage-06-eaten.png",
+        "visibleWhen": {
+          "flag": "carriage_06_eaten",
+          "equals": true
+        }
+      },
+      {
         "image": "assets/carriage-06-note-removed.png",
         "visibleWhen": {
           "flag": "note_collected",

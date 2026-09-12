@@ -21,6 +21,13 @@ window.GAME_DATA = {
       "background": "assets/carriage-06.png",
       "backgroundVariants": [
         {
+          "image": "assets/carriage-06-eaten.png",
+          "visibleWhen": {
+            "flag": "carriage_06_eaten",
+            "equals": true
+          }
+        },
+        {
           "image": "assets/carriage-06-note-removed.png",
           "visibleWhen": {
             "flag": "note_collected",
@@ -3292,7 +3299,7 @@ window.GAME_DATA = {
         },
         {
           "type": "setFlag",
-          "key": "inner_world_entered",
+          "key": "carriage_06_eaten",
           "value": true
         }
       ],
@@ -3388,11 +3395,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "那趟门后的旅程仿佛从未发生过。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         },
         {
           "type": "setFlag",
@@ -3533,6 +3535,11 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_fake_04"
+        },
+        {
+          "type": "setFlag",
+          "key": "inner_world_entered",
+          "value": true
         }
       ],
       "next": "E_506"
@@ -4210,11 +4217,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你推开那扇门——门外不是来路。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         },
         {
           "type": "changeScene",

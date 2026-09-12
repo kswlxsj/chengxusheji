@@ -2447,7 +2447,7 @@
       },
       {
         "type": "setFlag",
-        "key": "inner_world_entered",
+        "key": "carriage_06_eaten",
         "value": true
       }
     ],
@@ -2543,11 +2543,6 @@
       {
         "type": "dialogue",
         "text": "那趟门后的旅程仿佛从未发生过。"
-      },
-      {
-        "type": "setFlag",
-        "key": "carriage_06_eaten",
-        "value": true
       },
       {
         "type": "setFlag",
@@ -2688,6 +2683,11 @@
       {
         "type": "changeScene",
         "scene": "carriage_fake_04"
+      },
+      {
+        "type": "setFlag",
+        "key": "inner_world_entered",
+        "value": true
       }
     ],
     "next": "E_506"
@@ -3365,11 +3365,6 @@
       {
         "type": "dialogue",
         "text": "你推开那扇门——门外不是来路。"
-      },
-      {
-        "type": "setFlag",
-        "key": "carriage_06_eaten",
-        "value": true
       },
       {
         "type": "changeScene",

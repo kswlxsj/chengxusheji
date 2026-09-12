@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import vm from "node:vm";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -38,19 +38,31 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
 }
 
 // 每句目的地描写必须已处于对应背景；推门文字仍属于出发场景。
+// 门禁与啃食标签分两拍：踏入空车厢当场带上啃食标签（此时门禁未上锁，回3号后还能再进）；
+// 到过伪4才算正式进过里世界，此后推门直接走主线 E_DOOR_03。
 let game = fixture();
 await game.play("E_501");
 assert.equal(game.trace[0].scene, "carriage_03");
 assert.equal(game.trace[1].scene, "carriage_inner_01");
-assert.equal(game.state.flags.inner_world_entered, true);
+assert.equal(game.state.flags.carriage_06_eaten, true);
+assert.ok(!game.state.flags.inner_world_entered);
 await game.play("E_501");
-assert.equal(game.state.sceneId, "carriage_02");
+assert.equal(game.state.sceneId, "carriage_inner_01", "未到伪4时门禁不应上锁");
+await game.play("E_505");
+assert.equal(game.state.sceneId, "carriage_fake_04");
+assert.equal(game.state.flags.inner_world_entered, true);
+game.trace.length = 0;
+await game.play("E_501");
+assert.equal(game.state.sceneId, "carriage_02", "正式进过里世界后推门直接走主线");
+assert.equal(game.trace.some(t => t.scene === "carriage_inner_01"), false);
 
 for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_02"], [0.9, "carriage_03"]]) {
-  game = fixture({ inner_world_entered: true }, [], "carriage_inner_01");
+  game = fixture({ carriage_06_eaten: true }, [], "carriage_inner_01");
   sandbox.Math.random = () => roll;
   await game.play("E_502_RETURN");
   assert.equal(game.state.sceneId, destination);
+  assert.equal(game.state.flags.carriage_06_eaten, true, "啃食标签只由入口置位，与返回分支无关");
+  assert.ok(!game.state.flags.inner_world_entered, "未到伪4时返回仍可再进里世界");
   assert.equal(game.trace.some(t => t.event === "E_002"), false);
 }
 for (const [roll, destination] of [[0.1, "carriage_inner_01"], [0.8, "carriage_fake_04"]]) {
@@ -149,6 +161,11 @@ for (const event of events.filter(e => /^E_5/.test(e.id))) for (const action of 
 const fake = scenes.find(s => s.id === "carriage_fake_04");
 assert.match(fake.background, /fog/);
 assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed");
+// 6号被啃食：入口置位的标签驱动背景变体，且优先于便签消失版。
+const carriage06 = scenes.find(s => s.id === "carriage_06");
+assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
+assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
+assert.ok((await stat(new URL("../assets/carriage-06-eaten.png", import.meta.url))).size > 0);
 assert.equal(events.find(e => e.id === "E_028").actions.some(a => a.game === "conductor_tug"), true);
 assert.match(await read("game.html"), /src\/minigame-games\/conductor-tug\.js/);
 // 实际渲染后的图片也必须就绪，不能只等待预加载缓存。
