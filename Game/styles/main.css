@@ -457,6 +457,11 @@ body.home-op-active .home-page .auth-user-status {
   transition: filter 120ms ease;
 }
 
+.scene-object-art[data-object-id="crew_04"].is-hot,
+.scene-object-art[data-object-id="crew_04"].is-focused {
+  filter: brightness(1.45) drop-shadow(0 0 4px #fff0bf) drop-shadow(0 0 14px rgba(255, 210, 120, .98));
+}
+
 .scene-object-art[data-object-id="radio_07"].is-hot,
 .scene-object-art[data-object-id="radio_07"].is-focused {
   filter: drop-shadow(0 0 2px #fff0bf) drop-shadow(0 0 8px rgba(255, 210, 120, .92));
@@ -753,6 +758,25 @@ body.home-op-active .home-page .auth-user-status {
 
 .confirm-backdrop { background: rgba(0,0,0,.88); }
 
+/* 侦察获得提示只出现一次，并固定显示在屏幕中央。 */
+.scouting-offer-backdrop {
+  place-items: center;
+  padding: 8%;
+  pointer-events: auto;
+  background: rgba(0,0,0,.78);
+}
+
+.scouting-offer-backdrop .confirm-menu-window {
+  width: min(360px, 88%);
+  padding: 18px;
+  pointer-events: auto;
+}
+
+.scouting-offer-backdrop .confirm-menu-window h1 {
+  margin-bottom: 16px;
+  font-size: clamp(20px, 2vw, 30px);
+}
+
 /* ============ 11b. 游戏页：小游戏宿主窗口（.minigame-backdrop、.minigame-window、.minigame-stage） ============ */
 
 /* 小游戏进行时游戏本体画面变暗：深色遮罩铺满舞台；窗口居中且接近占满，四边留适当间距。 */
@@ -795,7 +819,79 @@ body.home-op-active .home-page .auth-user-status {
   background: #101318;
 }
 
-/* ============ 11c. WebGL 3D 演示小游戏（.mg-webgl-*，属于 webgl3d_demo 模块） ============ */
+/* ============ 11c. 控制杆争夺小游戏（.mg-tug-*，属于 conductor_tug 模块） ============ */
+
+.mg-tug {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto;
+  align-content: center;
+  gap: clamp(4px, .65vh, 8px);
+  padding: clamp(8px, 1.2vw, 16px);
+  overflow: hidden;
+  font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  color: #f1eadc;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(104, 72, 45, .24), transparent 34%),
+    linear-gradient(120deg, rgba(5, 7, 10, .96), rgba(24, 20, 20, .88) 50%, rgba(7, 9, 12, .96));
+}
+
+.mg-tug-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mg-tug-eyebrow {
+  margin: 0 0 3px;
+  color: var(--accent);
+  font-size: clamp(10px, 1vw, 13px);
+  letter-spacing: .16em;
+  opacity: .78;
+}
+
+.mg-tug-header h1 { margin: 0; color: var(--accent); font-size: clamp(22px, 2.8vw, 40px); letter-spacing: .08em; }
+.mg-tug-subtitle { max-width: 670px; margin: 5px 0 0; color: rgba(241, 234, 220, .76); font-size: clamp(12px, 1.2vw, 16px); line-height: 1.45; }
+.mg-tug-time { flex: 0 0 auto; margin: 5px 0 0; color: #f1c476; font-size: clamp(16px, 1.7vw, 23px); font-variant-numeric: tabular-nums; }
+
+.mg-tug-scoreboard { padding: 6px 10px; background: rgba(5, 7, 10, .52); border: 1px solid rgba(213, 173, 109, .3); }
+.mg-tug-score-labels { display: flex; justify-content: space-between; color: rgba(241, 234, 220, .72); font-size: clamp(11px, 1.1vw, 14px); }
+.mg-tug-score-track { position: relative; display: flex; height: 10px; margin-top: 4px; overflow: hidden; background: rgba(241, 234, 220, .12); }
+.mg-tug-score-player { width: 50%; background: #87b9a0; transition: width 80ms linear; }
+.mg-tug-score-conductor { width: 50%; background: #9c5f60; transition: width 80ms linear; }
+.mg-tug-score-track i { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255, 255, 255, .82); }
+.mg-tug-score-number { margin: 5px 0 0; color: rgba(241, 234, 220, .78); font-size: clamp(11px, 1.1vw, 14px); text-align: center; font-variant-numeric: tabular-nums; }
+
+.mg-tug-board { min-height: 0; display: grid; grid-template-columns: minmax(100px, 1fr) minmax(130px, .72fr) minmax(100px, 1fr); align-items: center; gap: clamp(6px, 1.2vw, 18px); }
+.mg-tug-fighter { align-self: center; min-width: 0; text-align: center; }
+.mg-tug-avatar-frame { width: clamp(82px, 10vw, 140px); height: clamp(96px, 18vh, 168px); margin: 0 auto 3px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at 50% 78%, rgba(110, 85, 58, .36), transparent 70%); border-bottom: 1px solid rgba(213, 173, 109, .5); }
+.mg-tug-avatar-art { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 12px rgba(0, 0, 0, .74)); image-rendering: auto; }
+.mg-tug-fighter h2 { margin: 0; color: var(--accent); font-size: clamp(16px, 1.7vw, 24px); }
+.mg-tug-fighter p { margin: 3px 0 0; color: rgba(241, 234, 220, .68); font-size: clamp(11px, 1.1vw, 14px); line-height: 1.45; }
+.mg-tug-player .mg-tug-avatar-frame { border-color: rgba(135, 185, 160, .72); }
+.mg-tug-conductor .mg-tug-avatar-frame { border-color: rgba(181, 102, 95, .72); }
+
+.mg-tug-track-wrap { min-height: 0; height: min(38vh, 300px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.mg-tug-track { position: relative; width: clamp(100px, 11vw, 150px); height: 100%; min-height: 180px; overflow: hidden; cursor: ns-resize; touch-action: none; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .5)); }
+.mg-tug-track-art { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; image-rendering: pixelated; opacity: .9; }
+.mg-tug-track-line { position: absolute; top: 8%; bottom: 9%; left: 50%; z-index: 1; width: 2px; translate: -50% 0; background: rgba(238, 232, 217, .55); box-shadow: 0 0 8px rgba(255, 255, 255, .22); pointer-events: none; }
+.mg-tug-target { position: absolute; top: 38%; left: 50%; z-index: 3; width: 35%; min-width: 44px; height: 11%; min-height: 34px; translate: -50% 0; overflow: hidden; pointer-events: none; }
+.mg-tug-target-art { width: 100%; height: 100%; object-fit: fill; image-rendering: pixelated; filter: drop-shadow(0 0 8px rgba(224, 114, 114, .72)); transform: scale(4); }
+.mg-tug-zone { position: absolute; top: 59%; left: 15%; right: 15%; z-index: 2; overflow: hidden; background: rgba(117, 190, 151, .25); border: 2px solid rgba(132, 221, 170, .72); box-shadow: inset 0 0 18px rgba(111, 215, 156, .2), 0 0 10px rgba(111, 215, 156, .2); pointer-events: none; transition: border-color 90ms ease, box-shadow 90ms ease; }
+.mg-tug-zone.is-inside { border-color: #a8f0bf; box-shadow: inset 0 0 22px rgba(168, 240, 191, .42), 0 0 16px rgba(168, 240, 191, .48); }
+.mg-tug-caption { min-height: 34px; text-align: center; }
+.mg-tug-caption strong { display: block; color: rgba(241, 234, 220, .78); font-size: clamp(12px, 1.2vw, 16px); }
+.mg-tug-caption strong.is-inside { color: #a8f0bf; }
+.mg-tug-caption span { display: block; margin-top: 2px; color: rgba(241, 234, 220, .56); font-size: clamp(10px, 1vw, 13px); }
+.mg-tug-status { min-height: 1.5em; margin: 0; color: rgba(241, 234, 220, .9); text-align: center; font-size: clamp(13px, 1.3vw, 17px); text-shadow: 0 1px 4px #000; }
+.mg-tug-status strong { color: var(--accent); }
+.mg-tug-control { margin: 0; color: rgba(241, 234, 220, .56); font-size: clamp(10px, 1vw, 13px); text-align: center; }
+.mg-tug.is-win .mg-tug-target-art { filter: sepia(.35) saturate(1.35) hue-rotate(55deg) drop-shadow(0 0 10px rgba(168, 240, 191, .85)); }
+.mg-tug.is-loss .mg-tug-target-art { filter: sepia(.7) saturate(1.8) hue-rotate(300deg) drop-shadow(0 0 10px rgba(210, 123, 120, .68)); }
+
+/* ============ 11d. WebGL 3D 演示小游戏（.mg-webgl-*，属于 webgl3d_demo 模块） ============ */
 
 .mg-webgl-canvas {
   position: absolute;
@@ -1111,7 +1207,17 @@ body.home-op-active .home-page .auth-user-status {
 .attribute-allocation-row p { margin: 0; opacity: .78; }
 .attribute-allocation-limits { display: block; margin-top: 5px; color: var(--accent); opacity: .88; }
 .attribute-stepper { display: grid; grid-template-columns: 38px 54px 38px; align-items: center; text-align: center; }
-.attribute-stepper button { height: 38px; font-size: 22px; }
+.attribute-stepper button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.attribute-stepper button:not(:disabled):hover { background: transparent; }
+.attribute-stepper button img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .attribute-stepper output { font-size: 1.25em; font-weight: 700; }
 .allocation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 .allocation-actions button { padding: 9px 16px; }
@@ -1145,6 +1251,14 @@ body.home-op-active .home-page .auth-user-status {
   .inventory-slot { min-width: 0; }
   .inspect-content { grid-template-columns: 1fr; }
   .main-menu-window .menu-content { width: 62%; }
+  .mg-tug { padding: 9px; gap: 4px; }
+  .mg-tug-header { gap: 8px; }
+  .mg-tug-subtitle { max-width: 56vw; }
+  .mg-tug-board { grid-template-columns: minmax(76px, 1fr) minmax(112px, .9fr) minmax(76px, 1fr); gap: 4px; }
+  .mg-tug-avatar-frame { width: clamp(70px, 18vw, 120px); height: clamp(88px, 20vh, 150px); }
+  .mg-tug-fighter p { font-size: 10px; }
+  .mg-tug-track-wrap { height: min(51vh, 330px); }
+  .mg-tug-track { min-height: 190px; }
   .attribute-allocation-row { grid-template-columns: 1fr; }
   .attribute-stepper { justify-content: end; }
   .allocation-summary { grid-template-columns: 1fr; }

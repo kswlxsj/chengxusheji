@@ -77,8 +77,6 @@
   → 2 号车厢（Clicker）→ 先头车厢（驾驶室操作台，结局分支）
 ```
 
-车厢两端门的布局全车统一：**右侧门＝前进（朝先头车厢，车厢号减小）**，**左侧门＝后退（车厢号增大）**；字段级约定与自检方法见[接口手册](docs/API使用说明.md)的 `scenes.json` 一节。
-
 逐车厢完整通关与各结局的到达仍需要在浏览器里实测；分支是否可达以实际游玩为准。
 
 **里世界支线（E-501~E-525）**：3 号车厢通往 2 号车厢的门现在通向里世界第一幕（剧本《里世界剧本》的第 1 幕），主线在门后的推进改由里世界承接。**里世界只能进一次**：第一次推门进入里世界，之后再推同一扇门则由 `E_DOOR_03` 直接进入 2 号车厢（原「查看2号车厢」的敏捷检定 `E_024` 由此成为重复推门时的回退路径），不会第二次进入里世界。
@@ -231,89 +229,33 @@ Game/
 ├─ .vscode/
 │  └─ settings.json
 ├─ assets/
-│  ├─ audio/
-│  │  ├─ bgm.mp3
-│  │  └─ op.mp3
-│  ├─ miniGame/
-│  │  └─ 交涉背景.png
-│  ├─ op/
-│  │  ├─ op-1.png
-│  │  ├─ op-2.png
-│  │  ├─ op-3.png
-│  │  ├─ op-4.png
-│  │  └─ op-5.png
-│  ├─ ui/
-│  │  ├─ card-battle/
-│  │  │  ├─ attack.png
-│  │  │  ├─ background.png
-│  │  │  ├─ card-base.png
-│  │  │  ├─ defend.png
-│  │  │  ├─ enemy.png
-│  │  │  ├─ heal.png
-│  │  │  ├─ hp-bar.png
-│  │  │  └─ ultimate.png
-│  │  ├─ beibao.png
-│  │  ├─ dice_00.png
-│  │  ├─ dice_01.png
-│  │  ├─ dice_02.png
-│  │  ├─ dice_03.png
-│  │  ├─ dice_04.png
-│  │  ├─ dice_05.png
-│  │  ├─ dice_06.png
-│  │  ├─ hp-bar.png
-│  │  └─ initial-menu-marker.png
-│  ├─ video/
-│  │  ├─ end.mp4
-│  │  └─ start.mp4
-│  ├─ bag-05-a.png
-│  ├─ bag-05-b.png
-│  ├─ black-bag-03.png
-│  ├─ bottle-inner.png
 │  ├─ carriage-02.png
-│  ├─ carriage-03.png
 │  ├─ carriage-04.png
-│  ├─ carriage-05.png
-│  ├─ carriage-06-note-removed.png
+│  ├─ carriage-05-03.png
 │  ├─ carriage-06.png
 │  ├─ carriage-07.png
-│  ├─ carriage-fake-04.png
-│  ├─ carriage-inner-01.png
-│  ├─ carriage-inner-02.png
+│  ├─ carriage-06.svg
+│  ├─ carriage-07.svg
+│  ├─ cover-placeholder.svg
+│  ├─ door.svg
+│  ├─ note.svg
+│  ├─ radio.svg
+│  ├─ corpse-07.svg
+│  ├─ deep-07.svg
+│  ├─ front-carriage.png
+│  ├─ black-bag-03.png
 │  ├─ clicker-02.png
 │  ├─ control-lever.png
-│  ├─ corpse-07.png
-│  ├─ corpse-07.svg
-│  ├─ cover-placeholder.svg
 │  ├─ crew-04.png
-│  ├─ crew-portrait.png
-│  ├─ deep-07.svg
-│  ├─ door.svg
-│  ├─ flashlight.png
-│  ├─ flower-sea-inside.png
-│  ├─ flower-sea.png
-│  ├─ front-carriage.png
-│  ├─ inner-02-bottle.png
-│  ├─ inner-02-window.png
-│  ├─ inner-03-flower-window.png
-│  ├─ inner-03-fog-window.png
-│  ├─ label-back.png
-│  ├─ label-front.png
 │  ├─ map-06.png
-│  ├─ map-failure.png
-│  ├─ map-success.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
 │  ├─ newspaper-icon.png
-│  ├─ note-06.png
-│  ├─ note.png
-│  ├─ note.svg
-│  ├─ pc-portrait.png
 │  ├─ phone.png
+│  ├─ placeholder-bottle.svg
 │  ├─ placeholder-key.svg
-│  ├─ radio-07.png
-│  ├─ radio.svg
-│  ├─ trash-05-a.png
-│  └─ trash-05-b.png
+│  ├─ clutter-05.svg
+│  └─ flashlight.svg
 ├─ data/
 │  ├─ attributes.json
 │  ├─ compiled-game-data.js
@@ -410,7 +352,6 @@ Game/
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
-│  ├─ confirm-dialog.js
 │  ├─ custom-actions.js
 │  ├─ dice.js
 │  ├─ events.js
@@ -455,41 +396,24 @@ Game/
 
 ### `assets/`
 
-目录按用途分层：`ui/`（控件贴图）、`op/`（开场动画分镜）、`video/`、`audio/`、`miniGame/`；其余车厢背景、物件贴图与物品图标平铺在根下。
-
 | 文件 | 用途 |
 | --- | --- |
-| `carriage-02/03/04/05/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，2848×1600 画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
-| `carriage-06-note-removed.png` | 6 号车厢"便签已取走"的背景变体。 |
-| `carriage-inner-01.png`、`carriage-inner-02.png`、`carriage-fake-04.png`、`flower-sea.png`、`flower-sea-inside.png` | **里世界（E-501~E-525）**背景：空车厢、花草车厢、伪4号车厢、花海·车门外、花海·室内。注意 `assets/` 名与源目录名**不同名**，对照关系为 `inner_01_empty.png` → `carriage-inner-01.png`、`inner_02.png` → `carriage-fake-04.png`、`inner_03_flower.png` → `carriage-inner-02.png`、`花海.png` → `flower-sea.png`、`室内.png` → `flower-sea-inside.png`。这批源图为 16:9 宽幅（非正方形），与既有车厢美术的出图规格不同，物件对齐若要精确需美术统一画布。 |
-| `inner-02-window.png` | 花草车厢的"窗外"调查点贴图（整幅蒙版，复制自 `Assets/Image/Scene/StillLife/inner_02_window.png`；`fullCanvas: true`，`clickEvent → E_504`）。 |
-| `inner-02-bottle.png` | 花草车厢的"彩色玻璃瓶"拾取点贴图（整幅蒙版，复制自 `StillLife/inner_02_bottle.png`；`fullCanvas: true`，`clickEvent → E_503_PICK`，拾取后按旗标隐藏）。 |
-| `inner-03-flower-window.png`、`inner-03-fog-window.png` | 伪4号车厢车窗的两个互斥版本（整幅蒙版，复制自 `StillLife/inner_03_flower_window.png` / `inner_03_fog_window.png`；按"是否已侦察窗外"二选一显示，均 `clickEvent → E_516`）。**待确认**：`inner-03-fog-window.png` 与源目录 `Scene/Background/inner_03_fog.png`（一张白茫茫的**背景**，2843×1600）逐字节相同，疑为接入时选错源文件。 |
-| `bottle-inner.png` | 瓶子道具图标（复制自 `Assets/Image/Item/玻璃瓶.png`），里世界与主剧本 2 号车厢的瓶子共用此图标。 |
-| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png`、`bag-05-a.png`、`bag-05-b.png`、`trash-05-a.png`、`trash-05-b.png`、`newspaper-05.png`、`note-06.png`、`radio-07.png`、`corpse-07.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
-| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）。 |
-| `label-front.png`、`label-back.png`、`map-success.png`、`map-failure.png` | 便签正反面与地图检定成功/失败插图。 |
+| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
+| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
 | `phone.png` | 手机物件/物品栏图标。 |
 | `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
+| `clutter-05.svg` | 5 号车厢散落杂物（行李/纸堆等）共用的物件贴图。 |
 | `door.svg` | 各车厢门共用的透明物件贴图。 |
-| `flashlight.png` | 手电筒物品图标（由 `Assets/Image/Item/手电筒.png` 等比缩放至 384×384 后入库）。 |
+| `flashlight.svg` | 手电筒物品图标。 |
 | `note.svg` | 便签贴图，同时暂作旧车票图片。 |
 | `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
+| `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
-| `placeholder-key.svg` | 钥匙的占位贴图。 |
-| `crew-portrait.png`、`pc-portrait.png` | 交涉小游戏（`crew-negotiation`）的乘务员与玩家立绘。 |
-| `ui/dice_00.png`、`ui/dice_01.png` ~ `ui/dice_06.png` | 检定骰子贴图：`dice_00` 为滚动中的过渡帧，`dice_01`~`dice_06` 对应投出的 1~6 点（`src/ui.js` 按点数拼名读取）。 |
-| `ui/hp-bar.png`、`ui/beibao.png`、`ui/initial-menu-marker.png` | HUD 血条底图、背包框与初始界面进度标记（`styles/main.css` 引用）。 |
-| `ui/card-battle/` | 卡牌战斗小游戏的背景、卡底、四类卡面、敌人头像与血条槽。 |
-| `miniGame/交涉背景.png` | 交涉小游戏背景（该文件名含中文，是 `assets/` 下唯一的非 ASCII 路径）。 |
-| `op/op-1.png` ~ `op/op-5.png` | 开场动画分镜（`src/home-op.js` 顺序播放）。 |
-| `video/start.mp4`、`video/end.mp4` | 主页开场视频与结局视频。 |
-| `audio/bgm.mp3`、`audio/op.mp3` | 背景音乐与开场音乐。 |
+| `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
 
-背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。物品图标基准边长 384px（`note.png` 200px、`newspaper-icon.png` 30px 为历史遗留的小图）。
-
-> 新增素材前的自检：仓库根 `Assets/` 是美术源目录（**只读**，最新版都在那里），`Game/assets/` 是运行目录。源图入库需复制并改为 ASCII 语义化文件名，且必须在 `data/*.json` 里有对应引用，否则会成为无人引用的死素材。审计方法：把全仓 `assets/...` 字符串引用与 `Game/assets/` 实际文件做集合差。
+背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
 
 ### `data/`
 
@@ -511,7 +435,6 @@ Game/
 | `API使用说明.md` | 数据接口（`data/*.json`）与运行时接口（`window.TrainGame`）的**最详细维护和使用手册**，含复杂维护工作示例。 |
 | `skill-tutorials/script-to-game-data.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、在清单上逐条作答与指定素材、落地与提交）。 |
 | `conversion-reviews/review-checklist-2026-09-05-1454.md` | E-005~E-008 批剧本转换的审查清单留档（**旧版格式**：编号条目 + 类别标记 + 决策列；当前格式见 skill 空白模板：人话提问 + 素材指定 + 执行台账）。审查清单统一存放于 `docs/conversion-reviews/`，文件名时间戳精确到分钟。 |
-| `conversion-reviews/review-checklist-2026-09-12-1203.md` | 《里世界剧本》E-501~E-525 批转换的审查清单留档（**当前格式**：21 条人话提问 + 11 行素材指定 + 执行台账），已按审阅者作答落地：追加 39 个里世界事件 + 1 个承载原选项的分支事件，新增 5 个场景与 1 个调查点物件，并改写既有 E_023 与 3 号车厢门指向（详见该文件执行台账的"用户答复/状态"列）。 |
 | `_Archived/` | 已归档历史文档（`架构设计.md`、`三天计划.md`），归档后不再跟随功能更新，仅供追溯。 |
 
 ### `GroupIntro/`
@@ -555,7 +478,6 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
-| `confirm-dialog.js` | `TrainGame.ConfirmDialog`：存档页（选择槽位 / 存档管理）共用的页面内确认框，替代浏览器原生 `window.confirm`，外观与游戏本体菜单一致。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -567,9 +489,9 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
-| `save-manager.js` | 渲染三个槽位并处理读取与删除（删除前用页内确认框二次确认）。 |
-| `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入（覆盖已占用槽位前用页内确认框二次确认）。 |
-| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏（含侦察技能连续点击三次解锁）；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
+| `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
+| `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
+| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏（侦察技能按属性与首车厢三个检定条件一次性提示获得）；进入新车厢后自动保存当前槽位；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
 
 ### 其他目录和根文件
 
@@ -650,4 +572,3 @@ git diff --check
 - [npm 官方文档：npm run-script](https://docs.npmjs.com/cli/v11/commands/npm-run-script/)：`npm run` 脚本规则。
 - [VS Code 官方文档：JSON editing](https://code.visualstudio.com/docs/languages/json)：JSON Schema 关联与编辑支持。
 - [JSON Schema Draft 2020-12](https://json-schema.org/draft/2020-12)：本项目 Schema 声明的规范版本。
-

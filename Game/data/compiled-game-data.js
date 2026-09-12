@@ -104,7 +104,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_009"
+          "clickEvent": "E_GO_06_05"
         },
         {
           "id": "note_back_06",
@@ -170,11 +170,8 @@ window.GAME_DATA = {
           "clickEvent": "E_004",
           "visibleWhen": {
             "not": {
-              "objectState": {
-                "objectId": "map_06",
-                "property": "hidden",
-                "equals": true
-              }
+              "flag": "map_seen",
+              "equals": true
             }
           }
         },
@@ -452,7 +449,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04",
           "name": "重伤的乘务员",
-          "image": "assets/crew-04.png",
+          "image": "assets/4号车厢_乘务员.png",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -460,8 +457,14 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 35,
+            "y": 62,
+            "width": 22,
+            "height": 13
+          },
           "zIndex": 12,
-          "clickEvent": "E_013"
+          "clickEvent": "E_014"
         }
       ]
     },
@@ -878,6 +881,7 @@ window.GAME_DATA = {
         {
           "type": "check",
           "dice": "ev005_insight_01",
+          "offerScouting": true,
           "outcomes": [
             "E_005_S",
             "E_005_F"
@@ -892,6 +896,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_06_guide_seen",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_guide_pending",
+          "value": false
         },
         {
           "type": "dialogue",
@@ -928,9 +937,24 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你走到了通往7号车厢的门旁边。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_06_entry_route_a",
+            "equals": true
+          },
+          "next": "E_006A"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_06_entry_route_b",
+            "equals": true
+          },
+          "next": "E_006B"
         }
-      ],
-      "next": "E_005"
+      ]
     },
     {
       "id": "E_005_S",
@@ -945,7 +969,7 @@ window.GAME_DATA = {
           "options": [
             {
               "label": "继续前进",
-              "next": "E_006A"
+              "next": "E_005_DEPARTURE_A"
             },
             {
               "label": "留在6号车厢",
@@ -970,6 +994,74 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你闻到一股浓重的血腥味。但在好奇心的驱使下，你仍然决定进入7号车厢。"
+        }
+      ],
+      "next": "E_005_DEPARTURE_B"
+    },
+    {
+      "id": "E_005_DEPARTURE_A",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_a",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_b",
+          "value": false
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "carriage_06_guide_pending",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
+        }
+      ],
+      "next": "E_006A"
+    },
+    {
+      "id": "E_005_DEPARTURE_B",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_a",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_b",
+          "value": true
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "carriage_06_guide_pending",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ],
       "next": "E_006B"
@@ -1099,7 +1191,23 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你颤抖着望向车厢深处"
+          "text": "你颤抖着望向车厢深处。"
+        },
+        {
+          "type": "dialogue",
+          "text": "原本的三排座椅，现在只剩两排。"
+        },
+        {
+          "type": "dialogue",
+          "text": "通往8号车厢的门不见了，取而代之的是黑暗。"
+        },
+        {
+          "type": "dialogue",
+          "text": "不安感笼罩着你。"
+        },
+        {
+          "type": "dialogue",
+          "text": "这里……到底发生了什么？！"
         },
         {
           "type": "check",
@@ -1115,16 +1223,97 @@ window.GAME_DATA = {
       "id": "E_009",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "ev009_seen",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_a",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_b",
+          "value": false
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_06"
+        },
+        {
+          "type": "dialogue",
+          "text": "6号车厢空无一人。"
+        },
+        {
+          "type": "dialogue",
+          "text": "刚才那个男人坐过的位置，椅垫还微微凹陷着。"
+        },
+        {
+          "type": "dialogue",
+          "text": "女人的杂志摊在座位上，纸页摸上去竟然是温的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你瞥见车窗有什么一闪而过。"
+        },
+        {
+          "type": "dialogue",
+          "text": "车窗里映出你苍白的脸——还有你身后的乘客们。"
+        },
+        {
+          "type": "dialogue",
+          "text": "他们仍坐在原来的位置上，安静地沉睡着。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你猛地回头。"
+        },
+        {
+          "type": "dialogue",
+          "text": "空无一人。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你再看车窗。"
+        },
+        {
+          "type": "dialogue",
+          "text": "这一次，连他们也不见了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（主角表情：惊恐）刚才的人，都去哪了？"
+        },
+        {
+          "type": "dialogue",
+          "text": "突然，广播再次响起："
+        },
+        {
+          "type": "dialogue",
+          "text": "“下一站——”"
+        },
+        {
+          "type": "dialogue",
+          "text": "声音戛然而止，只剩下电流的嘶嘶声。"
+        },
+        {
+          "type": "check",
+          "dice": "ev010_san_01"
+        }
+      ],
+      "next": "E_010"
+    },
+    {
+      "id": "E_GO_06_05",
+      "actions": [
+        {
           "type": "changeScene",
           "scene": "carriage_05"
         },
         {
           "type": "dialogue",
-          "text": "5号车厢仍是正常车厢的模样，四周散落着各种各样的物品。"
-        },
-        {
-          "type": "dialogue",
-          "text": "呼...呼...太好了。"
+          "text": "你穿过门，来到5号车厢。"
         }
       ]
     },
@@ -1169,9 +1358,10 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你回到了 6 号车厢。已经拿走的便签不会重新出现。"
+          "text": "你回到了6号车厢。"
         }
-      ]
+      ],
+      "next": "E_009"
     },
     {
       "id": "E_001",
@@ -1203,6 +1393,7 @@ window.GAME_DATA = {
         {
           "type": "check",
           "dice": "ev001_insight_01",
+          "offerScouting": true,
           "outcomes": [
             "E_001_S",
             "E_001_F"
@@ -1317,6 +1508,7 @@ window.GAME_DATA = {
         {
           "type": "check",
           "dice": "ev004_insight_01",
+          "offerScouting": true,
           "outcomes": [
             "E_004_S",
             "E_004_F"
@@ -1467,15 +1659,27 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "眼前的景象让你动弹不得。"
+          "text": "黑暗边缘似乎在移动。"
         },
         {
           "type": "dialogue",
-          "text": "车厢深处有巨大类似嘴巴的东西正在啃蚀车厢——那是某个比电车还要巨大的存在。"
+          "text": "两排金属座椅被缓慢拖进去。"
         },
         {
           "type": "dialogue",
-          "text": "（主角表情：惊恐）这，这是什么！"
+          "text": "然后传来刚才那个声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "明暗交界处，你看到了一个疑似嘴的东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（主角表情：惊恐）这……这是什么！"
         },
         {
           "type": "setFlag",
@@ -1495,18 +1699,15 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你不敢继续停留，打算沿来路退回6号车厢。"
         }
-      ]
+      ],
+      "next": "E_009"
     },
     {
       "id": "E_008_F",
       "actions": [
         {
           "type": "dialogue",
-          "text": "原本应有8号车厢门的地方只剩一片漆黑，你感到莫名的不适。"
-        },
-        {
-          "type": "dialogue",
-          "text": "这是什么情况？"
+          "text": "不能再在7号车厢呆下去了，先回到6号车厢看看其他人吧。"
         },
         {
           "type": "setFlag",
@@ -1522,7 +1723,8 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你不敢继续停留，打算沿来路退回6号车厢。"
         }
-      ]
+      ],
+      "next": "E_009"
     },
     {
       "id": "E_009_S",
@@ -1565,6 +1767,18 @@ window.GAME_DATA = {
     {
       "id": "E_010",
       "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_05"
+        },
+        {
+          "type": "dialogue",
+          "text": "5号车厢空无一人。四周散落着各种各样的物品。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你回头看6号车厢，物品还在，灯也还亮着。"
+        },
         {
           "type": "check",
           "dice": "skill_scouting",
@@ -1720,7 +1934,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "skill_first_aid",
+          "dice": "skill_medicine",
           "outcomes": [
             "E_013_S",
             "E_013_F"
@@ -1741,7 +1955,7 @@ window.GAME_DATA = {
           "text": "啊...呃...天哪..."
         }
       ],
-      "next": "E_014"
+      "next": "E_014_TALK_ENTRY"
     },
     {
       "id": "E_013_F",
@@ -1758,6 +1972,47 @@ window.GAME_DATA = {
     },
     {
       "id": "E_014",
+      "actions": [
+        {
+          "type": "check",
+          "dice": "skill_medicine",
+          "outcomes": [
+            "E_014_S",
+            "E_014_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_014_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员苏醒过来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "啊...呃...天哪..."
+        }
+      ],
+      "next": "E_014_TALK_ENTRY"
+    },
+    {
+      "id": "E_014_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+        },
+        {
+          "type": "dialogue",
+          "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+        }
+      ]
+    },
+    {
+      "id": "E_014_TALK_ENTRY",
       "actions": [
         {
           "type": "dialogue",
@@ -2605,6 +2860,16 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_030_TUG",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "控制权被夺走。列车又一次冲向黑暗。"
+        }
+      ],
+      "next": "E_030"
+    },
+    {
       "id": "E_030",
       "actions": [
         {
@@ -2712,6 +2977,16 @@ window.GAME_DATA = {
     {
       "id": "E_GO_05_06",
       "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_a",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_entry_route_b",
+          "value": false
+        },
         {
           "type": "changeScene",
           "scene": "carriage_06"
@@ -4438,12 +4713,6 @@ window.GAME_DATA = {
       "id": "throwing",
       "name": "投掷",
       "description": "将物品准确投向目标位置或利用声响转移敌人注意。",
-      "initial": false
-    },
-    {
-      "id": "firstAid",
-      "name": "急救",
-      "description": "对伤者进行紧急处理并稳定其当前状态。",
       "initial": false
     },
     {
