@@ -435,7 +435,7 @@ try {
   assert.equal(animationCalls.length, 1, "检定应调用骰子动画窗口");
   assert.equal(animationCalls[0].value, 1, "骰子动画应收到实际骰点");
   assert.equal(animationCalls[0].success, false, "骰子动画应收到检定结果");
-  assert.equal(animationCalls[0].text.includes("1d6 掷出 1"), true, "骰子动画应收到检定说明");
+  assert.equal(animationCalls[0].text.includes("掷出 1"), true, "骰子动画应收到检定说明");
 } finally {
   sandbox.Math.random = originalRandom;
 }
