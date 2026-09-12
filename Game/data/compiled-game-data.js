@@ -449,7 +449,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04",
           "name": "重伤的乘务员",
-          "image": "assets/crew-04.png",
+          "image": "assets/4号车厢_乘务员.png",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -457,8 +457,14 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 35,
+            "y": 62,
+            "width": 22,
+            "height": 13
+          },
           "zIndex": 12,
-          "clickEvent": "E_013"
+          "clickEvent": "E_014"
         }
       ]
     },
@@ -1923,7 +1929,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "skill_first_aid",
+          "dice": "skill_medicine",
           "outcomes": [
             "E_013_S",
             "E_013_F"
@@ -1944,7 +1950,7 @@ window.GAME_DATA = {
           "text": "啊...呃...天哪..."
         }
       ],
-      "next": "E_014"
+      "next": "E_014_TALK_ENTRY"
     },
     {
       "id": "E_013_F",
@@ -1961,6 +1967,47 @@ window.GAME_DATA = {
     },
     {
       "id": "E_014",
+      "actions": [
+        {
+          "type": "check",
+          "dice": "skill_medicine",
+          "outcomes": [
+            "E_014_S",
+            "E_014_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_014_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员苏醒过来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "啊...呃...天哪..."
+        }
+      ],
+      "next": "E_014_TALK_ENTRY"
+    },
+    {
+      "id": "E_014_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+        },
+        {
+          "type": "dialogue",
+          "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+        }
+      ]
+    },
+    {
+      "id": "E_014_TALK_ENTRY",
       "actions": [
         {
           "type": "dialogue",
@@ -4554,12 +4601,6 @@ window.GAME_DATA = {
       "id": "throwing",
       "name": "投掷",
       "description": "将物品准确投向目标位置或利用声响转移敌人注意。",
-      "initial": false
-    },
-    {
-      "id": "firstAid",
-      "name": "急救",
-      "description": "对伤者进行紧急处理并稳定其当前状态。",
       "initial": false
     },
     {

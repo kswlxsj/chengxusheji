@@ -433,7 +433,7 @@
       {
         "id": "crew_04",
         "name": "重伤的乘务员",
-        "image": "assets/crew-04.png",
+        "image": "assets/4号车厢_乘务员.png",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -441,8 +441,14 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 35,
+          "y": 62,
+          "width": 22,
+          "height": 13
+        },
         "zIndex": 12,
-        "clickEvent": "E_013"
+        "clickEvent": "E_014"
       }
     ]
   },

@@ -457,6 +457,11 @@ body.home-op-active .home-page .auth-user-status {
   transition: filter 120ms ease;
 }
 
+.scene-object-art[data-object-id="crew_04"].is-hot,
+.scene-object-art[data-object-id="crew_04"].is-focused {
+  filter: brightness(1.45) drop-shadow(0 0 4px #fff0bf) drop-shadow(0 0 14px rgba(255, 210, 120, .98));
+}
+
 .scene-object-art[data-object-id="radio_07"].is-hot,
 .scene-object-art[data-object-id="radio_07"].is-focused {
   filter: drop-shadow(0 0 2px #fff0bf) drop-shadow(0 0 8px rgba(255, 210, 120, .92));
