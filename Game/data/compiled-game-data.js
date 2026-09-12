@@ -3050,6 +3050,10 @@ window.GAME_DATA = {
       "id": "E_503",
       "actions": [
         {
+          "type": "changeScene",
+          "scene": "carriage_inner_02"
+        },
+        {
           "type": "dialogue",
           "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
         },
