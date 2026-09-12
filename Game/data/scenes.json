@@ -674,6 +674,38 @@
         }
       },
       {
+        "id": "bottle_02",
+        "name": "地上的空瓶子",
+        "image": "assets/bottle-inner.png",
+        "position": {
+          "x": 42,
+          "y": 72,
+          "width": 10,
+          "height": 14
+        },
+        "zIndex": 13,
+        "clickEvent": "E_028_PICK_BOTTLE",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "bottle_02_available",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "bottle_02_taken",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "hasItem": "bottle"
+              }
+            }
+          ]
+        }
+      },
+      {
         "id": "door_02_to_03",
         "name": "通往3号车厢的门",
         "image": "assets/door.svg",

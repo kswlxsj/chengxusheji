@@ -211,6 +211,44 @@
   registerDice("ev023_throw_after_agility_fail_01", (context) => luckHalfCheck(context, 9, "敏捷失败后的投掷检定"));
   registerDice("ev024_agility_01", attrCheck("agility"));
 
+  // E-024：用 1d100 乘以光源系数判断能否看清 2 号车厢。
+  // 手电筒 +10%，手机闪光 +5%，两项效果叠加；达到 50 视为成功。
+  registerDice("ev024_light_01", async (context) => {
+    const hasFlashlight = context.state.inventory.includes("flashlight");
+    const hasPhone = context.state.inventory.includes("phone");
+    const coefficient = 1 + (hasFlashlight ? 0.1 : 0) + (hasPhone ? 0.05 : 0);
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const adjusted = Math.round(roll * coefficient * 100) / 100;
+    const success = adjusted >= 50;
+    const sources = [
+      hasFlashlight ? "手电筒 +10%" : "",
+      hasPhone ? "手机闪光 +5%" : ""
+    ].filter(Boolean);
+    const detail = `掷出 ${roll} × ${coefficient.toFixed(2)} = ${adjusted}\n${sources.length ? sources.join("，") : "无光源修正"}\n需要达到 50。`;
+    await showDiceRollAnimation(context, roll, success, detail);
+    return success ? 0 : 1;
+  });
+
+  registerDice("ev027_stealth_luck_01", async (context) => {
+    const hasFlashlight = context.state.inventory.includes("flashlight");
+    const hasPhone = context.state.inventory.includes("phone");
+    const lightModifier = hasFlashlight ? 20 : (hasPhone ? 10 : -15);
+    const canUseStealth = context.state.getSkill("stealth");
+    const useStealth = canUseStealth && (await confirmSkillUse(context, "stealth"));
+    const luck = context.state.getAttribute("luck");
+    const baseRate = useStealth ? 50 : Math.floor(luck / 2) * 10;
+    const rate = Math.max(5, Math.min(100, baseRate + lightModifier));
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const success = roll <= rate;
+    const route = useStealth ? "潜行" : `幸运 ${luck}/2`;
+    const detail = `${route}：基础成功率 ${baseRate}% + 光源修正 ${lightModifier}% = ${rate}%。掷出 ${roll}%。`;
+    await showDiceRollAnimation(context, roll, success, detail);
+    return success ? 0 : 1;
+  });
+  registerDice("ev028_agility_01", attrCheck("agility"));
+  registerDice("ev028_luck_half_01", (context) => luckHalfCheck(context, 9, "投掷后的幸运检定"));
+  registerDice("ev029_agility_01", attrCheck("agility"));
+
   // E-025：返回 0=单只、1=两只，对应事件的两个结果分支。
   registerDice("ev025_clicker_count_01", async (context) => {
     const luck = context.state.getAttribute("luck");
@@ -239,6 +277,11 @@
   registerDice(
     "ev021_extra_san_01",
     conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => !context.state.flags.visited_carriage_07)
+  );
+  registerDice("ev026_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
+  registerDice(
+    "ev026_extra_san_01",
+    conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => context.state.flags.visited_carriage_07 === true)
   );
   registerDice("ev028_talk_or_strength_01", async (context) => {
     const canTalk = context.state.getSkill("talk");

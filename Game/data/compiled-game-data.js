@@ -690,6 +690,38 @@ window.GAME_DATA = {
           }
         },
         {
+          "id": "bottle_02",
+          "name": "地上的空瓶子",
+          "image": "assets/bottle-inner.png",
+          "position": {
+            "x": 42,
+            "y": 72,
+            "width": 10,
+            "height": 14
+          },
+          "zIndex": 13,
+          "clickEvent": "E_028_PICK_BOTTLE",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "bottle_02_available",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "bottle_02_taken",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "hasItem": "bottle"
+                }
+              }
+            ]
+          }
+        },
+        {
           "id": "door_02_to_03",
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
@@ -2216,7 +2248,7 @@ window.GAME_DATA = {
       "next": "E_013"
     },
     {
-      "id": "E_013",
+      "id": "E_013_ENTRY",
       "actions": [
         {
           "type": "changeScene",
@@ -2226,7 +2258,8 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "一进入车厢，你就发现一名重伤昏迷的乘务员倒在地上。"
         }
-      ]
+      ],
+      "next": "E_013"
     },
     {
       "id": "E_013",
@@ -2398,6 +2431,11 @@ window.GAME_DATA = {
     {
       "id": "E_014_TALK_S",
       "actions": [
+        {
+          "type": "setFlag",
+          "key": "monster_behavior_known",
+          "value": true
+        },
         {
           "type": "dialogue",
           "text": "那，那些怪物是怎么样的，您能想起来吗？"
@@ -3437,18 +3475,204 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你看到了，你看到了那个怪物—————那个无眼，头部异形的怪物。"
+          "text": "回到3号车厢，你取出工具。"
         },
         {
-          "type": "check",
-          "dice": "ev021_san_01"
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_021_CARRIED"
         },
         {
-          "type": "check",
-          "dice": "ev021_extra_san_01"
+          "type": "dialogue",
+          "text": "你割断缠在行李上的带子，撬开压住通道的箱体。行李向两边塌落。"
+        },
+        {
+          "type": "dialogue",
+          "text": "前门附近，黑色背包完整地露了出来——背带被整整齐齐地切断，切口平整。"
         }
       ],
-      "next": "E_02_DECIDE"
+      "next": "E_021_ALONE"
+    },
+    {
+      "id": "E_021_CARRIED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......带子先割，箱子撬开。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你割断缠在行李上的带子，撬开压住通道的箱体。行李向两边塌落。"
+        },
+        {
+          "type": "dialogue",
+          "text": "前门附近，黑色背包完整地露了出来——背带被整整齐齐地切断，切口平整。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......找到了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你把黑包拿到她面前。她伸手进去翻找。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_talk",
+          "outcomes": [
+            "E_021_CARRIED_S",
+            "E_021_CARRIED_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_021_CARRIED_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员摸出两把钥匙，握在手里看了很久，才递给你："
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "拿着吧......我现在这个样子，保管不好。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（获得：驾驶室钥匙 ×1、操作面板钥匙 ×1）"
+        },
+        {
+          "type": "addItem",
+          "item": "crew_keys"
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_player",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_crew",
+          "value": false
+        },
+        {
+          "type": "dialogue",
+          "text": "【状态·钥匙由主角保管】"
+        }
+      ],
+      "next": "E_022"
+    },
+    {
+      "id": "E_021_CARRIED_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员摸出两把钥匙，却没有递给你，而是攥在自己手心里："
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......我来拿着吧。到了车头，我比你熟悉。"
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_player",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_crew",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "【状态·钥匙由乘务员保管】E-031进入驾驶室时由她开门；E-033中她离操作台更近，干预检定难度 +10%。"
+        }
+      ],
+      "next": "E_022"
+    },
+    {
+      "id": "E_021_ALONE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你打开黑包，在里面翻找。"
+        },
+        {
+          "type": "check",
+          "dice": "skill_scouting",
+          "outcomes": [
+            "E_021_ALONE_S",
+            "E_021_ALONE_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_021_ALONE_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在包里摸到了两把钥匙。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（获得：驾驶室钥匙 ×1、操作面板钥匙 ×1）"
+        },
+        {
+          "type": "addItem",
+          "item": "crew_keys"
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_player",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_missing",
+          "value": false
+        },
+        {
+          "type": "dialogue",
+          "text": "【状态·钥匙由主角保管】"
+        }
+      ],
+      "next": "E_022"
+    },
+    {
+      "id": "E_021_ALONE_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你翻找了半天，最后还是没有找到钥匙，或许它们已经掉到哪个缝隙里去了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "无奈之下，你只能先拿着黑色背包。"
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_player",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_missing",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "【状态·未获得钥匙】E-031进入驾驶室时将再进行一次侦查，若仍失败 → E-036结局C。"
+        }
+      ],
+      "next": "E_022"
     },
     {
       "id": "E_02_DECIDE",
@@ -3473,14 +3697,103 @@ window.GAME_DATA = {
       "id": "E_022",
       "actions": [
         {
-          "type": "check",
-          "dice": "ev022_stealth_or_luck_01",
-          "outcomes": [
-            "E_022_S",
-            "E_022_F"
-          ]
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_022_CARRIED"
         }
-      ]
+      ],
+      "next": "E_022_ALONE"
+    },
+    {
+      "id": "E_022_CARRIED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你们继续检查包里的东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "她的手指碰到一枚硬物，摸出来——是一张乘务员工牌。"
+        },
+        {
+          "type": "dialogue",
+          "text": "照片、姓名、编号、日期......与你面前她胸前挂着的那一张，一模一样。"
+        },
+        {
+          "type": "dialogue",
+          "text": "她低头看看手里的，又低头看看自己胸前的。两张工牌叠在一起，严丝合缝。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......我不知道。"
+        },
+        {
+          "type": "dialogue",
+          "text": "只有这四个字。"
+        },
+        {
+          "type": "dialogue",
+          "text": "随后，她的手指又碰到一张叠得整齐的便签。展开——\n\n「MOVE FORWARD」\n\n“这个字......”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "像我的字。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n两张便签，字迹几乎一模一样。\n\n她看了很久，没有说话。"
+        }
+      ],
+      "next": "E_022_ITEM"
+    },
+    {
+      "id": "E_022_ALONE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你继续检查包里的东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你摸到一张乘务员工牌——照片上的人，正是你在4号车厢里没能救下的她。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你把它和记忆里她胸前那张对照：一样的照片，一样的编号。\n\n没有人为你解释。"
+        },
+        {
+          "type": "dialogue",
+          "text": "包里还有一张叠得整齐的便签：\n\n「MOVE FORWARD」\n\n你翻出6号车厢的便签，两张字迹几乎一模一样。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
+        }
+      ],
+      "next": "E_022_ITEM"
+    },
+    {
+      "id": "E_022_ITEM",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你继续在行李间翻找，找到了一个手电筒。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你试了试，勉强能用。"
+        },
+        {
+          "type": "dialogue",
+          "text": "（获得：手电筒）"
+        },
+        {
+          "type": "addItem",
+          "item": "flashlight"
+        }
+      ],
+      "next": "E_023"
     },
     {
       "id": "E_022_S",
@@ -3518,26 +3831,66 @@ window.GAME_DATA = {
       "id": "E_023",
       "actions": [
         {
-          "type": "learnSkill",
-          "skill": "throwing"
+          "type": "dialogue",
+          "text": "你站在3号通往2号的车门前。手电的光在黑暗里只照出几步远。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你最后回头看了一眼——4号车厢还在，灯光昏黄，一切如常。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你低头确认了一眼手里的东西。"
         },
         {
           "type": "conditionalJump",
           "when": {
-            "hasItem": "bottle"
+            "hasItem": "phone"
           },
-          "next": "E_023_CHOICE"
+          "next": "E_023_PHONE"
         },
         {
           "type": "dialogue",
-          "text": "你在附近的杂物里捡起一个空瓶子。"
-        },
-        {
-          "type": "addItem",
-          "item": "bottle"
+          "text": "你没有手机可看。"
         }
       ],
-      "next": "E_023_CHOICE"
+      "next": "E_023_LOOP"
+    },
+    {
+      "id": "E_023_PHONE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你低头看了一眼手机。屏幕仍显示：2013年7月15日。"
+        }
+      ],
+      "next": "E_023_LOOP"
+    },
+    {
+      "id": "E_023_LOOP",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "再抬头时，通往2号车厢的门上方，车厢编号变成了——\n\n3。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你愣了一下，以为自己看错了。你转头看向来路那一侧的车门。\n\n也是3。\n\n前后两边，都是3号车厢。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你猛地再回头。\n\n来路的方向，已经不再是4号——门消失了，取而代之的是一段被黑暗吞没的车厢。"
+        },
+        {
+          "type": "dialogue",
+          "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。\n\n然后，一个声音一字一顿地说：\n\n“请不要下车。”"
+        },
+        {
+          "type": "dialogue",
+          "text": "灯，灭了。\n\n（音效：电流嘶鸣）\n\n黑暗中，你摸到了通往2号车厢的门。"
+        }
+      ],
+      "next": "E_024"
     },
     {
       "id": "E_023_AGILITY_CHECK",
@@ -3672,26 +4025,102 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev024_agility_01",
+          "dice": "ev024_light_01",
           "outcomes": [
-            "E_023_AGILITY_SUCCESS",
-            "E_025"
+            "E_024_S",
+            "E_024_F"
           ]
         }
       ]
     },
     {
+      "id": "E_024_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你感觉黑暗中有人影行走，差不多有两三个。"
+        },
+        {
+          "type": "dialogue",
+          "text": "它们的头偶尔偏转，像在寻找。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "monster_behavior_known",
+            "equals": true
+          },
+          "next": "E_024_S_KNOWLEDGE"
+        }
+      ],
+      "next": "E_024_S_CONTINUE"
+    },
+    {
+      "id": "E_024_S_KNOWLEDGE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你想起乘务员的话：它们没有眼睛，只靠声音。"
+        }
+      ],
+      "next": "E_024_S_CONTINUE"
+    },
+    {
+      "id": "E_024_S_CONTINUE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你屏住呼吸，压低身形，踏进2号车厢。"
+        }
+      ],
+      "next": "E_025"
+    },
+    {
+      "id": "E_024_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你觉得很黑，什么都看不清。"
+        }
+      ],
+      "next": "E_025"
+    },
+    {
       "id": "E_025",
       "actions": [
         {
-          "type": "check",
-          "dice": "ev025_clicker_count_01",
-          "outcomes": [
-            "E_025_SINGLE",
-            "E_025_MULTI"
-          ]
+          "type": "dialogue",
+          "text": "四周毫无光源。"
+        },
+        {
+          "type": "dialogue",
+          "text": "在一片漆黑中，你听到明显的喘息声。\n\n那不是人类的喘息。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_025_CARRIED"
         }
-      ]
+      ],
+      "next": "E_026"
+    },
+    {
+      "id": "E_025_CARRIED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "...别出声。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你听出她声音里的恐惧，与她警告你时如出一辙。"
+        }
+      ],
+      "next": "E_026"
     },
     {
       "id": "E_025_SINGLE",
@@ -3723,6 +4152,76 @@ window.GAME_DATA = {
     },
     {
       "id": "E_026",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你看到了，你看到了那个怪物—————那个无眼、头部异形的怪物。"
+        },
+        {
+          "type": "check",
+          "dice": "ev026_san_01"
+        },
+        {
+          "type": "check",
+          "dice": "ev026_extra_san_01"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "monster_behavior_known",
+            "equals": true
+          },
+          "next": "E_026_KNOWLEDGE"
+        },
+        {
+          "type": "dialogue",
+          "text": "你没有动。"
+        },
+        {
+          "type": "choice",
+          "prompt": "你打算怎么做？",
+          "options": [
+            {
+              "label": "屏住呼吸，尝试潜行通过",
+              "next": "E_027"
+            },
+            {
+              "label": "捡起手边的东西，制造声响引开它们",
+              "next": "E_028"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_026_KNOWLEDGE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "它与你听到的描述完全一致——没有眼睛，却把耳朵转向你的方向，像在听。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你没有动。"
+        },
+        {
+          "type": "choice",
+          "prompt": "你打算怎么做？",
+          "options": [
+            {
+              "label": "屏住呼吸，尝试潜行通过",
+              "next": "E_027"
+            },
+            {
+              "label": "捡起手边的东西，制造声响引开它们",
+              "next": "E_028"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_026_FRONT_LEGACY",
       "actions": [
         {
           "type": "changeScene",
@@ -3781,46 +4280,43 @@ window.GAME_DATA = {
       "id": "E_027",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "打开操作面板，有两根拉杆："
-        },
+          "type": "check",
+          "dice": "ev027_stealth_luck_01",
+          "outcomes": [
+            "E_027_S",
+            "E_027_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_027_S",
+      "actions": [
         {
           "type": "dialogue",
-          "text": "左杆（刹车/起步装置）——在下位"
-        },
+          "text": "你谨慎通过，到达先头车厢门前。"
+        }
+      ],
+      "next": "E_031"
+    },
+    {
+      "id": "E_027_F",
+      "actions": [
         {
           "type": "dialogue",
-          "text": "右杆（油门）——在中间"
-        },
-        {
-          "type": "dialogue",
-          "text": "现在，你可以选择让列车继续前进，或者把它停下。"
+          "text": "你踩到尸体发出声响，怪物们齐刷刷地转向你。"
         },
         {
           "type": "choice",
-          "prompt": "你准备让列车前进还是停下？",
+          "prompt": "你打算怎么做？",
           "options": [
             {
-              "label": "前进",
-              "next": "E_028",
-              "when": {
-                "flag": "carried_crew",
-                "equals": true
-              }
+              "label": "与它们正面对抗",
+              "next": "E_029"
             },
             {
-              "label": "前进",
-              "next": "E_029",
-              "when": {
-                "not": {
-                  "flag": "carried_crew",
-                  "equals": true
-                }
-              }
-            },
-            {
-              "label": "停下",
-              "next": "E_030"
+              "label": "退回阴影，捡起瓶子制造声响引开它们",
+              "next": "E_028"
             }
           ]
         }
@@ -3830,15 +4326,173 @@ window.GAME_DATA = {
       "id": "E_028",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "乘务员死死拽住操作杆。你伸手握住它，试图夺回控制权。"
+          "type": "changeScene",
+          "scene": "carriage_02"
         },
         {
-          "type": "minigame",
-          "game": "conductor_tug"
+          "type": "dialogue",
+          "text": "你退回2号车厢，在地上发现了一个空瓶子。"
+        },
+        {
+          "type": "setFlag",
+          "key": "bottle_02_available",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        }
+      ]
+    },
+    {
+      "id": "E_028_PICK_BOTTLE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你俯身捡起地上的空瓶子。"
+        },
+        {
+          "type": "addItem",
+          "item": "bottle"
+        },
+        {
+          "type": "learnSkill",
+          "skill": "throwing"
+        },
+        {
+          "type": "setFlag",
+          "key": "bottle_02_taken",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "你获得了投掷技能。"
         }
       ],
-      "next": "E_030_TUG"
+      "next": "E_028_BOTTLE_READY"
+    },
+    {
+      "id": "E_028_BOTTLE_READY",
+      "actions": [
+        {
+          "type": "choice",
+          "prompt": "你要怎么通过或引开 Clicker？",
+          "options": [
+            {
+              "label": "直接冲过去",
+              "next": "E_028_AGILITY_CHECK"
+            },
+            {
+              "label": "投掷瓶子",
+              "next": "E_028_THROW_FIRST"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_028_AGILITY_CHECK",
+      "actions": [
+        {
+          "type": "check",
+          "dice": "ev028_agility_01",
+          "outcomes": [
+            "E_028_AGILITY_SUCCESS",
+            "E_028_AGILITY_FAIL"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_028_AGILITY_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你抓住空隙冲过了Clicker，成功到达先头车厢门前。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        }
+      ],
+      "next": "E_031"
+    },
+    {
+      "id": "E_028_AGILITY_FAIL",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能冲过去，仍然可以退回阴影，投掷瓶子制造声响。"
+        },
+        {
+          "type": "choice",
+          "prompt": "是否投掷瓶子？",
+          "options": [
+            {
+              "label": "投掷瓶子",
+              "next": "E_028_THROW_AFTER_FAIL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_028_THROW_FIRST",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+        },
+        {
+          "type": "dialogue",
+          "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
+        }
+      ],
+      "next": "E_031"
+    },
+    {
+      "id": "E_028_THROW_AFTER_FAIL",
+      "actions": [
+        {
+          "type": "check",
+          "dice": "ev028_luck_half_01",
+          "outcomes": [
+            "E_028_THROW_AFTER_SUCCESS",
+            "E_029"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_028_THROW_AFTER_SUCCESS",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
+        }
+      ],
+      "next": "E_031"
     },
     {
       "id": "E_029",
@@ -3852,27 +4506,48 @@ window.GAME_DATA = {
           "next": "E_515"
         },
         {
-          "type": "dialogue",
-          "text": "电车加速到极致，视野被刺眼白光覆盖。"
-        },
+          "type": "check",
+          "dice": "ev029_agility_01",
+          "outcomes": [
+            "E_029_CARD_EASY",
+            "E_029_CARD_HARD"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_029_CARD_EASY",
+      "actions": [
         {
           "type": "dialogue",
-          "text": "你睁开眼，发现自己仍坐在6号车厢，喇叭播报终点站已到。"
+          "text": "你抓住空隙冲向Clicker，战斗轮进入简单模式。"
         },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle"
+        }
+      ]
+    },
+    {
+      "id": "E_029_CARD_HARD",
+      "actions": [
         {
           "type": "dialogue",
-          "text": "站务人员走来询问：你们脸色不好，没事吧？"
+          "text": "你的动作惊动了Clicker，战斗轮进入困难模式。"
         },
         {
-          "type": "dialogue",
-          "text": "那是一场共同的噩梦。恐怖的记忆慢慢淡忘。"
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
         },
         {
-          "type": "custom",
-          "name": "endGame",
-          "params": {
-            "reason": "true_end"
-          }
+          "type": "minigame",
+          "game": "card_battle_hard"
         }
       ]
     },
