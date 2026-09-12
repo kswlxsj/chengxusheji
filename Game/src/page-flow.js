@@ -6,6 +6,7 @@
 
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
+  const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
   const routes = Object.freeze({
@@ -93,6 +94,30 @@
     }
   }
 
+  function markNewGameIntent(slot) {
+    sessionStorage.setItem(NEW_GAME_INTENT_KEY, String(slot));
+  }
+
+  function consumeNewGameIntent(slot) {
+    try {
+      if (sessionStorage.getItem(NEW_GAME_INTENT_KEY) !== String(slot)) return false;
+      sessionStorage.removeItem(NEW_GAME_INTENT_KEY);
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
   // 对外暴露的模块接口：路由表 + 跳转 / 槽位校验 / 临时交接能力
-  Game.PageFlow = { routes, parseSlot, url, navigate, setTransfer, getTransfer, clearTransfer };
+  Game.PageFlow = {
+    routes,
+    parseSlot,
+    url,
+    navigate,
+    setTransfer,
+    getTransfer,
+    clearTransfer,
+    markNewGameIntent,
+    consumeNewGameIntent
+  };
 })(window.TrainGame);

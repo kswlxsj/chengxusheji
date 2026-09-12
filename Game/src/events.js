@@ -42,7 +42,16 @@
   const MINIGAME_SETTLEMENT_LIMIT = 100;
 
   class EventEngine {
-    constructor({ events, state, scene, ui, items, shouldTerminate = () => false, onTerminate = () => {} }) {
+    constructor({
+      events,
+      state,
+      scene,
+      ui,
+      items,
+      shouldTerminate = () => false,
+      onTerminate = () => {},
+      onCheckCompleted = async () => {}
+    }) {
       this.events = new Map(events.map((event) => [event.id, event]));
       this.items = new Map(items.map((item) => [item.id, item]));
       this.state = state;
@@ -60,6 +69,7 @@
       this.onStateChanged = () => {};
       this.shouldTerminate = shouldTerminate;
       this.onTerminate = onTerminate;
+      this.onCheckCompleted = onCheckCompleted;
       this.registerBuiltIns();
     }
 
@@ -114,6 +124,7 @@
           this.state.checkResults[action.dice],
           { dice: action.dice, outcome: hasBranch ? index : null }
         );
+        await this.onCheckCompleted(action, hasBranch ? index : null);
         if (!hasBranch) return null;
         return { next: outcomes[index], stop: true };
       });

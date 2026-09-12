@@ -4,14 +4,14 @@
   // 终局小游戏：仿星露谷钓鱼的“控制杆争夺”。
   // 顶层只注册，DOM 与动画全部延迟到 run()，这样编译器可以在 node:vm 中安全收集编号。
   const CONFIG = {
-    zoneHeight: 0.20,
+    zoneHeight: 0.19,
     targetIntensity: 1.80,
     playerGain: 10,
     conductorGain: 24,
     lift: 2.95,
     gravity: 2.15,
     damping: 0.83,
-    timeLimit: 24
+    timeLimit: 20
   };
 
   const clamp = (value, minimum, maximum) => Math.min(Math.max(value, minimum), maximum);
@@ -21,6 +21,9 @@
     if (!context.stage) return Promise.resolve(null);
 
     const stage = context.stage;
+    const config = { ...CONFIG, ...(context.config || {}) };
+    const assetBase = context.assetBase || "../Assets";
+    const assetPath = (relativePath) => `${assetBase}/${relativePath}`;
     const root = document.createElement("section");
     root.className = "mg-tug";
     root.setAttribute("aria-label", "控制杆争夺小游戏");
@@ -46,16 +49,21 @@
 
       <div class="mg-tug-board">
         <div class="mg-tug-fighter mg-tug-player">
-          <div class="mg-tug-avatar">🫱</div>
+          <div class="mg-tug-avatar-frame">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/pc.png")}" alt="" draggable="false">
+          </div>
           <h2>你</h2>
           <p>稳住目标<br>一点点拉回来</p>
         </div>
 
         <div class="mg-tug-track-wrap">
           <div class="mg-tug-track" id="mgTugTrack" aria-label="垂直抓握区">
+            <img class="mg-tug-track-art" src="${assetPath("Image/UI/钓鱼条.png")}" alt="" draggable="false">
             <div class="mg-tug-track-line"></div>
-            <div class="mg-tug-target" id="mgTugTarget">控制杆</div>
-            <div class="mg-tug-zone" id="mgTugZone"></div>
+            <div class="mg-tug-target" id="mgTugTarget" aria-label="控制杆">
+              <img class="mg-tug-target-art" src="${assetPath("Image/UI/钓鱼条_浮块.png")}" alt="" draggable="false">
+            </div>
+            <div class="mg-tug-zone" id="mgTugZone" aria-label="绿色抓握区"></div>
           </div>
           <div class="mg-tug-caption">
             <strong id="mgTugInsideText">寻找抓握时机</strong>
@@ -64,7 +72,9 @@
         </div>
 
         <div class="mg-tug-fighter mg-tug-conductor">
-          <div class="mg-tug-avatar">🫲</div>
+          <div class="mg-tug-avatar-frame">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/乘务员.png")}" alt="" draggable="false">
+          </div>
           <h2>列车员</h2>
           <p>不断施压<br>别让他抢走控制杆</p>
         </div>
@@ -106,9 +116,9 @@
 
     const render = () => {
       const targetCenter = targetY + 0.055;
-      const inside = targetCenter >= playerY && targetCenter <= playerY + CONFIG.zoneHeight;
+      const inside = targetCenter >= playerY && targetCenter <= playerY + config.zoneHeight;
       zone.style.top = `${playerY * 100}%`;
-      zone.style.height = `${CONFIG.zoneHeight * 100}%`;
+      zone.style.height = `${config.zoneHeight * 100}%`;
       target.style.top = `${targetY * 100}%`;
       zone.classList.toggle("is-inside", inside);
       playerScore.style.width = `${progress}%`;
@@ -127,12 +137,12 @@
       root.classList.add(won ? "is-win" : "is-loss");
       status.innerHTML = won
         ? "<strong>抢到控制杆了。</strong>你猛地压下操作杆。"
-        : "<strong>控制权被夺走。</strong>列车又一次冲向黑暗。";
+        : "<strong>控制杆脱手。</strong>正在返回剧情。";
       insideText.textContent = won ? "控制杆已锁定" : "控制杆脱手";
       meterText.textContent = won ? "正在切换列车控制模式" : "列车员重新抓住了操作杆";
       finishHandle = window.setTimeout(() => resolveSettlement([
         { type: "setFlag", key: "conductor_tug_won", value: won },
-        { type: "jump", next: won ? "E_029" : "E_030" }
+        { type: "jump", next: won ? "E_029" : "E_030_TUG" }
       ]), 650);
     };
 
@@ -142,28 +152,28 @@
       lastFrame = timestamp;
       elapsed += delta;
 
-      playerVelocity += (isHolding() ? -CONFIG.lift : CONFIG.gravity) * delta;
-      playerVelocity *= Math.pow(CONFIG.damping, delta * 60);
-      playerY = clamp(playerY + playerVelocity * delta, 0, 1 - CONFIG.zoneHeight);
-      if (playerY === 0 || playerY === 1 - CONFIG.zoneHeight) playerVelocity *= -0.28;
+      playerVelocity += (isHolding() ? -config.lift : config.gravity) * delta;
+      playerVelocity *= Math.pow(config.damping, delta * 60);
+      playerY = clamp(playerY + playerVelocity * delta, 0, 1 - config.zoneHeight);
+      if (playerY === 0 || playerY === 1 - config.zoneHeight) playerVelocity *= -0.28;
 
       const wave = Math.sin(elapsed * 2.15) * 0.92 + Math.sin(elapsed * 4.8 + 1.3) * 0.42;
-      targetVelocity += wave * CONFIG.targetIntensity * 1.45 * delta;
+      targetVelocity += wave * config.targetIntensity * 1.45 * delta;
       targetVelocity *= Math.pow(0.82, delta * 60);
       targetY += targetVelocity * delta;
       if (targetY < 0) { targetY = 0; targetVelocity = Math.abs(targetVelocity) * 0.72; }
       if (targetY > 0.90) { targetY = 0.90; targetVelocity = -Math.abs(targetVelocity) * 0.72; }
 
       const inside = render();
-      progress = clamp(progress + (inside ? CONFIG.playerGain : -CONFIG.conductorGain) * delta, 0, 100);
-      const remaining = Math.max(0, CONFIG.timeLimit - elapsed);
+      progress = clamp(progress + (inside ? config.playerGain : -config.conductorGain) * delta, 0, 100);
+      const remaining = Math.max(0, config.timeLimit - elapsed);
       timeText.textContent = `剩余 ${remaining.toFixed(1)} 秒`;
       status.innerHTML = inside
         ? "<strong>抓稳：</strong>继续保持，控制权正在上升。"
         : "<strong>拉扯：</strong>把绿色区域移到控制杆上。";
 
       if (progress >= 100) { progress = 100; render(); finish(true); return; }
-      if (progress <= 0 || elapsed >= CONFIG.timeLimit) { progress = Math.max(0, progress); render(); finish(false); return; }
+      if (progress <= 0 || elapsed >= config.timeLimit) { progress = Math.max(0, progress); render(); finish(false); return; }
       frameHandle = requestAnimationFrame(frame);
     };
 

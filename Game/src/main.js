@@ -37,6 +37,13 @@
         }
       }
       showEndingOverlay(reason);
+<<<<<<< HEAD
+=======
+      // CODEX ADD END
+    },
+    onCheckCompleted: (action) => {
+      if (action.offerScouting === true) return handleScoutingCheckCompleted();
+>>>>>>> da4760de6857f92d8c27d6f343d4174e517f9943
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -50,6 +57,14 @@
   let paused = false;
   let pauseTask = null;
   let activeSlot = requestedSlot;
+  const autosavedCarriagesFlag = "autosaved_carriages";
+  let autosavedCarriageIds = new Set();
+  const scoutingPrerequisiteChecks = [
+    "ev001_insight_01",
+    "ev004_insight_01",
+    "ev005_insight_01"
+  ];
+  let scoutingOfferTask = null;
 
   // CODEX ADD START
   function showEndingOverlay(reason) {
@@ -159,6 +174,125 @@
     // 小游戏期间屏蔽系统暂停：暂停按钮与 Esc 均由玩法窗口接管（见 pauseGame / keydown）。
     pauseButton.disabled = startupLocked || ui.minigame.isOpen();
     updateInventoryBar();
+    maybeTriggerE009();
+    maybeTriggerScoutingGuide();
+    maybeOfferScouting();
+    autoSaveOnNewCarriage();
+  }
+
+  function syncAutosavedCarriages() {
+    const savedIds = Array.isArray(state.flags[autosavedCarriagesFlag])
+      ? state.flags[autosavedCarriagesFlag].filter((sceneId) => typeof sceneId === "string")
+      : [];
+    autosavedCarriageIds = new Set(savedIds);
+    if (data.meta.initialScene) autosavedCarriageIds.add(data.meta.initialScene);
+    if (state.sceneId) autosavedCarriageIds.add(state.sceneId);
+    state.flags[autosavedCarriagesFlag] = [...autosavedCarriageIds];
+  }
+
+  function autoSaveOnNewCarriage() {
+    if (startupLocked || paused || engine.busy || !activeSlot || !state.sceneId) return;
+    if (autosavedCarriageIds.has(state.sceneId)) return;
+    const snapshot = engine.getStableSnapshot();
+    if (!snapshot.sceneId || snapshot.sceneId !== state.sceneId) return;
+    const nextAutosavedIds = [...autosavedCarriageIds, snapshot.sceneId];
+    snapshot.flags = {
+      ...snapshot.flags,
+      [autosavedCarriagesFlag]: nextAutosavedIds
+    };
+    try {
+      saves.save(activeSlot, snapshot);
+      autosavedCarriageIds = new Set(nextAutosavedIds);
+      state.flags[autosavedCarriagesFlag] = nextAutosavedIds;
+      engine.adoptStableState();
+      ui.toast("已自动保存当前车厢进度");
+    } catch (error) {
+      console.error("切换车厢时自动保存失败：", error);
+      ui.toast(`自动保存失败：${errorMessage(error)}`);
+    }
+  }
+
+  function maybeTriggerE009() {
+    if (
+      startupLocked
+      || paused
+      || engine.busy
+      || state.sceneId !== "carriage_06"
+      || state.flags.visited_carriage_07 !== true
+      || state.flags.ev009_seen === true
+    ) return;
+    void engine.play("E_009");
+  }
+
+  function hasCompletedScoutingPrerequisites() {
+    return scoutingPrerequisiteChecks.every((diceId) => Object.hasOwn(state.checkResults, diceId));
+  }
+
+  function canOfferScouting() {
+    return state.getAttribute("agility") + state.getAttribute("strength") > 13
+      && hasCompletedScoutingPrerequisites();
+  }
+
+  function scoutingOfferAvailable() {
+    return !state.getSkill("scouting")
+      && state.flags.scouting_offer_shown !== true
+      && !scoutingOfferTask
+      && canOfferScouting();
+  }
+
+  function markScoutingOfferShown() {
+    state.flags.scouting_offer_shown = true;
+    engine.adoptStableState();
+  }
+
+  async function offerScouting() {
+    if (!scoutingOfferAvailable()) return false;
+    markScoutingOfferShown();
+    const choice = await ui.confirmMenu.choose({
+      title: "已满足侦察的获得条件。",
+      backdropClass: "scouting-offer-backdrop",
+      options: [{ label: "获得侦察", value: true }]
+    });
+    if (choice !== true || state.getSkill("scouting")) return false;
+    state.learnSkill("scouting");
+    state.flags.carriage_06_guide_pending = true;
+    engine.adoptStableState();
+    return true;
+  }
+
+  async function handleScoutingCheckCompleted() {
+    if (!canOfferScouting()) return;
+    await offerScouting();
+  }
+
+  function maybeTriggerScoutingGuide() {
+    if (
+      startupLocked
+      || paused
+      || engine.busy
+      || state.sceneId !== "carriage_06"
+      || state.flags.carriage_06_guide_pending !== true
+      || state.flags.carriage_06_guide_seen === true
+    ) return;
+    void engine.play("E_005_GUIDE");
+  }
+
+  function maybeOfferScouting() {
+    if (
+      startupLocked
+      || paused
+      || engine.busy
+      || !scoutingOfferAvailable()
+    ) return;
+
+    scoutingOfferTask = offerScouting().then((learned) => {
+      if (learned) updateHud();
+    }).catch((error) => {
+      console.error("显示侦察获得按钮失败：", error);
+    }).finally(() => {
+      scoutingOfferTask = null;
+      if (!startupLocked) scene.setInteractionEnabled(!paused && !engine.busy);
+    });
   }
 
   engine.onStateChanged = updateHud;
@@ -177,6 +311,7 @@
       if (!state.sceneId || !scene.hasScene(state.sceneId)) {
         throw new Error(`存档引用了不存在的场景：${state.sceneId || "空"}`);
       }
+      syncAutosavedCarriages();
       scene.load(state.sceneId);
       engine.adoptStableState();
       updateHud();
@@ -339,6 +474,7 @@
   async function startNewGame(slot) {
     state.reset();
     scene.load(data.meta.initialScene);
+    syncAutosavedCarriages();
     const allocation = await ui.attributeAllocation.choose(
       [...state.attributeDefinitions.values()],
       state.totalAttributePoints
@@ -363,6 +499,7 @@
       throw new Error("恢复游戏所需的临时状态不存在或已经失效");
     }
     state.restore(transfer.snapshot);
+    syncAutosavedCarriages();
     flow.clearTransfer();
     if (!state.sceneId || !scene.hasScene(state.sceneId)) {
       throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
@@ -379,7 +516,13 @@
     }
     try {
       if (mode === "new") {
-        await startNewGame(requestedSlot);
+        if (flow.consumeNewGameIntent(requestedSlot)) {
+          await startNewGame(requestedSlot);
+        } else if (restoreSave(requestedSlot)) {
+          activateGame();
+        } else {
+          await startNewGame(requestedSlot);
+        }
         return;
       }
       if (mode === "load") {
@@ -411,22 +554,7 @@
   sceneRoot.addEventListener("click", () => {
     if (engine.busy) {
       if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
-      return;
     }
-    if (paused || state.getSkill("scouting")) return;
-    const nextCount = (Number(state.flags.scoutClickCount) || 0) + 1;
-    state.flags.scoutClickCount = nextCount;
-    if (nextCount >= 3) {
-      state.learnSkill("scouting");
-      engine.adoptStableState();
-      updateHud();
-      void ui.inspect.show({
-        title: "技能解锁",
-        text: "连续点击三次后，你凭借细致观察学会了侦察。"
-      });
-      return;
-    }
-    engine.adoptStableState();
   });
 
   scene.load(data.meta.initialScene);

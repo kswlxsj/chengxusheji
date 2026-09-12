@@ -88,7 +88,7 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_009"
+        "clickEvent": "E_GO_06_05"
       },
       {
         "id": "note_back_06",
@@ -154,11 +154,8 @@
         "clickEvent": "E_004",
         "visibleWhen": {
           "not": {
-            "objectState": {
-              "objectId": "map_06",
-              "property": "hidden",
-              "equals": true
-            }
+            "flag": "map_seen",
+            "equals": true
           }
         }
       },
