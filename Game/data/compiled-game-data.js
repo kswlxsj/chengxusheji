@@ -2967,6 +2967,14 @@ window.GAME_DATA = {
       "id": "E_501",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "inner_world_entered",
+            "equals": true
+          },
+          "next": "E_DOOR_03"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_inner_01"
         },
