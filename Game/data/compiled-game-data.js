@@ -3151,15 +3151,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（音效：远处人声低语）"
-        },
-        {
-          "type": "dialogue",
-          "text": "【情报·瓶子低语】像是人声的低语，又像哭声或祈祷。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你抬起头，声音消失了。窗外，雾还在。"
+          "text": "你抬起头，声音消失了。"
         }
       ],
       "next": "E_503"
@@ -3266,7 +3258,24 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "但这里不是4号车厢。座椅、车窗、天花板的灯——全都和你记忆里的4号对不上号。哪里都相似，哪里都不对。"
+          "speaker": "你",
+          "text": "……见鬼。"
+        },
+        {
+          "type": "dialogue",
+          "text": "但这里不是4号车厢。座椅、车窗、天花板的灯——全都对不上号。哪里都相似，哪里都不对。"
+        },
+        {
+          "type": "dialogue",
+          "text": "这里为什么会有音乐声？"
+        },
+        {
+          "type": "dialogue",
+          "text": "诡异的柔和与温馨。"
+        },
+        {
+          "type": "dialogue",
+          "text": "想到之前在车厢中的见闻，你不由得打了个寒颤。"
         },
         {
           "type": "conditionalJump",
@@ -3351,33 +3360,30 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "平静，温和，像是一直在等你。"
+          "text": "平静，温和，"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "text": "像是一直在等你。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
           "text": "已经没事了，很快就会获救了。"
         },
         {
           "type": "dialogue",
-          "text": "你：「谁？」"
+          "speaker": "你",
+          "text": "谁？"
         },
         {
           "type": "dialogue",
-          "text": "那个声音没有回答，只是低低地重复："
-        },
-        {
-          "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "善良的，伟大的，仁慈的……我呼唤了祂的名字，我交换了愿望，主已经回应我了……"
         },
         {
           "type": "dialogue",
-          "text": "（音效：低回的人声）"
-        },
-        {
-          "type": "dialogue",
-          "text": "某种沉沉的东西落在你肩上——像是被应允，又像是被登记。"
+          "text": "某种沉沉的东西落在你肩上。"
         }
       ],
       "next": "E_509"
@@ -3400,7 +3406,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你推开那扇门——"
+          "text": "你推开那扇门。"
         },
         {
           "type": "dialogue",
@@ -3408,7 +3414,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "……在那一瞬间就已经看到你了。当你看到他们的时候，其实是他们看到并抓住了你。"
+          "text": "……在那一瞬间就已经看到你了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "当你看到他们的时候，其实是他们看到并抓住了你。"
         },
         {
           "type": "dialogue",
@@ -3417,10 +3427,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "还来得及吗？快点……"
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·涉足花海】看到花海的那一刻已获得——标记「伪结局线」：即使在此调头，也已无法返回 3 号及之前的车厢；接入主剧本2号时（E-514），真结局推进被 E-515 取代。"
         },
         {
           "type": "setFlag",
@@ -3612,7 +3618,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "……你在看什么？"
         },
         {
@@ -3643,82 +3649,82 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "有时候我觉得活着挺没劲的。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "机器至少知道自己被造出来是为了什么。你呢？"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "我们曾一直期待它会来。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "期待一场浪潮，一场盛大而危险的春天。不管它带来什么东西，总会好过……"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "你知道许愿柳的故事吗？或者猴爪。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "在你愿望的时候，你甚至其实不知道自己在愿望什么……"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "我们无数人的盼望下，降生的是什么？在它真的到来的一天，这里剩下的是什么？"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "个人的能力是多么的渺小啊，在大势所趋面前，所有的努力终如蚍蜉撼树。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "所以，停下来，求求你。然后我们逃离这里，再也不回来……"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "……只要我们活到明天，一切最终会好起来……不是吗？"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "虔诚地相信，置身事外，热爱生活。在那之后，我们就可以……"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "你找到钥匙了吗？我们去停下列车……"
         }
       ],
@@ -3741,87 +3747,87 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "有时候我觉得活着挺没劲的。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "机器至少知道自己被造出来是为了什么。你呢？"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "而祂现在来了，亲爱的。春天来了。你人生的美妙意义来了。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "崭新的，全新的，完美的，极乐的，新世界。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "让这花的洪流席卷一切，"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "大脑从耳朵里温热地流出来，从此不再为莫名其妙的东西发愁。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "我们一起改造这个世界，"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "把这无聊的一切全部撕碎。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "撕碎，撕碎……"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "碎片落进浪潮里，浪潮涌向新世界。"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "新世界里没有昨天，今天和明天，没有我，你和他……ONLY US"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "永恒"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "text": "你找到钥匙了吗？把它给我吧。我们去结束这一切。"
         }
       ],
@@ -3843,6 +3849,10 @@ window.GAME_DATA = {
     {
       "id": "E_519_NOKEY",
       "actions": [
+        {
+          "type": "dialogue",
+          "text": "…………"
+        },
         {
           "type": "dialogue",
           "text": "她没有再问。夜色般的沉默垂落下来，你只能自己做出决定。"
