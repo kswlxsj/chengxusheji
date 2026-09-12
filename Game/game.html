@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=dice-animation-20260912-1">
   <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
@@ -55,25 +55,25 @@
   <!-- CODEX ADD END -->
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js"></script>
+  <script src="data/compiled-game-data.js?v=local-dice-20260912-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   
-  <script src="src/state.js"></script>
+  <script src="src/state.js?v=local-ui-flow-20260912-3"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
-  <script src="src/ui.js"></script>
+  <script src="src/ui.js?v=dice-animation-20260912-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
   
-  <script src="src/scene.js"></script>
+  <script src="src/scene.js?v=local-note-background-20260912-1"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
-  <script src="src/events.js"></script>
+  <script src="src/events.js?v=local-ui-flow-20260912-2"></script>
   <!-- TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
   
-  <script src="src/dice.js"></script>
+  <script src="src/dice.js?v=dice-animation-20260912-1"></script>
   <!-- TrainGame.Dice，提供检定注册、查询和执行接口。 -->
   
   <script src="src/custom-actions.js"></script>
@@ -88,13 +88,13 @@
   <script src="src/minigame-games/card-battle.js?v=20260911-bg"></script>
   <!-- 战斗轮卡牌小游戏：四张牌单出/双出、敌人候选牌与濒死无限体力。 -->
 
-  <script src="src/minigame-games/radio-tuning.js"></script>
+    <script src="src/minigame-games/radio-tuning.js?v=radio-minigame-2"></script>
   <!-- E-0008 收音机调频小游戏：追踪移动频段并稳定解码广播。 -->
 
   <script src="src/minigame-games/crew-negotiation.js"></script>
   <!-- 乘务员安抚与交涉小游戏模块（属于 src/minigame-games/*.js）：顶层只注册、运行期再碰 DOM。 -->
 
-  <script src="src/main.js"></script>
+  <script src="src/main.js?v=radio-medical-flow-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

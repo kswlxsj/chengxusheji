@@ -38,6 +38,27 @@
     return context.skills.get(skill)?.name || skill;
   }
 
+  // 先显示算式，过一会再显示“成功/失败”。
+  // 由 DiceRollWindow.roll 在同一窗口内完成，动画只播一遍。
+  async function showDiceRollAnimation(context, rollValue, success, detailText) {
+    const diceWindow = context.ui?.dice;
+    if (diceWindow && typeof diceWindow.roll === "function") {
+      const wait = typeof context.wait === "function" ? context.wait : (milliseconds) => Game.delay(milliseconds);
+      await diceWindow.roll({
+        value: rollValue,
+        success,
+        text: detailText,
+        outcomeText: success ? "成功" : "失败",
+        wait
+      });
+      return;
+    }
+    await context.ui.inspect.show({
+      title: success ? "检定成功" : "检定失败",
+      text: detailText
+    });
+  }
+
   async function showSkillResult(context, skill, success, detail) {
     await context.ui.inspect.show({
       title: success ? "技能检定成功" : "技能检定失败",
@@ -54,7 +75,7 @@
     return Boolean(selected && selected.value === true);
   }
 
-  // 标准 d6 属性检定：1d6 + 属性值 >= 阈值（默认 11）即成功。
+  // 标准 d6 属性检定：掷出 + 属性值 >= 阈值（默认 11）即成功。
   // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
   function attrCheck(attribute, threshold = DEFAULT_THRESHOLD) {
     return async (context) => {
@@ -62,10 +83,8 @@
       const roll = rollDie(6);
       const total = roll + base;
       const success = total >= threshold;
-      await context.ui.inspect.show({
-        title: success ? "检定成功" : "检定失败",
-        text: `${attributeName(context, attribute)}：1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${threshold}。`
-      });
+      const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${threshold}。`;
+      await showDiceRollAnimation(context, roll, success, detail);
       return success ? 0 : 1;
     };
   }
@@ -98,17 +117,16 @@
       const roll = rollDie(6);
       const total = roll + base;
       const success = total >= DEFAULT_THRESHOLD;
-      await context.ui.inspect.show({
-        title: success ? "检定成功" : "检定失败",
-        text: `${attributeName(context, attribute)}：1d6 掷出 ${roll} + 属性 ${base} = ${total}，需要达到 ${DEFAULT_THRESHOLD}。`
-      });
+      const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
+      await showDiceRollAnimation(context, roll, success, detail);
       apply(context, success ? passLoss : failLoss);
       return 0;
     };
   }
 
   // 技能检定：先询问是否使用；技能未学会或玩家放弃时直接视为失败。
-  function learnedSkillCheck(skillId) {
+  function learnedSkillCheck(skillId, options = {}) {
+    const announceSuccess = options.announceSuccess !== false;
     return async (context) => {
       const learned = context.state.getSkill(skillId);
       if (!learned) {
@@ -119,7 +137,9 @@
         await showSkillResult(context, skillId, false, "已放弃使用");
         return 1;
       }
-      await showSkillResult(context, skillId, true, "已掌握");
+      if (announceSuccess) {
+        await showSkillResult(context, skillId, true, "已掌握");
+      }
       return learned ? 0 : 1;
     };
   }
@@ -167,10 +187,8 @@
     const roll = rollDie(6);
     const total = halfLuck + roll;
     const success = total >= threshold;
-    await context.ui.inspect.show({
-      title: success ? "检定成功" : "检定失败",
-      text: `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}，1d6 掷出 ${roll}，合计 ${total}，需要达到 ${threshold}。`
-    });
+    const detail = `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}，掷出 ${roll}，合计 ${total}\n需要达到 ${threshold}。`;
+    await showDiceRollAnimation(context, roll, success, detail);
     return success ? 0 : 1;
   }
 
@@ -193,7 +211,7 @@
     await showSkillResult(context, "firstAid", true, "已掌握（医学解锁后同步获得）");
     return 0;
   });
-  registerDice("skill_medicine", learnedSkillCheck("medicine"));
+  registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
   registerDice("skill_talk", learnedSkillCheck("talk"));
   registerDice("ev016_strength_01", attrCheck("strength"));
 
@@ -232,24 +250,13 @@
     }
     const roll = rollDie(6);
     const one = roll >= 3;
-    await context.ui.inspect.show({
-      title: "数量判定",
-      text: `幸运 ${luck}，1d6 掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`
-    });
+    const detail = `幸运 ${luck}，掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`;
+    await showDiceRollAnimation(context, roll, one, detail);
     return one ? 0 : 1;
   });
   registerDice("ev025_strength_01", attrCheck("strength"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
-  // E-0008：调频小游戏结束后按结果旗标分流，避免再掷一次随机骰子。
-  registerDice("ev0008_radio_tuning", async (context) => {
-    const success = context.state.flags.ev0008_radio_tuned === true;
-    await context.ui.inspect.show({
-      title: success ? "调频成功" : "调频失败",
-      text: success ? "指针稳定锁定了频道，收音机开始播放隐藏广播。" : "你没能稳定锁定频道，只听见一阵嘶嘶的电流声。"
-    });
-    return success ? 0 : 1;
-  });
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev010_join_route_01", async (context) => (
     context.state.flags.ev008_scouting_ok ? 0 : 1
@@ -285,20 +292,20 @@
   // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4）。
   registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
 
-  // E-014：乘务员安抚与交涉小游戏的“最终检定”在游戏本体这里执行。
-  // 小游戏三轮选项的加成写入 flags.ev014_negotiation_bonus（正确+30%，错误+10%，范围 30~90），
-  // 此处以“基础成功率 40% + 加成（封顶 100%）”的百分比掷骰判定：1..100 掷出 ≤ 成功率即成功。
-  // 加成缺失（如提前退出）时按 0 计入，即按基础成功率判定。
+  // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
   registerDice("ev014_negotiation_final_01", async (context) => {
     const bonus = Number(context.state.flags.ev014_negotiation_bonus) || 0;
     const rate = Math.min(100, 40 + bonus);
     const roll = Math.floor(Math.random() * 100) + 1;
     const success = roll <= rate;
-    await context.ui.inspect.show({
-      title: success ? "交涉检定成功" : "交涉检定失败",
-      text: `安抚与交涉：基础成功率 40% + 交涉加成 ${bonus}% = ${rate}%。`
-        + `掷出 ${roll}%，${success ? "乘务员终于放下了戒心。" : "乘务员仍有顾虑，没能完全打动她。"}`
-    });
+    const detail = `安抚与交涉：基础成功率 40% + 交涉加成 ${bonus}% = ${rate}%。`
+      + `掷出 ${roll}%，${success ? "乘务员终于放下了戒心。" : "乘务员仍有顾虑，没能完全打动她。"}`;
+    await showDiceRollAnimation(context, null, success, detail);
     return success ? 0 : 1;
   });
+
+  // E_0008：收音机小游戏只写入成功标记，这里把标记转换成成功/失败剧情分支。
+  registerDice("ev0008_radio_tuning", async (context) => (
+    context.state.flags.ev0008_radio_tuned ? 0 : 1
+  ));
 })(window.TrainGame);

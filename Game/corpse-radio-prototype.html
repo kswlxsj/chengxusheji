@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>动态范围调频 · 小游戏原型</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f2e9dc;
+      --muted: #b8aa9b;
+      --amber: #e2ad70;
+      --red: #bd4b43;
+      --green: #9fc786;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(213, 159, 101, .14), transparent 30%),
+        repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px),
+        linear-gradient(135deg, #17100f, #40271d 50%, #100c0c);
+    }
+
+    button { font: inherit; }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 16px;
+    }
+
+    .prototype {
+      width: min(900px, 100%);
+      min-height: min(720px, calc(100vh - 56px));
+      padding: clamp(22px, 4vw, 48px);
+      border: 1px solid rgba(255, 226, 184, .18);
+      border-radius: 4px;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 225, 180, .03) 0 1px, transparent 1px 17px),
+        linear-gradient(145deg, rgba(124, 80, 50, .97), rgba(54, 33, 26, .98) 55%, rgba(27, 19, 19, .99));
+      box-shadow: 0 24px 72px rgba(0, 0, 0, .58), inset 0 0 90px rgba(0, 0, 0, .34);
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font-size: 12px;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 48px);
+      letter-spacing: .08em;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .radio {
+      width: min(720px, 100%);
+      margin: 30px auto 0;
+      padding: clamp(22px, 4vw, 38px);
+      border: 2px solid #66564d;
+      border-radius: 16px 16px 8px 8px;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, .035), transparent 35%),
+        linear-gradient(#292729, #151517 68%, #101012);
+      box-shadow:
+        inset 0 0 0 5px #111114,
+        inset 0 -20px 35px rgba(0, 0, 0, .48),
+        0 18px 35px rgba(0, 0, 0, .4);
+    }
+
+    .radio-top {
+      display: grid;
+      grid-template-columns: 1fr minmax(200px, .85fr);
+      gap: 22px;
+      margin-bottom: 26px;
+    }
+
+    .speaker {
+      min-height: 94px;
+      border: 2px solid #171719;
+      border-radius: 8px;
+      background-color: #0f1012;
+      background-image: radial-gradient(circle, #555052 1.5px, transparent 1.8px);
+      background-size: 10px 10px;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, .86);
+    }
+
+    .screen {
+      display: grid;
+      align-content: center;
+      gap: 7px;
+      min-height: 94px;
+      padding: 13px 18px;
+      border: 2px solid #0a0b0c;
+      border-radius: 6px;
+      background: #15110e;
+      box-shadow: inset 0 0 22px rgba(0, 0, 0, .72);
+      color: #d49263;
+      font-family: Consolas, monospace;
+      text-shadow: 0 0 7px rgba(222, 112, 65, .42);
+    }
+
+    .screen-label { font-size: 11px; letter-spacing: .16em; opacity: .76; }
+    .screen-value { font-size: clamp(19px, 3vw, 27px); font-variant-numeric: tabular-nums; }
+
+    .tracker {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(190px, .72fr);
+      align-items: center;
+      gap: clamp(20px, 5vw, 46px);
+    }
+
+    .dial {
+      --needle-angle: 0deg;
+      --range-start: 45deg;
+      --range-span: 64.8deg;
+      position: relative;
+      width: min(330px, 100%);
+      aspect-ratio: 1;
+      margin: auto;
+      padding: 0;
+      overflow: hidden;
+      border: 9px solid #514944;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 38% 32%, rgba(255, 255, 255, .12), transparent 20%),
+        repeating-conic-gradient(from -3deg, #27272a 0 3deg, #161618 3deg 8deg);
+      box-shadow:
+        inset 0 0 0 7px #0e0f11,
+        inset 0 0 45px rgba(0, 0, 0, .84),
+        0 14px 28px rgba(0, 0, 0, .44);
+      color: var(--ink);
+      cursor: default;
+    }
+
+    .ticks {
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(226, 173, 112, .28);
+      border-radius: 50%;
+    }
+
+    .range-arc {
+      position: absolute;
+      inset: 7px;
+      z-index: 1;
+      border-radius: 50%;
+      background: conic-gradient(
+        from var(--range-start),
+        rgba(159, 199, 134, .95) 0deg var(--range-span),
+        transparent var(--range-span) 360deg
+      );
+      filter: drop-shadow(0 0 8px rgba(159, 199, 134, .65));
+      pointer-events: none;
+    }
+
+    .range-arc::after {
+      content: "";
+      position: absolute;
+      inset: 16%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 38% 32%, rgba(255, 255, 255, .1), transparent 20%),
+        repeating-conic-gradient(from -3deg, #27272a 0 3deg, #161618 3deg 8deg);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .65);
+    }
+
+    .needle {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      width: 5px;
+      height: 41%;
+      border-radius: 5px;
+      background: var(--amber);
+      box-shadow: 0 0 8px rgba(226, 173, 112, .8);
+      transform: translate(-50%, -100%) rotate(var(--needle-angle));
+      transform-origin: 50% 100%;
+      transition: transform .06s linear;
+      pointer-events: none;
+    }
+
+    .hub {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 82px;
+      height: 82px;
+      border: 3px solid #73645c;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #786158, #292224 66%);
+      transform: translate(-50%, -50%);
+      color: #d8cabd;
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .dial.in-range {
+      border-color: #789767;
+      box-shadow:
+        inset 0 0 0 7px #0e0f11,
+        inset 0 0 45px rgba(0, 0, 0, .84),
+        0 0 28px rgba(159, 199, 134, .25);
+    }
+
+    .dial:focus-visible {
+      outline: 3px solid rgba(226, 173, 112, .7);
+      outline-offset: 4px;
+    }
+
+    .control-panel {
+      display: grid;
+      gap: 18px;
+    }
+
+    .angle-readout {
+      margin: 0;
+      color: var(--amber);
+      font: clamp(22px, 4vw, 34px) Consolas, monospace;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hold-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .hold-track {
+      height: 13px;
+      overflow: hidden;
+      border: 1px solid #443b37;
+      border-radius: 999px;
+      background: #0c0d0f;
+      box-shadow: inset 0 2px 7px rgba(0, 0, 0, .75);
+    }
+
+    .hold-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #678258, var(--green));
+      box-shadow: 0 0 12px rgba(159, 199, 134, .55);
+    }
+
+    .instruction {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    kbd {
+      min-width: 34px;
+      display: inline-grid;
+      place-items: center;
+      margin: 0 3px;
+      padding: 5px 9px;
+      border: 1px solid #75645a;
+      border-bottom-width: 3px;
+      border-radius: 5px;
+      background: #262123;
+      color: var(--ink);
+      font: 15px Consolas, monospace;
+    }
+
+    .status {
+      min-height: 3.4em;
+      margin: 0;
+      color: #cf8262;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .status.stable { color: var(--green); }
+
+    .success {
+      width: min(680px, 100%);
+      margin: 64px auto 0;
+      text-align: center;
+    }
+
+    .success-light {
+      width: 16px;
+      height: 16px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green), 0 0 28px rgba(159, 199, 134, .75);
+    }
+
+    .success h2 { margin: 0; color: var(--green); font-size: clamp(27px, 4vw, 40px); }
+    .success p { color: var(--muted); line-height: 1.7; }
+
+    .broadcast {
+      margin: 24px 0;
+      padding: 22px 26px;
+      border-left: 4px solid var(--red);
+      background: rgba(74, 27, 30, .38);
+      color: #f0d8c3;
+      font-size: clamp(16px, 2.5vw, 23px);
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .restart {
+      padding: 10px 24px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 5px;
+      background: #2c2523;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    @media (max-width: 650px) {
+      .page { padding: 0; }
+      .prototype { min-height: 100vh; border-right: 0; border-left: 0; }
+      .radio-top { grid-template-columns: 1fr; }
+      .speaker { display: none; }
+      .tracker { grid-template-columns: 1fr; }
+      .dial { width: min(270px, 82vw); }
+      .control-panel { width: min(310px, 100%); margin: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="prototype" aria-live="polite">
+      <p class="eyebrow">Prototype 02 · Signal Tracking</p>
+      <h1>动态范围调频</h1>
+      <p class="subtitle">绿色范围会不断移动，但长度保持不变。控制指针跟随它，并连续稳定 3 秒。</p>
+
+      <section class="radio" id="radio" aria-label="动态范围收音机">
+        <div class="radio-top">
+          <div class="speaker" aria-hidden="true"></div>
+          <div class="screen">
+            <span class="screen-label">SIGNAL HOLD</span>
+            <strong class="screen-value" id="screenValue">未捕获</strong>
+          </div>
+        </div>
+
+        <div class="tracker">
+          <button class="dial" id="dial" type="button" aria-label="调频圆盘">
+            <div class="ticks" aria-hidden="true"></div>
+            <div class="range-arc" id="rangeArc" aria-hidden="true"></div>
+            <div class="needle" aria-hidden="true"></div>
+            <div class="hub" aria-hidden="true">指针</div>
+          </button>
+
+          <div class="control-panel">
+            <p class="angle-readout" id="angleReadout">000°</p>
+            <div>
+              <div class="hold-label">
+                <span>稳定时间</span>
+                <span id="holdTime">0.0 / 3.0 秒</span>
+              </div>
+              <div class="hold-track"><div class="hold-fill" id="holdFill"></div></div>
+            </div>
+            <p class="instruction"><kbd>←</kbd><kbd>→</kbd><br>旋转唯一的指针</p>
+            <p class="status" id="status">让指针进入绿色范围。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="success" id="success" hidden>
+        <div class="success-light" aria-hidden="true"></div>
+        <h2>信号捕获成功</h2>
+        <p>指针在动态范围内稳定维持了 3 秒，隐藏广播已经解码：</p>
+        <blockquote class="broadcast" id="broadcast"></blockquote>
+        <button class="restart" id="restart" type="button">重新调频</button>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const CHANNELS = [
+      "回收组记录：七号车厢清理完毕。尸块不是事故遗留物，而是上一批实验样本。",
+      "调度室记录：七号车厢的清理由‘钟表匠’下令。列车没有失控，它正在按名单运行。",
+      "不要找驾驶员。真正发出指令的人，在终点站下面。重复，不要找驾驶员。"
+    ];
+
+    const RANGE_SPAN = 64.8;
+    const HOLD_DURATION = 3000;
+    const RANGE_SPEED_SCALE = 1.08;
+    const ROTATION_SPEED_SCALE = 2.16;
+    const POINTER_STEP = 5 * ROTATION_SPEED_SCALE;
+    const dial = document.querySelector("#dial");
+    const screenValue = document.querySelector("#screenValue");
+    const angleReadout = document.querySelector("#angleReadout");
+    const holdTime = document.querySelector("#holdTime");
+    const holdFill = document.querySelector("#holdFill");
+    const status = document.querySelector("#status");
+    const radio = document.querySelector("#radio");
+    const success = document.querySelector("#success");
+    const broadcast = document.querySelector("#broadcast");
+    const restart = document.querySelector("#restart");
+
+    let pointerAngle;
+    let pointerDisplayAngle;
+    let rangeCenter;
+    let rangeSpeed;
+    let nextDirectionChange;
+    let heldFor;
+    let lastFrame;
+    let completed;
+    let animationFrame;
+    let message;
+
+    function normalize(angle) {
+      return (angle + 360) % 360;
+    }
+
+    function angleDistance(a, b) {
+      const difference = Math.abs(a - b);
+      return Math.min(difference, 360 - difference);
+    }
+
+    function isPointerInside() {
+      return angleDistance(pointerAngle, rangeCenter) <= RANGE_SPAN / 2;
+    }
+
+    function render(inside) {
+      const rangeStart = normalize(rangeCenter - RANGE_SPAN / 2);
+      dial.style.setProperty("--needle-angle", `${pointerDisplayAngle}deg`);
+      dial.style.setProperty("--range-start", `${rangeStart}deg`);
+      dial.style.setProperty("--range-span", `${RANGE_SPAN}deg`);
+      dial.classList.toggle("in-range", inside);
+      angleReadout.textContent = `${String(Math.round(pointerAngle)).padStart(3, "0")}°`;
+
+      const progress = Math.min(1, heldFor / HOLD_DURATION);
+      holdFill.style.width = `${progress * 100}%`;
+      holdTime.textContent = `${(heldFor / 1000).toFixed(1)} / 3.0 秒`;
+      screenValue.textContent = inside ? `锁定 ${(progress * 100).toFixed(0)}%` : "未捕获";
+      status.classList.toggle("stable", inside);
+      status.textContent = inside
+        ? "信号稳定，继续跟随绿色范围。"
+        : "让指针进入绿色范围；离开范围会重新计时。";
+    }
+
+    function randomizeRangeMotion(now) {
+      const direction = Math.random() > .5 ? 1 : -1;
+      rangeSpeed = direction * (44 + Math.random() * 32) * RANGE_SPEED_SCALE;
+      nextDirectionChange = now + 450 + Math.random() * 850;
+    }
+
+    function tick(now) {
+      if (completed) return;
+      const elapsed = Math.min(80, now - lastFrame);
+      lastFrame = now;
+
+      if (now >= nextDirectionChange) {
+        randomizeRangeMotion(now);
+      }
+
+      rangeCenter = normalize(rangeCenter + rangeSpeed * elapsed / 1000);
+      const inside = isPointerInside();
+      heldFor = inside ? heldFor + elapsed : 0;
+      render(inside);
+
+      if (heldFor >= HOLD_DURATION) complete();
+      else animationFrame = requestAnimationFrame(tick);
+    }
+
+    function rotate(direction) {
+      if (completed) return;
+      pointerAngle = normalize(pointerAngle + direction * POINTER_STEP);
+      pointerDisplayAngle += direction * POINTER_STEP;
+      render(isPointerInside());
+    }
+
+    function complete() {
+      if (completed) return;
+      completed = true;
+      cancelAnimationFrame(animationFrame);
+      holdFill.style.width = "100%";
+      holdTime.textContent = "3.0 / 3.0 秒";
+      screenValue.textContent = "SIGNAL LOCKED";
+      status.textContent = "稳定时间达成，正在解码广播……";
+      broadcast.textContent = `“${message}”`;
+
+      window.setTimeout(() => {
+        radio.hidden = true;
+        success.hidden = false;
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: "train-radio-complete" }, "*");
+        }
+      }, 420);
+    }
+
+    function reset() {
+      cancelAnimationFrame(animationFrame);
+      pointerAngle = 0;
+      pointerDisplayAngle = 0;
+      rangeCenter = 82 + Math.random() * 80;
+      randomizeRangeMotion(performance.now());
+      heldFor = 0;
+      completed = false;
+      message = CHANNELS[Math.floor(Math.random() * CHANNELS.length)];
+      radio.hidden = false;
+      success.hidden = true;
+      lastFrame = performance.now();
+      render(isPointerInside());
+      dial.focus();
+      animationFrame = requestAnimationFrame(tick);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      rotate(event.key === "ArrowRight" ? 1 : -1);
+    });
+
+    restart.addEventListener("click", reset);
+    reset();
+  </script>
+</body>
+</html>

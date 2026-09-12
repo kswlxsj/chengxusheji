@@ -19,6 +19,15 @@ window.GAME_DATA = {
       "id": "carriage_06",
       "name": "6 号车厢",
       "background": "assets/carriage-06.png",
+      "backgroundVariants": [
+        {
+          "image": "assets/carriage-06-note-removed.png",
+          "visibleWhen": {
+            "flag": "note_collected",
+            "equals": true
+          }
+        }
+      ],
       "objects": [
         {
           "id": "note_06",
@@ -31,16 +40,32 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 49.9298,
+            "y": 40.5,
+            "width": 3.7922,
+            "height": 6.75
+          },
           "zIndex": 12,
           "clickEvent": "E_002",
           "visibleWhen": {
-            "not": {
-              "objectState": {
-                "objectId": "note_06",
-                "property": "hidden",
-                "equals": true
+            "all": [
+              {
+                "not": {
+                  "flag": "note_collected",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "objectState": {
+                    "objectId": "note_06",
+                    "property": "hidden",
+                    "equals": true
+                  }
+                }
               }
-            }
+            ]
           }
         },
         {
@@ -54,7 +79,19 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_005"
+          "clickEvent": "E_005",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              }
+            ]
+          }
         },
         {
           "id": "door_06_to_05",
@@ -80,10 +117,22 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 49.9298,
+            "y": 40.5,
+            "width": 3.7922,
+            "height": 6.75
+          },
           "zIndex": 13,
           "clickEvent": "E_003",
           "visibleWhen": {
             "all": [
+              {
+                "not": {
+                  "flag": "note_collected",
+                  "equals": true
+                }
+              },
               {
                 "flag": "note_front_seen",
                 "equals": true
@@ -110,6 +159,12 @@ window.GAME_DATA = {
             "y": 0,
             "width": 100,
             "height": 100
+          },
+          "hitPosition": {
+            "x": 42.5562,
+            "y": 51.75,
+            "width": 5.2669,
+            "height": 7.125
           },
           "zIndex": 12,
           "clickEvent": "E_004",
@@ -158,8 +213,28 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 62.22,
+            "y": 63.5,
+            "width": 5.51,
+            "height": 9.06
+          },
           "zIndex": 12,
-          "clickEvent": "E_0008"
+          "clickEvent": "E_0008",
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "radio_07_ready",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "radio_07_done",
+                  "equals": true
+                }
+              }
+            ]
+          }
         },
         {
           "id": "return_door_07",
@@ -184,6 +259,12 @@ window.GAME_DATA = {
             "y": 0,
             "width": 100,
             "height": 100
+          },
+          "hitPosition": {
+            "x": 75.5,
+            "y": 61.5,
+            "width": 13.5,
+            "height": 13.5
           },
           "clickEvent": "E_007"
         },
@@ -563,7 +644,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "试着调查门上的便签，或者直接触碰车厢门。"
+          "text": "请先调查门上的便签和门旁的地图；两项调查完成后，通往7号车厢的门才会打开。"
         },
         {
           "type": "setFlag",
@@ -610,11 +691,58 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_005_GUIDE",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_guide_seen",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "诡异的气氛笼罩着这节6号车厢。"
+        },
+        {
+          "type": "dialogue",
+          "text": "突然，你听到一阵怪异的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "像有人在很远的地方掰断什么东西。"
+        },
+        {
+          "type": "dialogue",
+          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "再次观察周围乘客，你发现还是没有人醒来。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你走到了通往7号车厢的门旁边。"
+        }
+      ],
+      "next": "E_005"
+    },
+    {
       "id": "E_005_S",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味，你觉得你不应该再前进了。"
+          "text": "你闻到一股浓重的血腥味。直觉告诉你，门后的情况绝对不简单。"
         },
         {
           "type": "choice",
@@ -646,7 +774,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味，但在好奇心的驱使下，你还是决定继续前进。"
+          "text": "你闻到一股浓重的血腥味。但在好奇心的驱使下，你仍然决定进入7号车厢。"
         }
       ],
       "next": "E_006B"
@@ -688,10 +816,6 @@ window.GAME_DATA = {
     {
       "id": "E_0008",
       "actions": [
-        {
-          "type": "dialogue",
-          "text": "在你的一番努力下，收音机终于可以接收频道了。"
-        },
         {
           "type": "minigame",
           "game": "radio_tuning"
@@ -819,6 +943,18 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_NOTE_06_ITEM",
+      "actions": [
+        {
+          "type": "inspect",
+          "title": "便签",
+          "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
+          "image": "assets/note.png",
+          "large": true
+        }
+      ]
+    },
+    {
       "id": "E_904",
       "actions": [
         {
@@ -901,28 +1037,16 @@ window.GAME_DATA = {
       "id": "E_002",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "门扉上贴着便签，写着："
-        },
-        {
-          "type": "dialogue",
-          "text": "「只管前进吧 已经没有退路了」"
-        },
-        {
-          "type": "dialogue",
-          "text": "这是......什么意思？"
+          "type": "inspect",
+          "title": "便签·正面",
+          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+          "image": "assets/label-front.png",
+          "large": true
         },
         {
           "type": "setFlag",
           "key": "note_front_seen",
           "value": true
-        },
-        {
-          "type": "setObjectState",
-          "object": "note_06",
-          "patch": {
-            "hidden": true
-          }
         }
       ]
     },
@@ -930,20 +1054,20 @@ window.GAME_DATA = {
       "id": "E_003",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "撕下便签查看背面，上面写着："
-        },
-        {
-          "type": "dialogue",
-          "text": "「第三个箱子里有藏着钥匙」"
-        },
-        {
-          "type": "dialogue",
-          "text": "箱子？这里哪有箱子。"
+          "type": "inspect",
+          "title": "便签·背面",
+          "text": "「第三个箱子里有藏着钥匙。」箱子？这里哪有箱子。",
+          "image": "assets/label-back.png",
+          "large": true
         },
         {
           "type": "setFlag",
           "key": "note_back_seen",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "note_collected",
           "value": true
         },
         {
@@ -952,6 +1076,39 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "setObjectState",
+          "object": "note_06",
+          "patch": {
+            "hidden": true
+          }
+        },
+        {
+          "type": "addItem",
+          "item": "note_06_item"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -976,12 +1133,11 @@ window.GAME_DATA = {
       "id": "E_004_S",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你仔细查看这张地图，忽然发觉哪里不对————"
-        },
-        {
-          "type": "dialogue",
-          "text": "7号车厢以后的地图是被人蓄意涂掉的。"
+          "type": "inspect",
+          "title": "地图检定成功",
+          "text": "你仔细查看这张地图，发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
+          "image": "assets/map-success.png",
+          "large": true
         },
         {
           "type": "setFlag",
@@ -994,6 +1150,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1001,8 +1179,11 @@ window.GAME_DATA = {
       "id": "E_004_F",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你努力查看这张地图，只能看出7号车厢以后的部分看不清楚。"
+          "type": "inspect",
+          "title": "地图检定失败",
+          "text": "你努力查看这张地图，只能看出 7 号车厢以后的部分看不清楚。",
+          "image": "assets/map-failure.png",
+          "large": true
         },
         {
           "type": "setFlag",
@@ -1015,6 +1196,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1026,8 +1229,17 @@ window.GAME_DATA = {
           "text": "你观察尸体，发现距离死亡时间并未过去很久。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "radio_07_ready",
           "value": true
         }
       ]
@@ -1040,8 +1252,17 @@ window.GAME_DATA = {
           "text": "你观察尸体，但并未发现任何异常。"
         },
         {
+          "type": "dialogue",
+          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+        },
+        {
           "type": "setFlag",
           "key": "visited_carriage_07",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "radio_07_ready",
           "value": true
         }
       ]
@@ -2515,6 +2736,13 @@ window.GAME_DATA = {
     }
   ],
   "items": [
+    {
+      "id": "note_06_item",
+      "name": "便签",
+      "image": "assets/note.png",
+      "description": "从 6 号车厢门上取下来的便签。",
+      "inspectEvent": "E_NOTE_06_ITEM"
+    },
     {
       "id": "old_ticket",
       "name": "旧车票",

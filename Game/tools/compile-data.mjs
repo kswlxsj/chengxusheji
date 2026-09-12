@@ -199,6 +199,15 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
   const objectIds = new Set();
   for (const scene of scenes) {
     assert(typeof scene.background === "string", `场景缺少背景：${scene.id}`);
+    if (scene.backgroundVariants != null) {
+      assert(Array.isArray(scene.backgroundVariants), `场景 ${scene.id} 的背景变体必须是数组`);
+      for (const variant of scene.backgroundVariants) {
+        assertPlainObject(variant, `场景 ${scene.id} 存在无效背景变体`);
+        assertOnlyKeys(variant, ["image", "visibleWhen"], `场景 ${scene.id} 的背景变体`);
+        assert(typeof variant.image === "string" && variant.image,
+          `场景 ${scene.id} 的背景变体缺少 image`);
+      }
+    }
     for (const object of scene.objects || []) {
       assertId(object.id, `场景 ${scene.id} 存在无效物件 id`);
       assert(!objectIds.has(object.id), `物件 id 重复：${object.id}`);
@@ -216,13 +225,16 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
 
   const references = { attributeIds, skillIds, itemIds, objectIds };
   for (const scene of scenes) {
+    for (const variant of scene.backgroundVariants || []) {
+      validateCondition(variant.visibleWhen, references, `场景 ${scene.id} 的背景变体条件`);
+    }
     for (const object of scene.objects || []) validateCondition(object.visibleWhen, references, `物件 ${object.id}.visibleWhen`);
   }
 
   const actionTypes = new Set([
     "dialogue", "inspect", "choice", "check", "changeScene", "setFlag",
     "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem",
-    "setObjectState", "custom", "minigame"
+    "setObjectState", "custom", "minigame", "conditionalJump"
   ]);
   for (const event of events) {
     assert(Array.isArray(event.actions), `事件缺少 actions：${event.id}`);
@@ -231,6 +243,10 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
       assert(actionTypes.has(action.type), `事件 ${event.id} 使用未知动作：${action.type}`);
       if (action.type === "changeScene") assert(sceneIds.has(action.scene), `事件 ${event.id} 引用了不存在的场景`);
       if (action.type === "addItem") assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
+      if (action.type === "conditionalJump") {
+        assert(eventIds.has(action.next), `事件 ${event.id} 的条件跳转目标不存在：${action.next}`);
+        validateCondition(action.when, references, `事件 ${event.id} 的条件跳转条件`);
+      }
       if (action.type === "inspect") {
         if (action.item) {
           assert(itemIds.has(action.item), `事件 ${event.id} 的调查动作引用了不存在的物品：${action.item}`);

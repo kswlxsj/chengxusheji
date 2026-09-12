@@ -86,7 +86,8 @@
         await this.ui.inspect.show({
           title: action.title || item.name,
           text: action.text || item.description,
-          image: action.image || item.image
+          image: action.image || item.image,
+          large: action.large === true
         });
       });
 
@@ -149,6 +150,23 @@
 
       this.registerAction("setObjectState", async (action) => {
         this.state.setObjectState(action.object, action.patch);
+      });
+
+      // 小游戏结算专用跳转动作：模块返回后把当前事件链切到指定事件。
+      this.registerAction("jump", async (action) => {
+        if (typeof action.next !== "string" || !action.next) {
+          throw new Error("跳转动作缺少目标事件编号");
+        }
+        return { next: action.next, stop: true };
+      });
+
+      // 条件成立时结束当前事件并进入指定事件；用于把物件调查完成状态接到剧情入口。
+      this.registerAction("conditionalJump", async (action) => {
+        if (!Game.evaluateCondition(action.when, this.state)) return null;
+        if (typeof action.next !== "string" || !action.next) {
+          throw new Error("条件跳转动作缺少目标事件编号");
+        }
+        return { next: action.next, stop: true };
       });
 
       this.registerAction("custom", async (action) => {

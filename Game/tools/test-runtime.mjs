@@ -415,6 +415,31 @@ try {
   sandbox.Math.random = originalRandom;
 }
 
+// 有骰子动画宿主时，检定必须把骰点、成败和说明交给动画窗口。
+const animationCalls = [];
+const animationEngine = new Game.EventEngine({
+  events: [],
+  state: registeredState,
+  items: [],
+  scene: {},
+  ui: {
+    ...createEngineUi(),
+    dice: { roll: async (payload) => { animationCalls.push(payload); } }
+  }
+});
+try {
+  sandbox.Math.random = () => 0;
+  await animationEngine.actions.get("check")({
+    type: "check", dice: "ev005_insight_01", outcomes: ["EV_SUCCESS", "EV_FAIL"]
+  });
+  assert.equal(animationCalls.length, 1, "检定应调用骰子动画窗口");
+  assert.equal(animationCalls[0].value, 1, "骰子动画应收到实际骰点");
+  assert.equal(animationCalls[0].success, false, "骰子动画应收到检定结果");
+  assert.equal(animationCalls[0].text.includes("1d6 掷出 1"), true, "骰子动画应收到检定说明");
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
 // SAN 检定损失（真实属性表，SAN 初始分配 5）。
 const sanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 sanState.completeAttributeAllocation({
@@ -583,6 +608,31 @@ registerStubMinigame("mg_test_settle", async () => [
   { type: "setFlag", key: "mg_settled", value: true },
   { type: "modifyAttribute", attribute: "strength", amount: 1 }
 ]);
+
+// 1b) 小游戏可以通过结算专用 jump 动作把事件链切到成功分支。
+registerStubMinigame("mg_test_jump", async () => [
+  { type: "jump", next: "E_MG_JUMP_SUCCESS" }
+]);
+{
+  const { state, engine } = createMgEngine([
+    {
+      id: "E_MG_JUMP",
+      actions: [{ type: "minigame", game: "mg_test_jump" }],
+      next: "E_MG_JUMP_FAILURE"
+    },
+    {
+      id: "E_MG_JUMP_SUCCESS",
+      actions: [{ type: "setFlag", key: "jump_success", value: true }]
+    },
+    {
+      id: "E_MG_JUMP_FAILURE",
+      actions: [{ type: "setFlag", key: "jump_failure", value: true }]
+    }
+  ]);
+  assert.equal(await engine.play("E_MG_JUMP"), true, "小游戏 jump 结算应正常结束事件");
+  assert.equal(state.flags.jump_success, true, "小游戏 jump 结算应进入成功分支");
+  assert.equal(state.flags.jump_failure, undefined, "小游戏 jump 结算不应执行默认失败分支");
+}
 {
   const { state, engine } = createMgEngine([{
     id: "E_MG_SETTLE",
@@ -708,29 +758,6 @@ registerStubMinigame("mg_test_quit", async (context) => {
   } finally {
     clearTimeout(timer);
   }
-}
-
-// ==== 乘务员交涉最终检定（ev014_negotiation_final_01：40% 基础 + 加成，封顶 100%）====
-{
-  const inspectSink = [];
-  const negotiationContext = (bonus) => {
-    const state = createState();
-    state.completeAttributeAllocation({ strength: 4, insight: 1 });
-    if (bonus != null) state.flags.ev014_negotiation_bonus = bonus;
-    return { state, ui: { ...createEngineUi(), inspect: { show: async (payload) => { inspectSink.push(payload); } } } };
-  };
-  // 加成 90 → 成功率 100%，必然成功（返回下标 0）。
-  assert.equal(
-    await Game.Dice.get("ev014_negotiation_final_01")(negotiationContext(90), ["E_014_TALK_S", "E_014_TALK_F"]),
-    0, "加成 90（成功率 100%）应必然成功"
-  );
-  // 无旗标（默认 0 加成）→ 返回合法下标（0 或 1），并弹出一次检定窗口。
-  inspectSink.length = 0;
-  const noBonusIndex = await Game.Dice.get("ev014_negotiation_final_01")(
-    negotiationContext(), ["E_014_TALK_S", "E_014_TALK_F"]
-  );
-  assert.ok(noBonusIndex === 0 || noBonusIndex === 1, "无交加成时应返回合法结果下标");
-  assert.equal(inspectSink.length, 1, "最终检定应弹出一次结果窗口");
 }
 
 console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。");

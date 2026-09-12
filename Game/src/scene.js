@@ -146,7 +146,9 @@
       this.root.replaceChildren();
       const background = document.createElement("img");
       background.className = "scene-background";
-      background.src = scene.background;
+      const backgroundVariant = (scene.backgroundVariants || [])
+        .find((variant) => evaluateCondition(variant.visibleWhen, this.state));
+      background.src = backgroundVariant?.image || scene.background;
       background.alt = scene.name;
       this.root.append(background);
 
@@ -187,6 +189,7 @@
     renderCanvasObject(object) {
       const art = document.createElement("img");
       art.className = "scene-object-art";
+      art.dataset.objectId = object.id;
       art.src = object.image;
       art.alt = "";
       art.style.zIndex = String(object.zIndex || 10);
@@ -195,6 +198,7 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "scene-object scene-object-hit";
+      button.dataset.objectId = object.id;
       button.disabled = !this.interactionEnabled;
       button.title = object.name || object.id;
       button.setAttribute("aria-label", object.name || object.id);
@@ -205,6 +209,11 @@
 
       const entry = { object, art, button, meta: null };
       this.canvasObjects.push(entry);
+      // 贴图加载前先使用场景里声明的命中框，避免本地文件/缓存导致整幅物件无法点击。
+      if (object.hitPosition) {
+        this.placeHitButton(entry);
+        button.style.pointerEvents = "";
+      }
       readImageMeta(object.image).then((meta) => {
         if (!meta || !button.isConnected) return;
         entry.meta = meta;
@@ -218,6 +227,15 @@
       const stageWidth = rect.width || this.root.clientWidth || 1600;
       const stageHeight = rect.height || this.root.clientHeight || 900;
       const { meta } = entry;
+      if (!meta) {
+        const hit = entry.object.hitPosition;
+        if (!hit) return;
+        entry.button.style.left = `${hit.x}%`;
+        entry.button.style.top = `${hit.y}%`;
+        entry.button.style.width = `${hit.width}%`;
+        entry.button.style.height = `${hit.height}%`;
+        return;
+      }
       const transform = coverTransform(stageWidth, stageHeight, meta.width, meta.height);
       const left = transform.offsetX + meta.bbox.x0 * transform.scale;
       const top = transform.offsetY + meta.bbox.y0 * transform.scale;
@@ -292,7 +310,7 @@
       const rect = point.rect;
       let best = null;
       for (const entry of this.canvasObjects) {
-        if (!entry.meta || entry.button.disabled) continue;
+        if ((!entry.meta && !entry.object.hitPosition) || entry.button.disabled) continue;
         if (this.alphaHit(entry, rect, point.x, point.y)) {
           const z = entry.object.zIndex || 10;
           if (!best || z >= (best.object.zIndex || 10)) best = entry;
@@ -302,7 +320,7 @@
     }
 
     isEntryHit(entry, event) {
-      if (!entry.meta) return false;
+      if (!entry.meta && !entry.object.hitPosition) return false;
       const point = this.stagePoint(event);
       return Boolean(point) && this.alphaHit(entry, point.rect, point.x, point.y);
     }
@@ -317,6 +335,15 @@
 
     alphaHit(entry, rect, x, y) {
       const { meta } = entry;
+      if (!meta) {
+        const hit = entry.object.hitPosition;
+        if (!hit || !rect.width || !rect.height) return false;
+        const left = (hit.x / 100) * rect.width;
+        const top = (hit.y / 100) * rect.height;
+        const right = left + (hit.width / 100) * rect.width;
+        const bottom = top + (hit.height / 100) * rect.height;
+        return x >= left && x <= right && y >= top && y <= bottom;
+      }
       const transform = coverTransform(rect.width, rect.height, meta.width, meta.height);
       const canvasX = (x - transform.offsetX) / transform.scale;
       const canvasY = (y - transform.offsetY) / transform.scale;

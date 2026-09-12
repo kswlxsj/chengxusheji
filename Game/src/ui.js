@@ -422,8 +422,9 @@
       this.resolve = null;
     }
 
-    show({ title = "调查", text = "", image = null }) {
+    show({ title = "调查", text = "", image = null, large = false }) {
       this.close();
+      this.element.classList.toggle("inspect-large", large === true);
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop";
       const heading = document.createElement("h2");
@@ -431,12 +432,16 @@
       const content = document.createElement("div");
       content.className = "inspect-content";
       if (image) {
+        const media = document.createElement("div");
+        media.className = "inspect-media";
         const img = document.createElement("img");
         img.src = image;
         img.alt = title;
-        content.append(img);
+        media.append(img);
+        content.append(media);
       }
       const paragraph = document.createElement("p");
+      paragraph.className = "inspect-text";
       paragraph.textContent = text;
       content.append(paragraph);
       const close = document.createElement("button");
@@ -460,6 +465,80 @@
       const resolve = this.resolve;
       this.resolve = null;
       if (resolve) resolve();
+    }
+  }
+
+  class DiceRollWindow {
+    constructor(root) {
+      this.root = root;
+      this.backdrop = null;
+      this.diceBox = null;
+      this.image = null;
+      this.status = null;
+      this.result = null;
+    }
+
+    async roll({ value = null, success = true, text = "", outcomeText = "", wait = Game.delay }) {
+      this.close();
+      const backdrop = document.createElement("div");
+      backdrop.className = "check-roll-modal";
+      const content = document.createElement("div");
+      content.className = "check-roll-content";
+      const diceBox = document.createElement("div");
+      diceBox.className = "dice-box dice-rolling";
+      const image = document.createElement("img");
+      image.src = "assets/ui/dice.png";
+      image.alt = "骰子";
+      diceBox.append(image);
+      const status = document.createElement("p");
+      status.className = "check-roll-status";
+      status.textContent = "检定中……";
+      const result = document.createElement("p");
+      result.className = "check-result-panel";
+      result.setAttribute("aria-live", "polite");
+      content.append(diceBox, status, result);
+      backdrop.append(content);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+      this.diceBox = diceBox;
+      this.image = image;
+      this.status = status;
+      this.result = result;
+
+      try {
+        await wait(1100);
+        if (this.backdrop !== backdrop) return;
+        const face = Number.isInteger(value) && value >= 1 && value <= 6
+          ? `assets/ui/dice_0${value}.png`
+          : "assets/ui/dice.png";
+        this.image.src = face;
+        this.diceBox.classList.remove("dice-rolling");
+        this.diceBox.classList.add("dice-result-static");
+      this.status.hidden = true;
+      this.result.textContent = text;
+      this.result.classList.add(success ? "success" : "fail", "is-visible");
+      await wait(1200);
+      if (this.backdrop !== backdrop) return;
+      if (outcomeText) {
+        this.result.classList.remove("is-visible");
+        await wait(220);
+        if (this.backdrop !== backdrop) return;
+        this.result.textContent = outcomeText;
+        this.result.classList.add("is-visible");
+      }
+      await wait(1900);
+      } finally {
+        if (this.backdrop === backdrop) this.close();
+      }
+    }
+
+    close() {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      this.diceBox = null;
+      this.image = null;
+      this.status = null;
+      this.result = null;
     }
   }
 
@@ -624,6 +703,7 @@
       this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
+      this.dice = new DiceRollWindow(root);
       this.mainMenu = new MenuWindow(root, "main-menu-window");
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
       this.confirmMenu = new MenuWindow(root, "confirm-menu-window");
@@ -644,6 +724,7 @@
       this.dialog.close();
       this.choice.close(null);
       this.inspect.close();
+      this.dice.close();
       this.minigame.close();
     }
 

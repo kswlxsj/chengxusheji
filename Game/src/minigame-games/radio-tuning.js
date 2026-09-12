@@ -8,7 +8,7 @@
   const RANGE_SPAN = 64.8;
   const HOLD_DURATION = 3000;
   const RANGE_SPEED_SCALE = 1.08;
-  const POINTER_STEP = 10;
+  const POINTER_STEP = 5 * 2.16;
 
   const STYLE_TEXT = `
     .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: Georgia, "Microsoft YaHei", sans-serif; }
@@ -69,7 +69,7 @@
         </div>
       </section>
       <section class="rt-result" data-result hidden>
-        <h2>信号捕获成功</h2><p>指针稳定达成，广播正在解码……</p>
+        <h2>信号捕获成功</h2><p>指针稳定达成，正在读取广播……</p>
       </section>
     </section>
   `;
@@ -147,7 +147,10 @@
       status.textContent = "稳定时间达成，正在解码广播……";
       result.hidden = false;
       await context.wait(720);
-      resolveFinish([{ type: "setFlag", key: RESULT_FLAG, value: true }]);
+      resolveFinish([
+        { type: "setFlag", key: RESULT_FLAG, value: true },
+        { type: "setFlag", key: "radio_07_done", value: true }
+      ]);
     }
 
     function tick(now) {
@@ -181,7 +184,10 @@
       if (resolved) return null;
       resolved = true;
       cancelAnimationFrame(animationFrame);
-      return [{ type: "setFlag", key: RESULT_FLAG, value: false }];
+      return [
+        { type: "setFlag", key: RESULT_FLAG, value: false },
+        { type: "setFlag", key: "radio_07_done", value: false }
+      ];
     });
 
     context.registerCleanup(() => {

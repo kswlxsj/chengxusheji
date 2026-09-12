@@ -3,6 +3,15 @@
     "id": "carriage_06",
     "name": "6 号车厢",
     "background": "assets/carriage-06.png",
+    "backgroundVariants": [
+      {
+        "image": "assets/carriage-06-note-removed.png",
+        "visibleWhen": {
+          "flag": "note_collected",
+          "equals": true
+        }
+      }
+    ],
     "objects": [
       {
         "id": "note_06",
@@ -15,16 +24,32 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 49.9298,
+          "y": 40.5,
+          "width": 3.7922,
+          "height": 6.75
+        },
         "zIndex": 12,
         "clickEvent": "E_002",
         "visibleWhen": {
-          "not": {
-            "objectState": {
-              "objectId": "note_06",
-              "property": "hidden",
-              "equals": true
+          "all": [
+            {
+              "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "objectState": {
+                  "objectId": "note_06",
+                  "property": "hidden",
+                  "equals": true
+                }
+              }
             }
-          }
+          ]
         }
       },
       {
@@ -38,7 +63,19 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_005"
+        "clickEvent": "E_005",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "note_back_seen",
+              "equals": true
+            },
+            {
+              "flag": "map_seen",
+              "equals": true
+            }
+          ]
+        }
       },
       {
         "id": "door_06_to_05",
@@ -64,10 +101,22 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 49.9298,
+          "y": 40.5,
+          "width": 3.7922,
+          "height": 6.75
+        },
         "zIndex": 13,
         "clickEvent": "E_003",
         "visibleWhen": {
           "all": [
+            {
+              "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
             {
               "flag": "note_front_seen",
               "equals": true
@@ -94,6 +143,12 @@
           "y": 0,
           "width": 100,
           "height": 100
+        },
+        "hitPosition": {
+          "x": 42.5562,
+          "y": 51.75,
+          "width": 5.2669,
+          "height": 7.125
         },
         "zIndex": 12,
         "clickEvent": "E_004",
@@ -142,8 +197,28 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 62.22,
+          "y": 63.5,
+          "width": 5.51,
+          "height": 9.06
+        },
         "zIndex": 12,
-        "clickEvent": "E_0008"
+        "clickEvent": "E_0008",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "radio_07_ready",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "radio_07_done",
+                "equals": true
+              }
+            }
+          ]
+        }
       },
       {
         "id": "return_door_07",
@@ -168,6 +243,12 @@
           "y": 0,
           "width": 100,
           "height": 100
+        },
+        "hitPosition": {
+          "x": 75.5,
+          "y": 61.5,
+          "width": 13.5,
+          "height": 13.5
         },
         "clickEvent": "E_007"
       },
