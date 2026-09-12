@@ -24,14 +24,19 @@
     items: data.items,
     shouldTerminate: (currentState) => Boolean(currentState.flags.ending_reason)
       || currentState.getAttribute("san") <= 0,
-    onTerminate: () => {
+    onTerminate: async () => {
       if (ending) return;
       ending = true;
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
-      // CODEX ADD START
+      if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
+        try {
+          await Game.playSanZeroSequence();
+        } catch (error) {
+          console.error("SAN 归零演出失败：", error);
+        }
+      }
       showEndingOverlay(reason);
-      // CODEX ADD END
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -285,7 +290,7 @@
   }
 
   function pauseGame() {
-    if (startupLocked || paused || ui.minigame.isOpen()) return;
+    if (startupLocked || paused || ending || ui.minigame.isOpen()) return;
     paused = true;
     gameShell.classList.add("paused");
     engine.setPaused(true);

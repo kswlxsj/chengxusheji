@@ -17,7 +17,7 @@
   const clamp = (value, minimum, maximum) => Math.min(Math.max(value, minimum), maximum);
 
   function run(context) {
-    // 无 DOM 的编译/自动化环境直接跳过画面；E_028 的 next 会把它视为失败路线。
+    // 无 DOM 的编译/自动化环境直接跳过画面；E_026 的 next 会继续原来的把手事件。
     if (!context.stage) return Promise.resolve(null);
 
     const stage = context.stage;

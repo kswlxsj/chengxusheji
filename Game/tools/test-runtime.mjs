@@ -555,6 +555,42 @@ assert.equal(terminalState.getAttribute("strength"), 0, "终止状态不应回�
 assert.equal(terminalState.flags.continued, undefined, "终止后的动作不应继续执行");
 assert.equal(terminalCalls, 1, "终止回调应只执行一次");
 
+// 异步终止演出必须先完成，play() 才能结束；避免结局图层比演出提前出现。
+const delayedTerminalState = createState();
+delayedTerminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
+let releaseTermination;
+let terminationStarted = false;
+let terminationFinished = false;
+let delayedPlayFinished = false;
+const delayedTerminalEngine = new Game.EventEngine({
+  events: [{
+    id: "E_DELAYED_TERMINAL",
+    actions: [{ type: "modifyAttribute", attribute: "strength", amount: -4 }]
+  }],
+  state: delayedTerminalState,
+  items: [],
+  scene: createEngineScene(),
+  ui: createEngineUi(),
+  shouldTerminate: (currentState) => currentState.getAttribute("strength") === 0,
+  onTerminate: async () => {
+    terminationStarted = true;
+    await new Promise((resolve) => { releaseTermination = resolve; });
+    terminationFinished = true;
+  }
+});
+const delayedPlay = delayedTerminalEngine.play("E_DELAYED_TERMINAL").then((value) => {
+  delayedPlayFinished = true;
+  return value;
+});
+for (let index = 0; index < 20 && !terminationStarted; index += 1) {
+  await Promise.resolve();
+}
+assert.equal(terminationStarted, true, "终止回调应开始执行");
+assert.equal(delayedPlayFinished, false, "play() 应等待异步终止演出完成");
+releaseTermination();
+assert.equal(await delayedPlay, false, "延迟终止完成后 play() 应正常收尾");
+assert.equal(terminationFinished, true, "异步终止演出应完整执行");
+
 // 检定函数内把属性扣到 0 同样触发终止，事件链不再继续。
 const diceTerminalState = createState();
 diceTerminalState.completeAttributeAllocation({ strength: 4, insight: 1 });

@@ -396,7 +396,11 @@
       } catch (error) {
         terminated = error instanceof TerminalStateReached;
         if (terminated) {
-          this.onTerminate(this.state);
+          try {
+            await this.onTerminate(this.state);
+          } catch (terminationError) {
+            console.error("终止回调失败：", terminationError);
+          }
         } else {
           this.restoreStableState();
         }
