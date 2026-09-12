@@ -220,43 +220,89 @@ Game/
 ├─ .vscode/
 │  └─ settings.json
 ├─ assets/
+│  ├─ audio/
+│  │  ├─ bgm.mp3
+│  │  └─ op.mp3
+│  ├─ miniGame/
+│  │  └─ 交涉背景.png
+│  ├─ op/
+│  │  ├─ op-1.png
+│  │  ├─ op-2.png
+│  │  ├─ op-3.png
+│  │  ├─ op-4.png
+│  │  └─ op-5.png
+│  ├─ ui/
+│  │  ├─ card-battle/
+│  │  │  ├─ attack.png
+│  │  │  ├─ background.png
+│  │  │  ├─ card-base.png
+│  │  │  ├─ defend.png
+│  │  │  ├─ enemy.png
+│  │  │  ├─ heal.png
+│  │  │  ├─ hp-bar.png
+│  │  │  └─ ultimate.png
+│  │  ├─ beibao.png
+│  │  ├─ dice_00.png
+│  │  ├─ dice_01.png
+│  │  ├─ dice_02.png
+│  │  ├─ dice_03.png
+│  │  ├─ dice_04.png
+│  │  ├─ dice_05.png
+│  │  ├─ dice_06.png
+│  │  ├─ hp-bar.png
+│  │  └─ initial-menu-marker.png
+│  ├─ video/
+│  │  ├─ end.mp4
+│  │  └─ start.mp4
+│  ├─ bag-05-a.png
+│  ├─ bag-05-b.png
+│  ├─ black-bag-03.png
+│  ├─ bottle-inner.png
 │  ├─ carriage-02.png
+│  ├─ carriage-03.png
 │  ├─ carriage-04.png
-│  ├─ carriage-05-03.png
+│  ├─ carriage-05.png
+│  ├─ carriage-06-note-removed.png
 │  ├─ carriage-06.png
 │  ├─ carriage-07.png
+│  ├─ carriage-fake-04.png
 │  ├─ carriage-inner-01.png
 │  ├─ carriage-inner-02.png
-│  ├─ carriage-fake-04.png
-│  ├─ flower-sea.png
-│  ├─ flower-sea-inside.png
-│  ├─ inner-02-window.png
-│  ├─ inner-02-bottle.png
-│  ├─ inner-03-flower-window.png
-│  ├─ inner-03-fog-window.png
-│  ├─ bottle-inner.png
-│  ├─ carriage-06.svg
-│  ├─ carriage-07.svg
-│  ├─ cover-placeholder.svg
-│  ├─ door.svg
-│  ├─ note.svg
-│  ├─ radio.svg
-│  ├─ corpse-07.svg
-│  ├─ deep-07.svg
-│  ├─ front-carriage.png
-│  ├─ black-bag-03.png
 │  ├─ clicker-02.png
 │  ├─ control-lever.png
+│  ├─ corpse-07.png
+│  ├─ corpse-07.svg
+│  ├─ cover-placeholder.svg
 │  ├─ crew-04.png
+│  ├─ crew-portrait.png
+│  ├─ deep-07.svg
+│  ├─ door.svg
+│  ├─ flashlight.png
+│  ├─ flower-sea-inside.png
+│  ├─ flower-sea.png
+│  ├─ front-carriage.png
+│  ├─ inner-02-bottle.png
+│  ├─ inner-02-window.png
+│  ├─ inner-03-flower-window.png
+│  ├─ inner-03-fog-window.png
+│  ├─ label-back.png
+│  ├─ label-front.png
 │  ├─ map-06.png
+│  ├─ map-failure.png
+│  ├─ map-success.png
 │  ├─ mg3d-demo-spot.svg
 │  ├─ newspaper-05.png
 │  ├─ newspaper-icon.png
+│  ├─ note-06.png
+│  ├─ note.png
+│  ├─ note.svg
+│  ├─ pc-portrait.png
 │  ├─ phone.png
-│  ├─ placeholder-bottle.svg
 │  ├─ placeholder-key.svg
-│  ├─ clutter-05.svg
-│  └─ flashlight.svg
+│  ├─ radio-07.png
+│  ├─ radio.svg
+│  ├─ trash-05-a.png
+│  └─ trash-05-b.png
 ├─ data/
 │  ├─ attributes.json
 │  ├─ compiled-game-data.js
@@ -398,29 +444,41 @@ Game/
 
 ### `assets/`
 
+目录按用途分层：`ui/`（控件贴图）、`op/`（开场动画分镜）、`video/`、`audio/`、`miniGame/`；其余车厢背景、物件贴图与物品图标平铺在根下。
+
 | 文件 | 用途 |
 | --- | --- |
-| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
-| `carriage-inner-01.png`、`carriage-inner-02.png`、`carriage-fake-04.png`、`flower-sea.png`、`flower-sea-inside.png` | **里世界（E-501~E-525）**背景：空车厢、花草车厢、伪4号车厢、花海·车门外、花海·室内（依次复制自 `Assets/Image/Scene/Background/` 的 `inner_01_empty.png`、`inner_02.png`、`inner_03_flower.png`、`花海.png`、`室内.png`）。源文件为 16:9 宽幅（非正方形），与既有车厢美术的出图规格不同，物件对齐若要精确需美术统一画布。 |
+| `carriage-02/03/04/05/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，2848×1600 画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `carriage-06-note-removed.png` | 6 号车厢"便签已取走"的背景变体。 |
+| `carriage-inner-01.png`、`carriage-inner-02.png`、`carriage-fake-04.png`、`flower-sea.png`、`flower-sea-inside.png` | **里世界（E-501~E-525）**背景：空车厢、花草车厢、伪4号车厢、花海·车门外、花海·室内。注意 `assets/` 名与源目录名**不同名**，对照关系为 `inner_01_empty.png` → `carriage-inner-01.png`、`inner_02.png` → `carriage-fake-04.png`、`inner_03_flower.png` → `carriage-inner-02.png`、`花海.png` → `flower-sea.png`、`室内.png` → `flower-sea-inside.png`。这批源图为 16:9 宽幅（非正方形），与既有车厢美术的出图规格不同，物件对齐若要精确需美术统一画布。 |
 | `inner-02-window.png` | 花草车厢的"窗外"调查点贴图（整幅蒙版，复制自 `Assets/Image/Scene/StillLife/inner_02_window.png`；`fullCanvas: true`，`clickEvent → E_504`）。 |
 | `inner-02-bottle.png` | 花草车厢的"彩色玻璃瓶"拾取点贴图（整幅蒙版，复制自 `StillLife/inner_02_bottle.png`；`fullCanvas: true`，`clickEvent → E_503_PICK`，拾取后按旗标隐藏）。 |
-| `inner-03-flower-window.png`、`inner-03-fog-window.png` | 伪4号车厢车窗的两个互斥版本（整幅蒙版，复制自 `StillLife/inner_03_flower_window.png` / `inner_03_fog_window.png`；按"是否已侦察窗外"二选一显示，均 `clickEvent → E_516`）。 |
+| `inner-03-flower-window.png`、`inner-03-fog-window.png` | 伪4号车厢车窗的两个互斥版本（整幅蒙版，复制自 `StillLife/inner_03_flower_window.png` / `inner_03_fog_window.png`；按"是否已侦察窗外"二选一显示，均 `clickEvent → E_516`）。**待确认**：`inner-03-fog-window.png` 与源目录 `Scene/Background/inner_03_fog.png`（一张白茫茫的**背景**，2843×1600）逐字节相同，疑为接入时选错源文件。 |
 | `bottle-inner.png` | 瓶子道具图标（复制自 `Assets/Image/Item/玻璃瓶.png`），里世界与主剧本 2 号车厢的瓶子共用此图标。 |
-| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
-| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
+| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png`、`bag-05-a.png`、`bag-05-b.png`、`trash-05-a.png`、`trash-05-b.png`、`newspaper-05.png`、`note-06.png`、`radio-07.png`、`corpse-07.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
+| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）。 |
+| `label-front.png`、`label-back.png`、`map-success.png`、`map-failure.png` | 便签正反面与地图检定成功/失败插图。 |
 | `phone.png` | 手机物件/物品栏图标。 |
 | `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
-| `clutter-05.svg` | 5 号车厢散落杂物（行李/纸堆等）共用的物件贴图。 |
 | `door.svg` | 各车厢门共用的透明物件贴图。 |
-| `flashlight.svg` | 手电筒物品图标。 |
+| `flashlight.png` | 手电筒物品图标（由 `Assets/Image/Item/手电筒.png` 等比缩放至 384×384 后入库）。 |
 | `note.svg` | 便签贴图，同时暂作旧车票图片。 |
 | `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
 | `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
-| `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
-| `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
+| `placeholder-key.svg` | 钥匙的占位贴图。 |
+| `crew-portrait.png`、`pc-portrait.png` | 交涉小游戏（`crew-negotiation`）的乘务员与玩家立绘。 |
+| `ui/dice_00.png`、`ui/dice_01.png` ~ `ui/dice_06.png` | 检定骰子贴图：`dice_00` 为滚动中的过渡帧，`dice_01`~`dice_06` 对应投出的 1~6 点（`src/ui.js` 按点数拼名读取）。 |
+| `ui/hp-bar.png`、`ui/beibao.png`、`ui/initial-menu-marker.png` | HUD 血条底图、背包框与初始界面进度标记（`styles/main.css` 引用）。 |
+| `ui/card-battle/` | 卡牌战斗小游戏的背景、卡底、四类卡面、敌人头像与血条槽。 |
+| `miniGame/交涉背景.png` | 交涉小游戏背景（该文件名含中文，是 `assets/` 下唯一的非 ASCII 路径）。 |
+| `op/op-1.png` ~ `op/op-5.png` | 开场动画分镜（`src/home-op.js` 顺序播放）。 |
+| `video/start.mp4`、`video/end.mp4` | 主页开场视频与结局视频。 |
+| `audio/bgm.mp3`、`audio/op.mp3` | 背景音乐与开场音乐。 |
 
-背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
+背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。物品图标基准边长 384px（`note.png` 200px、`newspaper-icon.png` 30px 为历史遗留的小图）。
+
+> 新增素材前的自检：仓库根 `Assets/` 是美术源目录（**只读**，最新版都在那里），`Game/assets/` 是运行目录。源图入库需复制并改为 ASCII 语义化文件名，且必须在 `data/*.json` 里有对应引用，否则会成为无人引用的死素材。审计方法：把全仓 `assets/...` 字符串引用与 `Game/assets/` 实际文件做集合差。
 
 ### `data/`
 

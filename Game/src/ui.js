@@ -495,7 +495,7 @@
       const diceBox = document.createElement("div");
       diceBox.className = "dice-box dice-rolling";
       const image = document.createElement("img");
-      image.src = "assets/ui/dice.png";
+      image.src = "assets/ui/dice_00.png";
       image.alt = "骰子";
       diceBox.append(image);
       const status = document.createElement("p");
@@ -518,7 +518,7 @@
         if (this.backdrop !== backdrop) return;
         const face = Number.isInteger(value) && value >= 1 && value <= 6
           ? `assets/ui/dice_0${value}.png`
-          : "assets/ui/dice.png";
+          : "assets/ui/dice_00.png";
         this.image.src = face;
         this.diceBox.classList.remove("dice-rolling");
         this.diceBox.classList.add("dice-result-static");

@@ -4191,7 +4191,7 @@ window.GAME_DATA = {
     {
       "id": "flashlight",
       "name": "手电筒",
-      "image": "assets/flashlight.svg",
+      "image": "assets/flashlight.png",
       "description": "一支还能发光的手电筒。",
       "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
     }
