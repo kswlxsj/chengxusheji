@@ -3018,8 +3018,40 @@ window.GAME_DATA = {
           "text": "你折返向身后的车门，握住门把。"
         },
         {
-          "type": "dialogue",
-          "text": "（随机：10% —— 你推开门，回到的是6号车厢——此时的车厢已经被啃食（→ E-525）；60% —— 门被关死，打不开；30% —— 门正常地打开了，门外是3号车厢，如果从这里返回 6 号车厢，也会看到被啃食的场景）"
+          "type": "custom",
+          "name": "weightedBranch",
+          "params": {
+            "outcomes": [
+              {
+                "weight": 10,
+                "flag": "ev502_return_eaten"
+              },
+              {
+                "weight": 60,
+                "flag": "ev502_return_locked"
+              },
+              {
+                "weight": 30,
+                "flag": "ev502_return_carriage03"
+              }
+            ]
+          }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev502_return_eaten",
+            "equals": true
+          },
+          "next": "E_525"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev502_return_carriage03",
+            "equals": true
+          },
+          "next": "E_502_CARRIAGE03"
         },
         {
           "type": "dialogue",
@@ -3040,6 +3072,33 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_503"
+    },
+    {
+      "id": "E_502_CARRIAGE03",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_03"
+        },
+        {
+          "type": "dialogue",
+          "text": "车门打开，门外是3号车厢，灯光昏黄，一切如常。"
+        },
+        {
+          "type": "dialogue",
+          "text": "那趟门后的旅程仿佛从未发生过。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_inner_backtrack",
+          "value": false
+        }
+      ]
     },
     {
       "id": "E_503",
@@ -4132,11 +4191,49 @@ window.GAME_DATA = {
           "next": "E_523"
         },
         {
+          "type": "dialogue",
+          "text": "你向来路折返。"
+        },
+        {
+          "type": "custom",
+          "name": "weightedBranch",
+          "params": {
+            "outcomes": [
+              {
+                "weight": 50,
+                "flag": "ev503_return_carriage01"
+              },
+              {
+                "weight": 50,
+                "flag": "ev503_return_forward"
+              }
+            ]
+          }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev503_return_forward",
+            "equals": true
+          },
+          "next": "E_503_RETURN_FORWARD"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_inner_01"
         }
       ],
       "next": "E_502"
+    },
+    {
+      "id": "E_503_RETURN_FORWARD",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你摇了摇头，转身继续前进。"
+        }
+      ],
+      "next": "E_505"
     },
     {
       "id": "E_509_BACK",

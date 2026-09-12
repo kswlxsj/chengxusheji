@@ -495,6 +495,8 @@ engine.registerCustomAction("shakeWindow", async (params, context) => {
 | `wait(milliseconds)` | 随暂停冻结、返回主界面时取消的延迟。 |
 | `throwIfCancelled()` | 异步等待后、写状态前确认运行仍有效。 |
 
+当前项目白名单（`custom-actions.js`）：`flashScreen` 全屏闪白；`useLight` 2 号车厢照明（兼作手机 / 手电筒的调查事件）；`endGame` 写入 `flags.ending_reason`（只接受 `true_end` / `bad_end`，由游戏页入口跳结束页）；`weightedBranch` 按权重**静默**随机分岔——`params.outcomes` 是 `[{ weight, flag }, ...]`（权重为正数、顺序即掷点区间顺序），掷一次后把选中项的 `flag` 置 `true`、其余置 `false`，事件再用 `conditionalJump` 读取旗标分支（例见 `E_502_RETURN` 的 10% / 60% / 30% 三条出口）。
+
 规则与安全边界：
 
 - 通过状态接口修改属性/技能：`context.state.getAttribute/setAttribute/modifyAttribute/getSkill/setSkill/learnSkill/loseSkill`；不要直接写 `state.attributes` 或 `state.skills`。
