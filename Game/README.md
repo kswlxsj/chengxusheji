@@ -310,6 +310,7 @@ Game/
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
+│  ├─ confirm-dialog.js
 │  ├─ custom-actions.js
 │  ├─ dice.js
 │  ├─ events.js
@@ -436,6 +437,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
+| `confirm-dialog.js` | `TrainGame.ConfirmDialog`：存档页（选择槽位 / 存档管理）共用的页面内确认框，替代浏览器原生 `window.confirm`，外观与游戏本体菜单一致。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -447,8 +449,8 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
-| `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
-| `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
+| `save-manager.js` | 渲染三个槽位并处理读取与删除（删除前用页内确认框二次确认）。 |
+| `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入（覆盖已占用槽位前用页内确认框二次确认）。 |
 | `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏（含侦察技能连续点击三次解锁）；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
 
 ### 其他目录和根文件

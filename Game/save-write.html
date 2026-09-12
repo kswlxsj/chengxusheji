@@ -23,6 +23,7 @@
       <p id="page-error" class="page-error" role="alert"></p>
       <div class="page-footer"><button id="cancel-write" type="button">取消</button></div>
     </section>
+    <div id="confirm-layer"></div>
   </main>
   <script src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
@@ -30,6 +31,8 @@
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/state.js"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
+  <script src="src/confirm-dialog.js"></script>
+  <!-- TrainGame.ConfirmDialog，提供存档页共用的页面内确认框（替代浏览器原生 confirm）。 -->
   <script src="src/save-write.js"></script>
   <!-- 处理新游戏或继续游戏时的存档槽位选择与写入逻辑。 -->
 </body>

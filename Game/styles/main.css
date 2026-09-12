@@ -358,6 +358,40 @@ body.home-op-active .home-page .auth-user-status {
 .selectable-slot span { opacity: .78; }
 .selectable-slot:hover { border-color: var(--accent); background: rgba(213,173,109,.1); }
 
+/* 存档页页面内确认框（TrainGame.ConfirmDialog）：沿用游戏本体的深色面板外观，
+   层容器只负责定位与层级，真实点击拦截交给其中的 .confirm-backdrop。 */
+#confirm-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6%;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, .78);
+}
+
+.confirm-dialog-window {
+  width: min(480px, 88%);
+  padding: 28px;
+}
+
+/* 标题与按钮沿用 .menu-content / .menu-actions 的既有布局（与 MenuWindow 同构），
+   这里只压低标题字号，让长句询问在小面板里也能完整显示。 */
+.confirm-dialog-window h1 {
+  margin-bottom: 20px;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.5;
+  letter-spacing: .02em;
+}
+
 /* ============ 7. 游戏页（game.html）：舞台与场景物件（#game-shell、场景层与物件） ============ */
 
 #game-shell {

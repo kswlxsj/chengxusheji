@@ -26,14 +26,28 @@
     flow.navigate("game", { mode: "resume", slot }, true);
   }
 
-  function chooseNewSlot(slot) {
-    if (saves.hasSave(slot) && !window.confirm(`槽位 ${slot} 已有存档。属性分配确认后将覆盖它，是否继续？`)) return;
+  // 新游戏选槽：槽位已被占用时先在页内确认，玩家同意后才进入游戏做属性分配。
+  async function chooseNewSlot(slot) {
+    if (saves.hasSave(slot)) {
+      const confirmed = await Game.ConfirmDialog.ask({
+        title: `槽位 ${slot} 已有存档。属性分配确认后将覆盖它，是否继续？`,
+        confirmLabel: "继续覆盖"
+      });
+      if (!confirmed) return;
+    }
     flow.clearTransfer();
     flow.navigate("game", { mode: "new", slot });
   }
 
-  function writeSlot(slot) {
-    if (saves.hasSave(slot) && !window.confirm(`确定覆盖槽位 ${slot} 的存档吗？`)) return;
+  // 写入稳定快照：从游戏内保存进来时，所选就是当前槽位，属于明确的写入意图，不再重复确认。
+  async function writeSlot(slot) {
+    if (slot !== transfer?.slot && saves.hasSave(slot)) {
+      const confirmed = await Game.ConfirmDialog.ask({
+        title: `确定覆盖槽位 ${slot} 的存档吗？`,
+        confirmLabel: "确定覆盖"
+      });
+      if (!confirmed) return;
+    }
     try {
       saves.save(slot, transfer.snapshot);
       flow.clearTransfer();
@@ -86,7 +100,9 @@
       else if (!info.compatible) detail.textContent = `现有存档无法读取，写入将覆盖：${info.error}`;
       else detail.textContent = `${sceneNames.get(info.sceneId) || info.sceneId || "未知场景"} · SAN ${info.san ?? "未知"} · ${formatTime(info.savedAt)}`;
       button.append(heading, detail);
-      button.addEventListener("click", () => intent === "new" ? chooseNewSlot(info.slot) : writeSlot(info.slot));
+      button.addEventListener("click", () => {
+        void (intent === "new" ? chooseNewSlot(info.slot) : writeSlot(info.slot));
+      });
       list.append(button);
     }
   }

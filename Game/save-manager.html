@@ -22,6 +22,7 @@
       <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
       <nav class="page-footer"><a href="home.html">返回主页</a></nav>
     </section>
+    <div id="confirm-layer"></div>
   </main>
   <script src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
@@ -29,6 +30,8 @@
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/state.js"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
+  <script src="src/confirm-dialog.js"></script>
+  <!-- TrainGame.ConfirmDialog，提供存档页共用的页面内确认框（替代浏览器原生 confirm）。 -->
   <script src="src/save-manager.js"></script>
   <!-- 初始化存档列表渲染、读取和删除存档的交互逻辑。 -->
 </body>

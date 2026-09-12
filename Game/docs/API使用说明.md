@@ -33,6 +33,7 @@
   - [GameState 与状态快照](#gamestate-与状态快照)
   - [Auth（浏览器本地认证）](#auth浏览器本地认证)
   - [SaveManager（三槽存档）](#savemanager三槽存档)
+  - [ConfirmDialog（存档页页面内确认框）](#confirmdialog存档页页面内确认框)
   - [SceneManager（场景渲染与物件点击）](#scenemanager场景渲染与物件点击)
   - [EventEngine 与 Registry（事件引擎）](#eventengine-与-registry事件引擎)
   - [自定义动作上下文](#自定义动作上下文)
@@ -395,6 +396,33 @@ const saves = new TrainGame.SaveManager(state);
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
 默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽 `train-game-save-slot-1` 至 `slot-3` 与旧单槽键 `train-game-save-v1` 均不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 3` 为准。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
+
+`SaveManager` 本身不做任何交互确认：覆盖已占用槽位与删除存档的二次确认属于页面职责，由存档页在调用前经 `TrainGame.ConfirmDialog` 询问（见下一节）。
+
+### ConfirmDialog（存档页页面内确认框）
+
+存档页（`save-write.html` / `save-manager.html`）用它代替浏览器原生 `window.confirm`，外观与游戏本体的暂停 / 确认菜单一致。它只负责"询问并返回玩家的选择"，不读游戏数据、不接管页面导航，因此不属于 `UIManager`，也不会把对话窗口、小游戏宿主等游戏内窗口带进存档页。
+
+```javascript
+const confirmed = await TrainGame.ConfirmDialog.ask({
+  title: `槽位 ${slot} 已有存档。属性分配确认后将覆盖它，是否继续？`,
+  confirmLabel: "继续覆盖"
+});
+if (!confirmed) return;
+```
+
+| 接口 | 行为 |
+| --- | --- |
+| `ask({ title, confirmLabel, cancelLabel, backdropClass, windowClass })` | 显示确认框并返回 `Promise<boolean>`：确认 `true`；取消、按 Esc 或点击遮罩 `false`。`confirmLabel` / `cancelLabel` 默认"确定"/"取消"；`cancelLabel` 传空串则只显示一个确认按钮（纯提示型窗口）；`backdropClass` / `windowClass` 可覆盖默认类名。 |
+| `close(value = false)` | 主动关闭并结算等待中的 Promise（默认按取消处理）；未打开时为无操作。 |
+| `isOpen()` | 是否正在显示确认框。 |
+
+行为约定：
+
+- 挂载点为页面预置的 `#confirm-layer`（缺失时回退 `document.body`）；`main.css` 中 `#confirm-layer` 负责定位与层级，实际点击拦截由 `.confirm-backdrop` 完成。面板复用 `.game-window`、`.menu-content`、`.menu-actions` 的既有外观（与 `MenuWindow` 同构），只为标题字号与面板宽度补少量规则。
+- 打开时焦点落在确认按钮，关闭后焦点还原到触发元素；键盘可用 Esc 取消。
+- 同一实例重复 `ask()` 会先以 `false` 结算上一次，避免连点堆叠多层遮罩。
+- 单实例：`TrainGame.ConfirmDialog` 暴露的就是共享实例，两个存档页各自加载同一个脚本即可。
 
 ### SceneManager（场景渲染与物件点击）
 

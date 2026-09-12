@@ -42,8 +42,12 @@
       remove.type = "button";
       remove.textContent = "删除";
       remove.disabled = info.empty;
-      remove.addEventListener("click", () => {
-        if (!window.confirm(`确定删除槽位 ${info.slot} 的存档吗？此操作无法撤销。`)) return;
+      remove.addEventListener("click", async () => {
+        const confirmed = await Game.ConfirmDialog.ask({
+          title: `确定删除槽位 ${info.slot} 的存档吗？此操作无法撤销。`,
+          confirmLabel: "确定删除"
+        });
+        if (!confirmed) return;
         saves.delete(info.slot);
         render();
       });
