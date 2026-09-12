@@ -617,7 +617,34 @@
     "id": "carriage_inner_01",
     "name": "里世界·空车厢",
     "background": "assets/carriage-inner-01.png",
-    "objects": []
+    "objects": [
+      {
+        "id": "door_inner01_to_inner02",
+        "name": "通往花草车厢的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_503"
+      },
+      {
+        "id": "door_inner01_back",
+        "name": "来路的车门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_502_RETURN"
+      }
+    ]
   },
   {
     "id": "carriage_inner_02",
@@ -636,7 +663,59 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_504"
+        "clickEvent": "E_504",
+        "visibleWhen": {
+          "not": {
+            "flag": "ev504_scouting_ok",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "bottle_inner",
+        "name": "彩色玻璃瓶",
+        "image": "assets/inner-02-bottle.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_503_PICK",
+        "visibleWhen": {
+          "not": {
+            "flag": "ev503_bottle_taken",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "door_inner02_back",
+        "name": "来路的车门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_503_BACK"
+      },
+      {
+        "id": "door_inner02_to_inner03",
+        "name": "通往深处的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_505"
       }
     ]
   },
@@ -644,13 +723,105 @@
     "id": "carriage_fake_04",
     "name": "里世界·伪4号车厢",
     "background": "assets/carriage-fake-04.png",
-    "objects": []
+    "objects": [
+      {
+        "id": "door_fake04_back",
+        "name": "原路返回的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_509_BACK"
+      },
+      {
+        "id": "door_fake04_to_flower",
+        "name": "车厢尽头的门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_510"
+      },
+      {
+        "id": "window_fake04_flower",
+        "name": "车窗",
+        "image": "assets/inner-03-flower-window.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_516",
+        "visibleWhen": {
+          "flag": "ev504_scouting_ok",
+          "equals": true
+        }
+      },
+      {
+        "id": "window_fake04_fog",
+        "name": "车窗",
+        "image": "assets/inner-03-fog-window.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_516",
+        "visibleWhen": {
+          "not": {
+            "flag": "ev504_scouting_ok",
+            "equals": true
+          }
+        }
+      }
+    ]
   },
   {
     "id": "flower_sea",
     "name": "花海·车门外",
     "background": "assets/flower-sea.png",
-    "objects": []
+    "objects": [
+      {
+        "id": "door_flowersea_back",
+        "name": "来路的车门",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_513"
+      },
+      {
+        "id": "door_flowersea_in",
+        "name": "花海深处",
+        "image": "assets/door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_511"
+      }
+    ]
   },
   {
     "id": "flower_sea_inside",

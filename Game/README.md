@@ -81,21 +81,38 @@
 
 逐车厢完整通关与各结局的到达仍需要在浏览器里实测；分支是否可达以实际游玩为准。
 
-**里世界支线（E-501~E-525）**：3 号车厢通往 2 号车厢的门现在通向里世界第一幕（剧本《里世界剧本》的第 1 幕），主线在门后的推进改由里世界承接，原「查看2号车厢」的敏捷检定（`E_024`）不再出现在主线路径上（事件仍保留在数据中）。里世界内部的走法：
+**里世界支线（E-501~E-525）**：3 号车厢通往 2 号车厢的门现在通向里世界第一幕（剧本《里世界剧本》的第 1 幕），主线在门后的推进改由里世界承接，原「查看2号车厢」的敏捷检定（`E_024`）不再出现在主线路径上（事件仍保留在数据中）。
+
+**交互方式与主分支一致**：前进 / 回头 / 深处 / 调头等位移一律**点击车厢门热点**触发（`assets/door.svg`，与主线各车厢门同一套左右布局约定），窗外、玻璃瓶等可交互物用 **StillLife 整幅蒙版贴图**（`fullCanvas: true`，按不透明像素命中 + 悬停高亮）。各场景的热点：
+
+| 场景 | 热点 → 事件 |
+| --- | --- |
+| `carriage_inner_01` 空车厢 | 右门 → `E_503`（前进）；左门 → `E_502_RETURN`（回头） |
+| `carriage_inner_02` 花草车厢 | 窗外 → `E_504` 侦察；彩色玻璃瓶 → `E_503_PICK`；左门 → `E_503_BACK`（回头）；右门 → `E_505`（前进） |
+| `carriage_fake_04` 伪4号车厢 | 左门 → `E_509_BACK`（原路返回）；右门 → `E_510`（深入花海）；两个互斥车窗（花海版/白茫茫版）→ `E_516` |
+| `flower_sea` 花海·车门外 | 左门 → `E_513`（调头）；右门 → `E_511`（深入） |
+| `flower_sea_inside` 花海·室内 | 无热点（结局播完即止） |
+
+里世界内部的走法：
 
 ```text
-E_501 进入里世界（空车厢）→ E_502 空车厢（前进／试图回头）
-  → E_503 花草车厢（拾瓶／前进／回头；窗外 → E_504 侦察）
+E_501 进入里世界（空车厢）→ E_502 空车厢（点右门前进／点左门试图回头）
+  → E_503 花草车厢（点瓶拾取、点窗外侦察、点右门前进、点左门回头）
   → E_505 → E_506 伪4号车厢（按乘务员存活状态分 E_507 疯狂低语 / E_508 回应）
-  → E_509 选择：继续深入 → E_510 花海 → E_511 结局「迷失」
-              / 原路返回 → E_503（循环）
-              / 看向窗外 → E_516 → E_517 花海独白 / E_518 白茫茫独白 → E_519 钥匙
+  → E_509（点右门继续深入 → E_510 花海 → 点右门 → E_511 结局「迷失」
+          点左门原路返回 → E_503（循环）
+          点车窗 → E_516 → E_517 花海独白 / E_518 白茫茫独白 → E_519 钥匙）
   → E_519（持有驾驶室钥匙才有交钥匙的选择）→ E_520 选择
   → 原路返回 → E_521 鬼打墙 → E_522 花草车厢 → E_523 磨损车门 → E_524 → 主线 E_025（2号车厢）
 E_525（仅在随机回头线上可达，本批未接）
 ```
 
+其中 `E_503_BACK` / `E_509_BACK` 是两个"门路由"事件：同一扇左门在"正向探索"与"反向行走（已调头）"两种状态下指向不同去处（反向时分别前往 `E_522` 鬼打墙与 `E_514` 伪2号车厢），由旗标 `ev_inner_backtrack` / `ev_fake04_from_sea` 区分。
+
 未接线的部分：`E_502` 与 `E_503` 的**随机分岔**（10/60/30、50/50）因框架暂无"按权重随机分岔"能力，本批只落地了剧本中紧跟其后的可走线路，其余出口待框架支持后接入；`E_507` 的 SAN 损失数值剧本尚未定稿；`E-511`/`E-515` 两个新结局类型（迷失 / Trauma）尚未注册进结束页；`E-525` 触发后的"6 号车厢永久变红"因缺素材暂缓。详见 `docs/conversion-reviews/review-checklist-2026-09-12-1203.md` 的执行台账。
+
+> [!NOTE]
+> 里世界的门热点沿用主线门的百分比坐标（左 `x: 0` / 右 `x: 89`，`y: 21`、`12% × 63%`），而里世界背景是 16:9 宽幅素材，**门与背景上实际车门的位置尚未对齐**，需要美术确认或按背景实际门位微调 `position`。
 
 ### 尚未实现
 
@@ -147,7 +164,7 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：12 个场景，152 个事件，7 个物品，8 个属性，6 个技能，6 个小游戏。
+编译完成：12 个场景，153 个事件，7 个物品，8 个属性，6 个技能，6 个小游戏。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
 ```
 
@@ -214,6 +231,9 @@ Game/
 │  ├─ flower-sea.png
 │  ├─ flower-sea-inside.png
 │  ├─ inner-02-window.png
+│  ├─ inner-02-bottle.png
+│  ├─ inner-03-flower-window.png
+│  ├─ inner-03-fog-window.png
 │  ├─ bottle-inner.png
 │  ├─ carriage-06.svg
 │  ├─ carriage-07.svg
@@ -383,6 +403,8 @@ Game/
 | `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
 | `carriage-inner-01.png`、`carriage-inner-02.png`、`carriage-fake-04.png`、`flower-sea.png`、`flower-sea-inside.png` | **里世界（E-501~E-525）**背景：空车厢、花草车厢、伪4号车厢、花海·车门外、花海·室内（依次复制自 `Assets/Image/Scene/Background/` 的 `inner_01_empty.png`、`inner_02.png`、`inner_03_flower.png`、`花海.png`、`室内.png`）。源文件为 16:9 宽幅（非正方形），与既有车厢美术的出图规格不同，物件对齐若要精确需美术统一画布。 |
 | `inner-02-window.png` | 花草车厢的"窗外"调查点贴图（整幅蒙版，复制自 `Assets/Image/Scene/StillLife/inner_02_window.png`；`fullCanvas: true`，`clickEvent → E_504`）。 |
+| `inner-02-bottle.png` | 花草车厢的"彩色玻璃瓶"拾取点贴图（整幅蒙版，复制自 `StillLife/inner_02_bottle.png`；`fullCanvas: true`，`clickEvent → E_503_PICK`，拾取后按旗标隐藏）。 |
+| `inner-03-flower-window.png`、`inner-03-fog-window.png` | 伪4号车厢车窗的两个互斥版本（整幅蒙版，复制自 `StillLife/inner_03_flower_window.png` / `inner_03_fog_window.png`；按"是否已侦察窗外"二选一显示，均 `clickEvent → E_516`）。 |
 | `bottle-inner.png` | 瓶子道具图标（复制自 `Assets/Image/Item/玻璃瓶.png`），里世界与主剧本 2 号车厢的瓶子共用此图标。 |
 | `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
 | `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
@@ -559,3 +581,4 @@ git diff --check
 - [npm 官方文档：npm run-script](https://docs.npmjs.com/cli/v11/commands/npm-run-script/)：`npm run` 脚本规则。
 - [VS Code 官方文档：JSON editing](https://code.visualstudio.com/docs/languages/json)：JSON Schema 关联与编辑支持。
 - [JSON Schema Draft 2020-12](https://json-schema.org/draft/2020-12)：本项目 Schema 声明的规范版本。
+

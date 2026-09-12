@@ -633,7 +633,34 @@ window.GAME_DATA = {
       "id": "carriage_inner_01",
       "name": "里世界·空车厢",
       "background": "assets/carriage-inner-01.png",
-      "objects": []
+      "objects": [
+        {
+          "id": "door_inner01_to_inner02",
+          "name": "通往花草车厢的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 89,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_503"
+        },
+        {
+          "id": "door_inner01_back",
+          "name": "来路的车门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_502_RETURN"
+        }
+      ]
     },
     {
       "id": "carriage_inner_02",
@@ -652,7 +679,59 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_504"
+          "clickEvent": "E_504",
+          "visibleWhen": {
+            "not": {
+              "flag": "ev504_scouting_ok",
+              "equals": true
+            }
+          }
+        },
+        {
+          "id": "bottle_inner",
+          "name": "彩色玻璃瓶",
+          "image": "assets/inner-02-bottle.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_503_PICK",
+          "visibleWhen": {
+            "not": {
+              "flag": "ev503_bottle_taken",
+              "equals": true
+            }
+          }
+        },
+        {
+          "id": "door_inner02_back",
+          "name": "来路的车门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_503_BACK"
+        },
+        {
+          "id": "door_inner02_to_inner03",
+          "name": "通往深处的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 89,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_505"
         }
       ]
     },
@@ -660,13 +739,105 @@ window.GAME_DATA = {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
       "background": "assets/carriage-fake-04.png",
-      "objects": []
+      "objects": [
+        {
+          "id": "door_fake04_back",
+          "name": "原路返回的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_509_BACK"
+        },
+        {
+          "id": "door_fake04_to_flower",
+          "name": "车厢尽头的门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 89,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_510"
+        },
+        {
+          "id": "window_fake04_flower",
+          "name": "车窗",
+          "image": "assets/inner-03-flower-window.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_516",
+          "visibleWhen": {
+            "flag": "ev504_scouting_ok",
+            "equals": true
+          }
+        },
+        {
+          "id": "window_fake04_fog",
+          "name": "车窗",
+          "image": "assets/inner-03-fog-window.png",
+          "fullCanvas": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_516",
+          "visibleWhen": {
+            "not": {
+              "flag": "ev504_scouting_ok",
+              "equals": true
+            }
+          }
+        }
+      ]
     },
     {
       "id": "flower_sea",
       "name": "花海·车门外",
       "background": "assets/flower-sea.png",
-      "objects": []
+      "objects": [
+        {
+          "id": "door_flowersea_back",
+          "name": "来路的车门",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_513"
+        },
+        {
+          "id": "door_flowersea_in",
+          "name": "花海深处",
+          "image": "assets/door.svg",
+          "position": {
+            "x": 89,
+            "y": 21,
+            "width": 12,
+            "height": 63
+          },
+          "zIndex": 11,
+          "clickEvent": "E_511"
+        }
+      ]
     },
     {
       "id": "flower_sea_inside",
@@ -2841,20 +3012,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "（场景：昏暗，无光源）"
-        },
-        {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "继续前进",
-              "next": "E_503"
-            },
-            {
-              "label": "试图回头",
-              "next": "E_502_RETURN"
-            }
-          ]
         }
       ]
     },
@@ -2880,6 +3037,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你放弃了回头，转身向前。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_inner_backtrack",
+          "value": false
         }
       ],
       "next": "E_503"
@@ -2887,10 +3049,6 @@ window.GAME_DATA = {
     {
       "id": "E_503",
       "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
         {
           "type": "dialogue",
           "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
@@ -2900,22 +3058,12 @@ window.GAME_DATA = {
           "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
         },
         {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "拾起玻璃瓶",
-              "next": "E_503_PICK"
-            },
-            {
-              "label": "继续前进",
-              "next": "E_505"
-            },
-            {
-              "label": "试图回头",
-              "next": "E_503_RETURN"
-            }
-          ]
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev_inner_backtrack",
+            "equals": true
+          },
+          "next": "E_522"
         }
       ]
     },
@@ -2959,20 +3107,6 @@ window.GAME_DATA = {
       "next": "E_503"
     },
     {
-      "id": "E_503_RETURN",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你向来路折返。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（随机：50% —— 折返后，你发现自己又站在那节没有座椅的空车厢里（→ E-502）；50% —— 你摇了摇头，转身继续前进（→ E-505））"
-        }
-      ],
-      "next": "E_505"
-    },
-    {
       "id": "E_504",
       "actions": [
         {
@@ -3010,7 +3144,7 @@ window.GAME_DATA = {
           "value": true
         }
       ],
-      "next": "E_505"
+      "next": "E_503"
     },
     {
       "id": "E_504_F",
@@ -3025,7 +3159,7 @@ window.GAME_DATA = {
           "value": false
         }
       ],
-      "next": "E_505"
+      "next": "E_503"
     },
     {
       "id": "E_505",
@@ -3184,24 +3318,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你站在原地。车厢尽头有一扇门通向更深处；来路那扇门还在原地；而车窗，不知何时起，雾气散开了些。"
-        },
-        {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "继续深入",
-              "next": "E_510"
-            },
-            {
-              "label": "原路返回",
-              "next": "E_503"
-            },
-            {
-              "label": "看向窗外（乘务员插话）",
-              "next": "E_516"
-            }
-          ]
         }
       ]
     },
@@ -3240,20 +3356,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev510_flower_sea",
           "value": true
-        },
-        {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "继续深入",
-              "next": "E_511"
-            },
-            {
-              "label": "调头",
-              "next": "E_513"
-            }
-          ]
         }
       ]
     },
@@ -3344,14 +3446,9 @@ window.GAME_DATA = {
           "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，现实世界反而显得不真实。"
         },
         {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "原路返回",
-              "next": "E_514"
-            }
-          ]
+          "type": "setFlag",
+          "key": "ev_fake04_from_sea",
+          "value": true
         }
       ]
     },
@@ -3846,6 +3943,11 @@ window.GAME_DATA = {
       "id": "E_522",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "ev_fake04_from_sea",
+          "value": false
+        },
+        {
           "type": "dialogue",
           "text": "不知走了多久，你踏进一节车厢——角落里又长着花草。你认得这里。"
         },
@@ -3958,6 +4060,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "inner_world_left",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_inner_backtrack",
+          "value": false
         }
       ],
       "next": "E_025"
@@ -3996,6 +4103,34 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_002"
+    },
+    {
+      "id": "E_503_BACK",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev_inner_backtrack",
+            "equals": true
+          },
+          "next": "E_522"
+        }
+      ],
+      "next": "E_502"
+    },
+    {
+      "id": "E_509_BACK",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev_fake04_from_sea",
+            "equals": true
+          },
+          "next": "E_514"
+        }
+      ],
+      "next": "E_503"
     }
   ],
   "items": [

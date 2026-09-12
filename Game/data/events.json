@@ -2164,20 +2164,6 @@
       {
         "type": "dialogue",
         "text": "（场景：昏暗，无光源）"
-      },
-      {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "继续前进",
-            "next": "E_503"
-          },
-          {
-            "label": "试图回头",
-            "next": "E_502_RETURN"
-          }
-        ]
       }
     ]
   },
@@ -2203,6 +2189,11 @@
       {
         "type": "dialogue",
         "text": "你放弃了回头，转身向前。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev_inner_backtrack",
+        "value": false
       }
     ],
     "next": "E_503"
@@ -2210,10 +2201,6 @@
   {
     "id": "E_503",
     "actions": [
-      {
-        "type": "changeScene",
-        "scene": "carriage_inner_02"
-      },
       {
         "type": "dialogue",
         "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
@@ -2223,22 +2210,12 @@
         "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
       },
       {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "拾起玻璃瓶",
-            "next": "E_503_PICK"
-          },
-          {
-            "label": "继续前进",
-            "next": "E_505"
-          },
-          {
-            "label": "试图回头",
-            "next": "E_503_RETURN"
-          }
-        ]
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev_inner_backtrack",
+          "equals": true
+        },
+        "next": "E_522"
       }
     ]
   },
@@ -2282,20 +2259,6 @@
     "next": "E_503"
   },
   {
-    "id": "E_503_RETURN",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你向来路折返。"
-      },
-      {
-        "type": "dialogue",
-        "text": "（随机：50% —— 折返后，你发现自己又站在那节没有座椅的空车厢里（→ E-502）；50% —— 你摇了摇头，转身继续前进（→ E-505））"
-      }
-    ],
-    "next": "E_505"
-  },
-  {
     "id": "E_504",
     "actions": [
       {
@@ -2333,7 +2296,7 @@
         "value": true
       }
     ],
-    "next": "E_505"
+    "next": "E_503"
   },
   {
     "id": "E_504_F",
@@ -2348,7 +2311,7 @@
         "value": false
       }
     ],
-    "next": "E_505"
+    "next": "E_503"
   },
   {
     "id": "E_505",
@@ -2507,24 +2470,6 @@
       {
         "type": "dialogue",
         "text": "你站在原地。车厢尽头有一扇门通向更深处；来路那扇门还在原地；而车窗，不知何时起，雾气散开了些。"
-      },
-      {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "继续深入",
-            "next": "E_510"
-          },
-          {
-            "label": "原路返回",
-            "next": "E_503"
-          },
-          {
-            "label": "看向窗外（乘务员插话）",
-            "next": "E_516"
-          }
-        ]
       }
     ]
   },
@@ -2563,20 +2508,6 @@
         "type": "setFlag",
         "key": "ev510_flower_sea",
         "value": true
-      },
-      {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "继续深入",
-            "next": "E_511"
-          },
-          {
-            "label": "调头",
-            "next": "E_513"
-          }
-        ]
       }
     ]
   },
@@ -2667,14 +2598,9 @@
         "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，现实世界反而显得不真实。"
       },
       {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "原路返回",
-            "next": "E_514"
-          }
-        ]
+        "type": "setFlag",
+        "key": "ev_fake04_from_sea",
+        "value": true
       }
     ]
   },
@@ -3169,6 +3095,11 @@
     "id": "E_522",
     "actions": [
       {
+        "type": "setFlag",
+        "key": "ev_fake04_from_sea",
+        "value": false
+      },
+      {
         "type": "dialogue",
         "text": "不知走了多久，你踏进一节车厢——角落里又长着花草。你认得这里。"
       },
@@ -3281,6 +3212,11 @@
         "type": "setFlag",
         "key": "inner_world_left",
         "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "ev_inner_backtrack",
+        "value": false
       }
     ],
     "next": "E_025"
@@ -3319,5 +3255,33 @@
       }
     ],
     "next": "E_002"
+  },
+  {
+    "id": "E_503_BACK",
+    "actions": [
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev_inner_backtrack",
+          "equals": true
+        },
+        "next": "E_522"
+      }
+    ],
+    "next": "E_502"
+  },
+  {
+    "id": "E_509_BACK",
+    "actions": [
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev_fake04_from_sea",
+          "equals": true
+        },
+        "next": "E_514"
+      }
+    ],
+    "next": "E_503"
   }
 ]
