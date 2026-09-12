@@ -81,6 +81,22 @@
 
 逐车厢完整通关与各结局的到达仍需要在浏览器里实测；分支是否可达以实际游玩为准。
 
+**里世界支线（E-501~E-525）**：3 号车厢通往 2 号车厢的门现在通向里世界第一幕（剧本《里世界剧本》的第 1 幕），主线在门后的推进改由里世界承接，原「查看2号车厢」的敏捷检定（`E_024`）不再出现在主线路径上（事件仍保留在数据中）。里世界内部的走法：
+
+```text
+E_501 进入里世界（空车厢）→ E_502 空车厢（前进／试图回头）
+  → E_503 花草车厢（拾瓶／前进／回头；窗外 → E_504 侦察）
+  → E_505 → E_506 伪4号车厢（按乘务员存活状态分 E_507 疯狂低语 / E_508 回应）
+  → E_509 选择：继续深入 → E_510 花海 → E_511 结局「迷失」
+              / 原路返回 → E_503（循环）
+              / 看向窗外 → E_516 → E_517 花海独白 / E_518 白茫茫独白 → E_519 钥匙
+  → E_519（持有驾驶室钥匙才有交钥匙的选择）→ E_520 选择
+  → 原路返回 → E_521 鬼打墙 → E_522 花草车厢 → E_523 磨损车门 → E_524 → 主线 E_025（2号车厢）
+E_525（仅在随机回头线上可达，本批未接）
+```
+
+未接线的部分：`E_502` 与 `E_503` 的**随机分岔**（10/60/30、50/50）因框架暂无"按权重随机分岔"能力，本批只落地了剧本中紧跟其后的可走线路，其余出口待框架支持后接入；`E_507` 的 SAN 损失数值剧本尚未定稿；`E-511`/`E-515` 两个新结局类型（迷失 / Trauma）尚未注册进结束页；`E-525` 触发后的"6 号车厢永久变红"因缺素材暂缓。详见 `docs/conversion-reviews/review-checklist-2026-09-12-1203.md` 的执行台账。
+
 ### 尚未实现
 
 - 云存档和服务器同步。
@@ -131,7 +147,7 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：7 个场景，112 个事件，7 个物品，8 个属性，6 个技能，6 个小游戏。
+编译完成：12 个场景，152 个事件，7 个物品，8 个属性，6 个技能，6 个小游戏。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
 ```
 
@@ -192,6 +208,13 @@ Game/
 │  ├─ carriage-05-03.png
 │  ├─ carriage-06.png
 │  ├─ carriage-07.png
+│  ├─ carriage-inner-01.png
+│  ├─ carriage-inner-02.png
+│  ├─ carriage-fake-04.png
+│  ├─ flower-sea.png
+│  ├─ flower-sea-inside.png
+│  ├─ inner-02-window.png
+│  ├─ bottle-inner.png
 │  ├─ carriage-06.svg
 │  ├─ carriage-07.svg
 │  ├─ cover-placeholder.svg
@@ -358,6 +381,9 @@ Game/
 | 文件 | 用途 |
 | --- | --- |
 | `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
+| `carriage-inner-01.png`、`carriage-inner-02.png`、`carriage-fake-04.png`、`flower-sea.png`、`flower-sea-inside.png` | **里世界（E-501~E-525）**背景：空车厢、花草车厢、伪4号车厢、花海·车门外、花海·室内（依次复制自 `Assets/Image/Scene/Background/` 的 `inner_01_empty.png`、`inner_02.png`、`inner_03_flower.png`、`花海.png`、`室内.png`）。源文件为 16:9 宽幅（非正方形），与既有车厢美术的出图规格不同，物件对齐若要精确需美术统一画布。 |
+| `inner-02-window.png` | 花草车厢的"窗外"调查点贴图（整幅蒙版，复制自 `Assets/Image/Scene/StillLife/inner_02_window.png`；`fullCanvas: true`，`clickEvent → E_504`）。 |
+| `bottle-inner.png` | 瓶子道具图标（复制自 `Assets/Image/Item/玻璃瓶.png`），里世界与主剧本 2 号车厢的瓶子共用此图标。 |
 | `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
 | `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
 | `phone.png` | 手机物件/物品栏图标。 |
@@ -394,6 +420,7 @@ Game/
 | `API使用说明.md` | 数据接口（`data/*.json`）与运行时接口（`window.TrainGame`）的**最详细维护和使用手册**，含复杂维护工作示例。 |
 | `skill-tutorials/script-to-game-data.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、在清单上逐条作答与指定素材、落地与提交）。 |
 | `conversion-reviews/review-checklist-2026-09-05-1454.md` | E-005~E-008 批剧本转换的审查清单留档（**旧版格式**：编号条目 + 类别标记 + 决策列；当前格式见 skill 空白模板：人话提问 + 素材指定 + 执行台账）。审查清单统一存放于 `docs/conversion-reviews/`，文件名时间戳精确到分钟。 |
+| `conversion-reviews/review-checklist-2026-09-12-1203.md` | 《里世界剧本》E-501~E-525 批转换的审查清单留档（**当前格式**：21 条人话提问 + 11 行素材指定 + 执行台账），已按审阅者作答落地：追加 39 个里世界事件 + 1 个承载原选项的分支事件，新增 5 个场景与 1 个调查点物件，并改写既有 E_023 与 3 号车厢门指向（详见该文件执行台账的"用户答复/状态"列）。 |
 | `_Archived/` | 已归档历史文档（`架构设计.md`、`三天计划.md`），归档后不再跟随功能更新，仅供追溯。 |
 
 ### `GroupIntro/`

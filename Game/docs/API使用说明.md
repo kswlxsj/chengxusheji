@@ -189,6 +189,7 @@
 | `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
 | `changeScene` | `scene` | — | 关闭对话并加载场景。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
+| `conditionalJump` | `when`, `next` | — | 条件成立时立即结束当前事件并进入 `next`，不成立则继续执行本事件后续动作（常用于按旗标/物品选择剧情变体，替代把分支拆成一整棵事件树）。 |
 | `modifyAttribute` | `attribute`, `amount` | — | 增减整数、限制边界并重算相关技能。 |
 | `setSkill` | `skill`, `value` | — | 设置布尔值，不屏蔽自动重算。 |
 | `learnSkill` | `skill` | — | 设为 `true`，永久屏蔽该存档内的自动重算。 |
