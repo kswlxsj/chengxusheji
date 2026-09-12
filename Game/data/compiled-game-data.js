@@ -2735,8 +2735,13 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "到达先头车厢，这里昏暗安静，车厢前方能看到操作把手。"
+        },
+        {
+          "type": "minigame",
+          "game": "conductor_tug"
         }
-      ]
+      ],
+      "next": "E_027"
     },
     {
       "id": "E_GO_02_FRONT_DOOR",

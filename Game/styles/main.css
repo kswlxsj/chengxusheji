@@ -670,15 +670,19 @@ body.home-op-active .home-page .auth-user-status {
   position: absolute;
   left: 4%;
   right: 4%;
-  bottom: 4%;
+  bottom: 2%;
   min-height: 25%;
-  padding: 18px 20px 46px;
+  aspect-ratio: 44 / 7;
+  padding: 22px 58px 48px;
+  border: 0;
+  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  box-shadow: none;
   cursor: pointer;
 }
 
 .dialog-speaker { min-height: 1.5em; color: var(--accent); font-weight: 700; }
 .dialog-text { margin: 9px 0 0; font-size: clamp(17px, 1.7vw, 25px); line-height: 1.65; }
-.dialog-hint { position: absolute; right: 18px; bottom: 14px; opacity: .65; font-size: 13px; }
+.dialog-hint { position: absolute; right: 58px; bottom: 24px; opacity: .65; font-size: 13px; }
 
 /* 玩家快速连点推进对白时，浏览器会把连点识别成双击/三击而选中
    对话框文本与说话人标题，观感很差；此处统一禁止对话框内的文本选中。 */
@@ -690,14 +694,22 @@ body.home-op-active .home-page .auth-user-status {
 
 .window-controls {
   position: absolute;
-  left: 18px;
-  bottom: 11px;
+  left: 58px;
+  bottom: 24px;
   display: flex;
   gap: 6px;
 }
 
-.window-controls button { padding: 4px 9px; }
-.window-controls button[aria-pressed="true"] { color: #17120a; background: var(--accent); }
+.window-controls button {
+  padding: 4px 9px;
+  border: 0;
+  background: transparent;
+}
+.window-controls button:hover,
+.window-controls button[aria-pressed="true"] {
+  color: var(--accent);
+  background: transparent;
+}
 
 /* ============ 11. 游戏页：模态遮罩与菜单窗口（.modal-backdrop、.menu-backdrop、菜单内容布局） ============ */
 
@@ -958,7 +970,265 @@ body.home-op-active .home-page .auth-user-status {
 .mg-webgl-done:not(:disabled) { color: #17120a; background: var(--accent); }
 .mg-webgl-done:disabled { opacity: .55; }
 
-/* ============ 11d. 乘务员安抚与交涉小游戏（.mg-negotiation-*，属于 crew_negotiation 模块） ============ */
+/* ============ 11d. 终局控制杆争夺（.mg-tug-*，属于 conductor_tug 模块） ============ */
+
+.mg-tug {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  gap: clamp(8px, 1.3vh, 16px);
+  padding: clamp(14px, 2.4vw, 32px);
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(71, 91, 82, .42), transparent 34%),
+    linear-gradient(145deg, #11161c 0%, #1b2027 58%, #111318 100%);
+  user-select: none;
+  touch-action: none;
+}
+
+.mg-tug-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.mg-tug-eyebrow {
+  margin: 0 0 4px;
+  color: #8ed7ae;
+  font-size: clamp(10px, .9vw, 13px);
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.mg-tug-header h1 {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(23px, 2.7vw, 38px);
+  line-height: 1.08;
+}
+
+.mg-tug-subtitle {
+  max-width: 62ch;
+  margin: 6px 0 0;
+  color: rgba(236, 229, 216, .78);
+  font-size: clamp(12px, 1.15vw, 16px);
+  line-height: 1.45;
+}
+
+.mg-tug-time {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 7px 12px;
+  color: #b7f2d0;
+  background: rgba(8, 15, 12, .72);
+  border: 1px solid rgba(142, 215, 174, .42);
+  border-radius: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(12px, 1.15vw, 16px);
+}
+
+.mg-tug-scoreboard {
+  display: grid;
+  gap: 6px;
+}
+
+.mg-tug-score-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(236, 229, 216, .8);
+  font-size: clamp(10px, .95vw, 13px);
+  font-weight: 700;
+}
+
+.mg-tug-score-track {
+  position: relative;
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  background: #28171a;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 7px;
+}
+
+.mg-tug-score-player,
+.mg-tug-score-conductor {
+  height: 100%;
+  transition: width 80ms linear;
+}
+
+.mg-tug-score-player { background: #54ba7a; }
+.mg-tug-score-conductor { margin-left: auto; background: #b84d55; }
+
+.mg-tug-score-track i {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 255, 255, .8);
+  transform: translateX(-50%);
+}
+
+.mg-tug-score-number {
+  margin: 0;
+  text-align: center;
+  color: rgba(236, 229, 216, .72);
+  font-size: clamp(10px, .95vw, 13px);
+  font-variant-numeric: tabular-nums;
+}
+
+.mg-tug-board {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 30%) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(12px, 2.2vw, 34px);
+}
+
+.mg-tug-fighter {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 1.6vw, 22px);
+  text-align: center;
+  background: rgba(12, 17, 20, .56);
+  border: 1px solid rgba(255, 255, 255, .11);
+  border-radius: 8px;
+}
+
+.mg-tug-fighter h2 {
+  margin: 4px 0 7px;
+  color: var(--accent);
+  font-size: clamp(16px, 1.7vw, 23px);
+}
+
+.mg-tug-fighter p {
+  margin: 0;
+  color: rgba(236, 229, 216, .72);
+  font-size: clamp(11px, 1.05vw, 15px);
+  line-height: 1.5;
+}
+
+.mg-tug-avatar {
+  display: grid;
+  place-items: center;
+  width: clamp(56px, 6vw, 88px);
+  aspect-ratio: 1;
+  font-size: clamp(34px, 4.2vw, 62px);
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 50%;
+}
+
+.mg-tug-player .mg-tug-avatar { box-shadow: inset 0 0 22px rgba(84, 186, 122, .22); }
+.mg-tug-conductor .mg-tug-avatar { box-shadow: inset 0 0 22px rgba(184, 77, 85, .24); }
+
+.mg-tug-track-wrap {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.mg-tug-track {
+  position: relative;
+  min-height: 210px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 10%),
+    #10171a;
+  border: 2px solid rgba(255, 255, 255, .2);
+  border-radius: 8px;
+  cursor: ns-resize;
+}
+
+.mg-tug-track-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.mg-tug-target,
+.mg-tug-zone {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.mg-tug-target {
+  z-index: 2;
+  height: 11%;
+  display: grid;
+  place-items: center;
+  color: #1a1208;
+  background: var(--accent);
+  border: 2px solid #fff0c2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .5);
+  font-size: clamp(11px, 1.05vw, 14px);
+  font-weight: 800;
+}
+
+.mg-tug-zone {
+  z-index: 1;
+  border: 2px solid #65db91;
+  background: rgba(84, 186, 122, .30);
+  box-shadow: inset 0 0 20px rgba(84, 186, 122, .18);
+}
+
+.mg-tug-zone.is-inside {
+  background: rgba(105, 232, 151, .48);
+  box-shadow: inset 0 0 24px rgba(105, 232, 151, .34), 0 0 16px rgba(105, 232, 151, .28);
+}
+
+.mg-tug-caption {
+  display: grid;
+  gap: 2px;
+  text-align: center;
+}
+
+.mg-tug-caption strong {
+  color: #8ed7ae;
+  font-size: clamp(12px, 1.1vw, 16px);
+}
+
+.mg-tug-caption strong.is-inside { color: #7aff96; }
+
+.mg-tug-caption span {
+  color: rgba(236, 229, 216, .7);
+  font-size: clamp(10px, .95vw, 13px);
+}
+
+.mg-tug-status,
+.mg-tug-control {
+  margin: 0;
+  text-align: center;
+}
+
+.mg-tug-status {
+  min-height: 1.6em;
+  color: rgba(236, 229, 216, .86);
+  font-size: clamp(12px, 1.2vw, 17px);
+}
+
+.mg-tug-status strong { color: var(--accent); }
+.mg-tug-control { color: rgba(236, 229, 216, .6); font-size: clamp(10px, .95vw, 13px); }
+
+.mg-tug.is-win .mg-tug-status strong { color: #7aff96; }
+.mg-tug.is-loss .mg-tug-status strong { color: #ff7c7c; }
+
+/* ============ 11e. 乘务员安抚与交涉小游戏（.mg-negotiation-*，属于 crew_negotiation 模块） ============ */
 
 /* 整幅舞台：中央背景铺底，左右立绘列 + 中央交互列叠加。 */
 .mg-negotiation-root { position: absolute; inset: 0; overflow: hidden; }
@@ -989,7 +1259,7 @@ body.home-op-active .home-page .auth-user-status {
 
 .mg-negotiation-portrait {
   max-width: 100%;
-  max-height: 88%;
+  max-height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .65));
 }
@@ -1263,6 +1533,198 @@ body.home-op-active .home-page .auth-user-status {
 #game-shell.paused { animation-play-state: paused; }
 @keyframes flash { 35% { filter: brightness(2.4) contrast(1.25); } }
 
+/* SAN 归零演出：覆盖整个游戏舞台，播放采访、PC 崩溃与雪花屏转场。 */
+.san-zero-sequence {
+  position: absolute;
+  inset: 0;
+  z-index: 180;
+  overflow: hidden;
+  opacity: 0;
+  color: #f4f0e8;
+  background: #000;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 420ms ease;
+}
+
+.san-zero-sequence.is-visible { opacity: 1; }
+
+.san-zero-cinema,
+.san-zero-background,
+.san-zero-vignette,
+.san-zero-portrait,
+.san-zero-snow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.san-zero-cinema {
+  overflow: hidden;
+  background: #030405;
+  transition: filter 620ms ease;
+}
+
+.san-zero-background {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 620ms ease;
+}
+
+.san-zero-background.is-active { opacity: 1; }
+
+.san-zero-vignette {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, .38), transparent 26%, transparent 62%, rgba(0, 0, 0, .36)),
+    radial-gradient(circle at 50% 45%, transparent 38%, rgba(0, 0, 0, .46) 100%);
+}
+
+.san-zero-portrait {
+  inset: auto auto 29% 0;
+  z-index: 3;
+  width: auto;
+  height: 56%;
+  max-width: 44%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .72));
+  transform: scale(.98);
+  transform-origin: left bottom;
+  transition: opacity 220ms ease, transform 260ms ease;
+}
+
+.san-zero-portrait.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.san-zero-portrait.is-doctor {
+  left: 0;
+  height: 66%;
+  max-width: 44%;
+}
+
+.san-zero-portrait.is-pc {
+  left: 0;
+  height: 52%;
+  max-width: 38%;
+}
+
+.san-zero-dialogue {
+  position: absolute;
+  z-index: 6;
+  left: 4%;
+  right: 4%;
+  bottom: 2%;
+  min-height: 25%;
+  aspect-ratio: 44 / 7;
+  padding: 30px 58px 48px;
+  opacity: 0;
+  border: 0;
+  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  box-shadow: none;
+  transition: opacity 220ms ease;
+}
+
+.san-zero-dialogue.is-visible {
+  opacity: 1;
+}
+
+.san-zero-speaker {
+  min-height: 1.5em;
+  color: #d5ad6d;
+  font-weight: 700;
+}
+
+.san-zero-line {
+  margin: 9px 0 0;
+  font-size: clamp(17px, 1.7vw, 25px);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.san-zero-hint {
+  position: absolute;
+  right: 58px;
+  bottom: 24px;
+  opacity: .62;
+  font-size: clamp(11px, 1vw, 13px);
+}
+
+.san-zero-sequence.is-waiting .san-zero-hint {
+  animation: san-zero-hint-pulse 1s steps(2, end) infinite;
+}
+
+.san-zero-scream {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  padding: 7%;
+  opacity: 0;
+  color: #fff;
+  background: rgba(0, 0, 0, .68);
+  font-size: clamp(20px, 3.2vw, 54px);
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+  text-shadow: 0 0 8px #000, 0 0 22px #b50000;
+  overflow-wrap: anywhere;
+  transition: opacity 110ms steps(2, end);
+}
+
+.san-zero-scream.is-visible { opacity: 1; }
+
+.san-zero-sequence.is-screaming .san-zero-cinema {
+  animation: san-zero-tremble 90ms steps(2, end) infinite;
+}
+
+.san-zero-sequence.is-frozen .san-zero-cinema {
+  filter: brightness(.72) contrast(1.18);
+}
+
+.san-zero-snow {
+  z-index: 7;
+  object-fit: fill;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.san-zero-sequence::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  background: #fff;
+}
+
+.san-zero-sequence.is-flashing::after {
+  animation: san-zero-white-flash 180ms steps(2, end);
+}
+
+@keyframes san-zero-hint-pulse {
+  50% { opacity: .25; }
+}
+
+@keyframes san-zero-tremble {
+  0% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  100% { transform: translate(-1px, -2px); }
+}
+
+@keyframes san-zero-white-flash {
+  0%, 100% { opacity: 0; }
+  45%, 55% { opacity: .92; }
+}
+
 /* ============ 14. 窄屏适配（@media (max-width: 700px)） ============ */
 
 @media (max-width: 700px) {
@@ -1291,6 +1753,14 @@ body.home-op-active .home-page .auth-user-status {
   .slot-actions button { flex: 1; text-align: center; }
   .horizontal-actions { grid-template-columns: 1fr; }
   .auth-page { aspect-ratio: auto; min-height: 100vh; }
+  .dialog-window { padding: 20px 28px 40px; }
+  .dialog-hint,
+  .san-zero-hint { right: 28px; bottom: 14px; }
+  .window-controls { left: 28px; bottom: 14px; }
+  .san-zero-dialogue { min-height: 0; padding: 18px 28px 34px; }
+  .san-zero-line { font-size: clamp(15px, 4vw, 19px); }
+  .san-zero-portrait.is-doctor { left: 0; height: 58%; }
+  .san-zero-portrait.is-pc { left: 0; height: 45%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1298,6 +1768,18 @@ body.home-op-active .home-page .auth-user-status {
   .home-op-frame,
   .home-op-blackout {
     transition-duration: 1ms;
+  }
+
+  .san-zero-sequence,
+  .san-zero-background,
+  .san-zero-portrait,
+  .san-zero-dialogue {
+    transition-duration: 1ms;
+  }
+
+  .san-zero-sequence.is-screaming .san-zero-cinema,
+  .san-zero-sequence.is-waiting .san-zero-hint {
+    animation: none;
   }
 }
 
