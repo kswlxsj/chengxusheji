@@ -541,7 +541,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_501"
+          "clickEvent": "E_DOOR_03"
         },
         {
           "id": "black_bag_03",
@@ -4498,14 +4498,6 @@ window.GAME_DATA = {
       "id": "E_029",
       "actions": [
         {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev510_flower_sea",
-            "equals": true
-          },
-          "next": "E_515"
-        },
-        {
           "type": "check",
           "dice": "ev029_agility_01",
           "outcomes": [
@@ -4888,29 +4880,317 @@ window.GAME_DATA = {
       "id": "E_031",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "在隔离室中醒来，蜷缩在墙角。"
+          "type": "changeScene",
+          "scene": "front_carriage"
         },
         {
           "type": "dialogue",
-          "text": "医生对警察摇了摇头，表情无奈：每天都要镇定剂，突然就疯掉了。"
+          "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
         },
         {
           "type": "dialogue",
-          "text": "你因在梦中经历了无法承受的恐怖，醒来后歇斯底里，被送进精神病院。"
+          "text": "门上有一块褪色的铭牌：驾驶室。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "any": [
+              {
+                "flag": "keys_player",
+                "equals": true
+              },
+              {
+                "hasItem": "crew_keys"
+              }
+            ]
+          },
+          "next": "E_031_PLAYER_KEY"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "keys_crew",
+            "equals": true
+          },
+          "next": "E_031_CREW_KEY"
+        },
+        {
+          "type": "dialogue",
+          "text": "你伸手推了推门——锁着。"
+        },
+        {
+          "type": "check",
+          "dice": "ev031_scouting_02",
+          "outcomes": [
+            "E_031_NO_KEY_S",
+            "E_031_NO_KEY_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_031_PLAYER_KEY",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你摸出钥匙，插进锁孔。金属咬合的声音在安静中格外清晰。"
+        }
+      ],
+      "next": "E_032"
+    },
+    {
+      "id": "E_031_CREW_KEY",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "她颤抖着摸出钥匙，替你打开门。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你注意到，她看向驾驶室的目光里，有一种近乎执念的光。"
+        }
+      ],
+      "next": "E_032"
+    },
+    {
+      "id": "E_031_NO_KEY_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是另一位乘务员留下的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你用它打开了驾驶室的门。"
+        },
+        {
+          "type": "addItem",
+          "item": "crew_keys"
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_player",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "keys_missing",
+          "value": false
+        }
+      ],
+      "next": "E_032"
+    },
+    {
+      "id": "E_031_NO_KEY_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你找不到任何能打开门的东西。身后的黑暗越来越近。"
+        }
+      ],
+      "next": "E_036"
+    },
+    {
+      "id": "E_032",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你打开操作面板，面板上积着一层薄灰。"
+        },
+        {
+          "type": "dialogue",
+          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆下拉加速，上拉减速。"
+        },
+        {
+          "type": "dialogue",
+          "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_032_WITH_CREW"
+        },
+        {
+          "type": "choice",
+          "prompt": "你要怎么操作拉杆？",
+          "options": [
+            {
+              "label": "右杆下拉——加速，继续前进",
+              "next": "E_034"
+            },
+            {
+              "label": "右杆上拉——减速，停车",
+              "next": "E_035"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_032_WITH_CREW",
+      "actions": [
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "拉它！停车！我们逃出去！"
+        },
+        {
+          "type": "choice",
+          "prompt": "你要怎么操作拉杆？",
+          "options": [
+            {
+              "label": "右杆下拉——加速，继续前进",
+              "next": "E_033"
+            },
+            {
+              "label": "右杆上拉——减速，停车",
+              "next": "E_035"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_033",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你的手刚碰到右杆，乘务员就扑了上来，死死抓住你的手腕。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "不行！停下来！我们必须逃出去——！"
+        },
+        {
+          "type": "minigame",
+          "game": "conductor_tug"
+        }
+      ]
+    },
+    {
+      "id": "E_033_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你稳住她，一字一句地说：\n\n“你仔细想想——那些便签、那些反复出现的话……它们全都叫我们前进。停车，才是死路。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "……你确定吗？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你没有回答，只是用力将右杆下拉到底。"
+        }
+      ],
+      "next": "E_034"
+    },
+    {
+      "id": "E_033_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你没能拦住她。她不知哪来的力气，用肩膀将你撞开，把右杆推回减速的位置。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "对不起……对不起……我只是想活……"
+        },
+        {
+          "type": "dialogue",
+          "text": "电车开始减速。"
+        }
+      ],
+      "next": "E_035"
+    },
+    {
+      "id": "E_034",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "电车加速到极致，视野被刺眼白光覆盖。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你睁开眼，发现自己仍坐在6号车厢。广播声响起：终点站已到。"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢里的人们陆续醒来，揉着眼睛下车。你翻看背包：便签、报纸、手机、手电筒——全都不在了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "那是一场共同的噩梦。恐怖的记忆慢慢淡忘。你跟在人群后面走出站台。"
+        },
+        {
+          "type": "dialogue",
+          "text": "身后，末班电车的车门缓缓关闭。抬头，你看见站台的指引牌上，写着熟悉字迹的——\n\n「MOVE FORWARD」"
+        },
+        {
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "true_end"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_035",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
+        },
+        {
+          "type": "dialogue",
+          "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你想起一路上那些字：\n\n「MOVE FORWARD」\n\n你停下的那一刻，就已经输了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "意识与身体一同消失……在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你发现背包里多了一个背带被切断的黑色包。"
+        },
+        {
+          "type": "check",
+          "dice": "ev030_san_01"
+        }
+      ]
+    },
+    {
+      "id": "E_036",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "在隔离室中醒来，你蜷缩在墙角。"
+        },
+        {
+          "type": "dialogue",
+          "text": "医生对警察摇了摇头：每天都要镇定剂，你因在梦中经历了无法承受的恐怖，醒来后歇斯底里，被送进精神病院。"
         },
         {
           "type": "dialogue",
           "text": "无人知晓你们在逃避什么。"
         },
         {
-          "type": "dialogue",
-          "text": "（SAN 归零）"
-        },
-        {
-          "type": "modifyAttribute",
-          "attribute": "san",
-          "amount": -10
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "trauma"
+          }
         }
       ]
     },

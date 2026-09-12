@@ -138,7 +138,7 @@ game.state.removeItem("missing"); assert.equal(game.state.inventory.length, 0);
 await game.play("E_524"); await game.play("E_524");
 assert.equal(game.state.inventory.filter(i => i === "crew_keys").length, 1);
 
-for (const [id, flags, reason] of [["E_511", {}, "lost"], ["E_029", {ev510_flower_sea:true}, "trauma"], ["E_029", {}, "true_end"]]) {
+for (const [id, flags, reason] of [["E_511", {}, "lost"]]) {
   game = fixture(flags); await game.play(id); assert.equal(game.state.flags.ending_reason, reason);
 }
 
@@ -172,7 +172,23 @@ const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/carriage-06-eaten.png", import.meta.url))).size > 0);
-assert.equal(events.find(e => e.id === "E_028").actions.some(a => a.game === "conductor_tug"), true);
+const e028 = events.find(e => e.id === "E_028");
+assert.equal(e028.actions.some(a => a.type === "changeScene" && a.scene === "carriage_02"), true);
+assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负责瓶子与投掷，不得进入小游戏");
+const carriage02 = scenes.find(s => s.id === "carriage_02");
+const bottle02 = carriage02.objects.find(o => o.id === "bottle_02");
+assert.equal(bottle02.clickEvent, "E_028_PICK_BOTTLE");
+// 里世界内容保留为可单独测试的开发分支，但不得再劫持当前主线入口或 E-029 战斗。
+const carriage03 = scenes.find(s => s.id === "carriage_03");
+assert.equal(carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent, "E_DOOR_03");
+const e029 = events.find(e => e.id === "E_029");
+assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
+assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);
+assert.equal(events.find(e => e.id === "E_033").actions.some(a => a.game === "conductor_tug"), true);
+const cardBattleSource = await read("src/minigame-games/card-battle.js");
+assert.match(cardBattleSource, /won \? \[[\s\S]*?jump", next: "E_031"[\s\S]*?jump", next: "E_030"/);
+const conductorTugSource = await read("src/minigame-games/conductor-tug.js");
+assert.match(conductorTugSource, /won \? "E_034" : "E_035"/);
 assert.match(await read("game.html"), /src\/minigame-games\/conductor-tug\.js/);
 // 实际渲染后的图片也必须就绪，不能只等待预加载缓存。
 game = fixture(); let decoded;

@@ -1,7 +1,7 @@
 (function (Game) {
   "use strict";
 
-  // 终局小游戏：仿星露谷钓鱼的“控制杆争夺”。
+  // E-033 抢摇杆小游戏：仿星露谷钓鱼的“控制杆争夺”。
   // 顶层只注册，DOM 与动画全部延迟到 run()，这样编译器可以在 node:vm 中安全收集编号。
   const CONFIG = {
     zoneHeight: 0.20,
@@ -147,7 +147,7 @@
       meterText.textContent = won ? "正在切换列车控制模式" : "列车员重新抓住了操作杆";
       finishHandle = window.setTimeout(() => resolveSettlement([
         { type: "setFlag", key: "conductor_tug_won", value: won },
-        { type: "jump", next: won ? "E_029" : "E_030_TUG" }
+        { type: "jump", next: won ? "E_034" : "E_035" }
       ]), 650);
     };
 

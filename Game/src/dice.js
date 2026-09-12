@@ -248,6 +248,7 @@
   registerDice("ev028_agility_01", attrCheck("agility"));
   registerDice("ev028_luck_half_01", (context) => luckHalfCheck(context, 9, "投掷后的幸运检定"));
   registerDice("ev029_agility_01", attrCheck("agility"));
+  registerDice("ev031_scouting_02", scoutingSkillCheck);
 
   // E-025：返回 0=单只、1=两只，对应事件的两个结果分支。
   registerDice("ev025_clicker_count_01", async (context) => {
