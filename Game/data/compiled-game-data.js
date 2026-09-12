@@ -69,7 +69,7 @@ window.GAME_DATA = {
           }
         },
         {
-          "id": "door_06",
+          "id": "door_06_to_07",
           "name": "通往7号车厢的门",
           "image": "assets/door.svg",
           "position": {
@@ -237,11 +237,11 @@ window.GAME_DATA = {
           }
         },
         {
-          "id": "return_door_07",
-          "name": "返回 6 号车厢",
+          "id": "door_07_to_06",
+          "name": "通往6号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 0,
+            "x": 89,
             "y": 21,
             "width": 12,
             "height": 63
@@ -269,11 +269,11 @@ window.GAME_DATA = {
           "clickEvent": "E_007"
         },
         {
-          "id": "deep_07",
+          "id": "door_07_to_08",
           "name": "通往8号方向的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 89,
+            "x": 0,
             "y": 21,
             "width": 12,
             "height": 63
@@ -302,8 +302,8 @@ window.GAME_DATA = {
           "clickEvent": "E_GO_05_06"
         },
         {
-          "id": "door_05",
-          "name": "通往4号车厢",
+          "id": "door_05_to_04",
+          "name": "通往4号车厢的门",
           "image": "assets/door.svg",
           "position": {
             "x": 89,
@@ -437,7 +437,7 @@ window.GAME_DATA = {
           "clickEvent": "E_GO_04_05"
         },
         {
-          "id": "door_04",
+          "id": "door_04_to_03",
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
@@ -484,7 +484,7 @@ window.GAME_DATA = {
           "clickEvent": "E_GO_03_04"
         },
         {
-          "id": "door_03",
+          "id": "door_03_to_02",
           "name": "通往2号车厢的门",
           "image": "assets/door.svg",
           "position": {
@@ -537,11 +537,11 @@ window.GAME_DATA = {
           }
         },
         {
-          "id": "door_02",
+          "id": "door_02_to_front",
           "name": "通往先头车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 0,
+            "x": 89,
             "y": 21,
             "width": 12,
             "height": 63
@@ -582,7 +582,7 @@ window.GAME_DATA = {
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 89,
+            "x": 0,
             "y": 21,
             "width": 12,
             "height": 63
