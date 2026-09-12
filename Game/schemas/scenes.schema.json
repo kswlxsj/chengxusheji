@@ -113,6 +113,16 @@
           "type": "boolean",
           "default": false,
           "description": "整幅画布贴图：该图与场景背景同尺寸画布、四周带透明边（透明边含位置信息）。渲染时与背景共用同一画布→屏幕映射整幅叠放；position 固定为 {x:0,y:0,width:100,height:100}，点击与悬停由运行时不透明像素判定。"
+        },
+        "noHighlight": {
+          "type": "boolean",
+          "default": false,
+          "description": "关闭该物件的悬停/聚焦高亮（不减亮、不放大）：用于点击区就落在背景美术上、不需要叠加特效的物件。"
+        },
+        "invisible": {
+          "type": "boolean",
+          "default": false,
+          "description": "隐形命中区：不渲染任何贴图，只用 position 矩形接收点击（鼠标移上去仍是手型）。用于「背景上已经画好的东西」（如车厢门）——热点即那块区域本身，没有具体贴图。通常与 noHighlight 一起用。image 仍需填写以满足 Schema，运行时不加载。"
         }
       },
       "additionalProperties": false

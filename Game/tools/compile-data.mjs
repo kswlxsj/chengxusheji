@@ -214,6 +214,12 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
       objectIds.add(object.id);
       assert(object.clickEvent && eventIds.has(object.clickEvent), `物件 ${object.id} 引用了不存在的事件`);
       assert(object.position && ["x", "y", "width", "height"].every((key) => Number.isFinite(object.position[key])), `物件 ${object.id} 的 position 无效`);
+      if (object.noHighlight != null) {
+        assert(typeof object.noHighlight === "boolean", `物件 ${object.id} 的 noHighlight 必须是布尔值`);
+      }
+      if (object.invisible != null) {
+        assert(typeof object.invisible === "boolean", `物件 ${object.id} 的 invisible 必须是布尔值`);
+      }
       if (object.fullCanvas) {
         assert(typeof object.fullCanvas === "boolean", `物件 ${object.id} 的 fullCanvas 必须是布尔值`);
         const { x, y, width, height } = object.position || {};

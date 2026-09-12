@@ -164,15 +164,19 @@
         button.disabled = !this.interactionEnabled;
         button.title = object.name || object.id;
         button.setAttribute("aria-label", object.name || object.id);
+        if (object.noHighlight) button.dataset.noHighlight = "true";
         button.style.left = `${object.position.x}%`;
         button.style.top = `${object.position.y}%`;
         button.style.width = `${object.position.width}%`;
         button.style.height = `${object.position.height}%`;
         button.style.zIndex = String(object.zIndex || 10);
-        const image = document.createElement("img");
-        image.src = object.image;
-        image.alt = "";
-        button.append(image);
+        // 隐形命中区：命中矩形直接落在“背景上已经画好的东西”（如车厢门）上，不叠加任何贴图。
+        if (!object.invisible) {
+          const image = document.createElement("img");
+          image.src = object.image;
+          image.alt = "";
+          button.append(image);
+        }
         button.addEventListener("click", () => {
           if (this.interactionEnabled && object.clickEvent && this.onObjectClick) {
             this.onObjectClick(object.clickEvent, object);

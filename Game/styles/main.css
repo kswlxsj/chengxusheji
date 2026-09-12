@@ -488,6 +488,13 @@ body.home-op-active .home-page .auth-user-status {
   transform: none;
 }
 
+/* 上车门等“背景已画好”的隐形命中区（scenes.json 的 noHighlight）：只保留指针反馈，不叠加减亮/放大特效。 */
+.scene-object[data-no-highlight="true"]:hover,
+.scene-object[data-no-highlight="true"]:focus-visible {
+  filter: none;
+  transform: none;
+}
+
 /* ============ 8. 游戏页：HUD 顶部信息条与底部物品栏（#hud、#inventory-bar 等） ============ */
 
 #hud {
