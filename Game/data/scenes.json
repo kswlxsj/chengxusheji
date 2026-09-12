@@ -626,13 +626,15 @@
         "name": "通往花草车厢的门",
         "image": "assets/door.svg",
         "position": {
-          "x": 89,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
-        "clickEvent": "E_503"
+        "zIndex": 13,
+        "clickEvent": "E_503",
+        "invisible": true,
+        "noHighlight": true
       },
       {
         "id": "door_inner01_back",
@@ -641,12 +643,12 @@
         "invisible": true,
         "noHighlight": true,
         "position": {
-          "x": 0,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
+        "zIndex": 13,
         "clickEvent": "E_502_RETURN"
       }
     ]
@@ -703,12 +705,12 @@
         "invisible": true,
         "noHighlight": true,
         "position": {
-          "x": 0,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
+        "zIndex": 13,
         "clickEvent": "E_503_BACK"
       },
       {
@@ -716,20 +718,22 @@
         "name": "通往深处的门",
         "image": "assets/door.svg",
         "position": {
-          "x": 89,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
-        "clickEvent": "E_505"
+        "zIndex": 13,
+        "clickEvent": "E_505",
+        "invisible": true,
+        "noHighlight": true
       }
     ]
   },
   {
     "id": "carriage_fake_04",
     "name": "里世界·伪4号车厢",
-    "background": "assets/carriage-fake-04.png",
+    "background": "assets/carriage-fake-04-fog.png",
     "objects": [
       {
         "id": "door_fake04_back",
@@ -738,12 +742,12 @@
         "invisible": true,
         "noHighlight": true,
         "position": {
-          "x": 0,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
+        "zIndex": 13,
         "clickEvent": "E_509_BACK"
       },
       {
@@ -751,13 +755,15 @@
         "name": "车厢尽头的门",
         "image": "assets/door.svg",
         "position": {
-          "x": 89,
-          "y": 21,
-          "width": 12,
-          "height": 63
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
         },
-        "zIndex": 11,
-        "clickEvent": "E_510"
+        "zIndex": 13,
+        "clickEvent": "E_510",
+        "invisible": true,
+        "noHighlight": true
       },
       {
         "id": "window_fake04_flower",
@@ -773,7 +779,7 @@
         "zIndex": 12,
         "clickEvent": "E_516",
         "visibleWhen": {
-          "flag": "ev504_scouting_ok",
+          "flag": "ev517_flower_revealed",
           "equals": true
         }
       },
@@ -792,9 +798,18 @@
         "clickEvent": "E_516",
         "visibleWhen": {
           "not": {
-            "flag": "ev504_scouting_ok",
+            "flag": "ev517_flower_revealed",
             "equals": true
           }
+        }
+      }
+    ],
+    "backgroundVariants": [
+      {
+        "image": "assets/carriage-fake-04.png",
+        "visibleWhen": {
+          "flag": "ev517_flower_revealed",
+          "equals": true
         }
       }
     ]

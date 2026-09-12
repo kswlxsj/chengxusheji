@@ -29,6 +29,10 @@
       ending = true;
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
+      if (reason === "lost" || reason === "trauma") {
+        flow.navigate("ending", { reason }, true);
+        return;
+      }
       // CODEX ADD START
       showEndingOverlay(reason);
       // CODEX ADD END

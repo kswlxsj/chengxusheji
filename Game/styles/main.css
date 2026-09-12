@@ -637,6 +637,27 @@ body.home-op-active .home-page .auth-user-status {
 
 #window-layer { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
 
+/* 里世界低语：覆盖游戏与 HUD，暂停菜单仍位于其上。 */
+.inner-whisper-scare {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  overflow: hidden;
+  background: #d00000;
+  color: #000;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.inner-whisper-text {
+  padding: 2%;
+  font-size: clamp(28px, 4vw, 64px);
+  font-weight: 900;
+  line-height: 1.05;
+  word-break: break-all;
+  will-change: transform;
+}
+
 .game-window {
   pointer-events: auto;
   border: 2px solid var(--line);

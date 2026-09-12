@@ -239,7 +239,7 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
 
   const actionTypes = new Set([
     "dialogue", "inspect", "choice", "check", "changeScene", "setFlag",
-    "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem",
+    "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem", "removeItem",
     "setObjectState", "custom", "minigame", "conditionalJump"
   ]);
   for (const event of events) {
@@ -248,7 +248,7 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
     for (const action of event.actions) {
       assert(actionTypes.has(action.type), `事件 ${event.id} 使用未知动作：${action.type}`);
       if (action.type === "changeScene") assert(sceneIds.has(action.scene), `事件 ${event.id} 引用了不存在的场景`);
-      if (action.type === "addItem") assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
+      if (["addItem", "removeItem"].includes(action.type)) assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
       if (action.type === "conditionalJump") {
         assert(eventIds.has(action.next), `事件 ${event.id} 的条件跳转目标不存在：${action.next}`);
         validateCondition(action.when, references, `事件 ${event.id} 的条件跳转条件`);

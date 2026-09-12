@@ -642,13 +642,15 @@ window.GAME_DATA = {
           "name": "通往花草车厢的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 89,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
-          "clickEvent": "E_503"
+          "zIndex": 13,
+          "clickEvent": "E_503",
+          "invisible": true,
+          "noHighlight": true
         },
         {
           "id": "door_inner01_back",
@@ -657,12 +659,12 @@ window.GAME_DATA = {
           "invisible": true,
           "noHighlight": true,
           "position": {
-            "x": 0,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
+          "zIndex": 13,
           "clickEvent": "E_502_RETURN"
         }
       ]
@@ -719,12 +721,12 @@ window.GAME_DATA = {
           "invisible": true,
           "noHighlight": true,
           "position": {
-            "x": 0,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
+          "zIndex": 13,
           "clickEvent": "E_503_BACK"
         },
         {
@@ -732,20 +734,22 @@ window.GAME_DATA = {
           "name": "通往深处的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 89,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
-          "clickEvent": "E_505"
+          "zIndex": 13,
+          "clickEvent": "E_505",
+          "invisible": true,
+          "noHighlight": true
         }
       ]
     },
     {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
-      "background": "assets/carriage-fake-04.png",
+      "background": "assets/carriage-fake-04-fog.png",
       "objects": [
         {
           "id": "door_fake04_back",
@@ -754,12 +758,12 @@ window.GAME_DATA = {
           "invisible": true,
           "noHighlight": true,
           "position": {
-            "x": 0,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
+          "zIndex": 13,
           "clickEvent": "E_509_BACK"
         },
         {
@@ -767,13 +771,15 @@ window.GAME_DATA = {
           "name": "车厢尽头的门",
           "image": "assets/door.svg",
           "position": {
-            "x": 89,
-            "y": 21,
-            "width": 12,
-            "height": 63
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
           },
-          "zIndex": 11,
-          "clickEvent": "E_510"
+          "zIndex": 13,
+          "clickEvent": "E_510",
+          "invisible": true,
+          "noHighlight": true
         },
         {
           "id": "window_fake04_flower",
@@ -789,7 +795,7 @@ window.GAME_DATA = {
           "zIndex": 12,
           "clickEvent": "E_516",
           "visibleWhen": {
-            "flag": "ev504_scouting_ok",
+            "flag": "ev517_flower_revealed",
             "equals": true
           }
         },
@@ -808,9 +814,18 @@ window.GAME_DATA = {
           "clickEvent": "E_516",
           "visibleWhen": {
             "not": {
-              "flag": "ev504_scouting_ok",
+              "flag": "ev517_flower_revealed",
               "equals": true
             }
+          }
+        }
+      ],
+      "backgroundVariants": [
+        {
+          "image": "assets/carriage-fake-04.png",
+          "visibleWhen": {
+            "flag": "ev517_flower_revealed",
+            "equals": true
           }
         }
       ]
@@ -2814,14 +2829,15 @@ window.GAME_DATA = {
       "id": "E_028",
       "actions": [
         {
-          "type": "check",
-          "dice": "ev028_talk_or_strength_01",
-          "outcomes": [
-            "E_029",
-            "E_030"
-          ]
+          "type": "dialogue",
+          "text": "乘务员死死拽住操作杆。你伸手握住它，试图夺回控制权。"
+        },
+        {
+          "type": "minigame",
+          "game": "conductor_tug"
         }
-      ]
+      ],
+      "next": "E_030_TUG"
     },
     {
       "id": "E_029",
@@ -2965,12 +2981,16 @@ window.GAME_DATA = {
       "id": "E_DOOR_03",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你推开通往2号车厢的门。"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_02"
         },
         {
           "type": "dialogue",
-          "text": "你推开门走进2号车厢。四周毫无光源，只能听见明显的喘息声。"
+          "text": "你走进2号车厢。黑暗中传来明显的喘息声。"
         }
       ]
     },
@@ -3242,12 +3262,12 @@ window.GAME_DATA = {
           "next": "E_DOOR_03"
         },
         {
-          "type": "changeScene",
-          "scene": "carriage_inner_01"
-        },
-        {
           "type": "dialogue",
           "text": "黑暗的尽头没有尽头。你深吸一口气，伸手推开了通往2号的车门。"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_inner_01"
         },
         {
           "type": "dialogue",
@@ -3283,10 +3303,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "车厢两头各有一扇门。你站在正中央，两侧都望不到尽头。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（场景：昏暗，无光源）"
         }
       ]
     },
@@ -3339,10 +3355,6 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（音效：沉闷的撞击声）"
-        },
-        {
-          "type": "dialogue",
           "text": "你放弃了回头，转身向前。"
         },
         {
@@ -3357,12 +3369,16 @@ window.GAME_DATA = {
       "id": "E_502_CARRIAGE03",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你推开了车门。"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_03"
         },
         {
           "type": "dialogue",
-          "text": "车门打开，门外是3号车厢，灯光昏黄，一切如常。"
+          "text": "门外是3号车厢，灯光昏黄，一切如常。"
         },
         {
           "type": "dialogue",
@@ -3384,6 +3400,18 @@ window.GAME_DATA = {
       "id": "E_503",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev_inner_backtrack",
+            "equals": true
+          },
+          "next": "E_522"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过车门。"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_inner_02"
         },
@@ -3392,16 +3420,14 @@ window.GAME_DATA = {
           "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
         },
         {
-          "type": "dialogue",
-          "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
-        },
-        {
           "type": "conditionalJump",
           "when": {
-            "flag": "ev_inner_backtrack",
-            "equals": true
+            "not": {
+              "flag": "ev503_bottle_taken",
+              "equals": true
+            }
           },
-          "next": "E_522"
+          "next": "E_503_BOTTLES"
         }
       ]
     },
@@ -3413,10 +3439,6 @@ window.GAME_DATA = {
           "text": "你俯身捡起一支彩色的空玻璃瓶。"
         },
         {
-          "type": "dialogue",
-          "text": "（获得：彩色玻璃瓶）"
-        },
-        {
           "type": "addItem",
           "item": "bottle"
         },
@@ -3426,6 +3448,10 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "dialogue",
           "text": "握住瓶身的一瞬间，你听到像是人声的低语，又或者像哭声或祈祷。"
         },
@@ -3433,8 +3459,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你抬起头，声音消失了。"
         }
-      ],
-      "next": "E_503"
+      ]
     },
     {
       "id": "E_504",
@@ -3461,43 +3486,29 @@ window.GAME_DATA = {
       "id": "E_504_S",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
-        {
           "type": "dialogue",
           "text": "并不完全黑，似乎有隐隐约约的微光。你把耳朵贴着窗户，听到窸窸窣窣的声响。"
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·已侦察窗外】此后若看向窗外，你将认出那一片微光与声响。"
         },
         {
           "type": "setFlag",
           "key": "ev504_scouting_ok",
           "value": true
         }
-      ],
-      "next": "E_503"
+      ]
     },
     {
       "id": "E_504_F",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
-        {
           "type": "dialogue",
-          "text": "雾气浓重，白茫茫一片。你贴着玻璃看了很久，什么也没有看见。"
+          "text": "雾气浓重，远方一片模糊。你贴着玻璃看了很久，什么也没有看见。"
         },
         {
           "type": "setFlag",
           "key": "ev504_scouting_ok",
           "value": false
         }
-      ],
-      "next": "E_503"
+      ]
     },
     {
       "id": "E_505",
@@ -3515,10 +3526,6 @@ window.GAME_DATA = {
           "text": "取而代之的，是隐隐约约的音乐声。"
         },
         {
-          "type": "dialogue",
-          "text": "（音效：隐约、遥远的音乐）"
-        },
-        {
           "type": "changeScene",
           "scene": "carriage_fake_04"
         }
@@ -3528,10 +3535,6 @@ window.GAME_DATA = {
     {
       "id": "E_506",
       "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_fake_04"
-        },
         {
           "type": "dialogue",
           "text": "门上的编号写着：4。"
@@ -3573,11 +3576,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "车厢深处响起低语。那声音你认得，又陌生——像是她，又像是从你自己喉咙里漏出来的。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：断续低语）"
+          "text": "车厢深处响起低语。那是一个陌生的声音，却又像是从你自己喉咙里漏出来的。"
         },
         {
           "type": "dialogue",
@@ -3604,16 +3603,8 @@ window.GAME_DATA = {
           "text": "都是你的错。"
         },
         {
-          "type": "dialogue",
-          "text": "（演出：全屏 Jumpscare）"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：惊悚尖啸）"
-        },
-        {
-          "type": "dialogue",
-          "text": "停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来"
+          "type": "custom",
+          "name": "innerWhisperScare"
         },
         {
           "type": "dialogue",
@@ -3622,11 +3613,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你站在原地，后颈全是冷汗。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev507_san_pending",
-          "value": true
         }
       ],
       "next": "E_509"
@@ -3673,7 +3659,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你站在原地。车厢尽头有一扇门通向更深处；来路那扇门还在原地；而车窗，不知何时起，雾气散开了些。"
+          "text": "你站在原地。车厢尽头有一扇门通向更深处；来路那扇门还在原地；一旁的车窗映着幽暗的光。"
         }
       ]
     },
@@ -3681,12 +3667,12 @@ window.GAME_DATA = {
       "id": "E_510",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "flower_sea"
-        },
-        {
           "type": "dialogue",
           "text": "你推开那扇门。"
+        },
+        {
+          "type": "changeScene",
+          "scene": "flower_sea"
         },
         {
           "type": "dialogue",
@@ -3781,20 +3767,13 @@ window.GAME_DATA = {
           "text": "你终于属于这里了。"
         },
         {
-          "type": "dialogue",
-          "text": "（结局：迷失）"
-        },
-        {
-          "type": "setFlag",
-          "key": "ending_lost",
-          "value": true
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "lost"
+          }
         }
-      ],
-      "next": "E_511_END"
-    },
-    {
-      "id": "E_511_END",
-      "actions": []
+      ]
     },
     {
       "id": "E_513",
@@ -3804,47 +3783,23 @@ window.GAME_DATA = {
           "text": "你退出花海，向来路折返。"
         },
         {
+          "type": "setFlag",
+          "key": "ev_inner_backtrack",
+          "value": true
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_fake_04"
+        },
+        {
           "type": "dialogue",
           "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
         },
         {
           "type": "dialogue",
-          "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，现实世界反而显得不真实。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你继续往回走。穿过一节车厢，又穿过一节车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev_fake04_from_sea",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": true
+          "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，眼前的一切反而显得不真实。"
         }
-      ],
-      "next": "E_522"
-    },
-    {
-      "id": "E_514",
-      "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        }
-      ],
-      "next": "E_503"
+      ]
     },
     {
       "id": "E_515",
@@ -3862,153 +3817,62 @@ window.GAME_DATA = {
           "text": "在你平凡的余生中，你常常想起它们的低语，或许那确实是你想要的。"
         },
         {
-          "type": "dialogue",
-          "text": "（结局：Trauma）"
-        },
-        {
-          "type": "setFlag",
-          "key": "ending_trauma",
-          "value": true
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "trauma"
+          }
         }
-      ],
-      "next": "E_515_END"
-    },
-    {
-      "id": "E_515_END",
-      "actions": []
+      ]
     },
     {
       "id": "E_516",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_fake_04"
-        },
-        {
           "type": "dialogue",
           "text": "你走向车窗。就在指尖将要碰到玻璃的一刻，一个声音在身后响起——"
         },
         {
-          "type": "dialogue",
-          "text": "（若乘务员仍在人世）是她的声音，平静得好像她本来就属于这里。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（若乘务员已死）是她的声音。你认得出来——她不是已经死了吗？是谁在说话……？"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "……你在看什么？"
-        },
-        {
           "type": "conditionalJump",
           "when": {
-            "flag": "ev504_scouting_ok",
+            "flag": "crew_met",
             "equals": true
           },
-          "next": "E_517"
+          "next": "E_516_MET"
+        },
+        {
+          "type": "dialogue",
+          "text": "一个陌生的声音。你回过头，看向坐在窗边的乘务员。"
         }
       ],
-      "next": "E_518"
+      "next": "E_516_VOICE"
     },
     {
       "id": "E_517",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev517_flower_revealed",
+            "equals": true
+          },
+          "next": "E_517_TALK"
+        },
+        {
           "type": "dialogue",
           "text": "窗外的雾气散开了。"
         },
         {
-          "type": "dialogue",
-          "text": "你看到一片花海，无边无际，在幽暗的光线下安静地起伏。"
+          "type": "setFlag",
+          "key": "ev517_flower_revealed",
+          "value": true
         },
         {
-          "type": "dialogue",
-          "text": "她与你并肩站着，望着那片花海。过了很久，她开口了："
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "有时候我觉得活着挺没劲的。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "机器至少知道自己被造出来是为了什么。你呢？"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "我们曾一直期待它会来。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "期待一场浪潮，一场盛大而危险的春天。不管它带来什么东西，总会好过……"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "你知道许愿柳的故事吗？或者猴爪。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "在你愿望的时候，你甚至其实不知道自己在愿望什么……"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "我们无数人的盼望下，降生的是什么？在它真的到来的一天，这里剩下的是什么？"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "个人的能力是多么的渺小啊，在大势所趋面前，所有的努力终如蚍蜉撼树。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "所以，停下来，求求你。然后我们逃离这里，再也不回来……"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "……只要我们活到明天，一切最终会好起来……不是吗？"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "虔诚地相信，置身事外，热爱生活。在那之后，我们就可以……"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "？？？",
-          "text": "你找到钥匙了吗？我们去停下列车……"
+          "type": "custom",
+          "name": "refreshScene"
         }
       ],
-      "next": "E_519"
+      "next": "E_517_TALK"
     },
     {
       "id": "E_518",
@@ -4019,11 +3883,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "白茫茫的，看不清。"
+          "text": "雾蒙蒙的，看不清。"
         },
         {
           "type": "dialogue",
-          "text": "她站在你身边，嘴唇开合——一字一句地对你说："
+          "text": "她坐在窗边，嘴唇开合——一字一句地对你说："
         },
         {
           "type": "dialogue",
@@ -4172,16 +4036,30 @@ window.GAME_DATA = {
       "id": "E_519_GIVE",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "hasItem": "crew_keys"
+            }
+          },
+          "next": "E_519_NOKEY"
+        },
+        {
           "type": "dialogue",
           "text": "你把钥匙递出去。她接过去，指腹拂过齿纹，神情安静得可怕。"
         },
         {
-          "type": "dialogue",
-          "text": "【状态·钥匙交给了祂】钥匙被交了出去。逃出里世界（E-524）时钥匙会自行回到你身上；但在关键的把柄争夺时刻，你将处于劣势——丧失最终主动权（对应主剧本 E-033 一类的手柄/拉杆对抗场景，具体数值加成待定）。"
+          "type": "removeItem",
+          "item": "crew_keys"
         },
         {
           "type": "setFlag",
           "key": "ev519_key_given",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "ev519_key_ever_given",
           "value": true
         }
       ],
@@ -4206,7 +4084,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你站在原地。身后是无尽的花与白，身前是来时的路。"
+          "text": "你站在窗边。车厢两头的门仍在原处，你得决定接下来往哪边走。"
         },
         {
           "type": "choice",
@@ -4228,72 +4106,9 @@ window.GAME_DATA = {
       "id": "E_521",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev519_key_given",
-            "equals": true
-          },
-          "next": "E_521B"
-        }
-      ],
-      "next": "E_521A"
-    },
-    {
-      "id": "E_521A",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你开始往回走。"
-        },
-        {
-          "type": "dialogue",
-          "text": "穿过一节车厢，又穿过一节车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "窗外的景色没有任何变化。脚步声在空荡的车厢里来来回回。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：单调的脚步声）"
-        }
-      ],
-      "next": "E_522"
-    },
-    {
-      "id": "E_521B",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你开始往回走。"
-        },
-        {
-          "type": "dialogue",
-          "text": "穿过一节车厢，又穿过一节车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "窗外的景色没有任何变化。脚步声在空荡的车厢里来来回回。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：单调的脚步声）"
-        },
-        {
-          "type": "dialogue",
-          "text": "（若【状态·钥匙交给了祂】）你下意识摸了摸口袋——钥匙不在。"
+          "type": "setFlag",
+          "key": "ev_inner_backtrack",
+          "value": true
         }
       ],
       "next": "E_522"
@@ -4302,62 +4117,25 @@ window.GAME_DATA = {
       "id": "E_522",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你穿过来路的车门。"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_inner_02"
         },
         {
-          "type": "setFlag",
-          "key": "ev_fake04_from_sea",
-          "value": false
-        },
-        {
           "type": "dialogue",
-          "text": "不知走了多久，你踏进一节车厢——角落里又长着花草。你认得这里。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（若持有玻璃瓶）你摸了摸口袋里的彩色玻璃瓶，瓶身冰凉。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（若之前没有捡起玻璃瓶，此时也有机会再捡起）"
+          "text": "角落里又长着花草。你认得这里。"
         },
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "ev503_bottle_taken",
-            "equals": true
+            "hasItem": "bottle"
           },
-          "next": "E_522_DONE"
-        }
-      ],
-      "next": "E_522_PICK"
-    },
-    {
-      "id": "E_522_PICK",
-      "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
-        },
-        {
-          "type": "dialogue",
-          "text": "你俯身捡起一支彩色的空玻璃瓶。"
-        },
-        {
-          "type": "addItem",
-          "item": "bottle"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev503_bottle_taken",
-          "value": true
+          "next": "E_522_BOTTLE"
         }
       ]
-    },
-    {
-      "id": "E_522_DONE",
-      "actions": []
     },
     {
       "id": "E_523",
@@ -4376,10 +4154,6 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（音效：远处熟悉的噪音，逐渐清晰）"
-        },
-        {
-          "type": "dialogue",
           "text": "你深吸一口气。"
         }
       ],
@@ -4389,37 +4163,20 @@ window.GAME_DATA = {
       "id": "E_524",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你推开门——"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_02"
         },
         {
           "type": "dialogue",
-          "text": "你推开门——这一次，门后是真正的2号车厢。四周毫无光源，你听见明显的喘息声。"
+          "text": "这一次，门后是真正的2号车厢。你听见明显的喘息声。"
         },
         {
           "type": "dialogue",
           "text": "那不是人类的喘息。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：明显的喘息声）"
-        },
-        {
-          "type": "dialogue",
-          "text": "（若【状态·钥匙交给了祂】）你低头看去——那把钥匙不知何时回到了自己身上。"
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·钥匙交给了祂 → 清除】钥匙回到主角保管。"
-        },
-        {
-          "type": "dialogue",
-          "text": "乘务员似乎并不知道这一切。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev519_key_given",
-          "value": false
         },
         {
           "type": "setFlag",
@@ -4430,20 +4187,33 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev_inner_backtrack",
           "value": false
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev519_key_given",
+            "equals": true
+          },
+          "next": "E_524_KEY"
         }
       ],
-      "next": "E_025"
+      "next": "E_524_DONE"
     },
     {
       "id": "E_525",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_06"
-        },
-        {
           "type": "dialogue",
           "text": "你推开那扇门——门外不是来路。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_06"
         },
         {
           "type": "dialogue",
@@ -4452,22 +4222,8 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "此时的车厢已经被啃食。座椅东倒西歪，墙壁与地板布满撕咬的痕迹，空气中残留着潮湿的铁锈味。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（场景：画面变红）"
-        },
-        {
-          "type": "dialogue",
-          "text": "（音效：低沉的轰鸣）"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         }
-      ],
-      "next": "E_002"
+      ]
     },
     {
       "id": "E_503_BACK",
@@ -4531,33 +4287,200 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "all": [
-              {
-                "flag": "ev_fake04_from_sea",
-                "equals": true
-              },
-              {
-                "flag": "ev_inner_backtrack",
-                "equals": true
-              }
-            ]
+            "flag": "ev_inner_backtrack",
+            "equals": true
           },
-          "next": "E_514"
-        },
+          "next": "E_522"
+        }
+      ],
+      "next": "E_503"
+    },
+    {
+      "id": "E_503_BOTTLES",
+      "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_inner_02"
+          "type": "dialogue",
+          "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
+        }
+      ]
+    },
+    {
+      "id": "E_516_MET",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "是她的声音，平静得好像她本来就属于这里。"
+        }
+      ],
+      "next": "E_516_VOICE"
+    },
+    {
+      "id": "E_516_VOICE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "……你在看什么？"
         },
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "ev_inner_backtrack",
+            "flag": "ev504_scouting_ok",
             "equals": true
           },
-          "next": "E_509"
+          "next": "E_517"
         }
       ],
-      "next": "E_503"
+      "next": "E_518"
+    },
+    {
+      "id": "E_517_TALK",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你看到一片花海，无边无际，在幽暗的光线下安静地起伏。"
+        },
+        {
+          "type": "dialogue",
+          "text": "她坐在窗边，望着那片花海。过了很久，她开口了："
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "有时候我觉得活着挺没劲的。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "机器至少知道自己被造出来是为了什么。你呢？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "我们曾一直期待它会来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "期待一场浪潮，一场盛大而危险的春天。不管它带来什么东西，总会好过……"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "你知道许愿柳的故事吗？或者猴爪。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "在你愿望的时候，你甚至其实不知道自己在愿望什么……"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "我们无数人的盼望下，降生的是什么？在它真的到来的一天，这里剩下的是什么？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "个人的能力是多么的渺小啊，在大势所趋面前，所有的努力终如蚍蜉撼树。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "所以，停下来，求求你。然后我们逃离这里，再也不回来……"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "……只要我们活到明天，一切最终会好起来……不是吗？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "虔诚地相信，置身事外，热爱生活。在那之后，我们就可以……"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "？？？",
+          "text": "你找到钥匙了吗？我们去停下列车……"
+        }
+      ],
+      "next": "E_519"
+    },
+    {
+      "id": "E_522_BOTTLE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你摸了摸口袋里的彩色玻璃瓶，瓶身冰凉。"
+        }
+      ]
+    },
+    {
+      "id": "E_524_KEY",
+      "actions": [
+        {
+          "type": "addItem",
+          "item": "crew_keys"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev519_key_ever_given",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "ev519_key_given",
+          "value": false
+        },
+        {
+          "type": "dialogue",
+          "text": "你低头看去——那把钥匙不知何时回到了自己身上。"
+        }
+      ],
+      "next": "E_524_DONE"
+    },
+    {
+      "id": "E_524_DONE",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_524_CREW"
+        }
+      ]
+    },
+    {
+      "id": "E_524_CREW",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员似乎并不知道这一切。"
+        }
+      ]
     }
   ],
   "items": [

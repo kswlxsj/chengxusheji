@@ -65,6 +65,7 @@
       this.runSerial = 0;
       this.pauseWaiters = new Set();
       this.timers = new Set();
+      this.pendingWaits = new Set();
       this.stableSnapshot = state.snapshot();
       this.onStateChanged = () => {};
       this.shouldTerminate = shouldTerminate;
@@ -83,6 +84,9 @@
 
     registerBuiltIns() {
       this.registerAction("dialogue", async (action) => {
+        const run = this.activeRun;
+        await this.waitFor(this.scene.whenReady(), run);
+        await this.waitWhilePaused(run);
         await this.ui.dialog.showLine(action);
       });
 
@@ -131,7 +135,7 @@
 
       this.registerAction("changeScene", async (action) => {
         this.ui.closeDialog();
-        this.scene.load(action.scene);
+        await this.loadScene(action.scene);
       });
 
       this.registerAction("setFlag", async (action) => {
@@ -157,6 +161,11 @@
       this.registerAction("addItem", async (action) => {
         if (!this.items.has(action.item)) throw new Error(`物品不存在：${action.item}`);
         this.state.addItem(action.item);
+      });
+
+      this.registerAction("removeItem", async (action) => {
+        if (!this.items.has(action.item)) throw new Error(`物品不存在：${action.item}`);
+        this.state.removeItem(action.item);
       });
 
       this.registerAction("setObjectState", async (action) => {
@@ -278,6 +287,32 @@
       return Game.deepClone(this.stableSnapshot);
     }
 
+    async loadScene(sceneId) {
+      const run = this.activeRun;
+      await this.waitFor(this.scene.prepare(sceneId), run);
+      await this.waitWhilePaused(run);
+      this.scene.load(sceneId);
+      await this.waitFor(this.scene.whenReady(), run);
+      await this.waitWhilePaused(run);
+    }
+
+    // 图片加载本身不能取消，但取消事件必须立即结束等待，且不提交迟到的画面。
+    async waitFor(promise, run = this.activeRun) {
+      this.assertActive(run);
+      let pending;
+      const cancelled = new Promise((resolve, reject) => {
+        pending = { run, reject };
+        this.pendingWaits.add(pending);
+      });
+      try {
+        const result = await Promise.race([promise, cancelled]);
+        this.assertActive(run);
+        return result;
+      } finally {
+        this.pendingWaits.delete(pending);
+      }
+    }
+
     adoptStableState() {
       this.stableSnapshot = this.state.snapshot();
     }
@@ -315,6 +350,7 @@
         const timer = {
           run,
           remaining: duration,
+          elapsed: 0,
           startedAt: 0,
           handle: null,
           resolve,
@@ -331,7 +367,8 @@
       timer.handle = setTimeout(() => {
         timer.handle = null;
         this.timers.delete(timer);
-        timer.resolve();
+        timer.elapsed += performance.now() - timer.startedAt;
+        timer.resolve(timer.elapsed);
       }, timer.remaining);
     }
 
@@ -339,7 +376,9 @@
       if (timer.handle === null) return;
       clearTimeout(timer.handle);
       timer.handle = null;
-      timer.remaining = Math.max(0, timer.remaining - (performance.now() - timer.startedAt));
+      const elapsed = performance.now() - timer.startedAt;
+      timer.elapsed += elapsed;
+      timer.remaining = Math.max(0, timer.remaining - elapsed);
     }
 
     cancelTimers(run) {
@@ -359,6 +398,9 @@
       const run = this.activeRun;
       if (run) {
         run.cancelled = true;
+        for (const pending of this.pendingWaits) {
+          if (pending.run === run) pending.reject(new EventCancelled());
+        }
         this.cancelTimers(run);
         this.setPaused(false);
         this.ui.cancelPending();

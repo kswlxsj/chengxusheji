@@ -259,6 +259,8 @@ function createEngineUi() {
 
 function createEngineScene() {
   return {
+    prepare: async () => {},
+    whenReady: async () => {},
     load: () => {},
     refresh: () => {},
     setInteractionEnabled: () => {}

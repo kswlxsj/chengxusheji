@@ -1,8 +1,50 @@
 (function (Game) {
   "use strict";
 
+  const INNER_SCARE = {
+    duration: 5000,
+    charactersPerSecond: 600,
+    tick: 20,
+    shakeWidthRatio: 0.01,
+    phrase: "停下来"
+  };
+
   Game.registerProjectActions = function registerProjectActions(engine) {
     // JSON 只能调用这里显式注册过的名称，不能执行任意字符串代码。
+    engine.registerCustomAction("refreshScene", async (params, context) => {
+      await context.engine.loadScene(context.state.sceneId);
+    });
+
+    engine.registerCustomAction("innerWhisperScare", async (params, context) => {
+      context.ui.closeDialog();
+      const shell = document.querySelector("#game-shell");
+      const overlay = document.createElement("div");
+      overlay.className = "inner-whisper-scare";
+      overlay.setAttribute("aria-label", "停下来");
+      const text = document.createElement("div");
+      text.className = "inner-whisper-text";
+      text.setAttribute("aria-hidden", "true");
+      overlay.append(text);
+      shell.append(overlay);
+      const config = INNER_SCARE;
+      const total = Math.ceil(config.duration * config.charactersPerSecond / 1000);
+      const message = config.phrase.repeat(Math.ceil(total / config.phrase.length));
+      try {
+        for (let elapsed = 0; elapsed < config.duration;) {
+          const count = Math.floor((elapsed + config.tick) * config.charactersPerSecond / 1000);
+          text.textContent = message.slice(0, count);
+          const amplitude = shell.clientWidth * config.shakeWidthRatio;
+          text.style.transform = `translate(${(Math.random() * 2 - 1) * amplitude}px, ${(Math.random() * 2 - 1) * amplitude}px)`;
+          overlay.scrollTop = overlay.scrollHeight;
+          // 字符增长和震动共用可暂停计时，取消时由 finally 清理。
+          // 累计实际有效等待时间，避免 Windows 定时器精度让5秒演出拖长。
+          elapsed += await context.wait(Math.min(config.tick, config.duration - elapsed));
+          context.throwIfCancelled();
+        }
+      } finally {
+        overlay.remove();
+      }
+    });
     engine.registerCustomAction("flashScreen", async (params, context) => {
       const shell = document.querySelector("#game-shell");
       shell.classList.remove("flash");
@@ -47,7 +89,7 @@
 
     engine.registerCustomAction("endGame", async (params, context) => {
       const reason = params.reason;
-      if (!["true_end", "bad_end"].includes(reason)) {
+      if (!["true_end", "bad_end", "lost", "trauma"].includes(reason)) {
         throw new Error(`未知结局类型：${reason || "空"}`);
       }
       context.state.flags.ending_reason = reason;

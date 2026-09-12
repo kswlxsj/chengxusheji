@@ -4,6 +4,20 @@
   // 视为“命中”的最小不透明度（抗锯齿毛边不计入）。
   const HIT_ALPHA_THRESHOLD = 8;
   const imageMetaCache = new Map();
+  const readyImageCache = new Map();
+
+  function prepareImage(src) {
+    if (!readyImageCache.has(src)) {
+      const image = new Image();
+      image.src = src;
+      const ready = image.decode().catch(() => {
+        readyImageCache.delete(src);
+        throw new Error(`场景图片加载失败：${src}`);
+      });
+      readyImageCache.set(src, ready);
+    }
+    return readyImageCache.get(src);
+  }
 
   // 读取并缓存整幅画布贴图（fullCanvas）的尺寸与不透明内容包围盒。
   function readImageMeta(src) {
@@ -112,6 +126,7 @@
       // fullCanvas 物件的运行时条目：{ object, art, button, meta }
       this.canvasObjects = [];
       this.hotEntry = null;
+      this.ready = Promise.resolve();
       this.root.addEventListener("pointermove", (event) => this.handlePointerMove(event));
       this.root.addEventListener("pointerleave", () => this.setHotEntry(null));
       this.root.addEventListener("click", (event) => this.handleCanvasClick(event));
@@ -124,6 +139,25 @@
       if (!scene) throw new Error(`场景不存在：${sceneId}`);
       this.state.sceneId = sceneId;
       this.render(scene);
+    }
+
+    // 只准备素材，不提交场景；事件引擎在等待后检查暂停/取消，再调用 load。
+    async prepare(sceneId) {
+      const scene = this.scenes.get(sceneId);
+      if (!scene) throw new Error(`场景不存在：${sceneId}`);
+      const variant = (scene.backgroundVariants || [])
+        .find((entry) => evaluateCondition(entry.visibleWhen, this.state));
+      const tasks = [prepareImage(variant?.image || scene.background)];
+      for (const object of scene.objects || []) {
+        if (object.invisible || !evaluateCondition(object.visibleWhen, this.state)) continue;
+        tasks.push(prepareImage(object.image));
+        if (object.fullCanvas) tasks.push(readImageMeta(object.image));
+      }
+      await Promise.all(tasks);
+    }
+
+    whenReady() {
+      return this.ready;
     }
 
     hasScene(sceneId) {
@@ -186,6 +220,10 @@
       }
 
       document.querySelector("#scene-name").textContent = scene.name;
+      // 预加载解码后，新建 DOM 图片仍可能尚未完成自身的加载任务。
+      this.ready = Promise.all([...this.root.querySelectorAll("img")].map(image => image.decode()));
+      // 同步 load/refresh 的调用者不一定等待；事件路径通过 whenReady 接收失败并回滚。
+      this.ready.catch(() => {});
     }
 
     // fullCanvas 物件：视觉层整幅叠放（与背景同映射），命中按钮贴内容包围盒，

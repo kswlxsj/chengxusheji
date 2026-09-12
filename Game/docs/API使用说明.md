@@ -176,7 +176,8 @@
 - **右侧＝前进**：`x: 89` 的门通往**朝先头车厢**的方向，目标车厢号**减小**（2 号车厢通往先头车厢用 `door_02_to_front`）。
 - **左侧＝后退**：`x: 0` 的门通往反方向，目标车厢号**增大**。
 - **几何统一**：门热点固定 `y: 21`、`width: 12`、`height: 63`，左门 `x: 0`、右门 `x: 89`；两端保持一致，玩家来回穿行时才有稳定的位置感。
-- **唯一例外**：`door_07_to_08` 对应的 8 号车厢门在剧情中已消失（只存在一片漆黑），它的 `clickEvent`（`E_008`）只播放调查、不切换场景。
+- **里世界例外**：两端门是背景上的隐形热点，坐标为左 x=1 / 右 x=90、y=24、宽9%、高49%，层级13高于窗户蒙版，避免门窗交叠时误触；无贴图、无高亮。
+- **剧情例外**：`door_07_to_08` 对应的 8 号车厢门在剧情中已消失（只存在一片漆黑），它的 `clickEvent`（`E_008`）只播放调查、不切换场景。
 - **自检**：新增车厢或改动门接线后，逐门核对「左侧→车厢号更大 / 右侧→车厢号更小或 `front`」，再运行 `npm run compile`。
 
 ### events.json 与内置动作
@@ -189,7 +190,7 @@
 | `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
-| `changeScene` | `scene` | — | 关闭对话并加载场景。 |
+| `changeScene` | `scene` | — | 关闭对话，等待背景及可见贴图就绪，检查暂停/取消后提交场景，再执行下一句。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
 | `conditionalJump` | `when`, `next` | — | 条件成立时立即结束当前事件并进入 `next`，不成立则继续执行本事件后续动作（常用于按旗标/物品选择剧情变体，替代把分支拆成一整棵事件树）。 |
 | `modifyAttribute` | `attribute`, `amount` | — | 增减整数、限制边界并重算相关技能。 |
@@ -197,6 +198,7 @@
 | `learnSkill` | `skill` | — | 设为 `true`，永久屏蔽该存档内的自动重算。 |
 | `loseSkill` | `skill` | — | 设为 `false`，永久屏蔽该存档内的自动重算。 |
 | `addItem` | `item` | — | 加入已注册物品；重复获得不会生成第二份。 |
+| `removeItem` | `item` | — | 移除已注册物品；未持有或重复移除不改变背包。 |
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 | `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
@@ -348,6 +350,7 @@ const state = new TrainGame.GameState(
 | `reevaluateAllAutomaticSkills()` | 重算全部自动技能。 |
 | `evaluateAttributeCondition(condition)` | 求值技能属性条件。 |
 | `addItem(itemId)` | 去重加入物品；底层方法本身不检查注册表。 |
+| `removeItem(itemId)` | 删除物品；未持有或重复删除不改变背包，底层方法本身不检查注册表。 |
 | `setObjectState(objectId, patch)` | 深拷贝补丁后浅合并物件状态。 |
 
 框架代码可只读查询 `state.attributeDefinitions`、`state.skillDefinitions` 和 `state.totalAttributePoints`。**不要直接改 `state.attributes` 或 `state.skills`**，否则会跳过边界钳制和技能重算；属性接口只接受整数并把结果限制在注册的 `min` 与 `max` 之间。
@@ -436,7 +439,9 @@ const scene = new TrainGame.SceneManager(rootElement, data.scenes, state);
 | 接口 | 行为 |
 | --- | --- |
 | `onObjectClick` | 可赋回调 `(eventId, object) => {}`，入口连接到 `engine.play()`。 |
-| `load(sceneId)` | 校验、更新 `state.sceneId` 并重绘。 |
+| `prepare(sceneId)` | 返回 Promise；按当前条件解码背景和可见贴图、准备蒙版命中数据，不提交场景；失败拒绝。 |
+| `whenReady()` | 返回当前已渲染图片的解码 Promise；普通对话也等待它，覆盖同步加载、存档恢复及事件末尾刷新。 |
+| `load(sceneId)` | 同步更新 `state.sceneId` 并重绘；事件切景应使用引擎 `loadScene` 等待素材。 |
 | `hasScene(sceneId)` | 判断场景是否注册。 |
 | `refresh()` | 重载当前场景以更新显隐。 |
 | `setInteractionEnabled(value)` | 更新开关及物件按钮 `disabled`。 |
@@ -463,8 +468,10 @@ const engine = new TrainGame.EventEngine({ events, state, scene, ui, items });
 | `adoptStableState()` | 将当前状态设为稳定点。 |
 | `restoreStableState()` | 恢复稳定点、重载场景并通知状态变化。 |
 | `setPaused(value)` | 暂停/恢复 UI、等待和引擎计时器。 |
-| `wait(milliseconds, run?)` | 可暂停、取消的计时器。 |
+| `wait(milliseconds, run?)` | 可暂停、取消的计时器；返回实际有效等待毫秒数（不含暂停时间），可用于持续演出避免定时器精度累积误差。 |
 | `cancelToStable()` | 取消运行、关闭待处理 UI 并恢复稳定点。 |
+| `loadScene(sceneId)` | 等待场景素材就绪和暂停恢复，检查取消后提交；仅在活动事件内使用，不关闭对话。 |
+| `waitFor(promise)` | 可取消地等待异步任务；取消立即结束等待，迟到任务不会提交状态。 |
 | `play(eventId)` | 忙碌时返回 `false`；成功为 `true`；取消/错误时回滚并返回 `false`。 |
 
 规则与语义：
@@ -495,7 +502,9 @@ engine.registerCustomAction("shakeWindow", async (params, context) => {
 | `wait(milliseconds)` | 随暂停冻结、返回主界面时取消的延迟。 |
 | `throwIfCancelled()` | 异步等待后、写状态前确认运行仍有效。 |
 
-当前项目白名单（`custom-actions.js`）：`flashScreen` 全屏闪白；`useLight` 2 号车厢照明（兼作手机 / 手电筒的调查事件）；`endGame` 写入 `flags.ending_reason`（只接受 `true_end` / `bad_end`，由游戏页入口跳结束页）；`weightedBranch` 按权重**静默**随机分岔——`params.outcomes` 是 `[{ weight, flag }, ...]`（权重为正数、顺序即掷点区间顺序），掷一次后把选中项的 `flag` 置 `true`、其余置 `false`，事件再用 `conditionalJump` 读取旗标分支（例见 `E_502_RETURN` 的 10% / 60% / 30% 三条出口）。
+新增项目白名单：`refreshScene` 在物件显隐或背景旗标变化后等待素材并刷新当前场景，不重播入场、不关闭对话；`innerWhisperScare` 执行5秒红底黑字低语覆盖层，参数集中在 `INNER_SCARE`（600字/秒、20ms更新、舞台宽度1%震动），所有等待走可暂停、取消的事件计时器。两者不接受剧情自定义参数。
+
+当前项目白名单（`custom-actions.js`）：`flashScreen` 全屏闪白；`useLight` 2 号车厢照明（兼作手机 / 手电筒的调查事件）；`endGame` 写入 `flags.ending_reason`（接受 `true_end` / `bad_end` / `lost` / `trauma`，由游戏页入口跳结束页）；`weightedBranch` 按权重**静默**随机分岔——`params.outcomes` 是 `[{ weight, flag }, ...]`（权重为正数、顺序即掷点区间顺序），掷一次后把选中项的 `flag` 置 `true`、其余置 `false`，事件再用 `conditionalJump` 读取旗标分支（例见 `E_502_RETURN` 的 10% / 60% / 30% 三条出口）。
 
 规则与安全边界：
 
@@ -747,9 +756,11 @@ game.saves.listSlots()
 4. 少量使用时在 `custom-actions.js` 调用 `await context.ui.notice.show(...)`；若成为通用动作，还要修改 `events.schema.json`、`compile-data.mjs` 和 `events.js`。
 5. 补充测试，运行 `npm run check`，手动验证打开、关闭、暂停和取消没有残留窗口。
 
-### 示例八：新增通用 `removeItem` 动作
+### 示例八：通用 `removeItem` 动作的维护联动
 
-1. 在 `GameState` 添加并测试删除物品方法，明确物品不存在时的行为。
+该能力已用于里世界交钥匙。`GameState.removeItem(itemId)` 移除物品，未持有时无变化；其余联动步骤如下。
+
+1. 在 `GameState` 维护并测试删除物品方法，明确物品不存在时的行为。
 2. 修改 `src/events.js` 的 `registerBuiltIns()` 注册动作。
 3. 修改 `schemas/events.schema.json`，定义 `type/item` 和 `additionalProperties: false`。
 4. 修改 `tools/compile-data.mjs`：加入动作名并校验物品引用。

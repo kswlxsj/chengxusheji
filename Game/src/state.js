@@ -236,6 +236,10 @@
       if (!this.inventory.includes(itemId)) this.inventory.push(itemId);
     }
 
+    removeItem(itemId) {
+      this.inventory = this.inventory.filter((id) => id !== itemId);
+    }
+
     setObjectState(objectId, patch) {
       this.objectStates[objectId] = {
         ...(this.objectStates[objectId] || {}),
