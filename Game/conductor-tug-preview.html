@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常暗之厢 · 控制杆争夺 UI 预览</title>
+  <link rel="stylesheet" href="styles/main.css?v=conductor-tug-ui-1">
+  <style>
+    @font-face {
+      font-family: "Ark Pixel 12px";
+      src: url("/__source-assets__/fonts/ark-pixel-12px-monospaced-zh_cn.otf.woff2") format("woff2");
+      font-display: swap;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: #080a0d;
+    }
+    .preview { width: 100%; height: 100vh; }
+    #preview-stage { position: relative; width: 100%; height: 100%; overflow: hidden; background: #101318; }
+  </style>
+</head>
+<body>
+  <main class="preview" aria-label="控制杆争夺小游戏 UI 预览">
+    <section id="preview-stage" aria-label="控制杆争夺小游戏画布"></section>
+  </main>
+
+  <script src="src/namespace.js"></script>
+  <script src="src/minigames.js"></script>
+  <script src="src/minigame-games/conductor-tug.js?v=preview-conductor-tug-ui-1"></script>
+  <script>
+    "use strict";
+
+    const stage = document.querySelector("#preview-stage");
+    let disposeCurrent = null;
+    let runToken = 0;
+
+    function startPreview() {
+      runToken += 1;
+      const token = runToken;
+      disposeCurrent?.();
+      const spec = window.TrainGame.Minigames.get("conductor_tug");
+      let cleanup = null;
+      stage.replaceChildren();
+
+      const context = {
+        stage,
+        assetBase: "/__source-assets__",
+        onQuit() {},
+        registerCleanup(fn) { cleanup = fn; }
+      };
+
+      disposeCurrent = () => {
+        cleanup?.();
+        cleanup = null;
+        stage.replaceChildren();
+      };
+
+      Promise.resolve(spec.run(context)).then(() => {
+        if (token !== runToken) return;
+      }).catch((error) => {
+        if (token === runToken) console.error("控制杆争夺预览运行失败：", error);
+      });
+    }
+
+    startPreview();
+  </script>
+</body>
+</html>
