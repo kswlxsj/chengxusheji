@@ -1420,32 +1420,26 @@
     "id": "E_023",
     "actions": [
       {
+        "type": "learnSkill",
+        "skill": "throwing"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "bottle"
+        },
+        "next": "E_023_CHOICE"
+      },
+      {
         "type": "dialogue",
         "text": "你在附近的杂物里捡起一个空瓶子。"
       },
       {
         "type": "addItem",
         "item": "bottle"
-      },
-      {
-        "type": "learnSkill",
-        "skill": "throwing"
-      },
-      {
-        "type": "choice",
-        "prompt": "你要怎么通过或引开Clicker？",
-        "options": [
-          {
-            "label": "直接冲过去",
-            "next": "E_023_AGILITY_CHECK"
-          },
-          {
-            "label": "投掷瓶子",
-            "next": "E_023_THROW_FIRST"
-          }
-        ]
       }
-    ]
+    ],
+    "next": "E_023_CHOICE"
   },
   {
     "id": "E_023_AGILITY_CHECK",
@@ -2101,5 +2095,1229 @@
         "text": "演示结束，剧情继续。"
       }
     ]
+  },
+  {
+    "id": "E_023_CHOICE",
+    "actions": [
+      {
+        "type": "choice",
+        "prompt": "你要怎么通过或引开Clicker？",
+        "options": [
+          {
+            "label": "直接冲过去",
+            "next": "E_023_AGILITY_CHECK"
+          },
+          {
+            "label": "投掷瓶子",
+            "next": "E_023_THROW_FIRST"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_501",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_01"
+      },
+      {
+        "type": "dialogue",
+        "text": "黑暗的尽头没有尽头。你深吸一口气，伸手推开了通往2号的车门。"
+      },
+      {
+        "type": "dialogue",
+        "text": "门后不是2号车厢——而是一节你从未见过的车厢。空荡荡的，连座椅也没有。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你回头看了一眼来路。3号车厢还在那里。"
+      },
+      {
+        "type": "dialogue",
+        "text": "安静得像是整个世界都睡着了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你迈了进去。"
+      },
+      {
+        "type": "setFlag",
+        "key": "inner_world_entered",
+        "value": true
+      }
+    ],
+    "next": "E_502"
+  },
+  {
+    "id": "E_502",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "不知名的空车厢，甚至没有座椅。四面的墙壁光秃秃的，地板跟着车轮的震动轻轻发颤。"
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢两头各有一扇门。你站在正中央，两侧都望不到尽头。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（场景：昏暗，无光源）"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "继续前进",
+            "next": "E_503"
+          },
+          {
+            "label": "试图回头",
+            "next": "E_502_RETURN"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_502_RETURN",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你折返向身后的车门，握住门把。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（随机：10% —— 你推开门，回到的是6号车厢——此时的车厢已经被啃食（→ E-525）；60% —— 门被关死，打不开；30% —— 门正常地打开了，门外是3号车厢，如果从这里返回 6 号车厢，也会看到被啃食的场景）"
+      },
+      {
+        "type": "dialogue",
+        "text": "门被关死，打不开。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：沉闷的撞击声）"
+      },
+      {
+        "type": "dialogue",
+        "text": "你放弃了回头，转身向前。"
+      }
+    ],
+    "next": "E_503"
+  },
+  {
+    "id": "E_503",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
+        "type": "dialogue",
+        "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
+      },
+      {
+        "type": "dialogue",
+        "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "拾起玻璃瓶",
+            "next": "E_503_PICK"
+          },
+          {
+            "label": "继续前进",
+            "next": "E_505"
+          },
+          {
+            "label": "试图回头",
+            "next": "E_503_RETURN"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_503_PICK",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你俯身捡起一支彩色的空玻璃瓶。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：彩色玻璃瓶）"
+      },
+      {
+        "type": "addItem",
+        "item": "bottle"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev503_bottle_taken",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "握住瓶身的一瞬间，你听到像是人声的低语，又或者像哭声或祈祷。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：远处人声低语）"
+      },
+      {
+        "type": "dialogue",
+        "text": "【情报·瓶子低语】像是人声的低语，又像哭声或祈祷。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你抬起头，声音消失了。窗外，雾还在。"
+      }
+    ],
+    "next": "E_503"
+  },
+  {
+    "id": "E_503_RETURN",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你向来路折返。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（随机：50% —— 折返后，你发现自己又站在那节没有座椅的空车厢里（→ E-502）；50% —— 你摇了摇头，转身继续前进（→ E-505））"
+      }
+    ],
+    "next": "E_505"
+  },
+  {
+    "id": "E_504",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你看向窗外。"
+      },
+      {
+        "type": "dialogue",
+        "text": "雾蒙蒙的，远方的一切都看不真切。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_scouting",
+        "outcomes": [
+          "E_504_S",
+          "E_504_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_504_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "并不完全黑，似乎有隐隐约约的微光。你把耳朵贴着窗户，听到窸窸窣窣的声响。"
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·已侦察窗外】此后若看向窗外，你将认出那一片微光与声响。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev504_scouting_ok",
+        "value": true
+      }
+    ],
+    "next": "E_505"
+  },
+  {
+    "id": "E_504_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "雾气浓重，白茫茫一片。你贴着玻璃看了很久，什么也没有看见。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev504_scouting_ok",
+        "value": false
+      }
+    ],
+    "next": "E_505"
+  },
+  {
+    "id": "E_505",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你继续前进。"
+      },
+      {
+        "type": "dialogue",
+        "text": "不知从哪一刻起，身后的噪音逐渐减弱了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "取而代之的，是隐隐约约的音乐声。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：隐约、遥远的音乐）"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_fake_04"
+      }
+    ],
+    "next": "E_506"
+  },
+  {
+    "id": "E_506",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "门上的编号写着：4。"
+      },
+      {
+        "type": "dialogue",
+        "text": "但这里不是4号车厢。座椅、车窗、天花板的灯——全都和你记忆里的4号对不上号。哪里都相似，哪里都不对。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "crew_alive",
+          "equals": true
+        },
+        "next": "E_508"
+      }
+    ],
+    "next": "E_507"
+  },
+  {
+    "id": "E_507",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "车厢深处响起低语。那声音你认得，又陌生——像是她，又像是从你自己喉咙里漏出来的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：断续低语）"
+      },
+      {
+        "type": "dialogue",
+        "text": "那声音说："
+      },
+      {
+        "type": "dialogue",
+        "text": "为什么……为什么会变成这样？"
+      },
+      {
+        "type": "dialogue",
+        "text": "都是你的错……全都是你的错……是你…………"
+      },
+      {
+        "type": "dialogue",
+        "text": "我什么都不知道……我什么都没有做……我的双手干干净净……我的眼睛没有见过那些扭曲的形影……"
+      },
+      {
+        "type": "dialogue",
+        "text": "为什么，为什么会缠上我，"
+      },
+      {
+        "type": "dialogue",
+        "text": "都是你的错。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（演出：全屏 Jumpscare）"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：惊悚尖啸）"
+      },
+      {
+        "type": "dialogue",
+        "text": "停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来停下来"
+      },
+      {
+        "type": "dialogue",
+        "text": "低语戛然而止。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你站在原地，后颈全是冷汗。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev507_san_pending",
+        "value": true
+      }
+    ],
+    "next": "E_509"
+  },
+  {
+    "id": "E_508",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "车厢深处响起一个声音。"
+      },
+      {
+        "type": "dialogue",
+        "text": "平静，温和，像是一直在等你。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "已经没事了，很快就会获救了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你：「谁？」"
+      },
+      {
+        "type": "dialogue",
+        "text": "那个声音没有回答，只是低低地重复："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "善良的，伟大的，仁慈的……我呼唤了祂的名字，我交换了愿望，主已经回应我了……"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：低回的人声）"
+      },
+      {
+        "type": "dialogue",
+        "text": "某种沉沉的东西落在你肩上——像是被应允，又像是被登记。"
+      }
+    ],
+    "next": "E_509"
+  },
+  {
+    "id": "E_509",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你站在原地。车厢尽头有一扇门通向更深处；来路那扇门还在原地；而车窗，不知何时起，雾气散开了些。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "继续深入",
+            "next": "E_510"
+          },
+          {
+            "label": "原路返回",
+            "next": "E_503"
+          },
+          {
+            "label": "看向窗外（乘务员插话）",
+            "next": "E_516"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_510",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "flower_sea"
+      },
+      {
+        "type": "dialogue",
+        "text": "你推开那扇门——"
+      },
+      {
+        "type": "dialogue",
+        "text": "车门外就是花海。无边无际的花漫过车轨，铺到天尽头。这里真的还是现实世界吗？"
+      },
+      {
+        "type": "dialogue",
+        "text": "……在那一瞬间就已经看到你了。当你看到他们的时候，其实是他们看到并抓住了你。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你感到一种不合时宜的快感，你开始干呕。不安慢慢渗进你的心口和指缝。"
+      },
+      {
+        "type": "dialogue",
+        "text": "还来得及吗？快点……"
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·涉足花海】看到花海的那一刻已获得——标记「伪结局线」：即使在此调头，也已无法返回 3 号及之前的车厢；接入主剧本2号时（E-514），真结局推进被 E-515 取代。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev510_flower_sea",
+        "value": true
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "继续深入",
+            "next": "E_511"
+          },
+          {
+            "label": "调头",
+            "next": "E_513"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_511",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "flower_sea_inside"
+      },
+      {
+        "type": "dialogue",
+        "text": "不适仅仅是一瞬间的，你很快便如鱼得水。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你被它们捕获和容纳了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "……"
+      },
+      {
+        "type": "dialogue",
+        "text": "现在过去了多久？"
+      },
+      {
+        "type": "dialogue",
+        "text": "你已经不太记得现实世界的事情了。现在你与它们坐谈终日。这其中内有洞天，穷尽一生也追不尽。"
+      },
+      {
+        "type": "dialogue",
+        "text": "层层嵌套，自我指涉，盘曲虬结，错综复杂。"
+      },
+      {
+        "type": "dialogue",
+        "text": "花的海洋，分形的海洋，爱的海洋，真理的海洋。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你不再记得自己曾坐上一班列车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你不再记得自己要去哪里。"
+      },
+      {
+        "type": "dialogue",
+        "text": "花海在你体内生长。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你终于属于这里了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（结局：迷失）"
+      },
+      {
+        "type": "setFlag",
+        "key": "ending_lost",
+        "value": true
+      }
+    ],
+    "next": "E_511_END"
+  },
+  {
+    "id": "E_511_END",
+    "actions": []
+  },
+  {
+    "id": "E_513",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_fake_04"
+      },
+      {
+        "type": "dialogue",
+        "text": "你退出花海，向来路折返。"
+      },
+      {
+        "type": "dialogue",
+        "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，现实世界反而显得不真实。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "原路返回",
+            "next": "E_514"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_514",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你继续往回走。下一节车厢的编号是：2。"
+      },
+      {
+        "type": "dialogue",
+        "text": "没有灯。黑暗里有什么东西在等着。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你刚要迈步，身后的门「咔嚓」一声合上了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你回头——门已经锁死，来路被彻底切断。从这一刻起，你无法返回 3 号及之前的车厢。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev514_locked_in",
+        "value": true
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev510_flower_sea",
+          "equals": true
+        },
+        "next": "E_515"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_02"
+      }
+    ],
+    "next": "E_025"
+  },
+  {
+    "id": "E_515",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "细节已经淡忘，或者不愿回忆。"
+      },
+      {
+        "type": "dialogue",
+        "text": "唯一确定的是，你无法再像一个正常人那样看待世界了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "在你平凡的余生中，你常常想起它们的低语，或许那确实是你想要的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（结局：Trauma）"
+      },
+      {
+        "type": "setFlag",
+        "key": "ending_trauma",
+        "value": true
+      }
+    ],
+    "next": "E_515_END"
+  },
+  {
+    "id": "E_515_END",
+    "actions": []
+  },
+  {
+    "id": "E_516",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_fake_04"
+      },
+      {
+        "type": "dialogue",
+        "text": "你走向车窗。就在指尖将要碰到玻璃的一刻，一个声音在身后响起——"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若乘务员仍在人世）是她的声音，平静得好像她本来就属于这里。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若乘务员已死）是她的声音。你认得出来——她不是已经死了吗？是谁在说话……？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "……你在看什么？"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev504_scouting_ok",
+          "equals": true
+        },
+        "next": "E_517"
+      }
+    ],
+    "next": "E_518"
+  },
+  {
+    "id": "E_517",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "窗外的雾气散开了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你看到一片花海，无边无际，在幽暗的光线下安静地起伏。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她与你并肩站着，望着那片花海。过了很久，她开口了："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "有时候我觉得活着挺没劲的。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "机器至少知道自己被造出来是为了什么。你呢？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "我们曾一直期待它会来。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "期待一场浪潮，一场盛大而危险的春天。不管它带来什么东西，总会好过……"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你知道许愿柳的故事吗？或者猴爪。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "在你愿望的时候，你甚至其实不知道自己在愿望什么……"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "我们无数人的盼望下，降生的是什么？在它真的到来的一天，这里剩下的是什么？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "个人的能力是多么的渺小啊，在大势所趋面前，所有的努力终如蚍蜉撼树。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "所以，停下来，求求你。然后我们逃离这里，再也不回来……"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "……只要我们活到明天，一切最终会好起来……不是吗？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "虔诚地相信，置身事外，热爱生活。在那之后，我们就可以……"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你找到钥匙了吗？我们去停下列车……"
+      }
+    ],
+    "next": "E_519"
+  },
+  {
+    "id": "E_518",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你望向窗外。"
+      },
+      {
+        "type": "dialogue",
+        "text": "白茫茫的，看不清。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她站在你身边，嘴唇开合——一字一句地对你说："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "有时候我觉得活着挺没劲的。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "忙不完的工作，交际，应付，假笑，点头，弯腰，灵魂被磨成胸前一张薄薄的工牌，晃啊，晃啊，晃到终点站。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "每天踏上同一班列车，同一节车厢，同一个靠门的位置。看同一张令人厌恶的脸映在玻璃上，碌碌无为。惶惶终日。像被什么无形的轨道钉死了，只能沿着既定的方向滑行，滑行，滑行。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "机器至少知道自己被造出来是为了什么。你呢？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你只知道闹钟响。起床。刷牙。出门。刷卡。进站。等车。上车。换乘。出站。打卡。开机。回邮件。开会。午休。开机。回邮件。开会。下班。打卡。进站。等车。上车。换乘。出站。回家。吃饭。洗澡。刷手机。睡觉。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "如果有谁能拯救我们就好了。如果有谁能改变这无聊的一切就好了。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "而祂现在来了，亲爱的。春天来了。你人生的美妙意义来了。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "崭新的，全新的，完美的，极乐的，新世界。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "让这花的洪流席卷一切，"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "大脑从耳朵里温热地流出来，从此不再为莫名其妙的东西发愁。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "我们一起改造这个世界，"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "把这无聊的一切全部撕碎。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "撕碎，撕碎……"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "碎片落进浪潮里，浪潮涌向新世界。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "新世界里没有昨天，今天和明天，没有我，你和他……ONLY US"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "永恒"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你找到钥匙了吗？把它给我吧。我们去结束这一切。"
+      }
+    ],
+    "next": "E_519"
+  },
+  {
+    "id": "E_519",
+    "actions": [
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "crew_keys"
+        },
+        "next": "E_519_HASKEY"
+      }
+    ],
+    "next": "E_519_NOKEY"
+  },
+  {
+    "id": "E_519_NOKEY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "她没有再问。夜色般的沉默垂落下来，你只能自己做出决定。"
+      }
+    ],
+    "next": "E_520"
+  },
+  {
+    "id": "E_519_HASKEY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "你找到钥匙了吗？"
+      },
+      {
+        "type": "dialogue",
+        "text": "你摸到了口袋里那把钥匙。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "把钥匙给她",
+            "next": "E_519_GIVE"
+          },
+          {
+            "label": "留着",
+            "next": "E_519_KEEP"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_519_GIVE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你把钥匙递出去。她接过去，指腹拂过齿纹，神情安静得可怕。"
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·钥匙交给了祂】钥匙被交了出去。逃出里世界（E-524）时钥匙会自行回到你身上；但在关键的把柄争夺时刻，你将处于劣势——丧失最终主动权（对应主剧本 E-033 一类的手柄/拉杆对抗场景，具体数值加成待定）。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev519_key_given",
+        "value": true
+      }
+    ],
+    "next": "E_520"
+  },
+  {
+    "id": "E_519_KEEP",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你没有把它拿出来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她看着你，没有伸手，也没有追问。"
+      }
+    ],
+    "next": "E_520"
+  },
+  {
+    "id": "E_520",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你站在原地。身后是无尽的花与白，身前是来时的路。"
+      },
+      {
+        "type": "choice",
+        "prompt": "",
+        "options": [
+          {
+            "label": "原路返回",
+            "next": "E_521"
+          },
+          {
+            "label": "继续深入",
+            "next": "E_510"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_521",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev519_key_given",
+          "equals": true
+        },
+        "next": "E_521B"
+      }
+    ],
+    "next": "E_521A"
+  },
+  {
+    "id": "E_521A",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你开始往回走。"
+      },
+      {
+        "type": "dialogue",
+        "text": "穿过一节车厢，又穿过一节车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "窗外的景色没有任何变化。脚步声在空荡的车厢里来来回回。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：单调的脚步声）"
+      }
+    ],
+    "next": "E_522"
+  },
+  {
+    "id": "E_521B",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你开始往回走。"
+      },
+      {
+        "type": "dialogue",
+        "text": "穿过一节车厢，又穿过一节车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "窗外的景色没有任何变化。脚步声在空荡的车厢里来来回回。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：单调的脚步声）"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若【状态·钥匙交给了祂】）你下意识摸了摸口袋——钥匙不在。"
+      }
+    ],
+    "next": "E_522"
+  },
+  {
+    "id": "E_522",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "不知走了多久，你踏进一节车厢——角落里又长着花草。你认得这里。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若持有玻璃瓶）你摸了摸口袋里的彩色玻璃瓶，瓶身冰凉。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若之前没有捡起玻璃瓶，此时也有机会再捡起）"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev503_bottle_taken",
+          "equals": true
+        },
+        "next": "E_522_DONE"
+      }
+    ],
+    "next": "E_522_PICK"
+  },
+  {
+    "id": "E_522_PICK",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你俯身捡起一支彩色的空玻璃瓶。"
+      },
+      {
+        "type": "addItem",
+        "item": "bottle"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev503_bottle_taken",
+        "value": true
+      }
+    ],
+    "next": "E_523"
+  },
+  {
+    "id": "E_522_DONE",
+    "actions": [],
+    "next": "E_523"
+  },
+  {
+    "id": "E_523",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你注意到新出现了一扇高度磨损的车门，散发着不祥的气息。"
+      },
+      {
+        "type": "dialogue",
+        "text": "恐怕，就是这里了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "噪音再次清晰起来——真实世界的声音，从门缝里透进来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：远处熟悉的噪音，逐渐清晰）"
+      },
+      {
+        "type": "dialogue",
+        "text": "你深吸一口气。"
+      }
+    ],
+    "next": "E_524"
+  },
+  {
+    "id": "E_524",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_02"
+      },
+      {
+        "type": "dialogue",
+        "text": "你推开门——这一次，门后是真正的2号车厢。四周毫无光源，你听见明显的喘息声。"
+      },
+      {
+        "type": "dialogue",
+        "text": "那不是人类的喘息。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：明显的喘息声）"
+      },
+      {
+        "type": "dialogue",
+        "text": "（若【状态·钥匙交给了祂】）你低头看去——那把钥匙不知何时回到了自己身上。"
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·钥匙交给了祂 → 清除】钥匙回到主角保管。"
+      },
+      {
+        "type": "dialogue",
+        "text": "乘务员似乎并不知道这一切。"
+      },
+      {
+        "type": "setFlag",
+        "key": "ev519_key_given",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "inner_world_left",
+        "value": true
+      }
+    ],
+    "next": "E_025"
+  },
+  {
+    "id": "E_525",
+    "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_06"
+      },
+      {
+        "type": "dialogue",
+        "text": "你推开那扇门——门外不是来路。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你踏出去，这里是……6号车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "此时的车厢已经被啃食。座椅东倒西歪，墙壁与地板布满撕咬的痕迹，空气中残留着潮湿的铁锈味。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（场景：画面变红）"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：低沉的轰鸣）"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_06_eaten",
+        "value": true
+      }
+    ],
+    "next": "E_002"
   }
 ]

@@ -478,7 +478,7 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_DOOR_03"
+        "clickEvent": "E_501"
       },
       {
         "id": "black_bag_03",
@@ -612,5 +612,50 @@
         }
       }
     ]
+  },
+  {
+    "id": "carriage_inner_01",
+    "name": "里世界·空车厢",
+    "background": "assets/carriage-inner-01.png",
+    "objects": []
+  },
+  {
+    "id": "carriage_inner_02",
+    "name": "里世界·花草车厢",
+    "background": "assets/carriage-inner-02.png",
+    "objects": [
+      {
+        "id": "window_inner",
+        "name": "窗外",
+        "image": "assets/inner-02-window.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_504"
+      }
+    ]
+  },
+  {
+    "id": "carriage_fake_04",
+    "name": "里世界·伪4号车厢",
+    "background": "assets/carriage-fake-04.png",
+    "objects": []
+  },
+  {
+    "id": "flower_sea",
+    "name": "花海·车门外",
+    "background": "assets/flower-sea.png",
+    "objects": []
+  },
+  {
+    "id": "flower_sea_inside",
+    "name": "花海·室内",
+    "background": "assets/flower-sea-inside.png",
+    "objects": []
   }
 ]

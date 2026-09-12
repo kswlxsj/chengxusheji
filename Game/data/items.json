@@ -16,7 +16,7 @@
   {
     "id": "bottle",
     "name": "瓶子",
-    "image": "assets/placeholder-bottle.svg",
+    "image": "assets/bottle-inner.png",
     "description": "一个可以用来制造声响、转移 Clicker 注意的瓶子。",
     "inspectEvent": "E_023_BOTTLE"
   },
