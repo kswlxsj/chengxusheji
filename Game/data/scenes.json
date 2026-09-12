@@ -635,6 +635,8 @@
         "id": "door_inner01_back",
         "name": "来路的车门",
         "image": "assets/door.svg",
+        "invisible": true,
+        "noHighlight": true,
         "position": {
           "x": 0,
           "y": 21,
@@ -692,9 +694,11 @@
         }
       },
       {
-        "id": "door_inner02_back",
+        "id": "door_inner02_to_02",
         "name": "来路的车门",
         "image": "assets/door.svg",
+        "invisible": true,
+        "noHighlight": true,
         "position": {
           "x": 0,
           "y": 21,
@@ -728,6 +732,8 @@
         "id": "door_fake04_back",
         "name": "原路返回的门",
         "image": "assets/door.svg",
+        "invisible": true,
+        "noHighlight": true,
         "position": {
           "x": 0,
           "y": 21,

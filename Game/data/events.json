@@ -1740,6 +1740,14 @@
     "id": "E_029",
     "actions": [
       {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev510_flower_sea",
+          "equals": true
+        },
+        "next": "E_515"
+      },
+      {
         "type": "dialogue",
         "text": "电车加速到极致，视野被刺眼白光覆盖。"
       },
@@ -2295,6 +2303,10 @@
     "id": "E_504_S",
     "actions": [
       {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
         "type": "dialogue",
         "text": "并不完全黑，似乎有隐隐约约的微光。你把耳朵贴着窗户，听到窸窸窣窣的声响。"
       },
@@ -2313,6 +2325,10 @@
   {
     "id": "E_504_F",
     "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
       {
         "type": "dialogue",
         "text": "雾气浓重，白茫茫一片。你贴着玻璃看了很久，什么也没有看见。"
@@ -2354,6 +2370,10 @@
   {
     "id": "E_506",
     "actions": [
+      {
+        "type": "changeScene",
+        "scene": "carriage_fake_04"
+      },
       {
         "type": "dialogue",
         "text": "门上的编号写着：4。"
@@ -2608,10 +2628,6 @@
     "id": "E_513",
     "actions": [
       {
-        "type": "changeScene",
-        "scene": "carriage_fake_04"
-      },
-      {
         "type": "dialogue",
         "text": "你退出花海，向来路折返。"
       },
@@ -2624,60 +2640,39 @@
         "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，现实世界反而显得不真实。"
       },
       {
+        "type": "dialogue",
+        "text": "你继续往回走。穿过一节车厢，又穿过一节车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "4。4。3。4。——门上的编号不断出现，不断变化，又不断把你好端端地送回同一节车厢。"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
         "type": "setFlag",
         "key": "ev_fake04_from_sea",
         "value": true
       },
       {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "原路返回",
-            "next": "E_509_RESUME"
-          }
-        ]
+        "type": "setFlag",
+        "key": "ev_inner_backtrack",
+        "value": true
       }
-    ]
+    ],
+    "next": "E_522"
   },
   {
     "id": "E_514",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "你继续往回走。下一节车厢的编号是：2。"
-      },
-      {
-        "type": "dialogue",
-        "text": "没有灯。黑暗里有什么东西在等着。"
-      },
-      {
-        "type": "dialogue",
-        "text": "你刚要迈步，身后的门「咔嚓」一声合上了。"
-      },
-      {
-        "type": "dialogue",
-        "text": "你回头——门已经锁死，来路被彻底切断。从这一刻起，你无法返回 3 号及之前的车厢。"
-      },
-      {
-        "type": "setFlag",
-        "key": "ev514_locked_in",
-        "value": true
-      },
-      {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev510_flower_sea",
-          "equals": true
-        },
-        "next": "E_515"
-      },
-      {
         "type": "changeScene",
-        "scene": "carriage_02"
+        "scene": "carriage_inner_02"
       }
     ],
-    "next": "E_025"
+    "next": "E_503"
   },
   {
     "id": "E_515",
@@ -3131,6 +3126,10 @@
     "id": "E_522",
     "actions": [
       {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
         "type": "setFlag",
         "key": "ev_fake04_from_sea",
         "value": false
@@ -3162,6 +3161,10 @@
     "id": "E_522_PICK",
     "actions": [
       {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
         "type": "dialogue",
         "text": "你俯身捡起一支彩色的空玻璃瓶。"
       },
@@ -3174,13 +3177,11 @@
         "key": "ev503_bottle_taken",
         "value": true
       }
-    ],
-    "next": "E_523"
+    ]
   },
   {
     "id": "E_522_DONE",
-    "actions": [],
-    "next": "E_523"
+    "actions": []
   },
   {
     "id": "E_523",
@@ -3301,7 +3302,11 @@
           "flag": "ev_inner_backtrack",
           "equals": true
         },
-        "next": "E_522"
+        "next": "E_523"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_01"
       }
     ],
     "next": "E_502"
@@ -3312,23 +3317,32 @@
       {
         "type": "conditionalJump",
         "when": {
-          "flag": "ev_fake04_from_sea",
-          "equals": true
+          "all": [
+            {
+              "flag": "ev_fake04_from_sea",
+              "equals": true
+            },
+            {
+              "flag": "ev_inner_backtrack",
+              "equals": true
+            }
+          ]
         },
         "next": "E_514"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_inner_02"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev_inner_backtrack",
+          "equals": true
+        },
+        "next": "E_509"
       }
     ],
     "next": "E_503"
-  },
-  {
-    "id": "E_509_RESUME",
-    "actions": [
-      {
-        "type": "setFlag",
-        "key": "ev_fake04_from_sea",
-        "value": false
-      }
-    ],
-    "next": "E_509"
   }
 ]
