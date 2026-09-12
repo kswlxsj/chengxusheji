@@ -197,15 +197,6 @@
   registerDice("skill_talk", learnedSkillCheck("talk"));
   registerDice("ev016_strength_01", attrCheck("strength"));
 
-  // E-018：背起乘务员走话术路线，否则走侦察路线。
-  registerDice("ev018_route_01", async (context) => {
-    if (context.state.flags.carried_crew) {
-      return learnedSkillCheck("talk")(context);
-    }
-    const result = await scoutingSkillCheck(context);
-    return result === 0 ? 2 : 3;
-  });
-
   // E-022：拥有潜行直接成功；否则使用幸运半值检定。
   registerDice("ev022_stealth_or_luck_01", async (context) => {
     if (!context.state.getSkill("stealth")) return luckHalfCheck(context, 9, "潜行失败后的幸运检定");
@@ -244,7 +235,6 @@
     context.state.flags.ev008_scouting_ok ? 0 : 1
   ));
   registerDice("ev011_san_01", sanCheck("san", 0, 1));
-  registerDice("ev014_san_01", sanCheck("san", 0, { count: 1, sides: 2 }));
   registerDice("ev021_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice(
     "ev021_extra_san_01",

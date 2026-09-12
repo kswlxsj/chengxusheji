@@ -47,5 +47,19 @@
     "image": "assets/flashlight.png",
     "description": "一支还能发光的手电筒。",
     "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
+  },
+  {
+    "id": "emergency_cutter",
+    "name": "应急割带器",
+    "image": "assets/placeholder-key.svg",
+    "description": "可以割断黑色背包背带的应急工具。",
+    "inspectEvent": "E_ITEM_EMERGENCY_CUTTER_INSPECT"
+  },
+  {
+    "id": "pry_bar",
+    "name": "撬杆",
+    "image": "assets/placeholder-key.svg",
+    "description": "可以撬开被行李压住的箱体。",
+    "inspectEvent": "E_ITEM_PRY_BAR_INSPECT"
   }
 ]

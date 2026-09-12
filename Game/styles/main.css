@@ -440,6 +440,21 @@ body.home-op-active .home-page .auth-user-status {
   visibility: hidden;
 }
 
+.scene-object[data-show-image="true"] img {
+  visibility: visible;
+  image-rendering: pixelated;
+}
+
+.scene-object[data-glow="true"] {
+  animation: scene-object-glow 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(255, 239, 174, .94)) drop-shadow(0 0 12px rgba(255, 193, 83, .82));
+}
+
+@keyframes scene-object-glow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(255, 239, 174, .78)) drop-shadow(0 0 8px rgba(255, 193, 83, .58)); }
+  50% { filter: drop-shadow(0 0 7px rgba(255, 247, 195, 1)) drop-shadow(0 0 17px rgba(255, 193, 83, .96)); }
+}
+
 /* fullCanvas 整幅画布贴图：视觉层与背景共用同一张画布→舞台的映射整幅叠放（如同把图层贴回背景），
    只由脚本按不透明像素控制高亮；命中层是贴图内容包围盒上的透明按钮，交互也由脚本按像素判定。 */
 .scene-object-art {
@@ -449,6 +464,15 @@ body.home-op-active .home-page .auth-user-status {
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+}
+
+.scene-object-art.is-glow {
+  animation: scene-object-art-glow 1.2s ease-in-out infinite;
+}
+
+@keyframes scene-object-art-glow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(255, 239, 174, .78)) drop-shadow(0 0 8px rgba(255, 193, 83, .58)); }
+  50% { filter: drop-shadow(0 0 7px rgba(255, 247, 195, 1)) drop-shadow(0 0 17px rgba(255, 193, 83, .96)); }
 }
 
 .scene-object-art.is-hot,
@@ -1238,6 +1262,59 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 #toast.visible { opacity: 1; translate: -50% 0; }
+
+/* 获得物品占位卡：先让道具入包有明确的视觉反馈，后续可替换为正式获得面板。 */
+#acquisition-layer {
+  position: absolute;
+  top: 74px;
+  right: 18px;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  width: min(340px, 42%);
+  pointer-events: none;
+}
+
+.acquisition-card {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 64px;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid rgba(241, 190, 98, .76);
+  border-radius: 3px;
+  color: #f5ead9;
+  background: rgba(24, 18, 15, .92);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .42), inset 0 0 16px rgba(210, 151, 70, .11);
+  opacity: 0;
+  transform: translateX(18px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.acquisition-card.is-visible { opacity: 1; transform: translateX(0); }
+.acquisition-card.is-leaving { opacity: 0; transform: translateX(18px); }
+.acquisition-card-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border: 1px dashed rgba(241, 190, 98, .7);
+  color: rgba(241, 190, 98, .88);
+  background: rgba(0, 0, 0, .28);
+  font-size: 9px;
+  letter-spacing: .06em;
+}
+.acquisition-card-icon img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.acquisition-card-content { min-width: 0; display: grid; gap: 2px; }
+.acquisition-card-content strong { color: var(--accent); font-size: 12px; }
+.acquisition-card-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+.acquisition-card-content small { color: rgba(241, 234, 220, .62); font-size: 11px; }
 #game-shell.flash { animation: flash 420ms ease; }
 #game-shell.paused { animation-play-state: paused; }
 @keyframes flash { 35% { filter: brightness(2.4) contrast(1.25); } }
@@ -1247,6 +1324,9 @@ body.home-op-active .home-page .auth-user-status {
 @media (max-width: 700px) {
   #attributes { display: none; }
   #hud { gap: 8px; }
+  #acquisition-layer { top: 56px; right: 3%; width: 88%; }
+  .acquisition-card { grid-template-columns: 40px 1fr; min-height: 56px; }
+  .acquisition-card-icon { width: 40px; height: 40px; }
   #inventory-bar { width: 94%; bottom: 1.5%; }
   .inventory-slot { min-width: 0; }
   .inspect-content { grid-template-columns: 1fr; }

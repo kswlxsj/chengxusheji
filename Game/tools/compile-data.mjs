@@ -217,6 +217,12 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
       if (object.noHighlight != null) {
         assert(typeof object.noHighlight === "boolean", `物件 ${object.id} 的 noHighlight 必须是布尔值`);
       }
+      if (object.showImage != null) {
+        assert(typeof object.showImage === "boolean", `物件 ${object.id} 的 showImage 必须是布尔值`);
+      }
+      if (object.glow != null) {
+        assert(typeof object.glow === "boolean", `物件 ${object.id} 的 glow 必须是布尔值`);
+      }
       if (object.invisible != null) {
         assert(typeof object.invisible === "boolean", `物件 ${object.id} 的 invisible 必须是布尔值`);
       }

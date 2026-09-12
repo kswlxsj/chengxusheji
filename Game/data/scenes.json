@@ -32,10 +32,10 @@
         },
         "zIndex": 12,
         "clickEvent": "E_002",
-        "visibleWhen": {
-          "all": [
-            {
-              "not": {
+          "visibleWhen": {
+            "all": [
+              {
+                "not": {
                 "flag": "note_collected",
                 "equals": true
               }
@@ -293,7 +293,7 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_012"
+        "clickEvent": "E_013"
       },
       {
         "id": "clutter_05_a",
@@ -357,16 +357,28 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 74,
+          "y": 42,
+          "width": 18,
+          "height": 24
+        },
         "zIndex": 13,
         "clickEvent": "E_05_SEARCH_NEWS",
+        "glow": true,
         "visibleWhen": {
-          "not": {
-            "objectState": {
-              "objectId": "clue_clutter_05",
-              "property": "hidden",
+          "all": [
+            {
+              "flag": "carriage_05_newspaper_available",
               "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_05_newspaper_collected",
+                "equals": true
+              }
             }
-          }
+          ]
         }
       },
       {
@@ -403,6 +415,15 @@
     "id": "carriage_04",
     "name": "4 号车厢",
     "background": "assets/carriage-04.png",
+    "backgroundVariants": [
+      {
+        "image": "assets/4号车厢_乘务员_背走后.png",
+        "visibleWhen": {
+          "flag": "carried_crew",
+          "equals": true
+        }
+      }
+    ],
     "objects": [
       {
         "id": "door_04_to_05",
@@ -435,6 +456,22 @@
         "name": "重伤的乘务员",
         "image": "assets/4号车厢_乘务员.png",
         "fullCanvas": true,
+        "visibleWhen": {
+          "all": [
+            {
+              "not": {
+                "flag": "crew_04_interacted",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "flag": "carried_crew",
+                "equals": true
+              }
+            }
+          ]
+        },
         "position": {
           "x": 0,
           "y": 0,
@@ -494,8 +531,73 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 26,
+          "y": 50,
+          "width": 15,
+          "height": 12
+        },
         "zIndex": 12,
-        "clickEvent": "E_017"
+        "clickEvent": "E_017",
+        "glow": true,
+        "visibleWhen": {
+          "not": {
+            "flag": "carriage_03_bag_interacted",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "phone_03",
+        "name": "发光的手机",
+        "image": "assets/手机.png",
+        "position": {
+          "x": 34,
+          "y": 57,
+          "width": 4,
+          "height": 6.4
+        },
+        "zIndex": 11,
+        "showImage": true,
+        "glow": true,
+        "clickEvent": "E_018_PHONE",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "carriage_03_bag_interacted",
+              "equals": true
+            },
+            {
+              "flag": "carriage_03_phone_available",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_03_phone_collected",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "black_bag_03_foreground",
+        "name": "椅面杂物前景",
+        "image": "assets/black-bag-03.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+        "height": 100
+        },
+        "zIndex": 13,
+        "clickEvent": "E_018_PHONE",
+        "visibleWhen": {
+          "flag": "carriage_03_bag_interacted",
+          "equals": true
+        }
       }
     ]
   },

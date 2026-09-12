@@ -963,20 +963,9 @@
     "id": "E_010_S",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "你发现报纸的日期是第二天。"
-      },
-      {
-        "type": "dialogue",
-        "text": "它所报道的，正是你现在乘坐的这一班车。"
-      },
-      {
-        "type": "dialogue",
-        "text": "你顿时毛骨悚然，先前不祥的预感得到了验证。"
-      },
-      {
-        "type": "check",
-        "dice": "ev010_san_01"
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_available",
+        "value": true
       }
     ]
   },
@@ -985,45 +974,55 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你没看出有什么异常，或许是今晚遇到的事情太多，让你有些晕字。"
+        "text": "你翻找了一番，并没有发现什么看起来有用的东西。"
       },
       {
         "type": "dialogue",
-        "text": "装神弄鬼的，到底在说什么。"
+        "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
       },
       {
-        "type": "check",
-        "dice": "ev010_san_01"
+        "type": "dialogue",
+        "text": "你站起身，准备继续向前。身后，6号车厢方向的灯光一盏接一盏地熄灭了。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev008_scouting_ok",
+          "equals": true
+        },
+        "next": "E_012"
       }
-    ]
+    ],
+    "next": "E_013"
   },
   {
     "id": "E_010_JOIN",
     "actions": [
       {
-        "type": "check",
-        "dice": "ev010_san_01"
-      },
-      {
-        "type": "check",
-        "dice": "ev010_join_route_01",
-        "outcomes": [
-          "E_011",
-          "E_012"
-        ]
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev008_scouting_ok",
+          "equals": true
+        },
+        "next": "E_012"
       }
-    ]
+    ],
+    "next": "E_013"
   },
   {
     "id": "E_011",
     "actions": [
       {
         "type": "dialogue",
-        "text": "你忽然感觉背后有哪里不对，于是你转身看去。"
+        "text": "你展开报纸的瞬间，6号车厢的灯灭了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "先看看报纸再说吧。"
       },
       {
         "type": "check",
-        "dice": "ev011_insight_01",
+        "dice": "skill_scouting",
         "outcomes": [
           "E_011_S",
           "E_011_F"
@@ -1036,22 +1035,104 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "（主角表情：惊恐）你不可置信地看着。"
+        "text": "你发现报纸的日期是7月17日。"
       },
       {
         "type": "dialogue",
-        "text": "你的眼前，6号车厢已消失近半。"
+        "text": "（音效：惊悚诡异）"
       },
       {
         "type": "dialogue",
-        "text": "那个大嘴怪物，追上来了！"
+        "text": "它所报道的，正是你现在乘坐的这一班电车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你接着往后读。"
+      },
+      {
+        "type": "dialogue",
+        "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还......"
+      },
+      {
+        "type": "dialogue",
+        "text": "事故原因警方仍在调查中....."
+      },
+      {
+        "type": "dialogue",
+        "text": "幸存者声称......"
+      },
+      {
+        "type": "dialogue",
+        "text": "后面的内容看不清了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你不可置信地反复确认，却只见版面上写着："
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：连续的警报声）"
+      },
+      {
+        "type": "dialogue",
+        "text": "「只管前进吧，已经没有退路了。」"
+      },
+      {
+        "type": "dialogue",
+        "text": "「只管前进吧，已经没有退路了。」"
+      },
+      {
+        "type": "dialogue",
+        "text": "「只管前进吧，已经没有退路了。」"
+      },
+      {
+        "type": "dialogue",
+        "text": "报纸底边，有一行小字："
+      },
+      {
+        "type": "dialogue",
+        "text": "DON'T STOP."
+      },
+      {
+        "type": "dialogue",
+        "text": "字迹与6号车厢那张便签几乎一模一样。"
+      },
+      {
+        "type": "dialogue",
+        "text": "写下这些话的人，看来是同一个。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_available",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_collected",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：报纸）"
+      },
+      {
+        "type": "addItem",
+        "item": "newspaper"
       },
       {
         "type": "check",
         "dice": "ev011_san_01"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev008_scouting_ok",
+          "equals": true
+        },
+        "next": "E_012"
       }
     ],
-    "next": "E_011_JOIN"
+    "next": "E_013"
   },
   {
     "id": "E_011_F",
@@ -1059,30 +1140,129 @@
       {
         "type": "dialogue",
         "text": "你没发现什么特别的东西，过量的恐惧与紧张已麻痹了你的神经。"
-      }
-    ],
-    "next": "E_011_JOIN"
-  },
-  {
-    "id": "E_011_JOIN",
-    "actions": [
-      {
-        "type": "changeScene",
-        "scene": "carriage_04"
       },
       {
         "type": "dialogue",
-        "text": "当你回过神来，你发现5号车厢居然已经不见了大半，残缺的车厢不断摇晃，四周布满着令人绝望的黑暗。"
+        "text": "装神弄鬼的，到底在说什么？"
+      },
+      {
+        "type": "dialogue",
+        "text": "你正要放下报纸，眼角却扫到底边有一行潦草的小字："
+      },
+      {
+        "type": "dialogue",
+        "text": "DON'T STOP."
+      },
+      {
+        "type": "dialogue",
+        "text": "字迹很眼熟——像6号车厢那张便签上的字。"
+      },
+      {
+        "type": "dialogue",
+        "text": "直觉告诉你，还是先留着吧。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_available",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_collected",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：报纸）"
+      },
+      {
+        "type": "addItem",
+        "item": "newspaper"
+      },
+      {
+        "type": "check",
+        "dice": "ev011_san_01"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "ev008_scouting_ok",
+          "equals": true
+        },
+        "next": "E_012"
+      }
+    ],
+    "next": "E_013"
+  },
+  {
+    "id": "E_012",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "忽然，你感觉背后有哪里不对，于是转身看去。"
+      },
+      {
+        "type": "check",
+        "dice": "ev011_insight_01",
+        "outcomes": [
+          "E_012_S",
+          "E_012_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_012_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "（主角表情：惊恐）你不可置信地看着。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你的眼前，6号车厢只剩不到半截。"
+      },
+      {
+        "type": "dialogue",
+        "text": "而在车厢尽头，是和7号车厢如出一辙的黑暗。"
+      },
+      {
+        "type": "check",
+        "dice": "ev011_san_01"
+      }
+    ],
+    "next": "E_012_AFTER"
+  },
+  {
+    "id": "E_012_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你没发现什么特别的东西，过量的恐惧与紧张已麻痹了你的神经。"
+      }
+    ],
+    "next": "E_012_AFTER"
+  },
+  {
+    "id": "E_012_AFTER",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "当你回过神来，你发现5号车厢的灯灭了一半。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你感到黑暗即将把你吞没，这里不能再呆下去了。"
       },
       {
         "type": "dialogue",
         "text": "本能驱使着你向前跑去，你来到4号车厢。"
       }
     ],
-    "next": "E_012"
+    "next": "E_013"
   },
   {
-    "id": "E_012",
+    "id": "E_013",
     "actions": [
       {
         "type": "changeScene",
@@ -1090,54 +1270,18 @@
       },
       {
         "type": "dialogue",
-        "text": "一进入车厢，你就发现一名重伤昏迷的乘务员倒在地上。"
-      }
-    ]
-  },
-  {
-    "id": "E_013",
-    "actions": [
-      {
-        "type": "check",
-        "dice": "skill_medicine",
-        "outcomes": [
-          "E_013_S",
-          "E_013_F"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E_013_S",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "乘务员苏醒过来。"
-      },
-      {
-        "type": "dialogue",
-        "speaker": "乘务员",
-        "text": "啊...呃...天哪..."
-      }
-    ],
-    "next": "E_014_TALK_ENTRY"
-  },
-  {
-    "id": "E_013_F",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
-      },
-      {
-        "type": "dialogue",
-        "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+        "text": "一进入车厢，你就发现一名乘务员倒在地上，制服上沾着大片暗色的血迹。"
       }
     ]
   },
   {
     "id": "E_014",
     "actions": [
+      {
+        "type": "setFlag",
+        "key": "crew_04_interacted",
+        "value": true
+      },
       {
         "type": "check",
         "dice": "skill_medicine",
@@ -1146,7 +1290,8 @@
           "E_014_F"
         ]
       }
-    ]
+    ],
+    "next": "E_016"
   },
   {
     "id": "E_014_S",
@@ -1154,6 +1299,16 @@
       {
         "type": "dialogue",
         "text": "乘务员苏醒过来。"
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_medical_success",
+        "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_medical_failed",
+        "value": false
       },
       {
         "type": "dialogue",
@@ -1173,8 +1328,14 @@
       {
         "type": "dialogue",
         "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_medical_failed",
+        "value": true
       }
-    ]
+    ],
+    "next": "E_016"
   },
   {
     "id": "E_014_TALK_ENTRY",
@@ -1213,10 +1374,6 @@
       {
         "type": "dialogue",
         "text": "你硬着头皮，想要追问更多信息。"
-      },
-      {
-        "type": "check",
-        "dice": "ev014_san_01"
       }
     ],
     "next": "E_014_TALK"
@@ -1320,6 +1477,42 @@
     "actions": [
       {
         "type": "dialogue",
+        "text": "你蹲下来，平视她的眼睛："
+      },
+      {
+        "type": "dialogue",
+        "text": "“黑包里的钥匙，是干什么用的？”"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "驾驶室钥匙是开门用的，操作面板钥匙是为了打开控制面板。两把都在包里。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "包掉在3号车厢前门附近。逃跑的时候背带被切断了...我没来得及捡。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "3号车厢堆了不少行李。要是通道被堵住，4号员工柜里有应急割带器和撬杆。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她再次抓住你的衣角："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "快去拿钥匙。进了驾驶室，把右杆往上拉——车就能停下来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你点点头，不着痕迹地摸了摸口袋里那张泛黄的便签————「MOVE FORWARD」"
+      },
+      {
+        "type": "dialogue",
         "text": "你心下了然，生命的重量压得你有些喘不过气。"
       },
       {
@@ -1351,14 +1544,40 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你把乘务员留在4号车厢，决定先去3号车厢寻找钥匙。"
+        "text": "你把她扶到靠窗的座位上，用散落的行李简单遮挡住她："
+      },
+      {
+        "type": "dialogue",
+        "text": "“等我拿到钥匙，就回来接你。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "她抓住你的手腕，眼神里既有恐惧，也有恳求："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "好，我等你...但不管你回不回来，记得停车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你点头，却说不出那句“好”。"
+      },
+      {
+        "type": "dialogue",
+        "text": "因为你还不确定，这辆车到底该不该停。"
       },
       {
         "type": "setFlag",
         "key": "carried_crew",
         "value": false
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
       }
-    ]
+    ],
+    "next": "E_018"
   },
   {
     "id": "E_016_CARRY_CHECK",
@@ -1388,8 +1607,13 @@
         "type": "setFlag",
         "key": "carried_crew",
         "value": true
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
       }
-    ]
+    ],
+    "next": "E_018"
   },
   {
     "id": "E_016_CARRY_FAIL",
@@ -1400,170 +1624,483 @@
       },
       {
         "type": "dialogue",
-        "text": "在乘务员鼓励的眼神下，你强忍着泪光，独自向3号车厢走去。"
+        "text": "你把她扶到靠窗的座位上，用散落的行李简单遮挡住她："
+      },
+      {
+        "type": "dialogue",
+        "text": "“等我拿到钥匙，就回来接你。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "她抓住你的手腕，眼神里既有恐惧，也有恳求："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "好，我等你...但不管你回不回来，记得停车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你点头，却说不出那句“好”。"
+      },
+      {
+        "type": "dialogue",
+        "text": "因为你还不确定，这辆车到底该不该停。"
       },
       {
         "type": "setFlag",
         "key": "carried_crew",
         "value": false
-      }
-    ]
-  },
-  {
-    "id": "E_017",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "车厢内散落大量行李，你们的行动受阻。"
       },
       {
-        "type": "dialogue",
-        "text": "无奈之下，你拼尽全力瞪大双眼寻找。"
-      },
-      {
-        "type": "dialogue",
-        "text": "功夫不负有心人，你找到了那个黑色背包。"
+        "type": "changeScene",
+        "scene": "carriage_03"
       }
     ],
     "next": "E_018"
   },
   {
+    "id": "E_017",
+    "actions": [
+      {
+        "type": "conditionalJump",
+        "when": {
+          "not": {
+            "flag": "carriage_03_entry_narrative_v2_done",
+            "equals": true
+          }
+        },
+        "next": "E_018"
+      },
+      {
+        "type": "dialogue",
+        "text": "你一路清开通道，向3号车厢前门移动。越靠近前门，行李堆得越高，几乎齐腰。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_03_bag_interacted",
+        "value": true
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "all": [
+            {
+              "hasItem": "emergency_cutter"
+            },
+            {
+              "hasItem": "pry_bar"
+            }
+          ]
+        },
+        "next": "E_018_TOOLS_READY"
+      },
+      {
+        "type": "dialogue",
+        "text": "透过行李缝隙，你看到了那个黑色背包——背带被整整齐齐地切断。可它被压在行李堆最底下，你伸手试了几次，只碰到一根冰凉的带子，拉不出来。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_018_CARRIED_TOOL_HINT"
+      }
+    ],
+    "next": "E_018_ALONE_TOOL_HINT"
+  },
+  {
+    "id": "E_018_TOOLS_READY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你一路清开通道，向3号车厢前门移动。越靠近前门，行李堆得越高，几乎齐腰。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你用应急割带器和撬杆清开行李，黑色背包终于露了出来。"
+      }
+    ],
+    "next": "E_018_SEARCH_PHONE"
+  },
+  {
     "id": "E_018",
     "actions": [
       {
-        "type": "check",
-        "dice": "ev018_route_01",
-        "outcomes": [
-          "E_018_PASSENGER_TALK_S",
-          "E_018_PASSENGER_TALK_F",
-          "E_018_NO_PASSENGER_SCOUT_S",
-          "E_018_NO_PASSENGER_SCOUT_F"
-        ]
+        "type": "setFlag",
+        "key": "carriage_03_first_entry_seen",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "车厢内散落着大量行李，你的行动受阻。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_018_CARRIED_ENTRY"
+      }
+    ],
+    "next": "E_018_ALONE_ENTRY"
+  },
+  {
+    "id": "E_018_CARRIED_ENTRY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "她在你背上轻声说：“...前门，就在前面。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "你背着她走进3号车厢。她忽然说：“......前面就是4号车厢了。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "你停下：“这里是3号。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "她抬头看了很久门上的编号，低声说：“......对。”"
+      },
+      {
+        "type": "dialogue",
+        "text": "你们都没有再说话。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_03_entry_narrative_done",
+        "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_03_entry_narrative_v2_done",
+        "value": true
       }
     ]
   },
   {
-    "id": "E_018_PASSENGER_TALK_S",
+    "id": "E_018_ALONE_ENTRY",
     "actions": [
       {
         "type": "dialogue",
-        "text": "乘务员一阵翻找，找到了那两个钥匙。"
+        "text": "你想起她的话（或昏迷前的呓语）：黑包，3号前门。"
       },
       {
-        "type": "dialogue",
-        "text": "不知怎的，你认为应该由你来保管它们。"
+        "type": "setFlag",
+        "key": "carriage_03_entry_narrative_done",
+        "value": true
       },
       {
-        "type": "dialogue",
-        "text": "让我来保管钥匙吧，我现在还有体力，神智也算清晰。"
-      },
-      {
-        "type": "dialogue",
-        "text": "乘务员想了想，把钥匙递给你。"
-      },
-      {
-        "type": "dialogue",
-        "text": "（获得钥匙）"
-      },
-      {
-        "type": "addItem",
-        "item": "crew_keys"
+        "type": "setFlag",
+        "key": "carriage_03_entry_narrative_v2_done",
+        "value": true
       }
     ]
   },
   {
-    "id": "E_018_PASSENGER_TALK_F",
+    "id": "E_018_CLEAR_PATH",
     "actions": [
       {
         "type": "dialogue",
-        "text": "乘务员一阵翻找，找到了那两个钥匙。"
-      },
-      {
-        "type": "dialogue",
-        "text": "不知怎的，你认为应该由你来保管它们。"
-      },
-      {
-        "type": "dialogue",
-        "text": "让我来保管钥匙吧。"
-      },
-      {
-        "type": "dialogue",
-        "speaker": "乘务员",
-        "text": "没事，我来拿着吧。"
+        "text": "你一路清开通道，向3号车厢前门移动。越靠近前门，行李堆得越高，几乎齐腰。"
       }
     ]
   },
   {
-    "id": "E_018_NO_PASSENGER_SCOUT_S",
+    "id": "E_018_CARRIED_TOOL_HINT",
     "actions": [
       {
         "type": "dialogue",
-        "text": "你一阵翻找，终于找到钥匙。"
+        "text": "她低声说：“......得先清开这些行李。靠手是扯不断的。”"
+      }
+    ],
+    "next": "E_018_SEARCH_PHONE"
+  },
+  {
+    "id": "E_018_ALONE_TOOL_HINT",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你试着硬拽，行李纹丝不动。你需要能割断带子、撬开箱体的工具。"
+      }
+    ],
+    "next": "E_018_SEARCH_PHONE"
+  },
+  {
+    "id": "E_018_SEARCH_PHONE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你决定先看看四周有什么能用的东西，在杂乱中翻找到了一部手机。"
       },
       {
         "type": "dialogue",
-        "text": "（获得钥匙）"
+        "text": "呼...太好了。"
       },
       {
-        "type": "addItem",
-        "item": "crew_keys"
+        "type": "setFlag",
+        "key": "carriage_03_phone_available",
+        "value": true
       }
     ]
   },
   {
-    "id": "E_018_NO_PASSENGER_SCOUT_F",
+    "id": "E_018_PHONE",
     "actions": [
       {
-        "type": "dialogue",
-        "text": "你翻找了半天，最后还是没有找到钥匙。"
+        "type": "setFlag",
+        "key": "carriage_03_phone_available",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_03_phone_collected",
+        "value": true
       },
       {
         "type": "dialogue",
-        "text": "无奈之下，你只能暂时拿着黑色背包。"
-      }
-    ]
-  },
-  {
-    "id": "E_019",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你向2号车厢看去，一片漆黑。"
-      },
-      {
-        "type": "check",
-        "dice": "skill_scouting",
-        "outcomes": [
-          "E_019_S",
-          "E_019_F"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E_019_S",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你感觉黑暗中有人影行走，差不多有两三只。"
-      },
-      {
-        "type": "dialogue",
-        "text": "（获得手机）"
+        "text": "（获得：手机）"
       },
       {
         "type": "addItem",
         "item": "phone"
+      },
+      {
+        "type": "dialogue",
+        "text": "屏幕上赫然显示：2013年7月15日。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（音效：惊悚诡异）"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "newspaper"
+        },
+        "next": "E_018_NEWSPAPER_MEMORY"
+      }
+    ],
+    "next": "E_018_NO_NEWSPAPER_MEMORY"
+  },
+  {
+    "id": "E_018_NEWSPAPER_MEMORY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你回想起报纸上的报道，一阵寒意再次向你袭来。"
+      }
+    ],
+    "next": "E_018_PHONE_MESSAGE"
+  },
+  {
+    "id": "E_018_NO_NEWSPAPER_MEMORY",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你盯着屏幕上的日期，寒意从指尖一路爬上来。"
+      }
+    ],
+    "next": "E_018_PHONE_MESSAGE"
+  },
+  {
+    "id": "E_018_PHONE_MESSAGE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你发现屏保上有一条未读信息，内容只有四个字："
+      },
+      {
+        "type": "dialogue",
+        "text": "「不要停车。」"
+      },
+      {
+        "type": "dialogue",
+        "text": "发送时间：2013/07/17 02:13"
+      },
+      {
+        "type": "dialogue",
+        "text": "现在是7月15日。这条短信却来自两天之后？！"
+      },
+      {
+        "type": "dialogue",
+        "text": "你的指尖微微发抖：这是谁写的？又是写给谁的？"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_018_CARRIED_REACTION"
+      }
+    ],
+    "next": "E_018_ALONE_REACTION"
+  },
+  {
+    "id": "E_018_CARRIED_REACTION",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "她趴在你背上，看到信息内容，急道："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "别信这个！谁知道是谁发的？停车！停车我们才能活！"
+      },
+      {
+        "type": "dialogue",
+        "text": "她的声音很大，像是在说服你，也像是在说服她自己。"
+      }
+    ],
+    "next": "E_018_FINAL"
+  },
+  {
+    "id": "E_018_ALONE_REACTION",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你想起乘务员反复念叨的那句“停车”，又低头看向屏幕上的“不要停车”。"
+      }
+    ],
+    "next": "E_018_FINAL"
+  },
+  {
+    "id": "E_018_FINAL",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你不知道该相信哪一个。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你望向黑包，又望向自己来时的方向——行李需要工具才能清开，而工具，似乎在4号车厢里。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "newspaper"
+        },
+        "next": "E_019"
       }
     ],
     "next": "E_020"
   },
   {
-    "id": "E_019_F",
+    "id": "E_019",
+    "actions": [
+      {
+        "type": "conditionalJump",
+        "when": {
+          "not": {
+            "hasItem": "newspaper"
+          }
+        },
+        "next": "E_020"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_019_CARRIED"
+      }
+    ],
+    "next": "E_019_ALONE"
+  },
+  {
+    "id": "E_019_CARRIED",
     "actions": [
       {
         "type": "dialogue",
-        "text": "你觉得很黑，什么都看不清。"
+        "text": "你想起口袋里那份报纸，展开重读。"
+      },
+      {
+        "type": "dialogue",
+        "text": "报纸上写着："
+      },
+      {
+        "type": "dialogue",
+        "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还......"
+      },
+      {
+        "type": "dialogue",
+        "text": "没有变化。"
+      },
+      {
+        "type": "dialogue",
+        "text": "名单里似乎有一个位置，写着某个与你相像的人；而她，也在。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你合上报纸，不知道自己刚才在期待什么。"
+      }
+    ],
+    "next": "E_020"
+  },
+  {
+    "id": "E_019_ALONE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你想起口袋里那份报纸，展开重读。"
+      },
+      {
+        "type": "dialogue",
+        "text": "报纸上写着："
+      },
+      {
+        "type": "dialogue",
+        "text": "截至本报截稿时，共有21名乘客获救，1名女性乘务员生还......"
+      },
+      {
+        "type": "dialogue",
+        "text": "你愣了一下，从头再看了一遍。"
+      },
+      {
+        "type": "dialogue",
+        "text": "21名。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你记得刚才明明是22名。"
+      },
+      {
+        "type": "dialogue",
+        "text": "报纸中段，关于“一名在3号车厢获救的乘客”的描述消失了。那一栏只剩下空白，仿佛有人用橡皮，把“你”从未来里擦掉了。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "主角内心",
+        "text": "......我记得刚才不是这么写的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你盯着那行“1名女性乘务员生还”。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她还活着。可如果她不跟着你，谁会去救她？"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "主角内心",
+        "text": "如果我不回去......生还名单里，就再也不会有我了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你攥紧报纸，转身往来路走去。"
+      },
+      {
+        "type": "setFlag",
+        "key": "newspaper_21_version",
+        "value": true
       }
     ],
     "next": "E_020"
@@ -1573,15 +2110,324 @@
     "actions": [
       {
         "type": "changeScene",
-        "scene": "carriage_02"
+        "scene": "carriage_04"
       },
       {
         "type": "dialogue",
-        "text": "四周毫无光源。"
+        "text": "你必须回到4号车厢：3号前门的行李需要割带器或撬杆才能清开，而那些工具，应该在4号车厢的员工柜里。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_020_CARRIED"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "crew_04_medical_failed",
+          "equals": true
+        },
+        "next": "E_020_SECOND_MEDICAL"
+      }
+    ],
+    "next": "E_020_LEFT_AWAKE"
+  },
+  {
+    "id": "E_020_CARRIED",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你从4号车厢的员工柜里找到应急割带器和撬杆。"
       },
       {
         "type": "dialogue",
-        "text": "在一片漆黑中，你听到明显的喘息声。"
+        "text": "（获得：应急割带器 ×1、撬杆 ×1）"
+      },
+      {
+        "type": "addItem",
+        "item": "emergency_cutter"
+      },
+      {
+        "type": "addItem",
+        "item": "pry_bar"
+      },
+      {
+        "type": "setFlag",
+        "key": "tools_ready",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·工具齐备】"
+      },
+      {
+        "type": "dialogue",
+        "text": "你带着她返回3号车厢。"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
+      }
+    ],
+    "next": "E_021"
+  },
+  {
+    "id": "E_020_LEFT_AWAKE",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你推开4号车厢的门，脚步顿住。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你离开前，把她扶在左侧的座位上。可现在，她坐在右侧的座位上，望着窗外出神。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你：“你怎么过去的？”"
+      },
+      {
+        "type": "dialogue",
+        "text": "她转过头，一脸茫然：“什么？”"
+      },
+      {
+        "type": "dialogue",
+        "text": "你：“你刚才不是坐在那边吗？”"
+      },
+      {
+        "type": "dialogue",
+        "text": "她顺着你指的方向看了看，又指指自己身下的座位："
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "我一直坐在这儿。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你张了张嘴，什么也没问。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "......你果然回来了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她像是松了口气，又像是早就知道你会回来。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你从员工柜里找到应急割带器和撬杆。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：应急割带器 ×1、撬杆 ×1）"
+      },
+      {
+        "type": "addItem",
+        "item": "emergency_cutter"
+      },
+      {
+        "type": "addItem",
+        "item": "pry_bar"
+      },
+      {
+        "type": "setFlag",
+        "key": "tools_ready",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·工具齐备】"
+      },
+      {
+        "type": "dialogue",
+        "text": "你把她扶起来。这一次，她没有拒绝。"
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·乘务员同行】"
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
+      }
+    ],
+    "next": "E_021"
+  },
+  {
+    "id": "E_020_SECOND_MEDICAL",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你推开4号车厢的门。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她还在那里，但姿势像是被什么人挪动过。你蹲下来探她的鼻息——很弱，比离开时更弱了。"
+      },
+      {
+        "type": "check",
+        "dice": "skill_medicine",
+        "outcomes": [
+          "E_020_SECOND_MEDICAL_S",
+          "E_020_SECOND_MEDICAL_F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_020_SECOND_MEDICAL_S",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你咬着牙，用颤抖的手完成了包扎。"
+      },
+      {
+        "type": "dialogue",
+        "text": "乘务员咳了一声，终于睁开眼。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "......钥匙......黑包......停车......"
+      },
+      {
+        "type": "dialogue",
+        "text": "她只能断断续续说出这几个词，没有力气再回答更多问题了。"
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_medical_failed",
+        "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": true
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·乘务员同行（虚弱）】她可以跟着你走，但无法提供完整的对话情报。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你从员工柜里找到应急割带器和撬杆，扶起她，返回3号车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：应急割带器 ×1、撬杆 ×1）"
+      },
+      {
+        "type": "addItem",
+        "item": "emergency_cutter"
+      },
+      {
+        "type": "addItem",
+        "item": "pry_bar"
+      },
+      {
+        "type": "setFlag",
+        "key": "tools_ready",
+        "value": true
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
+      }
+    ],
+    "next": "E_021"
+  },
+  {
+    "id": "E_020_SECOND_MEDICAL_F",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你试了一次，两次，三次。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她的手终于垂了下去。"
+      },
+      {
+        "type": "dialogue",
+        "text": "她死了。"
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_dead",
+        "value": true
+      },
+      {
+        "type": "setFlag",
+        "key": "carried_crew",
+        "value": false
+      },
+      {
+        "type": "dialogue",
+        "text": "【状态·乘务员死亡】"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "newspaper"
+        },
+        "next": "E_020_DEAD_NEWSPAPER"
+      }
+    ],
+    "next": "E_020_DEAD_TOOLS"
+  },
+  {
+    "id": "E_020_DEAD_NEWSPAPER",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "（报纸变为：共有21名乘客获救。现场未发现幸存乘务人员。）"
+      },
+      {
+        "type": "setFlag",
+        "key": "newspaper_21_version",
+        "value": true
+      }
+    ],
+    "next": "E_020_DEAD_TOOLS"
+  },
+  {
+    "id": "E_020_DEAD_TOOLS",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "你沉默地站了一会儿，从员工柜里找到应急割带器和撬杆，独自返回3号车厢。"
+      },
+      {
+        "type": "dialogue",
+        "text": "（获得：应急割带器 ×1、撬杆 ×1）"
+      },
+      {
+        "type": "addItem",
+        "item": "emergency_cutter"
+      },
+      {
+        "type": "addItem",
+        "item": "pry_bar"
+      },
+      {
+        "type": "setFlag",
+        "key": "tools_ready",
+        "value": true
+      },
+      {
+        "type": "changeScene",
+        "scene": "carriage_03"
       }
     ],
     "next": "E_021"
@@ -2114,6 +2960,26 @@
     ]
   },
   {
+    "id": "E_ITEM_EMERGENCY_CUTTER_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "应急割带器",
+        "text": "一件可以割断背包背带的应急工具。"
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_PRY_BAR_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "title": "撬杆",
+        "text": "一根可以撬开箱体、清理行李的工具。"
+      }
+    ]
+  },
+  {
     "id": "E_DOOR_04",
     "actions": [
       {
@@ -2121,8 +2987,14 @@
         "scene": "carriage_03"
       },
       {
-        "type": "dialogue",
-        "text": "你推开门，走进3号车厢。车厢里到处是散落的行李。"
+        "type": "conditionalJump",
+        "when": {
+          "not": {
+            "flag": "carriage_03_bag_interacted",
+            "equals": true
+          }
+        },
+        "next": "E_018"
       }
     ]
   },
@@ -2196,6 +3068,16 @@
         "scene": "carriage_03"
       },
       {
+        "type": "conditionalJump",
+        "when": {
+          "not": {
+            "flag": "carriage_03_bag_interacted",
+            "equals": true
+          }
+        },
+        "next": "E_018"
+      },
+      {
         "type": "dialogue",
         "text": "你穿过门，返回3号车厢。"
       }
@@ -2226,20 +3108,8 @@
   },
   {
     "id": "E_05_SEARCH_NEWS",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你决定仔细翻找这堆杂物。"
-      },
-      {
-        "type": "check",
-        "dice": "skill_scouting",
-        "outcomes": [
-          "E_009_S",
-          "E_009_F"
-        ]
-      }
-    ]
+    "actions": [],
+    "next": "E_011"
   },
   {
     "id": "E_05_SEARCH_TOOLS",

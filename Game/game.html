@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=dice-animation-20260912-2">
+  <link rel="stylesheet" href="styles/main.css?v=script-cues-20260912-1">
   <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
@@ -36,6 +36,7 @@
 
     <div id="window-layer" aria-live="polite"></div>
     <div id="toast" role="status" aria-live="polite"></div>
+    <div id="acquisition-layer" aria-label="获得物品提示" aria-live="polite"></div>
   </main>
 
   <!-- CODEX ADD START -->
@@ -55,7 +56,7 @@
   <!-- CODEX ADD END -->
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js?v=local-dice-20260912-1"></script>
+  <script src="data/compiled-game-data.js?v=e020-tools-return-20260913-7"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
@@ -64,13 +65,13 @@
   <script src="src/state.js?v=local-ui-flow-20260912-3"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
-  <script src="src/ui.js?v=dice-animation-20260912-2"></script>
+  <script src="src/ui.js?v=script-cues-20260912-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
   
-  <script src="src/scene.js?v=local-note-background-20260912-1"></script>
+  <script src="src/scene.js?v=e018-phone-occlusion-20260913-5"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
-  <script src="src/events.js?v=local-ui-flow-20260912-2"></script>
+  <script src="src/events.js?v=item-acquisition-20260912-1"></script>
   <!-- TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
   
   <script src="src/dice.js?v=dice-animation-20260912-1"></script>

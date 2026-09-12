@@ -165,6 +165,8 @@
         button.title = object.name || object.id;
         button.setAttribute("aria-label", object.name || object.id);
         if (object.noHighlight) button.dataset.noHighlight = "true";
+        if (object.showImage) button.dataset.showImage = "true";
+        if (object.glow) button.dataset.glow = "true";
         button.style.left = `${object.position.x}%`;
         button.style.top = `${object.position.y}%`;
         button.style.width = `${object.position.width}%`;
@@ -194,10 +196,14 @@
       const art = document.createElement("img");
       art.className = "scene-object-art";
       art.dataset.objectId = object.id;
+      if (object.glow || (object.glowWhen && evaluateCondition(object.glowWhen, this.state))) art.classList.add("is-glow");
       art.src = object.image;
       art.alt = "";
       art.style.zIndex = String(object.zIndex || 10);
       this.root.append(art);
+
+      // 只用于遮挡后景的全画布贴图，不创建命中按钮，也不参与悬停/点击判定。
+      if (object.visualOnly) return;
 
       const button = document.createElement("button");
       button.type = "button";
@@ -339,14 +345,18 @@
 
     alphaHit(entry, rect, x, y) {
       const { meta } = entry;
-      if (!meta) {
-        const hit = entry.object.hitPosition;
-        if (!hit || !rect.width || !rect.height) return false;
+      // 显式命中框优先于透明像素：适合纸张、手机等小型线索，给边缘留出可点击余量，
+      // 也避免本地贴图读取失败时按钮一直停留在 pointer-events:none。
+      const hit = entry.object.hitPosition;
+      if (hit) {
         const left = (hit.x / 100) * rect.width;
         const top = (hit.y / 100) * rect.height;
         const right = left + (hit.width / 100) * rect.width;
         const bottom = top + (hit.height / 100) * rect.height;
         return x >= left && x <= right && y >= top && y <= bottom;
+      }
+      if (!meta) {
+        return false;
       }
       const transform = coverTransform(rect.width, rect.height, meta.width, meta.height);
       const canvasX = (x - transform.offsetX) / transform.scale;

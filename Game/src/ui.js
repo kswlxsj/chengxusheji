@@ -726,6 +726,8 @@
       this.minigame = new MinigameWindow(root);
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
+      this.cueLayer = document.querySelector("#acquisition-layer");
+      this.cueSerial = 0;
     }
 
     closeDialog() {
@@ -747,6 +749,54 @@
     closePauseMenus() {
       this.pauseMenu.close("resume");
       this.confirmMenu.close(false);
+    }
+
+    showAcquisition({ name = "未命名物品", image = null, detail = "已加入物品栏" } = {}) {
+      this.showCue({
+        kind: "item",
+        title: "获得物品",
+        label: name,
+        image,
+        detail
+      });
+    }
+
+    showCue({ kind = "item", title = "获得物品", label = "", image = null, detail = "" } = {}) {
+      if (!this.cueLayer) return;
+      const card = document.createElement("div");
+      card.className = "acquisition-card";
+      card.dataset.cueId = String(++this.cueSerial);
+
+      const icon = document.createElement("div");
+      icon.className = "acquisition-card-icon";
+      if (image) {
+        const img = document.createElement("img");
+        img.src = image;
+        img.alt = "";
+        icon.append(img);
+      } else {
+        icon.textContent = "ITEM";
+      }
+
+      const content = document.createElement("div");
+      content.className = "acquisition-card-content";
+      const heading = document.createElement("strong");
+      heading.textContent = title;
+      const main = document.createElement("span");
+      main.textContent = label;
+      content.append(heading, main);
+      if (detail) {
+        const note = document.createElement("small");
+        note.textContent = detail;
+        content.append(note);
+      }
+      card.append(icon, content);
+      this.cueLayer.append(card);
+      requestAnimationFrame(() => card.classList.add("is-visible"));
+      setTimeout(() => {
+        card.classList.add("is-leaving");
+        setTimeout(() => card.remove(), 260);
+      }, 2200);
     }
 
     toast(message) {

@@ -155,8 +155,17 @@
       });
 
       this.registerAction("addItem", async (action) => {
-        if (!this.items.has(action.item)) throw new Error(`物品不存在：${action.item}`);
+        const item = this.items.get(action.item);
+        if (!item) throw new Error(`物品不存在：${action.item}`);
+        const alreadyOwned = this.state.inventory.includes(action.item);
         this.state.addItem(action.item);
+        if (!alreadyOwned) {
+          this.ui.showAcquisition?.({
+            name: item.name,
+            image: item.image,
+            detail: "已加入物品栏"
+          });
+        }
       });
 
       this.registerAction("setObjectState", async (action) => {
