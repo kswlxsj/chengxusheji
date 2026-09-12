@@ -810,34 +810,7 @@ window.GAME_DATA = {
       "id": "flower_sea",
       "name": "花海·车门外",
       "background": "assets/flower-sea.png",
-      "objects": [
-        {
-          "id": "door_flowersea_back",
-          "name": "来路的车门",
-          "image": "assets/door.svg",
-          "position": {
-            "x": 0,
-            "y": 21,
-            "width": 12,
-            "height": 63
-          },
-          "zIndex": 11,
-          "clickEvent": "E_513"
-        },
-        {
-          "id": "door_flowersea_in",
-          "name": "花海深处",
-          "image": "assets/door.svg",
-          "position": {
-            "x": 89,
-            "y": 21,
-            "width": 12,
-            "height": 63
-          },
-          "zIndex": 11,
-          "clickEvent": "E_511"
-        }
-      ]
+      "objects": []
     },
     {
       "id": "flower_sea_inside",
@@ -3368,6 +3341,20 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev510_flower_sea",
           "value": true
+        },
+        {
+          "type": "choice",
+          "prompt": "",
+          "options": [
+            {
+              "label": "继续深入",
+              "next": "E_511"
+            },
+            {
+              "label": "调头",
+              "next": "E_513"
+            }
+          ]
         }
       ]
     },
@@ -3461,6 +3448,16 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev_fake04_from_sea",
           "value": true
+        },
+        {
+          "type": "choice",
+          "prompt": "",
+          "options": [
+            {
+              "label": "原路返回",
+              "next": "E_509_RESUME"
+            }
+          ]
         }
       ]
     },
@@ -4143,6 +4140,17 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_503"
+    },
+    {
+      "id": "E_509_RESUME",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "ev_fake04_from_sea",
+          "value": false
+        }
+      ],
+      "next": "E_509"
     }
   ],
   "items": [

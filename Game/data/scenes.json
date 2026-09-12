@@ -794,34 +794,7 @@
     "id": "flower_sea",
     "name": "花海·车门外",
     "background": "assets/flower-sea.png",
-    "objects": [
-      {
-        "id": "door_flowersea_back",
-        "name": "来路的车门",
-        "image": "assets/door.svg",
-        "position": {
-          "x": 0,
-          "y": 21,
-          "width": 12,
-          "height": 63
-        },
-        "zIndex": 11,
-        "clickEvent": "E_513"
-      },
-      {
-        "id": "door_flowersea_in",
-        "name": "花海深处",
-        "image": "assets/door.svg",
-        "position": {
-          "x": 89,
-          "y": 21,
-          "width": 12,
-          "height": 63
-        },
-        "zIndex": 11,
-        "clickEvent": "E_511"
-      }
-    ]
+    "objects": []
   },
   {
     "id": "flower_sea_inside",
