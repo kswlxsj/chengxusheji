@@ -584,6 +584,10 @@
   - 文档：`README.md` 的 `custom-actions.js` 清单修正为 `flashScreen` / `useLight` / `endGame` / `weightedBranch`（原清单只写了 `flashScreen`，遗漏两项）；`docs/API使用说明.md`「自定义动作」一节补项目白名单与 `weightedBranch` 用法（含旗标分支示例）。
   - 沙箱实测：10% / 30% / 60% 与 50% / 50% 两条分支链路、以及"回程态不参与随机"均符合预期；`npm run check` → 「编译完成：12 个场景，155 个事件，7 个物品，8 个属性，6 个技能，6 个小游戏」+「运行时测试通过」，退出码 0。
 
+- **旗标修正：`crew_alive` → `crew_met`（2026-09-12）** —— 排查 Q9 落地结果时发现 `E_506` 读的 `crew_alive` 全仓从未被置位（唯一写入点不存在），导致 `E_508`（乘务员线）实际不可达、恒走 `E_507`：
+  - 修法：`E_013`（主剧本急救段，乘务员首次接触）开头置 `crew_met = true`；`E_506` 改读同一旗标。`E_013` 位于主线 6→7 号车厢的必经路径，且里世界的 `E_506` 只能从主线进入，因此该旗标在判定点必定已置位。
+  - 口径说明：这是"乘务员是否遇到过"，不是"是否存活"。剧本里"若乘务员已死"那一支（死亡状态与置位点）仍未定义，`E_507`（疯狂低语）暂时只能由其它线路抵达，登记在 Q9 待编剧确认。
+
 ## 收尾
 
 全部完成（每条提问都有答复、每行素材都有显式结果）后，回复我下列任一固定口令：
@@ -613,7 +617,7 @@
 | Q6 | E-503 尾「（→ 回到 E-503 的选择…）」；E-509 choice→E-503 | A | `E_503` 被 `E_503_PICK.next`、`E_509` option 反复指回；车厢描写重播 | 认可重播（不做首次/重复区分） | `data/events.json` | 同意 | 已同意 →已落地（2026-09-12） |
 | Q7 | E-503「（获得：彩色玻璃瓶）」 | D | 候选用新物品 `bottle_inner`（隔离验证时临时注册）；现有 `bottle` = 主剧本 E_023 的瓶子 | 新建/复用道具决策 → `data/items.json` 注册 + `E_503_PICK`/`E_522_PICK` 的 addItem | `data/items.json`；`data/events.json` | 需要调整：统一用 Assets/Image/Item/玻璃瓶.png；获取改为里世界获取、没有就不通过；追加澄清选 C | 需修订：见 M9 与追加澄清（E-023 改为「未持有瓶子时才捡起」） →已落地（2026-09-12，含既有条目改写） |
 | Q8 | E-507「//SAN 损失…具体数值待定。//」 | D | `E_507` 末尾仅 `setFlag ev507_san_pending`；无 check、无 `modifyAttribute` | 数值由用户给 → 新增 dice 条目 + 事件内 check | `src/dice.js`；`data/events.json` | 同意 | 已同意（SAN 数值本批留空，登记待补） →已落地（2026-09-12） |
-| Q9 | E-506「（若乘务员已死…→ E-507；若乘务员仍在人世 → E-508）」；E-516 同 | H | `E_506` 用 `conditionalJump {flag: crew_alive, equals:true} → E_508`，否则 `next E_507`（候选按"在世"落地） | 状态来源决策（新增 `crew_dead`/置位点 / 用现有旗标近似 / 只走在世线） | `data/events.json`（+ 主剧本既有条目） | 同意 | 已同意（新增「乘务员死亡」状态方向；本批按在世线落地） →已落地（2026-09-12） |
+| Q9 | E-506「（若乘务员已死…→ E-507；若乘务员仍在人世 → E-508）」；E-516 同 | H | `E_506` 用 `conditionalJump {flag: crew_alive, equals:true} → E_508`，否则 `next E_507`（候选按"在世"落地） | 状态来源决策（新增 `crew_dead`/置位点 / 用现有旗标近似 / 只走在世线） | `data/events.json`（+ 主剧本既有条目） | 同意 | 已同意（新增「乘务员死亡」状态方向；本批按在世线落地） →已落地（2026-09-12） →旗标修正（2026-09-12）：原 `crew_alive` 全仓从未置位（`E_508` 恒不可达），改为 `E_013` 置 `crew_met = true`、`E_506` 读同一旗标 |
 | Q10 | E-511「（结局：迷失）」；E-515「（结局：Trauma）」 | F | `E_511`→`E_511_END`、`E_515`→`E_515_END`（空动作端点，无 `custom/endGame`）；`endGame` 仅接受 `true_end`/`bad_end` | 新结局类型交框架组（改 `src/custom-actions.js` + 结束页）或映射/暂缓 | `src/custom-actions.js`、结束页；`data/events.json` | 同意 | 已同意（新结局类型交框架组；本批结局文本落地、暂不进结束流程） →已落地（2026-09-12） |
 | Q11 | E-504「【状态·已侦察窗外】」；E-510「【状态·涉足花海】」；E-519「【状态·钥匙交给了祂】」；E-503「【情报·瓶子低语】」 | A | 旗标：`ev504_scouting_ok`、`ev510_flower_sea`、`ev519_key_given`、`ev503_bottle_taken`；E-514 `conditionalJump {ev510_flower_sea}`、E-516 `conditionalJump {ev504_scouting_ok}`、E-521 `conditionalJump {ev519_key_given}` | 认可"状态→旗标"口径 | `data/events.json` | 同意 | 已同意 →已落地（2026-09-12） |
 | Q12 | E-504「（检定：侦察）」 | C | 候选：占位行保持 + `check {dice: ev504_scouting_01, outcomes:[E_504_S, E_504_F]}`；建议复用既有 `skill_scouting`（隔离验证用 `scoutingSkillCheck` 占位注册） | 改用既有 `skill_scouting` 并删除占位行 | `data/events.json`（dice 编号改引既有注册，无需新增 `src/dice.js` 条目） | 同意 | 已同意（E_504 改引既有 skill_scouting，并删除原文占位行） →已落地（2026-09-12） |

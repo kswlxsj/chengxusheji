@@ -1714,6 +1714,11 @@ window.GAME_DATA = {
       "id": "E_013",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "crew_met",
+          "value": true
+        },
+        {
           "type": "check",
           "dice": "skill_first_aid",
           "outcomes": [
@@ -3280,7 +3285,7 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "crew_alive",
+            "flag": "crew_met",
             "equals": true
           },
           "next": "E_508"
