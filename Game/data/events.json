@@ -3247,31 +3247,11 @@
         "text": "你站在窗边。车厢两头的门仍在原处，你得决定接下来往哪边走。"
       },
       {
-        "type": "choice",
-        "prompt": "",
-        "options": [
-          {
-            "label": "原路返回",
-            "next": "E_521"
-          },
-          {
-            "label": "继续深入",
-            "next": "E_510"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "E_521",
-    "actions": [
-      {
         "type": "setFlag",
         "key": "ev_inner_backtrack",
         "value": true
       }
-    ],
-    "next": "E_522"
+    ]
   },
   {
     "id": "E_522",

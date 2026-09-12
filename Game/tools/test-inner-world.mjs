@@ -18,7 +18,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const trace = [];
   const ui = {
     dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory] }); } },
-    choice: { async choose(prompt, options) { return options.find(o => ["留着", "原路返回", "调头"].includes(o.label)) || options[0]; } },
+    choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
   };
   const scene = {
@@ -78,15 +78,20 @@ for (const met of [false, true]) {
 }
 
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
+// 回程入口＝花海调头（E_513），或伪4号窗边谈话结束（E_516）后点左门（原「原路返回」选项已改为点门触发）。
 for (const fromSea of [false, true]) for (const bottle of [false, true]) for (const given of [false, true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
     [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], fromSea ? "flower_sea" : "carriage_fake_04");
-  await game.play(fromSea ? "E_513" : "E_521");
+  await game.play(fromSea ? "E_513" : "E_516");
   if (fromSea) {
     assert.equal(game.state.sceneId, "carriage_fake_04");
     assert.equal(game.trace.find(t => t.text?.includes("编号写着")).scene, "carriage_fake_04");
-    await game.play("E_509_BACK");
+  } else {
+    assert.equal(game.state.sceneId, "carriage_fake_04", "窗边谈话后不再弹选择框，仍停在伪4号等玩家点门");
+    assert.equal(game.state.flags.ev_inner_backtrack, true);
+    assert.equal(game.trace.some(t => t.text?.includes("你穿过来路的车门")), false);
   }
+  await game.play("E_509_BACK");
   assert.equal(game.state.sceneId, "carriage_inner_02");
   assert.equal(game.state.inventory.includes("bottle"), bottle);
   assert.equal(game.trace.some(t => t.text?.includes("瓶身冰凉")), bottle);
@@ -116,6 +121,7 @@ for (const met of [false, true]) for (const scouting of [false, true]) {
   assert.equal(Boolean(game.state.flags.ev517_flower_revealed), scouting);
   assert.equal(Boolean(game.state.flags.ev510_flower_sea), false, "窗边看花海不产生污染");
   assert.equal(game.state.flags.ev_inner_backtrack, true);
+  assert.equal(game.state.sceneId, "carriage_fake_04", "窗边谈话链不自动切景，也不自动离开");
   if (scouting) {
     game.trace.length = 0; await game.play("E_505"); await game.play("E_516");
     assert.equal(game.trace.some(t => t.text === "窗外的雾气散开了。"), false);
