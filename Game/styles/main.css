@@ -1111,7 +1111,17 @@ body.home-op-active .home-page .auth-user-status {
 .attribute-allocation-row p { margin: 0; opacity: .78; }
 .attribute-allocation-limits { display: block; margin-top: 5px; color: var(--accent); opacity: .88; }
 .attribute-stepper { display: grid; grid-template-columns: 38px 54px 38px; align-items: center; text-align: center; }
-.attribute-stepper button { height: 38px; font-size: 22px; }
+.attribute-stepper button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.attribute-stepper button:not(:disabled):hover { background: transparent; }
+.attribute-stepper button img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .attribute-stepper output { font-size: 1.25em; font-weight: 700; }
 .allocation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 .allocation-actions button { padding: 9px 16px; }

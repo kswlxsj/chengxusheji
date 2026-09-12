@@ -323,13 +323,21 @@
         controls.className = "attribute-stepper";
         const minus = document.createElement("button");
         minus.type = "button";
-        minus.textContent = "−";
+        const minusImage = document.createElement("img");
+        minusImage.src = "../Assets/Image/UI/减.png";
+        minusImage.alt = "";
+        minusImage.setAttribute("aria-hidden", "true");
+        minus.append(minusImage);
         minus.setAttribute("aria-label", `降低${definition.name}`);
         const value = document.createElement("output");
         value.setAttribute("aria-label", `${definition.name}当前值`);
         const plus = document.createElement("button");
         plus.type = "button";
-        plus.textContent = "+";
+        const plusImage = document.createElement("img");
+        plusImage.src = "../Assets/Image/UI/加.png";
+        plusImage.alt = "";
+        plusImage.setAttribute("aria-hidden", "true");
+        plus.append(plusImage);
         plus.setAttribute("aria-label", `提高${definition.name}`);
         minus.addEventListener("click", () => {
           if (values[definition.id] <= definition.initial) return;

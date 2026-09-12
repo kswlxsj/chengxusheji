@@ -12,13 +12,13 @@
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
   const cardDetails = {
     attack: "单出造成 2 点伤害",
-    heal: "单出恢复 3，遇到攻击或必杀时恢复量 -3",
+    heal: "单出恢复 3，受到攻击时回血不生效并直接失去 3 点生命；4 点伤害技能改为直接失去 4 点生命",
     defend: "单出抵挡 1 点并反弹 1 点",
     ultimate: "单出造成 3 点伤害，冷却 3 回合"
   };
   const enemyActions = [
     { id: "attack", label: "攻击", cards: ["attack"], detail: "造成 2 点伤害 · 免费", cost: 0, damage: 2 },
-    { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 斩击 −3，必杀 −3 · 免费", cost: 0, recovery: 3 },
+    { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 受到攻击时回血不生效并失去 3 点生命，4 伤害技能改为失去 4 点 · 免费", cost: 0, recovery: 3 },
     { id: "defend", label: "防御", cards: ["defend"], detail: "抵挡 1＋反弹 1 · 免费", cost: 0, shield: 1, counter: 1 },
     { id: "ultimate", label: "必杀", cards: ["ultimate"], detail: "造成 3 点伤害 · 消耗 1 体力", cost: 1, damage: 3, ultimate: true },
     { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1", cost: 1, damage: 2, recovery: 1, combo: true },
@@ -103,7 +103,7 @@
       <div class="cb-rule-body">
         <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
         <p><strong>出牌：</strong>选 1 张牌免费；选 2 张牌同时出牌，消耗 1 点体力。双方每 2 回合恢复 1 点体力。</p>
-        <p><strong>克制：</strong>回血恢复 3，但只要对手出了攻击或必杀（单牌或组合技），回血效果都 −3；防御抵挡 1 点并反弹 1 点。组合技伤害不会被防御挡住或反弹。</p>
+        <p><strong>克制：</strong>只要对手出了任何攻击（普攻、必杀或组合技），回血不生效并直接失去 3 点生命；4 点伤害技能改为直接失去 4 点生命。防御抵挡 1 点并反弹 1 点。组合技伤害不会被防御挡住或反弹。</p>
         <p><strong>组合：</strong>必杀单出才是必杀；放进组合技时按攻击处理，因此“回血＋必杀”=“回血＋攻击”，造成 2 点伤害并回复 1 点，且不进入必杀冷却。</p>
         <p><strong>濒死：</strong><span data-infinite-rule></span></p>
       </div>
@@ -134,7 +134,7 @@
       <div class="cb-hand-heading"><div><strong>选择 1 或 2 张牌</strong><span class="cb-selected" data-selected>已选 0 / 2</span></div><button class="cb-play" type="button" data-play disabled>出牌</button></div>
       <div class="cb-cards">
         <button class="cb-card" type="button" data-card="attack" aria-pressed="false"><span class="key">1</span><span class="symbol">斩</span><span class="name">攻击</span><span class="detail">单出造成 2 点伤害</span></button>
-        <button class="cb-card" type="button" data-card="heal" aria-pressed="false"><span class="key">2</span><span class="symbol">愈</span><span class="name">回血</span><span class="detail">单出恢复 3（斩击 −3，必杀 −3）</span></button>
+        <button class="cb-card" type="button" data-card="heal" aria-pressed="false"><span class="key">2</span><span class="symbol">愈</span><span class="name">回血</span><span class="detail">单出恢复 3（受攻击：失去 3 点；4 伤害技能失去 4 点）</span></button>
         <button class="cb-card" type="button" data-card="defend" aria-pressed="false"><span class="key">3</span><span class="symbol">防</span><span class="name">防御</span><span class="detail">单出抵挡 1 点并反弹 1 点</span></button>
         <button class="cb-card" type="button" data-card="ultimate" aria-pressed="false"><span class="key">4</span><span class="symbol">必</span><span class="name">必杀</span><span class="detail">单出造成 3 点伤害，冷却 3 回合</span></button>
       </div>
@@ -190,11 +190,17 @@
     return ranked.length < 2 || Math.random() < 0.6 ? ranked[0] : ranked[1];
   }
 
-  function recoveryPenalty(cards) {
-    return cards.includes("attack") || cards.includes("ultimate") ? 3 : 0;
+  function isAttackAction(cards) {
+    return cards.some((cardId) => cardId === "attack" || cardId === "ultimate");
+  }
+
+  function recoveryBacklash(cards) {
+    if (!isAttackAction(cards)) return 0;
+    return cards.includes("attack") && cards.includes("ultimate") ? 4 : 3;
   }
 
   function recoveryCounterName(cards) {
+    if (cards.includes("attack") && cards.includes("ultimate")) return "4伤害技能";
     return cards.includes("ultimate") ? "必杀" : "攻击";
   }
 
@@ -384,31 +390,38 @@
     }
 
     function healPlayer(amount, messages, penalty = 0, counterName = "斩击") {
-      const effective = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`你的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effective}）`);
+      if (penalty > 0) {
+        state.playerHp = clamp(state.playerHp - penalty, 0, MAX_PLAYER_HP);
+        messages.push(`你的回血被${counterName}打断，不生效并失去 ${penalty} 点生命`);
+        return;
+      }
       const before = state.playerHp;
-      state.playerHp = clamp(state.playerHp + effective, 0, MAX_PLAYER_HP);
+      state.playerHp = clamp(state.playerHp + amount, 0, MAX_PLAYER_HP);
       const recovered = state.playerHp - before;
       if (recovered > 0) messages.push(`你恢复了 ${recovered} 点生命`);
-      else if (penalty > 0) messages.push("你的回血被完全压制");
       else messages.push("生命值已经满了");
     }
 
-    function healEnemy(amount, messages, penalty = 0, counterName = "斩击") {
-      const effective = Math.max(0, amount - penalty);
-      if (penalty > 0) messages.push(`敌人的回血被${counterName}压制 ${penalty} 点（实际恢复 ${effective}）`);
+    function healEnemy(amount, messages) {
       const before = state.enemyHp;
-      state.enemyHp = clamp(state.enemyHp + effective, 0, MAX_ENEMY_HP);
+      state.enemyHp = clamp(state.enemyHp + amount, 0, MAX_ENEMY_HP);
       const recovered = state.enemyHp - before;
       if (recovered > 0) messages.push(`敌人恢复了 ${recovered} 点生命`);
-      else if (penalty > 0) messages.push("敌人的回血被完全压制");
       else messages.push("敌人的生命值已满");
     }
 
+    function damageEnemyForAttack(amount, messages, combo = false) {
+      // 攻击回血目标时，3/4 点反制伤害替代原本的攻击伤害，避免重复扣血。
+      if (state.enemyAction.recovery && isAttackAction(state.selected)) {
+        return damageEnemy(recoveryBacklash(state.selected), messages, true);
+      }
+      return damageEnemy(amount, messages, combo);
+    }
+
     function resolveSingle(cardId, messages) {
-      if (cardId === "attack") return damageEnemy(2, messages);
+      if (cardId === "attack") return damageEnemyForAttack(2, messages);
       if (cardId === "heal") {
-        const penalty = recoveryPenalty(state.enemyAction.cards);
+        const penalty = recoveryBacklash(state.enemyAction.cards);
         return healPlayer(3, messages, penalty, recoveryCounterName(state.enemyAction.cards));
       }
       if (cardId === "defend") {
@@ -417,7 +430,7 @@
         messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
         return;
       }
-      damageEnemy(3, messages);
+      damageEnemyForAttack(3, messages);
       state.ultimateCooldown = 3;
       messages.push("必杀进入 3 回合冷却");
     }
@@ -426,21 +439,21 @@
       const key = [...cardIds].sort().join("+");
       if (key === "attack+heal" || key === "heal+ultimate") {
         messages.push("组合技：吸血斩");
-        damageEnemy(2, messages, true);
-        const penalty = recoveryPenalty(state.enemyAction.cards);
+        damageEnemyForAttack(2, messages, true);
+        const penalty = recoveryBacklash(state.enemyAction.cards);
         healPlayer(1, messages, penalty, recoveryCounterName(state.enemyAction.cards));
       } else if (key === "attack+defend" || key === "defend+ultimate") {
         messages.push("组合技：盾击");
-        damageEnemy(2, messages, true);
+        damageEnemyForAttack(2, messages, true);
         state.shield = 1;
         state.counter = 1;
         messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
       } else if (key === "attack+ultimate") {
         messages.push("组合技：破阵爆发");
-        damageEnemy(4, messages, true);
+        damageEnemyForAttack(4, messages, true);
       } else if (key === "defend+heal") {
         messages.push("组合技：稳住阵脚");
-        const penalty = recoveryPenalty(state.enemyAction.cards);
+        const penalty = recoveryBacklash(state.enemyAction.cards);
         healPlayer(2, messages, penalty, recoveryCounterName(state.enemyAction.cards));
         state.shield = 1;
         state.counter = 1;
@@ -478,10 +491,17 @@
         messages.push("敌人的组合技伤害不触发防御反弹");
       }
       if (state.enemyHp <= 0) return;
-      if (action.damage) damagePlayer(action.damage, messages, action.combo);
+      if (action.damage) {
+        const playerRecoveryCountered = state.selected.includes("heal") && isAttackAction(action.cards);
+        if (!playerRecoveryCountered) damagePlayer(action.damage, messages, action.combo);
+      }
       if (action.recovery) {
-        const penalty = recoveryPenalty(state.selected);
-        healEnemy(action.recovery, messages, penalty, recoveryCounterName(state.selected));
+        const enemyRecoveryCountered = isAttackAction(state.selected);
+        if (enemyRecoveryCountered) {
+          messages.push("敌人的回血不生效（攻击伤害已直接结算）");
+        } else {
+          healEnemy(action.recovery, messages);
+        }
       }
       clearTemporaryDefense();
     }
