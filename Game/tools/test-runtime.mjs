@@ -259,6 +259,8 @@ function createEngineUi() {
 
 function createEngineScene() {
   return {
+    prepare: async () => {},
+    whenReady: async () => {},
     load: () => {},
     refresh: () => {},
     setInteractionEnabled: () => {}
@@ -362,6 +364,65 @@ await endingEngine.play("E_TRUE_END");
 assert.equal(endingState.flags.ending_reason, "true_end");
 assert.equal(endingState.flags.continued, undefined, "结局后的动作不应继续执行");
 assert.equal(endingCalls, 1);
+
+// E-502「试图回头」的静默加权随机分岔：按权重选一条出口并写布尔旗标（10%/60%/30%）。
+const branchState = createState();
+branchState.completeAttributeAllocation({ strength: 4, insight: 1 });
+const branchEngine = new Game.EventEngine({
+  events: [],
+  state: branchState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+Game.registerProjectActions(branchEngine);
+const branchAction = {
+  type: "custom",
+  name: "weightedBranch",
+  params: {
+    outcomes: [
+      { weight: 10, flag: "ev502_return_eaten" },
+      { weight: 60, flag: "ev502_return_locked" },
+      { weight: 30, flag: "ev502_return_carriage03" }
+    ]
+  }
+};
+const branchFlags = () => [
+  branchState.flags.ev502_return_eaten,
+  branchState.flags.ev502_return_locked,
+  branchState.flags.ev502_return_carriage03
+];
+try {
+  sandbox.Math.random = () => 0;
+  await branchEngine.actions.get("custom")(branchAction);
+  assert.deepEqual(branchFlags(), [true, false, false], "掷点落在区间起点时应选 10% 那条");
+
+  sandbox.Math.random = () => 0.5;
+  await branchEngine.actions.get("custom")(branchAction);
+  assert.deepEqual(branchFlags(), [false, true, false], "掷点 50 应落在 60% 区间");
+
+  sandbox.Math.random = () => 0.999;
+  await branchEngine.actions.get("custom")(branchAction);
+  assert.deepEqual(branchFlags(), [false, false, true], "掷点接近上限时应选最后一条");
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
+// 权重表非法的分岔参数应在运行时报错，而不是静默选一条。
+await assert.rejects(
+  () => branchEngine.actions.get("custom")({ type: "custom", name: "weightedBranch", params: { outcomes: [] } }),
+  /缺少 outcomes/,
+  "空 outcomes 应报错"
+);
+await assert.rejects(
+  () => branchEngine.actions.get("custom")({
+    type: "custom",
+    name: "weightedBranch",
+    params: { outcomes: [{ weight: 0, flag: "ev502_return_locked" }] }
+  }),
+  /权重无效/,
+  "非正权重应报错"
+);
 
 // E-030 的 SAN 1d4/1d10 应真实掷骰，并标记为 Bad End；即使 SAN 归零也不能改跳 SAN 结局。
 const badEndingState = createRegisteredStateWith({ san: 5 });
@@ -554,6 +615,42 @@ await terminalEngine.play("E_TERMINAL");
 assert.equal(terminalState.getAttribute("strength"), 0, "终止状态不应回滚");
 assert.equal(terminalState.flags.continued, undefined, "终止后的动作不应继续执行");
 assert.equal(terminalCalls, 1, "终止回调应只执行一次");
+
+// 异步终止演出必须先完成，play() 才能结束；避免结局图层比演出提前出现。
+const delayedTerminalState = createState();
+delayedTerminalState.completeAttributeAllocation({ strength: 4, insight: 1 });
+let releaseTermination;
+let terminationStarted = false;
+let terminationFinished = false;
+let delayedPlayFinished = false;
+const delayedTerminalEngine = new Game.EventEngine({
+  events: [{
+    id: "E_DELAYED_TERMINAL",
+    actions: [{ type: "modifyAttribute", attribute: "strength", amount: -4 }]
+  }],
+  state: delayedTerminalState,
+  items: [],
+  scene: createEngineScene(),
+  ui: createEngineUi(),
+  shouldTerminate: (currentState) => currentState.getAttribute("strength") === 0,
+  onTerminate: async () => {
+    terminationStarted = true;
+    await new Promise((resolve) => { releaseTermination = resolve; });
+    terminationFinished = true;
+  }
+});
+const delayedPlay = delayedTerminalEngine.play("E_DELAYED_TERMINAL").then((value) => {
+  delayedPlayFinished = true;
+  return value;
+});
+for (let index = 0; index < 20 && !terminationStarted; index += 1) {
+  await Promise.resolve();
+}
+assert.equal(terminationStarted, true, "终止回调应开始执行");
+assert.equal(delayedPlayFinished, false, "play() 应等待异步终止演出完成");
+releaseTermination();
+assert.equal(await delayedPlay, false, "延迟终止完成后 play() 应正常收尾");
+assert.equal(terminationFinished, true, "异步终止演出应完整执行");
 
 // 检定函数内把属性扣到 0 同样触发终止，事件链不再继续。
 const diceTerminalState = createState();

@@ -202,6 +202,12 @@
         },
         {
           "type": "object",
+          "required": ["type", "item"],
+          "properties": { "type": { "const": "removeItem" }, "item": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
           "required": ["type", "object", "patch"],
           "properties": { "type": { "const": "setObjectState" }, "object": { "$ref": "#/$defs/id" }, "patch": { "type": "object" } },
           "additionalProperties": false
