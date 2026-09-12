@@ -753,12 +753,12 @@ body.home-op-active .home-page .auth-user-status {
 
 .confirm-backdrop { background: rgba(0,0,0,.88); }
 
-/* 侦察获得提示只作一次性通知，不阻断场景操作；玩家可以先走门，稍后再点按钮。 */
+/* 侦察获得提示只出现一次，并固定显示在屏幕中央。 */
 .scouting-offer-backdrop {
-  place-items: start end;
-  padding: 78px 24px 24px;
-  pointer-events: none;
-  background: rgba(0,0,0,.18);
+  place-items: center;
+  padding: 8%;
+  pointer-events: auto;
+  background: rgba(0,0,0,.78);
 }
 
 .scouting-offer-backdrop .confirm-menu-window {

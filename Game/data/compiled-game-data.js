@@ -1467,6 +1467,28 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "note_06_item"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1509,6 +1531,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },
@@ -1533,6 +1577,28 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_guide_seen",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_005_GUIDE"
         }
       ]
     },

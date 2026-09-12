@@ -236,25 +236,24 @@
     engine.adoptStableState();
   }
 
-  async function offerScoutingBeforeCarriageDeparture() {
-    if (!scoutingOfferAvailable()) return;
+  async function offerScouting() {
+    if (!scoutingOfferAvailable()) return false;
     markScoutingOfferShown();
     const choice = await ui.confirmMenu.choose({
       title: "已满足侦察的获得条件。",
-      backdropClass: "menu-backdrop confirm-backdrop",
-      options: [{ label: "获得侦察", value: "learn" }]
+      backdropClass: "scouting-offer-backdrop",
+      options: [{ label: "获得侦察", value: true }]
     });
-    if (choice !== "learn" || state.getSkill("scouting")) return;
+    if (choice !== true || state.getSkill("scouting")) return false;
     state.learnSkill("scouting");
+    state.flags.carriage_06_guide_pending = true;
     engine.adoptStableState();
+    return true;
   }
 
   async function handleScoutingCheckCompleted() {
     if (!canOfferScouting()) return;
-    if (!state.getSkill("scouting")) await offerScoutingBeforeCarriageDeparture();
-    if (!state.getSkill("scouting")) return;
-    state.flags.carriage_06_guide_pending = true;
-    engine.adoptStableState();
+    await offerScouting();
   }
 
   function maybeTriggerScoutingGuide() {
@@ -277,17 +276,8 @@
       || !scoutingOfferAvailable()
     ) return;
 
-    markScoutingOfferShown();
-    scoutingOfferTask = ui.confirmMenu.choose({
-      title: "已满足侦察的获得条件。",
-      backdropClass: "menu-backdrop scouting-offer-backdrop",
-      options: [{ label: "获得侦察", value: true }]
-    }).then((shouldLearn) => {
-      if (!shouldLearn || state.getSkill("scouting")) return;
-      state.learnSkill("scouting");
-      state.flags.carriage_06_guide_pending = true;
-      engine.adoptStableState();
-      updateHud();
+    scoutingOfferTask = offerScouting().then((learned) => {
+      if (learned) updateHud();
     }).catch((error) => {
       console.error("显示侦察获得按钮失败：", error);
     }).finally(() => {
