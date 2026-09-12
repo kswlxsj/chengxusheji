@@ -468,6 +468,12 @@
     }
   }
 
+  // 检定抖动动画节奏：只影响 roll() 里的抖动阶段（第一段等待）；
+  // 算式与成败的停留时长不受倍速影响。实际时长 = 基准时长 / 倍速，
+  // CSS 的抖动关键帧周期按同一倍速缩放（见 styles/main.css 的 --check-animation-scale）。
+  const CHECK_ROLL_BASE_MS = 1100;
+  const CHECK_ANIMATION_SPEED = 2;
+
   class DiceRollWindow {
     constructor(root) {
       this.root = root;
@@ -482,6 +488,8 @@
       this.close();
       const backdrop = document.createElement("div");
       backdrop.className = "check-roll-modal";
+      // 倍速交给 CSS，避免等待时长与关键帧周期各写一个数字而失步。
+      backdrop.style.setProperty("--check-animation-scale", String(1 / CHECK_ANIMATION_SPEED));
       const content = document.createElement("div");
       content.className = "check-roll-content";
       const diceBox = document.createElement("div");
@@ -506,7 +514,7 @@
       this.result = result;
 
       try {
-        await wait(1100);
+        await wait(CHECK_ROLL_BASE_MS / CHECK_ANIMATION_SPEED);
         if (this.backdrop !== backdrop) return;
         const face = Number.isInteger(value) && value >= 1 && value <= 6
           ? `assets/ui/dice_0${value}.png`

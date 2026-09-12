@@ -1036,7 +1036,8 @@ body.home-op-active .home-page .auth-user-status {
   100% { transform: scale(1); }
 }
 
-.dice-rolling { animation: dice-roll-shake .42s infinite ease-in-out; }
+/* 抖动关键帧周期随检定动画倍速缩放：.42s 是 100% 速基准，倍速变量由 ui.js 的 DiceRollWindow.roll 写入。 */
+.dice-rolling { animation: dice-roll-shake calc(.42s * var(--check-animation-scale, 1)) infinite ease-in-out; }
 .dice-result-static { animation: dice-roll-settle .28s ease-out; }
 
 .check-roll-status {
