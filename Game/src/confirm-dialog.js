@@ -53,7 +53,10 @@
       });
 
       const panel = document.createElement("section");
-      panel.className = ["game-window", windowClass || this.windowClass, "menu-content"].join(" ");
+      panel.className = ["game-window", windowClass || this.windowClass].join(" ");
+      // 与 MenuWindow 同构：面板内再放一层 .menu-content 承载标题与按钮，复用既有布局。
+      const content = document.createElement("div");
+      content.className = "menu-content";
       const heading = document.createElement("h1");
       heading.textContent = title || "请确认";
       const actions = document.createElement("div");
@@ -61,7 +64,8 @@
       const cancelButton = this.makeButton(cancelLabel, false);
       const confirmButton = this.makeButton(confirmLabel || "确定", true);
       actions.append(cancelButton, confirmButton);
-      panel.append(heading, actions);
+      content.append(heading, actions);
+      panel.append(content);
       backdrop.append(panel);
       root.append(backdrop);
 

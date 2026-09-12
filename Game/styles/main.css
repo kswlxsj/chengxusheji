@@ -378,18 +378,26 @@ body.home-op-active .home-page .auth-user-status {
   background: rgba(0, 0, 0, .78);
 }
 
+/* 面板比暂停菜单略小：确认框往往承载整句询问，给标题留出够用的换行宽度即可。
+   max-height + overflow 兜底：即使字号或文案异常放大，也不会撑破 16:9 舞台。 */
 .confirm-dialog-window {
-  width: min(480px, 88%);
-  padding: 28px;
+  width: min(520px, 88%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 24px 28px;
 }
 
-/* 标题与按钮沿用 .menu-content / .menu-actions 的既有布局（与 MenuWindow 同构），
-   这里只压低标题字号，让长句询问在小面板里也能完整显示。 */
-.confirm-dialog-window h1 {
-  margin-bottom: 20px;
-  font-size: clamp(17px, 1.8vw, 26px);
-  line-height: 1.5;
+/* 标题必须压过第 11 节的 .menu-content h1（28~68px）：两者特异性相同而后者在文件中更靠后，
+   按层叠顺序会取胜，所以这里用 !important 兜底，否则长句询问会撑满整个舞台。 */
+.confirm-dialog-window .menu-content h1 {
+  font-size: clamp(18px, 1.7vw, 24px) !important;
+  line-height: 1.6 !important;
   letter-spacing: .02em;
+  overflow-wrap: anywhere;
+}
+
+.confirm-dialog-window .menu-actions button {
+  font-size: clamp(14px, 1.3vw, 18px);
 }
 
 /* ============ 7. 游戏页（game.html）：舞台与场景物件（#game-shell、场景层与物件） ============ */
