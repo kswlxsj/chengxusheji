@@ -28,12 +28,6 @@
     "initial": false
   },
   {
-    "id": "firstAid",
-    "name": "急救",
-    "description": "对伤者进行紧急处理并稳定其当前状态。",
-    "initial": false
-  },
-  {
     "id": "medicine",
     "name": "医学",
     "description": "运用医学知识判断伤势、死因和死亡时间。",

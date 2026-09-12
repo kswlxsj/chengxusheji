@@ -158,13 +158,6 @@
     return attrCheck("insight")(context);
   }
 
-  // 当前项目约定：教育 > 5 解锁医学，并同步视为掌握急救。
-  function medicineCandidateUnlocked(context) {
-    const state = context.state;
-    const candidateThreshold = state.getAttribute("education") > 5;
-    return candidateThreshold || (state.getSkill("medicine") && state.skillOverrides.medicine === true);
-  }
-
   function conditionalSanCheck(attribute, passLoss, failLoss, condition) {
     const check = sanCheck(attribute, passLoss, failLoss);
     return async (context) => (condition(context) ? check(context) : 0);
@@ -198,19 +191,8 @@
   registerDice("ev004_insight_01", attrCheck("insight"));
   registerDice("skill_scouting", scoutingSkillCheck);
   registerDice("ev011_insight_01", attrCheck("insight"));
-  registerDice("skill_first_aid", async (context) => {
-    const usable = context.state.getSkill("firstAid") || medicineCandidateUnlocked(context);
-    if (!usable) {
-      await showSkillResult(context, "firstAid", false, "尚未掌握");
-      return 1;
-    }
-    if (!(await confirmSkillUse(context, "firstAid"))) {
-      await showSkillResult(context, "firstAid", false, "已放弃使用");
-      return 1;
-    }
-    await showSkillResult(context, "firstAid", true, "已掌握（医学解锁后同步获得）");
-    return 0;
-  });
+  // 急救与医疗是同一个技能；保留旧检定编号，兼容旧事件和旧测试。
+  registerDice("skill_first_aid", learnedSkillCheck("medicine"));
   registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
   registerDice("skill_talk", learnedSkillCheck("talk"));
   registerDice("ev016_strength_01", attrCheck("strength"));
