@@ -875,7 +875,7 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
 6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
 
-> 仓库自带一条音效验证链路：`data/audio.json` 的 `sfx_framework_test` / `sfx_framework_test_await` 两条临时条目（共用 `assets/audio/sfx-framework-test-tone.wav`：0.45 秒 440Hz 短音，8kHz 8bit 单声道），触发物 `sfx_test_spot_06` 在 6 号车厢、默认由旗标 `sfx_test_spot_visible` 隐藏，验收时在控制台执行 `game.state.flags.sfx_test_spot_visible = true; game.scene.refresh();` 再点击它（事件 `E_SFX_TEST` 依次演示两种播放：第一条不阻塞、与对话并行；第二条 `await: true`、等它播完才继续）。正式音效就位后，删除这两条音频条目、该物件与 `E_SFX_TEST` 即可整块移除。
+> `data/audio.json` 当前为空数组：注册表已就位、`sound` 动作与编译器校验都已可用，但项目尚无正式音效素材，未登记任何编号。正式音效到位后按上面第 1–2 步登记编号即可开始接线；在此之前剧情里的「（音效：…）」占位仍按转换规则登记为待办。
 
 ## 相关文档
 

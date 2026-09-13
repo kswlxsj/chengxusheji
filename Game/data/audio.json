@@ -1,16 +1,1 @@
-[
-  {
-    "id": "sfx_framework_test",
-    "name": "音效框架验证（不阻塞）",
-    "file": "assets/audio/sfx-framework-test-tone.wav",
-    "volume": 0.6,
-    "description": "临时验证条目：事件用 sound 动作触发，验证音效与对话并行播放。素材是 0.45 秒 440Hz 短音，验收后连同 sfx_test_spot_06 与 E_SFX_TEST 一起删除。"
-  },
-  {
-    "id": "sfx_framework_test_await",
-    "name": "音效框架验证（阻塞截断）",
-    "file": "assets/audio/sfx-framework-test-tone.wav",
-    "volume": 0.6,
-    "description": "临时验证条目：配合动作里的 duration 截断验证 await:true 的阻塞等待。与上一条共用同一个短音文件，验收后一并删除。"
-  }
-]
+[]
