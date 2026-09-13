@@ -3,14 +3,93 @@
 
   // 视为“命中”的最小不透明度（抗锯齿毛边不计入）。
   const HIT_ALPHA_THRESHOLD = 8;
+  const IMAGE_RESOURCE_TIMEOUT_MS = 15000;
+  const sceneScriptUrl = typeof document !== "undefined" && document.currentScript
+    ? document.currentScript.src
+    : null;
+  const hitMaskWorkerUrl = sceneScriptUrl
+    ? new URL("image-hit-worker.js", sceneScriptUrl).href
+    : null;
   const imageMetaCache = new Map();
   const readyImageCache = new Map();
+  const hitMaskWorkerTasks = new Map();
+  let hitMaskWorker = null;
+  let hitMaskWorkerSerial = 0;
+  let hitMaskWorkerUnavailable = false;
+
+  function withTimeout(promise, milliseconds, message) {
+    let handle = null;
+    const timeout = new Promise((resolve, reject) => {
+      handle = setTimeout(() => reject(new Error(message)), milliseconds);
+    });
+    return Promise.race([promise, timeout]).finally(() => {
+      if (handle !== null) clearTimeout(handle);
+    });
+  }
+
+  function getHitMaskWorker() {
+    if (hitMaskWorkerUnavailable || !hitMaskWorkerUrl || typeof Worker === "undefined") return null;
+    if (hitMaskWorker) return hitMaskWorker;
+    try {
+      const worker = new Worker(hitMaskWorkerUrl);
+      worker.addEventListener("message", (event) => {
+        const task = hitMaskWorkerTasks.get(event.data?.id);
+        if (!task) return;
+        hitMaskWorkerTasks.delete(event.data.id);
+        clearTimeout(task.timeout);
+        if (event.data.error) task.reject(new Error(event.data.error));
+        else {
+          task.resolve({
+            width: event.data.width,
+            height: event.data.height,
+            bbox: event.data.bbox,
+            mask: new Uint8Array(event.data.mask)
+          });
+        }
+      });
+      worker.addEventListener("error", (event) => {
+        const error = new Error(event.message || "命中区域 Worker 运行失败");
+        hitMaskWorkerUnavailable = true;
+        hitMaskWorker = null;
+        for (const task of hitMaskWorkerTasks.values()) {
+          clearTimeout(task.timeout);
+          task.reject(error);
+        }
+        hitMaskWorkerTasks.clear();
+        worker.terminate();
+      });
+      hitMaskWorker = worker;
+      return worker;
+    } catch (_error) {
+      hitMaskWorkerUnavailable = true;
+      return null;
+    }
+  }
+
+  function analyzeImageInWorker(src) {
+    const worker = getHitMaskWorker();
+    if (!worker) return Promise.resolve(null);
+    const resolvedSrc = new URL(src, document.baseURI).href;
+    return new Promise((resolve, reject) => {
+      const id = ++hitMaskWorkerSerial;
+      const timeout = setTimeout(() => {
+        hitMaskWorkerTasks.delete(id);
+        reject(new Error(`场景图片分析超时：${src}`));
+      }, IMAGE_RESOURCE_TIMEOUT_MS);
+      hitMaskWorkerTasks.set(id, { resolve, reject, timeout });
+      worker.postMessage({ id, src: resolvedSrc });
+    });
+  }
 
   function prepareImage(src) {
     if (!readyImageCache.has(src)) {
       const image = new Image();
       image.src = src;
-      const ready = image.decode().catch(() => {
+      const ready = withTimeout(
+        image.decode(),
+        IMAGE_RESOURCE_TIMEOUT_MS,
+        `场景图片加载超时：${src}`
+      ).catch(() => {
         readyImageCache.delete(src);
         throw new Error(`场景图片加载失败：${src}`);
       });
@@ -22,15 +101,57 @@
   // 读取并缓存整幅画布贴图（fullCanvas）的尺寸与不透明内容包围盒。
   function readImageMeta(src) {
     if (!imageMetaCache.has(src)) {
-      imageMetaCache.set(src, loadImageMeta(src));
+      const meta = loadImageMeta(src).catch((error) => {
+        console.warn("读取物件贴图信息失败：", src, error);
+        return null;
+      });
+      imageMetaCache.set(src, meta);
     }
     return imageMetaCache.get(src);
   }
 
-  function loadImageMeta(src) {
+  async function packAlphaMask(pixels) {
+    const { width, height, data } = pixels;
+    const mask = new Uint8Array(Math.ceil(width * height / 8));
+    let x0 = width;
+    let y0 = height;
+    let x1 = -1;
+    let y1 = -1;
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const pixelIndex = y * width + x;
+        if (data[pixelIndex * 4 + 3] <= HIT_ALPHA_THRESHOLD) continue;
+        mask[pixelIndex >> 3] |= 1 << (pixelIndex & 7);
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+      if ((y & 127) === 127) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+    return {
+      width,
+      height,
+      mask,
+      bbox: x1 >= x0 && y1 >= y0 ? { x0, y0, x1, y1 } : null
+    };
+  }
+
+  function loadImageMetaOnMainThread(src) {
     return new Promise((resolve) => {
       const image = new Image();
-      image.onload = () => {
+      let settled = false;
+      const timeout = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        resolve(null);
+      }, IMAGE_RESOURCE_TIMEOUT_MS);
+      image.onload = async () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
         try {
           const canvas = document.createElement("canvas");
           canvas.width = image.naturalWidth;
@@ -38,14 +159,17 @@
           const context = canvas.getContext("2d", { willReadFrequently: true });
           context.drawImage(image, 0, 0);
           const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-          const bbox = computeAlphaBBox(pixels);
-          resolve(bbox ? { width: canvas.width, height: canvas.height, pixels, bbox } : null);
+          const result = await packAlphaMask(pixels);
+          resolve(result.bbox ? result : null);
         } catch (error) {
           console.warn("读取物件贴图信息失败：", src, error);
           resolve(null);
         }
       };
       image.onerror = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
         console.warn("物件贴图加载失败：", src);
         resolve(null);
       };
@@ -53,23 +177,16 @@
     });
   }
 
-  function computeAlphaBBox(pixels) {
-    const { width, height, data } = pixels;
-    let x0 = width;
-    let y0 = height;
-    let x1 = -1;
-    let y1 = -1;
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width; x += 1) {
-        if (data[(y * width + x) * 4 + 3] > HIT_ALPHA_THRESHOLD) {
-          if (x < x0) x0 = x;
-          if (x > x1) x1 = x;
-          if (y < y0) y0 = y;
-          if (y > y1) y1 = y;
-        }
+  async function loadImageMeta(src) {
+    if (typeof document !== "undefined") {
+      try {
+        const workerMeta = await analyzeImageInWorker(src);
+        if (workerMeta) return workerMeta.bbox ? workerMeta : null;
+      } catch (error) {
+        console.warn("Worker 分析物件贴图失败，回退主线程：", src, error);
       }
     }
-    return x1 >= x0 && y1 >= y0 ? { x0, y0, x1, y1 } : null;
+    return loadImageMetaOnMainThread(src);
   }
 
   // 与 CSS object-fit: cover 一致（等比缩放填满容器、居中裁剪）的画布→容器映射。
@@ -127,7 +244,7 @@
       this.canvasObjects = [];
       this.hotEntry = null;
       this.ready = Promise.resolve();
-      this.root.addEventListener("pointermove", (event) => this.handlePointerMove(event));
+      this.root.addEventListener("pointermove", (event) => this.handlePointerMove(event), { passive: true });
       this.root.addEventListener("pointerleave", () => this.setHotEntry(null));
       this.root.addEventListener("click", (event) => this.handleCanvasClick(event));
       this.root.addEventListener("focusin", (event) => this.handleCanvasFocus(event, true));
@@ -150,8 +267,8 @@
       const tasks = [prepareImage(variant?.image || scene.background)];
       for (const object of scene.objects || []) {
         if (object.invisible || !evaluateCondition(object.visibleWhen, this.state)) continue;
-        tasks.push(prepareImage(object.image));
-        if (object.fullCanvas) tasks.push(readImageMeta(object.image));
+        const needsAlphaMask = object.fullCanvas && !object.visualOnly && !object.hitPosition;
+        tasks.push(needsAlphaMask ? readImageMeta(object.image) : prepareImage(object.image));
       }
       await Promise.all(tasks);
     }
@@ -180,6 +297,7 @@
       this.root.replaceChildren();
       const background = document.createElement("img");
       background.className = "scene-background";
+      background.decoding = "async";
       const backgroundVariant = (scene.backgroundVariants || [])
         .find((variant) => evaluateCondition(variant.visibleWhen, this.state));
       background.src = backgroundVariant?.image || scene.background;
@@ -211,6 +329,7 @@
           const image = document.createElement("img");
           image.src = object.image;
           image.alt = "";
+          image.decoding = "async";
           button.append(image);
         }
         button.addEventListener("click", () => {
@@ -223,7 +342,11 @@
 
       document.querySelector("#scene-name").textContent = scene.name;
       // 预加载解码后，新建 DOM 图片仍可能尚未完成自身的加载任务。
-      this.ready = Promise.all([...this.root.querySelectorAll("img")].map(image => image.decode()));
+      this.ready = withTimeout(
+        Promise.all([...this.root.querySelectorAll("img")].map(image => image.decode())),
+        IMAGE_RESOURCE_TIMEOUT_MS,
+        `场景渲染图片加载超时：${scene.id}`
+      );
       // 同步 load/refresh 的调用者不一定等待；事件路径通过 whenReady 接收失败并回滚。
       this.ready.catch(() => {});
     }
@@ -237,6 +360,7 @@
       if (object.glow || (object.glowWhen && evaluateCondition(object.glowWhen, this.state))) art.classList.add("is-glow");
       art.src = object.image;
       art.alt = "";
+      art.decoding = "async";
       art.style.zIndex = String(object.zIndex || 10);
       this.root.append(art);
 
@@ -262,12 +386,14 @@
         this.placeHitButton(entry);
         button.style.pointerEvents = "";
       }
-      readImageMeta(object.image).then((meta) => {
-        if (!meta || !button.isConnected) return;
-        entry.meta = meta;
-        this.placeHitButton(entry);
-        button.style.pointerEvents = "";
-      });
+      if (!object.hitPosition) {
+        readImageMeta(object.image).then((meta) => {
+          if (!meta || !button.isConnected) return;
+          entry.meta = meta;
+          this.placeHitButton(entry);
+          button.style.pointerEvents = "";
+        }).catch((error) => console.warn("物件命中区域准备失败：", object.image, error));
+      }
     }
 
     placeHitButton(entry) {
@@ -403,7 +529,8 @@
       const yi = Math.floor(canvasY);
       const { bbox } = meta;
       if (xi < bbox.x0 || xi > bbox.x1 || yi < bbox.y0 || yi > bbox.y1) return false;
-      return meta.pixels.data[(yi * meta.width + xi) * 4 + 3] > HIT_ALPHA_THRESHOLD;
+      const pixelIndex = yi * meta.width + xi;
+      return (meta.mask[pixelIndex >> 3] & (1 << (pixelIndex & 7))) !== 0;
     }
   }
 

@@ -467,12 +467,14 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .scene-object-art.is-glow {
+  filter: drop-shadow(0 0 3px rgba(255, 239, 174, .78)) drop-shadow(0 0 8px rgba(255, 193, 83, .58));
   animation: scene-object-art-glow 1.2s ease-in-out infinite;
+  will-change: opacity;
 }
 
 @keyframes scene-object-art-glow {
-  0%, 100% { filter: drop-shadow(0 0 3px rgba(255, 239, 174, .78)) drop-shadow(0 0 8px rgba(255, 193, 83, .58)); }
-  50% { filter: drop-shadow(0 0 7px rgba(255, 247, 195, 1)) drop-shadow(0 0 17px rgba(255, 193, 83, .96)); }
+  0%, 100% { opacity: .88; }
+  50% { opacity: 1; }
 }
 
 .scene-object-art.is-hot,
@@ -695,9 +697,8 @@ body.home-op-active .home-page .auth-user-status {
   left: 4%;
   right: 4%;
   bottom: 2%;
-  min-height: 25%;
-  aspect-ratio: 44 / 7;
-  padding: 22px 58px 48px;
+  min-height: 26%;
+  padding: 24px 58px 70px;
   border: 0;
   background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
   box-shadow: none;
@@ -705,8 +706,15 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .dialog-speaker { min-height: 1.5em; color: var(--accent); font-weight: 700; }
-.dialog-text { margin: 9px 0 0; font-size: clamp(17px, 1.7vw, 25px); line-height: 1.65; }
-.dialog-hint { position: absolute; right: 58px; bottom: 24px; opacity: .65; font-size: 13px; }
+.dialog-text {
+  margin: 4px 0 0;
+  font-size: clamp(17px, 1.7vw, 25px);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+.dialog-character { visibility: hidden; }
+.dialog-character.is-visible { visibility: visible; }
+.dialog-hint { position: absolute; right: 58px; bottom: 28px; opacity: .65; font-size: 13px; }
 
 /* 玩家快速连点推进对白时，浏览器会把连点识别成双击/三击而选中
    对话框文本与说话人标题，观感很差；此处统一禁止对话框内的文本选中。 */
@@ -719,7 +727,7 @@ body.home-op-active .home-page .auth-user-status {
 .window-controls {
   position: absolute;
   left: 58px;
-  bottom: 24px;
+  bottom: 28px;
   display: flex;
   gap: 6px;
 }
@@ -1193,6 +1201,7 @@ body.home-op-active .home-page .auth-user-status {
 
 .mg-tug-target {
   z-index: 2;
+  translate: none;
   height: 11%;
   display: grid;
   place-items: center;
@@ -1698,9 +1707,8 @@ body.home-op-active .home-page .auth-user-status {
   left: 4%;
   right: 4%;
   bottom: 2%;
-  min-height: 25%;
-  aspect-ratio: 44 / 7;
-  padding: 30px 58px 48px;
+  min-height: 26%;
+  padding: 24px 58px 70px;
   opacity: 0;
   border: 0;
   background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
@@ -1719,7 +1727,7 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .san-zero-line {
-  margin: 9px 0 0;
+  margin: 4px 0 0;
   font-size: clamp(17px, 1.7vw, 25px);
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -1728,7 +1736,7 @@ body.home-op-active .home-page .auth-user-status {
 .san-zero-hint {
   position: absolute;
   right: 58px;
-  bottom: 24px;
+  bottom: 28px;
   opacity: .62;
   font-size: clamp(11px, 1vw, 13px);
 }
@@ -1833,11 +1841,11 @@ body.home-op-active .home-page .auth-user-status {
   .slot-actions button { flex: 1; text-align: center; }
   .horizontal-actions { grid-template-columns: 1fr; }
   .auth-page { aspect-ratio: auto; min-height: 100vh; }
-  .dialog-window { padding: 20px 28px 40px; }
+  .dialog-window { padding: 24px 28px 64px; }
   .dialog-hint,
-  .san-zero-hint { right: 28px; bottom: 14px; }
-  .window-controls { left: 28px; bottom: 14px; }
-  .san-zero-dialogue { min-height: 0; padding: 18px 28px 34px; }
+  .san-zero-hint { right: 28px; bottom: 20px; }
+  .window-controls { left: 28px; bottom: 20px; }
+  .san-zero-dialogue { min-height: 0; padding: 24px 28px 64px; }
   .san-zero-line { font-size: clamp(15px, 4vw, 19px); }
   .san-zero-portrait.is-doctor { left: 0; height: 58%; }
   .san-zero-portrait.is-pc { left: 0; height: 45%; }

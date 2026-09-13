@@ -155,7 +155,10 @@
     document.body.append(audio);
     play();
 
-    window.addEventListener("pagehide", () => persist(true));
+    window.addEventListener("pagehide", () => {
+      if (audio) audio.pause();
+      persist(true);
+    });
     window.addEventListener("pageshow", play);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") persist(true);

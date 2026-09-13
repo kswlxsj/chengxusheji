@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=dialog-box-20260912-1">
+  <link rel="stylesheet" href="styles/main.css?v=dialog-performance-20260913-1">
   <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
@@ -56,7 +56,7 @@
   <!-- CODEX ADD END -->
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js?v=e020-tools-return-20260913-7"></script>
+  <script src="data/compiled-game-data.js?v=carriage-06-guide-20260913-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
@@ -65,13 +65,13 @@
   <script src="src/state.js?v=local-ui-flow-20260912-3"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
-  <script src="src/ui.js?v=script-cues-20260912-1"></script>
+  <script src="src/ui.js?v=dialog-performance-20260913-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
   
-  <script src="src/scene.js?v=e018-phone-occlusion-20260913-5"></script>
+  <script src="src/scene.js?v=scene-alpha-fast-20260913-1"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
-  <script src="src/events.js?v=san-zero-20260912-1"></script>
+  <script src="src/events.js?v=resource-wait-20260913-3"></script>
   <!-- TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
   
   <script src="src/dice.js?v=dice-animation-20260912-1"></script>
@@ -80,7 +80,7 @@
   <script src="src/custom-actions.js"></script>
   <!-- TrainGame.registerProjectActions，用于向事件引擎注册项目自定义动作。 -->
 
-  <script src="src/san-zero-sequence.js?v=san-zero-20260912-1"></script>
+  <script src="src/san-zero-sequence.js?v=san-zero-load-timeout-20260913-2"></script>
   <!-- SAN 归零后的记者采访与 PC 失控演出。 -->
   
   <script src="src/minigames.js"></script>
@@ -101,7 +101,7 @@
   <script src="src/minigame-games/conductor-tug.js?v=conductor-tug-20260912-1"></script>
   <!-- 终局控制杆争夺小游戏：进入先头车厢后触发，抓握区大小读取里世界交钥匙历史。 -->
 
-  <script src="src/main.js?v=inner-world-san-zero-20260912-1"></script>
+  <script src="src/main.js?v=dialogue-flow-20260913-5"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

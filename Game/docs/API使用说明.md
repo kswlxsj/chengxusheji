@@ -186,7 +186,7 @@
 
 | `type` | 必填字段 | 可选字段 | 行为 |
 | --- | --- | --- | --- |
-| `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。 |
+| `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
 | `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
@@ -620,7 +620,7 @@ class NoticeWindow extends TrainGame.GameWindow {
 
 | 接口 | 用法 |
 | --- | --- |
-| `ui.dialog.showLine(action)` | 显示对话并等待推进。 |
+| `ui.dialog.showLine(action)` | 显示一句对话并等待推进；事件引擎会先把 `dialogue.text` 拆成单句再逐次调用。 |
 | `handleAdvance()` / `isAwaitingAdvance()` | 补全或结束本句 / 判断能否推进。 |
 | `ui.attributeAllocation.choose(definitions, totalPoints)` | 返回属性对象或 `null`。 |
 | `ui.choice.choose(prompt, options)` | 返回选项对象或 `null`。 |

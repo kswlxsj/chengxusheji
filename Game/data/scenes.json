@@ -70,19 +70,7 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_005",
-        "visibleWhen": {
-          "all": [
-            {
-              "flag": "note_back_seen",
-              "equals": true
-            },
-            {
-              "flag": "map_seen",
-              "equals": true
-            }
-          ]
-        }
+        "clickEvent": "E_005"
       },
       {
         "id": "door_06_to_05",
@@ -188,7 +176,7 @@
   {
     "id": "carriage_07",
     "name": "7 号车厢",
-    "background": "assets/carriage-07.png",
+    "background": "assets/carriage-07.jpg",
     "objects": [
       {
         "id": "radio_07",
@@ -668,38 +656,6 @@
               "not": {
                 "flag": "clicker_cleared",
                 "equals": true
-              }
-            }
-          ]
-        }
-      },
-      {
-        "id": "bottle_02",
-        "name": "地上的空瓶子",
-        "image": "assets/bottle-inner.png",
-        "position": {
-          "x": 42,
-          "y": 72,
-          "width": 10,
-          "height": 14
-        },
-        "zIndex": 13,
-        "clickEvent": "E_028_PICK_BOTTLE",
-        "visibleWhen": {
-          "all": [
-            {
-              "flag": "bottle_02_available",
-              "equals": true
-            },
-            {
-              "not": {
-                "flag": "bottle_02_taken",
-                "equals": true
-              }
-            },
-            {
-              "not": {
-                "hasItem": "bottle"
               }
             }
           ]

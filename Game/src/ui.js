@@ -39,11 +39,18 @@
       this.index = 0;
       this.text = "";
       this.speed = 28;
+      this.lastProgressAt = 0;
       this.resolve = null;
+      this.characterElements = null;
       this.tick = () => {
         if (this.paused || !this.running) return;
+        const character = this.characterElements?.[this.index];
+        if (character) character.classList.add("is-visible");
         this.index += 1;
-        this.element.textContent = this.text.slice(0, this.index);
+        this.lastProgressAt = performance.now();
+        if (!this.characterElements) {
+          this.element.textContent = this.text.slice(0, this.index);
+        }
         if (this.index >= this.text.length) {
           this.complete();
           return;
@@ -52,12 +59,36 @@
       };
     }
 
+    renderText() {
+      if (
+        typeof document === "undefined"
+        || typeof this.element.replaceChildren !== "function"
+      ) {
+        this.characterElements = null;
+        this.element.textContent = "";
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      const characters = [];
+      for (const character of this.text) {
+        const span = document.createElement("span");
+        span.className = "dialog-character";
+        span.textContent = character;
+        fragment.append(span);
+        characters.push(span);
+      }
+      this.characterElements = characters;
+      this.element.replaceChildren(fragment);
+    }
+
     play(text, speed = 28) {
       this.cancel();
       this.text = String(text);
       this.speed = speed;
       this.index = 0;
-      this.element.textContent = "";
+      this.lastProgressAt = performance.now();
+      this.renderText();
       this.running = true;
 
       return new Promise((resolve) => {
@@ -69,7 +100,11 @@
 
     finish() {
       if (!this.running) return;
-      this.element.textContent = this.text;
+      if (this.characterElements) {
+        for (const character of this.characterElements) character.classList.add("is-visible");
+      } else {
+        this.element.textContent = this.text;
+      }
       this.index = this.text.length;
       this.complete();
     }
@@ -79,7 +114,21 @@
       this.paused = value;
       clearTimeout(this.timer);
       this.timer = null;
-      if (!value && this.running) this.timer = setTimeout(this.tick, this.speed);
+      if (!value && this.running) {
+        this.lastProgressAt = performance.now();
+        this.timer = setTimeout(this.tick, this.speed);
+      }
+    }
+
+    ensureRunning() {
+      if (!this.running || this.paused || this.index >= this.text.length) return;
+      const stalledFor = performance.now() - this.lastProgressAt;
+      const staleAfter = Math.max(1000, this.speed * 4);
+      if (this.timer === null || stalledFor >= staleAfter) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.tick, this.speed);
+        this.lastProgressAt = performance.now();
+      }
     }
 
     complete() {
@@ -133,6 +182,15 @@
       controls.append(this.autoButton, this.fastButton, skipButton);
       this.element.append(this.speaker, this.text, controls, this.hint);
       this.element.addEventListener("click", () => this.handleAdvance());
+      // 对白等待期间，点击 HUD、残留遮罩或游戏舞台也应推进；
+      // 控件区仍由各自按钮处理，避免自动、快进和跳过被重复触发。
+      document.addEventListener("click", (event) => {
+        if (!this.isAwaitingAdvance() || this.paused) return;
+        const target = event.target;
+        if (target instanceof Element && target.closest(".dialog-window")) return;
+        this.handleAdvance();
+      }, true);
+      setInterval(() => this.ensureActive(), 500);
     }
 
     makeToggle(label, callback) {
@@ -177,6 +235,22 @@
 
     isAwaitingAdvance() {
       return this.element.isConnected && (this.player.running || Boolean(this.advance));
+    }
+
+    ensureActive() {
+      if (!this.element.isConnected) return;
+      if (this.paused) {
+        const pauseInterface = document.querySelector(
+          ".pause-menu-window, .menu-backdrop, .san-zero-sequence, #codex-ending-overlay:not([hidden])"
+        );
+        if (pauseInterface) return;
+        this.paused = false;
+        this.player.setPaused(false);
+      }
+      this.player.ensureRunning();
+      if (this.advance && (this.auto || this.fast) && this.autoTimer === null) {
+        this.scheduleAdvance();
+      }
     }
 
     handleAdvance() {

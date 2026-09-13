@@ -28,6 +28,9 @@ const sandbox = {
   TypeError,
   RangeError,
   Error,
+  performance,
+  setTimeout,
+  clearTimeout,
   localStorage,
   sessionStorage,
   window: { localStorage, sessionStorage }
@@ -208,6 +211,36 @@ assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1
 const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
 const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
 const registeredItems = JSON.parse(await readFile("data/items.json", "utf8"));
+const registeredScenes = JSON.parse(await readFile("data/scenes.json", "utf8"));
+const registeredEvents = JSON.parse(await readFile("data/events.json", "utf8"));
+const registeredEventsById = new Map(registeredEvents.map((event) => [event.id, event]));
+const carriage05 = registeredScenes.find((scene) => scene.id === "carriage_05");
+assert.equal(
+  carriage05.objects.find((object) => object.id === "door_05_to_04").clickEvent,
+  "E_GO_05_04",
+  "5号车厢通往4号车厢的门应先执行普通过门事件"
+);
+assert.deepEqual(
+  registeredEventsById.get("E_013_ENTRY").actions[0],
+  { type: "changeScene", scene: "carriage_04" },
+  "E_013_ENTRY 应负责进入4号车厢"
+);
+for (const eventId of ["E_010_F", "E_010_JOIN", "E_011_S", "E_011_F", "E_012_AFTER"]) {
+  assert.equal(
+    registeredEventsById.get(eventId).next,
+    "E_013_ENTRY",
+    `${eventId} 应通过 E_013_ENTRY 进入4号车厢`
+  );
+}
+assert.deepEqual(
+  registeredEventsById.get("E_022_ITEM").actions[0],
+  {
+    type: "conditionalJump",
+    when: { hasItem: "flashlight" },
+    next: "E_022_ITEM_END"
+  },
+  "已从5号车厢工具背包获得手电筒时，E_022_ITEM 不应重复发放"
+);
 const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 assert.equal(registeredState.getSkill("talk"), false);
 assert.equal(registeredState.getSkill("stealth"), false);
@@ -266,6 +299,38 @@ function createEngineScene() {
     setInteractionEnabled: () => {}
   };
 }
+
+// 对话动作按句拆分：同一段文本必须逐句等待玩家推进，不能挤进一个对话框。
+const dialogueCalls = [];
+const dialogueEngine = new Game.EventEngine({
+  events: [{
+    id: "E_DIALOGUE_SPLIT",
+    actions: [{
+      type: "dialogue",
+      speaker: "测试说话人",
+      speed: 12,
+      text: "第一句。她说：“第二句？”真的吗？！\n\n第三段没有句号"
+    }]
+  }],
+  state: createState(),
+  items: [],
+  scene: createEngineScene(),
+  ui: {
+    ...createEngineUi(),
+    dialog: {
+      showLine: async (action) => { dialogueCalls.push(action); },
+      setFast: () => {}
+    }
+  }
+});
+await dialogueEngine.play("E_DIALOGUE_SPLIT");
+assert.deepEqual(
+  dialogueCalls.map((action) => action.text),
+  ["第一句。", "她说：“第二句？”", "真的吗？！", "第三段没有句号"],
+  "对话动作应按句末标点和空行拆成多个对话框"
+);
+assert.equal(dialogueCalls.every((action) => action.speaker === "测试说话人"), true);
+assert.equal(dialogueCalls.every((action) => action.speed === 12), true);
 
 const originalRandom = sandbox.Math.random;
 

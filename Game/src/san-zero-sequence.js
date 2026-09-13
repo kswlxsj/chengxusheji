@@ -13,6 +13,7 @@
   const SCREAM_TEXT =
     "我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死" +
     "我不想死我不想死我不想死我不想死我不想死我不想死——";
+  const IMAGE_LOAD_TIMEOUT_MS = 12000;
 
   function createElement(tagName, className, textContent = "") {
     const element = document.createElement(tagName);
@@ -22,9 +23,18 @@
   }
 
   function waitForImage(image) {
-    if (image.complete && image.naturalWidth > 0) return Promise.resolve();
+    if (image.complete) return Promise.resolve();
     return new Promise((resolve) => {
-      const finish = () => resolve();
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        image.removeEventListener("load", finish);
+        image.removeEventListener("error", finish);
+        resolve();
+      };
+      const timeout = setTimeout(finish, IMAGE_LOAD_TIMEOUT_MS);
       image.addEventListener("load", finish, { once: true });
       image.addEventListener("error", finish, { once: true });
     });
@@ -93,10 +103,15 @@
     }
 
     async run() {
-      await this.preload();
       this.root.append(this.overlay);
+      this.speaker.hidden = true;
+      this.line.textContent = "正在载入……";
+      this.dialogue.classList.add("is-visible");
+      this.overlay.classList.add("is-visible", "is-loading");
+      await this.preload();
+      this.overlay.classList.remove("is-loading");
+      this.dialogue.classList.remove("is-visible");
       this.setBackground("broadcast", true);
-      requestAnimationFrame(() => this.overlay.classList.add("is-visible"));
       await this.delay(500);
 
       const beats = [

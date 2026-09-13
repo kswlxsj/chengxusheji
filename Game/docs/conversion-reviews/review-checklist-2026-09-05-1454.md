@@ -163,7 +163,7 @@
   - [ ] 沿用（`assets/carriage-07.svg`）
   - [ ] 新建：文件名 ____、内容/风格 ____
   - [ ] 本行暂缓，影响 = ____
-- 备注：本次用`assets/carriage-07.png`，我已放入
+- 备注：本次用`assets/carriage-07.jpg`，我已放入
 
 ### M2 "尸体"调查点物件（点击 → E-007）
 
@@ -247,7 +247,7 @@
 | Q6 | E-006、E-008 | F | （场景：抖动）（音效：惊悚凌厉）（场景：一半变黑）纯指令不入 JSON；（主角表情：惊恐）行随未转录分支处理 | 登记框架缺口（建议：跳过，交框架组/人工） | 无 | 同意（跳过） | 已登记（2026-09-05，待框架/人工） |
 | Q7 | 场景层（E-005~E-008 入口） | H | 入口：carriage_06.door_06 clickEvent E_DOOR→E_005；carriage_07 新增物件 corpse_07（→E_007）、deep_07（→E_008）；坐标=占位数值待美术精调，zIndex 未猜 | 场景物件新增/门改接线（闸门 2 已逐处确认）；重复调查等触发规则后续如需再加旗标 | data/scenes.json | 同意（方向） | 已落地（2026-09-05） |
 | Q8 | 与既有数据重叠区 | O | 既有 E_CHECK_C07_ADVANCE_INSIGHT / CORPSE_SAN / CORPSE_WARNED_SAN / CORPSE_MEDICINE / MOUTH_SCOUTING / MOUTH_SAN 及 *_SUCCESS / *_FAIL 等与本批覆盖同段剧情 | 落地阶段关系处置（保留共存/替换/清理）；不自动删改既有条目 | data/events.json | 同意（保留共存，未删旧区段） | 已落地（2026-09-05，零删除） |
-| M1 | E-006 场景切换 | E | E_006A / E_006B changeScene → carriage_07；scenes.json carriage_07.background → assets/carriage-07.png | background 已替换为用户放入的 assets/carriage-07.png | data/scenes.json | 新建（assets/carriage-07.png，已放入） | 已落地（2026-09-05） |
+| M1 | E-006 场景切换 | E | E_006A / E_006B changeScene → carriage_07；scenes.json carriage_07.background → assets/carriage-07.jpg | background 已替换为用户放入的 assets/carriage-07.jpg | data/scenes.json | 新建（assets/carriage-07.jpg，已放入） | 已落地（2026-09-05） |
 | M2 | E-007 入口 | E | carriage_07 objects 新增 corpse_07（name 尸体，clickEvent→E_007）；image assets/corpse-07.svg（占位名） | 物件条目登记（image 引用 + 占位坐标）；素材文件需人工放置 assets/ | data/scenes.json | 新建占位符（无需细致惊悚） | 已落地（2026-09-05，引用登记；占位文件待放 assets/） |
 | M3 | E-008 入口 | E | carriage_07 objects 新增 deep_07（name 车厢深处，clickEvent→E_008）；image assets/deep-07.svg（占位名） | 物件条目登记（image 引用 + 占位坐标）；素材文件需人工放置 assets/ | data/scenes.json | 新建（占位即可） | 已落地（2026-09-05，引用登记；占位文件待放 assets/） |
 | M4 | E-005 入口 | E | carriage_06 door_06 clickEvent E_DOOR → E_005（改既有条目） | 门接线改动（沿用 assets/door.svg） | data/scenes.json | 沿用（door.svg） | 已落地（2026-09-05） |

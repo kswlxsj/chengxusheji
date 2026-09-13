@@ -40,6 +40,51 @@
 
   // 小游戏结算动作列表的长度上限，防止模块返回无界列表拖垮事件链。
   const MINIGAME_SETTLEMENT_LIMIT = 100;
+  const SCENE_RESOURCE_TIMEOUT_MS = 20000;
+  const DIALOGUE_TERMINATORS = new Set(["。", "！", "？", "!", "?"]);
+  const DIALOGUE_TRAILING_MARKS = new Set([
+    "\"", "'", "”", "’", "」", "』", "】", "）", ")", "》", "〉", "›", "»"
+  ]);
+
+  // 一句话只占一个对话框：保留句末标点和尾随引号，空白行也作为分段边界。
+  function splitDialogueText(value) {
+    const text = String(value ?? "");
+    const paragraphs = text.split(/\r?\n[ \t]*\r?\n/);
+    const lines = [];
+
+    for (const paragraph of paragraphs) {
+      const normalized = paragraph.replace(/\s*\r?\n\s*/g, " ").trim();
+      if (!normalized) continue;
+
+      let start = 0;
+      for (let index = 0; index < normalized.length;) {
+        if (!DIALOGUE_TERMINATORS.has(normalized[index])) {
+          index += 1;
+          continue;
+        }
+
+        index += 1;
+        while (
+          index < normalized.length
+          && (
+            DIALOGUE_TERMINATORS.has(normalized[index])
+            || DIALOGUE_TRAILING_MARKS.has(normalized[index])
+          )
+        ) {
+          index += 1;
+        }
+
+        const line = normalized.slice(start, index).trim();
+        if (line) lines.push(line);
+        start = index;
+      }
+
+      const line = normalized.slice(start).trim();
+      if (line) lines.push(line);
+    }
+
+    return lines.length ? lines : [text];
+  }
 
   class EventEngine {
     constructor({
@@ -61,6 +106,7 @@
       this.customActions = new Registry("自定义动作");
       this.busy = false;
       this.paused = false;
+      this.waitReason = null;
       this.activeRun = null;
       this.runSerial = 0;
       this.pauseWaiters = new Set();
@@ -85,9 +131,14 @@
     registerBuiltIns() {
       this.registerAction("dialogue", async (action) => {
         const run = this.activeRun;
-        await this.waitFor(this.scene.whenReady(), run);
+        await this.waitFor(this.scene.whenReady(), run, {
+          timeoutMs: SCENE_RESOURCE_TIMEOUT_MS,
+          label: "场景图片"
+        });
         await this.waitWhilePaused(run);
-        await this.ui.dialog.showLine(action);
+        for (const text of splitDialogueText(action.text)) {
+          await this.ui.dialog.showLine({ ...action, text });
+        }
       });
 
       this.registerAction("inspect", async (action) => {
@@ -298,26 +349,45 @@
 
     async loadScene(sceneId) {
       const run = this.activeRun;
-      await this.waitFor(this.scene.prepare(sceneId), run);
+      await this.waitFor(this.scene.prepare(sceneId), run, {
+        timeoutMs: SCENE_RESOURCE_TIMEOUT_MS,
+        label: "场景资源"
+      });
       await this.waitWhilePaused(run);
       this.scene.load(sceneId);
-      await this.waitFor(this.scene.whenReady(), run);
+      await this.waitFor(this.scene.whenReady(), run, {
+        timeoutMs: SCENE_RESOURCE_TIMEOUT_MS,
+        label: "场景图片"
+      });
       await this.waitWhilePaused(run);
     }
 
     // 图片加载本身不能取消，但取消事件必须立即结束等待，且不提交迟到的画面。
-    async waitFor(promise, run = this.activeRun) {
+    async waitFor(promise, run = this.activeRun, options = {}) {
       this.assertActive(run);
+      const timeoutMs = Math.max(0, Number(options.timeoutMs) || 0);
+      const label = options.label || "资源";
+      const previousWaitReason = this.waitReason;
+      this.waitReason = label;
       let pending;
+      let timeoutHandle = null;
       const cancelled = new Promise((resolve, reject) => {
         pending = { run, reject };
         this.pendingWaits.add(pending);
       });
+      const waits = [promise, cancelled];
+      if (timeoutMs > 0) {
+        waits.push(new Promise((resolve, reject) => {
+          timeoutHandle = setTimeout(() => reject(new Error(`${label}加载超时`)), timeoutMs);
+        }));
+      }
       try {
-        const result = await Promise.race([promise, cancelled]);
+        const result = await Promise.race(waits);
         this.assertActive(run);
         return result;
       } finally {
+        if (timeoutHandle !== null) clearTimeout(timeoutHandle);
+        if (this.waitReason === label) this.waitReason = previousWaitReason;
         this.pendingWaits.delete(pending);
       }
     }

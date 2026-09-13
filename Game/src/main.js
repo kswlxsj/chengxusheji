@@ -43,9 +43,6 @@
       }
       showEndingOverlay(reason);
       // CODEX ADD END
-    },
-    onCheckCompleted: (action) => {
-      if (action.offerScouting === true) return handleScoutingCheckCompleted();
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -61,11 +58,8 @@
   let activeSlot = requestedSlot;
   const autosavedCarriagesFlag = "autosaved_carriages";
   let autosavedCarriageIds = new Set();
-  const scoutingPrerequisiteChecks = [
-    "ev001_insight_01",
-    "ev004_insight_01",
-    "ev005_insight_01"
-  ];
+  const scoutingClickTarget = 3;
+  const scoutingClickFlag = "scouting_click_count";
   let scoutingOfferTask = null;
 
   // CODEX ADD START
@@ -177,7 +171,7 @@
     pauseButton.disabled = startupLocked || ui.minigame.isOpen();
     updateInventoryBar();
     maybeTriggerE009();
-    maybeTriggerScoutingGuide();
+    maybeTriggerCarriage06Guide();
     maybeOfferScouting();
     autoSaveOnNewCarriage();
   }
@@ -226,20 +220,16 @@
     void engine.play("E_009");
   }
 
-  function hasCompletedScoutingPrerequisites() {
-    return scoutingPrerequisiteChecks.every((diceId) => Object.hasOwn(state.checkResults, diceId));
-  }
-
-  function canOfferScouting() {
-    return state.getAttribute("agility") + state.getAttribute("strength") > 13
-      && hasCompletedScoutingPrerequisites();
+  function scoutingClickCount() {
+    const value = state.flags[scoutingClickFlag];
+    return Number.isInteger(value) && value > 0 ? value : 0;
   }
 
   function scoutingOfferAvailable() {
     return !state.getSkill("scouting")
       && state.flags.scouting_offer_shown !== true
       && !scoutingOfferTask
-      && canOfferScouting();
+      && scoutingClickCount() >= scoutingClickTarget;
   }
 
   function markScoutingOfferShown() {
@@ -257,23 +247,43 @@
     });
     if (choice !== true || state.getSkill("scouting")) return false;
     state.learnSkill("scouting");
-    state.flags.carriage_06_guide_pending = true;
     engine.adoptStableState();
     return true;
   }
 
-  async function handleScoutingCheckCompleted() {
-    if (!canOfferScouting()) return;
-    await offerScouting();
+  function recordScoutingClick(event) {
+    if (
+      event.detail === 0
+      || startupLocked
+      || paused
+      || engine.busy
+      || ui.dialog.element.isConnected
+      || ui.minigame.isOpen()
+      || state.getSkill("scouting")
+      || state.flags.scouting_offer_shown === true
+      || scoutingOfferTask
+    ) return;
+
+    const currentCount = scoutingClickCount();
+    const nextCount = Math.min(currentCount + 1, scoutingClickTarget);
+    if (nextCount === currentCount) return;
+    state.flags[scoutingClickFlag] = nextCount;
+    engine.adoptStableState();
+    if (nextCount >= scoutingClickTarget) queueMicrotask(maybeOfferScouting);
   }
 
-  function maybeTriggerScoutingGuide() {
+  function hasInvestigatedAllCarriage06Items() {
+    return state.flags.note_back_seen === true
+      && state.flags.map_seen === true;
+  }
+
+  function maybeTriggerCarriage06Guide() {
     if (
       startupLocked
       || paused
       || engine.busy
       || state.sceneId !== "carriage_06"
-      || state.flags.carriage_06_guide_pending !== true
+      || !hasInvestigatedAllCarriage06Items()
       || state.flags.carriage_06_guide_seen === true
     ) return;
     void engine.play("E_005_GUIDE");
@@ -433,7 +443,10 @@
     engine.setPaused(true);
     scene.setInteractionEnabled(false);
     updateHud();
-    pauseTask = runPauseMenu().finally(() => { pauseTask = null; });
+    pauseTask = runPauseMenu().catch((error) => {
+      console.error("暂停菜单运行失败，已自动恢复游戏：", error);
+      resumeGame();
+    }).finally(() => { pauseTask = null; });
   }
 
   async function showStartupError(message, destination = "saveManager") {
@@ -558,6 +571,7 @@
       if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
     }
   });
+  sceneRoot.addEventListener("click", recordScoutingClick, { capture: true });
 
   scene.load(data.meta.initialScene);
   scene.setInteractionEnabled(false);
@@ -565,5 +579,13 @@
   void initialize();
 
   // 便于组员在浏览器控制台调试，不作为剧情 JSON 的公共接口。
-  window.game = { state, ui, scene, engine, saves, pauseGame, resumeGame };
+  window.game = {
+    state,
+    ui,
+    scene,
+    engine,
+    saves,
+    pauseGame,
+    resumeGame
+  };
 })(window.TrainGame, window.GAME_DATA);

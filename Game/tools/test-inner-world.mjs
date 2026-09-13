@@ -41,9 +41,23 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
 // 门禁与啃食标签分两拍：踏入空车厢当场带上啃食标签（此时门禁未上锁，回3号后还能再进）；
 // 到过伪4才算正式进过里世界，此后推门直接走主线 E_DOOR_03。
 let game = fixture();
+await game.play("E_023");
+assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
+
+game = fixture();
 await game.play("E_501");
-assert.equal(game.trace[0].scene, "carriage_03");
-assert.equal(game.trace[1].scene, "carriage_inner_01");
+const innerSceneIndex = game.trace.findIndex((entry) => entry.scene === "carriage_inner_01");
+assert.ok(innerSceneIndex > 0, "进入里世界后应播放目的地描写");
+assert.equal(
+  game.trace.slice(0, innerSceneIndex).every((entry) => entry.scene === "carriage_03"),
+  true,
+  "推门文字应仍属于出发场景"
+);
+assert.equal(
+  game.trace.slice(innerSceneIndex).every((entry) => entry.scene === "carriage_inner_01"),
+  true,
+  "里世界描写开始后应已处于目的地场景"
+);
 assert.equal(game.state.flags.carriage_06_eaten, true);
 assert.ok(!game.state.flags.inner_world_entered);
 await game.play("E_501");
@@ -233,16 +247,47 @@ assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/carriage-06-eaten.png", import.meta.url))).size > 0);
 const e028 = events.find(e => e.id === "E_028");
-assert.equal(e028.actions.some(a => a.type === "changeScene" && a.scene === "carriage_02"), true);
+assert.deepEqual(
+  e028.actions[0],
+  {
+    type: "conditionalJump",
+    when: { hasItem: "bottle" },
+    next: "E_028_HAS_BOTTLE"
+  },
+  "已有瓶子时应直接进入通过方式选择"
+);
+assert.equal(e028.actions.some(a => a.type === "addItem" && a.item === "bottle"), true);
+assert.equal(e028.actions.some(a => a.type === "learnSkill" && a.skill === "throwing"), true);
 assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负责瓶子与投掷，不得进入小游戏");
+assert.equal(events.find(e => e.id === "E_028_THROW_FIRST").actions.some(a => a.type === "removeItem" && a.item === "bottle"), true);
+game = fixture({}, [], "carriage_02");
+game.ui.choice.choose = async () => null;
+await game.play("E_028");
+assert.equal(game.state.inventory.includes("bottle"), true, "E-028 应在进入选择前自动捡起瓶子");
+assert.equal(game.state.getSkill("throwing"), true, "E-028 拾瓶后应解锁投掷");
+assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), true);
+
+game = fixture({}, ["bottle"], "carriage_02");
+game.ui.choice.choose = async () => null;
+await game.play("E_028");
+assert.equal(game.state.inventory.filter(item => item === "bottle").length, 1, "已有瓶子时不应重复入包");
+assert.equal(game.state.getSkill("throwing"), true, "已有瓶子时仍应解锁投掷");
+assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), false);
 const carriage02 = scenes.find(s => s.id === "carriage_02");
-const bottle02 = carriage02.objects.find(o => o.id === "bottle_02");
-assert.equal(bottle02.clickEvent, "E_028_PICK_BOTTLE");
+assert.equal(carriage02.objects.some(o => o.id === "bottle_02"), false);
+assert.equal(
+  carriage02.objects.find(o => o.id === "clicker_02").clickEvent,
+  "E_026",
+  "点击2号车厢的Clicker应进入怪物遭遇"
+);
 // 3号通往2号的门重新接入里世界入口：未到过伪4时进门走里世界，到过之后由 E_501 的守卫落到主线。
 const carriage03 = scenes.find(s => s.id === "carriage_03");
 assert.equal(carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent, "E_501");
 assert.equal(events.find(e => e.id === "E_501").actions
   .some(a => a.type === "conditionalJump" && a.next === "E_DOOR_03" && a.when?.flag === "inner_world_entered"), true);
+const e022Item = events.find(e => e.id === "E_022_ITEM");
+assert.equal(e022Item.next, undefined, "E_022_ITEM 结束后应停在3号车厢，等待玩家点门");
+assert.equal(events.find(e => e.id === "E_023_LOOP").next, "E_501", "E_023 末段应进入里世界");
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);

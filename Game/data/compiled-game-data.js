@@ -86,19 +86,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_005",
-          "visibleWhen": {
-            "all": [
-              {
-                "flag": "note_back_seen",
-                "equals": true
-              },
-              {
-                "flag": "map_seen",
-                "equals": true
-              }
-            ]
-          }
+          "clickEvent": "E_005"
         },
         {
           "id": "door_06_to_05",
@@ -204,7 +192,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_07",
       "name": "7 号车厢",
-      "background": "assets/carriage-07.png",
+      "background": "assets/carriage-07.jpg",
       "objects": [
         {
           "id": "radio_07",
@@ -690,38 +678,6 @@ window.GAME_DATA = {
           }
         },
         {
-          "id": "bottle_02",
-          "name": "地上的空瓶子",
-          "image": "assets/bottle-inner.png",
-          "position": {
-            "x": 42,
-            "y": 72,
-            "width": 10,
-            "height": 14
-          },
-          "zIndex": 13,
-          "clickEvent": "E_028_PICK_BOTTLE",
-          "visibleWhen": {
-            "all": [
-              {
-                "flag": "bottle_02_available",
-                "equals": true
-              },
-              {
-                "not": {
-                  "flag": "bottle_02_taken",
-                  "equals": true
-                }
-              },
-              {
-                "not": {
-                  "hasItem": "bottle"
-                }
-              }
-            ]
-          }
-        },
-        {
           "id": "door_02_to_03",
           "name": "通往3号车厢的门",
           "image": "assets/door.svg",
@@ -1035,13 +991,39 @@ window.GAME_DATA = {
       "id": "E_005",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "all": [
+                {
+                  "flag": "note_back_seen",
+                  "equals": true
+                },
+                {
+                  "flag": "map_seen",
+                  "equals": true
+                }
+              ]
+            }
+          },
+          "next": "E_005_LOCKED"
+        },
+        {
           "type": "check",
           "dice": "ev005_insight_01",
-          "offerScouting": true,
           "outcomes": [
             "E_005_S",
             "E_005_F"
           ]
+        }
+      ]
+    },
+    {
+      "id": "E_005_LOCKED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你试图打开门，但门锁住了，打不开。"
         }
       ]
     },
@@ -1052,11 +1034,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_06_guide_seen",
           "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_guide_pending",
-          "value": false
         },
         {
           "type": "dialogue",
@@ -1172,7 +1149,11 @@ window.GAME_DATA = {
           "when": {
             "all": [
               {
-                "flag": "carriage_06_guide_pending",
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
                 "equals": true
               },
               {
@@ -1206,7 +1187,11 @@ window.GAME_DATA = {
           "when": {
             "all": [
               {
-                "flag": "carriage_06_guide_pending",
+                "flag": "note_back_seen",
+                "equals": true
+              },
+              {
+                "flag": "map_seen",
                 "equals": true
               },
               {
@@ -1567,7 +1552,6 @@ window.GAME_DATA = {
         {
           "type": "check",
           "dice": "ev001_insight_01",
-          "offerScouting": true,
           "outcomes": [
             "E_001_S",
             "E_001_F"
@@ -1682,7 +1666,6 @@ window.GAME_DATA = {
         {
           "type": "check",
           "dice": "ev004_insight_01",
-          "offerScouting": true,
           "outcomes": [
             "E_004_S",
             "E_004_F"
@@ -3822,6 +3805,13 @@ window.GAME_DATA = {
       "id": "E_022_ITEM",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "flashlight"
+          },
+          "next": "E_022_ITEM_END"
+        },
+        {
           "type": "dialogue",
           "text": "你继续在行李间翻找，找到了一个手电筒。"
         },
@@ -3837,8 +3827,11 @@ window.GAME_DATA = {
           "type": "addItem",
           "item": "flashlight"
         }
-      ],
-      "next": "E_023"
+      ]
+    },
+    {
+      "id": "E_022_ITEM_END",
+      "actions": []
     },
     {
       "id": "E_022_S",
@@ -3935,7 +3928,7 @@ window.GAME_DATA = {
           "text": "灯，灭了。\n\n（音效：电流嘶鸣）\n\n黑暗中，你摸到了通往2号车厢的门。"
         }
       ],
-      "next": "E_024"
+      "next": "E_501"
     },
     {
       "id": "E_023_AGILITY_CHECK",
@@ -4384,30 +4377,15 @@ window.GAME_DATA = {
       "id": "E_028",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_02"
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "bottle"
+          },
+          "next": "E_028_HAS_BOTTLE"
         },
         {
           "type": "dialogue",
-          "text": "你退回2号车厢，在地上发现了一个空瓶子。"
-        },
-        {
-          "type": "setFlag",
-          "key": "bottle_02_available",
-          "value": true
-        },
-        {
-          "type": "custom",
-          "name": "refreshScene"
-        }
-      ]
-    },
-    {
-      "id": "E_028_PICK_BOTTLE",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你俯身捡起地上的空瓶子。"
+          "text": "你在脚边摸到一个空瓶子，把它捡了起来。"
         },
         {
           "type": "addItem",
@@ -4418,13 +4396,18 @@ window.GAME_DATA = {
           "skill": "throwing"
         },
         {
-          "type": "setFlag",
-          "key": "bottle_02_taken",
-          "value": true
-        },
-        {
           "type": "dialogue",
           "text": "你获得了投掷技能。"
+        }
+      ],
+      "next": "E_028_BOTTLE_READY"
+    },
+    {
+      "id": "E_028_HAS_BOTTLE",
+      "actions": [
+        {
+          "type": "learnSkill",
+          "skill": "throwing"
         }
       ],
       "next": "E_028_BOTTLE_READY"
@@ -4503,6 +4486,10 @@ window.GAME_DATA = {
           "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
         },
         {
+          "type": "removeItem",
+          "item": "bottle"
+        },
+        {
           "type": "dialogue",
           "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
         },
@@ -4538,6 +4525,10 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+        },
+        {
+          "type": "removeItem",
+          "item": "bottle"
         },
         {
           "type": "setFlag",
