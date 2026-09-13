@@ -141,8 +141,10 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：12 个场景，163 个事件，7 个物品，8 个属性，5 个技能，6 个小游戏。
+编译完成：12 个场景，230 个事件，9 个物品，8 个属性，5 个技能，6 个小游戏。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
+里世界回归通过：逐句场景、随机出口、交互分支、回程、道具、结局与切景取消。
+主线接线回归通过：4号车厢入口与一次性检定、折返描写、3号→2号切景、Clicker 与控制杆接线。
 ```
 
 ## 运行原理
@@ -235,10 +237,12 @@ Game/
 ├─ docs/
 │  ├─ README.md
 │  ├─ API使用说明.md
+│  ├─ main-route-wiring.md
 │  ├─ skill-tutorials/
 │  │  └─ script-to-game-data.md
 │  ├─ conversion-reviews/
-│  │  └─ review-checklist-2026-09-05-1454.md
+│  │  ├─ review-checklist-2026-09-05-1454.md
+│  │  └─ review-checklist-2026-09-12-1203.md
 │  └─ _Archived/
 │     ├─ 架构设计.md
 │     └─ 三天计划.md
@@ -341,6 +345,9 @@ Game/
 │  └─ main.css
 ├─ tools/
 │  ├─ compile-data.mjs
+│  ├─ serve-preview.mjs
+│  ├─ test-inner-world.mjs
+│  ├─ test-main-route.mjs
 │  └─ test-runtime.mjs
 ├─ AGENTS.md
 ├─ ending.html
@@ -402,6 +409,7 @@ Game/
 | --- | --- |
 | `README.md` | docs 目录索引：本文件夹存放细分板块的详细文档，归档见 `_Archived/`。 |
 | `API使用说明.md` | 数据接口（`data/*.json`）与运行时接口（`window.TrainGame`）的**最详细维护和使用手册**，含复杂维护工作示例。 |
+| `main-route-wiring.md` | 主线（5号→4号→3号→2号→先头车厢）的场景接线约定、统一修复对照、回归范围与未修项清单。 |
 | `skill-tutorials/script-to-game-data.md` | 剧本转换 skill 的手把手使用教程（从 skill 被触发后开始：输入确认、三段闸门、在清单上逐条作答与指定素材、落地与提交）。 |
 | `conversion-reviews/review-checklist-2026-09-05-1454.md` | E-005~E-008 批剧本转换的审查清单留档（**旧版格式**：编号条目 + 类别标记 + 决策列；当前格式见 skill 空白模板：人话提问 + 素材指定 + 执行台账）。审查清单统一存放于 `docs/conversion-reviews/`，文件名时间戳精确到分钟。 |
 | `_Archived/` | 已归档历史文档（`架构设计.md`、`三天计划.md`），归档后不再跟随功能更新，仅供追溯。 |
@@ -469,6 +477,8 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `styles/main.css` | 16:9 容器、场景、HUD、窗口、菜单和动画的全部样式。 |
 | `tools/compile-data.mjs` | 读取六份 JSON，校验并覆盖生成编译数据。 |
 | `tools/test-runtime.mjs` | 在 Node.js `vm` 沙箱测试本地认证、状态、技能、条件、存档和部分动作。 |
+| `tools/test-inner-world.mjs` | 里世界主力回归：逐句场景轨迹、随机出口、门禁、道具、钥匙与结局。 |
+| `tools/test-main-route.mjs` | 主线接线回归：4号车厢入口与一次性检定、4号折返描写、3号→2号切景、Clicker 与控制杆接线。 |
 | `index.html` / `register.html` | 公共登录入口和独立注册页。 |
 | `home.html` | 登录后显示的游戏标题主页；主页菜单含新的游戏、存档管理、设置（占位页）、小组介绍与退出登录；其余 HTML 分别承载游戏、存档写入/管理、设置占位与结束页。 |
 | `package.json` | 项目信息及 `compile`、`test`、`check` 命令。 |
