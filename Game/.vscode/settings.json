@@ -23,6 +23,10 @@
     {
       "fileMatch": ["/data/skills.json"],
       "url": "./schemas/skills.schema.json"
+    },
+    {
+      "fileMatch": ["/data/audio.json"],
+      "url": "./schemas/audio.schema.json"
     }
   ]
 }

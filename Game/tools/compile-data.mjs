@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -70,6 +70,23 @@ function assertUnique(records, label) {
     ids.add(record.id);
   }
   return ids;
+}
+
+// 音效注册表是唯一带素材存在性校验的数据：路径写错在编译期就该失败，
+// 而不是等到剧情跑到那一声时才在浏览器里静默没声音。
+async function assertAudioFilesExist(audio) {
+  for (const entry of audio) {
+    let fileStatus = null;
+    try {
+      fileStatus = await stat(resolve(projectRoot, entry.file));
+    } catch (_error) {
+      fileStatus = null;
+    }
+    assert(
+      fileStatus && fileStatus.isFile() && fileStatus.size > 0,
+      `音效 ${entry.id} 引用的音频文件不存在或是空文件：${entry.file}`
+    );
+  }
 }
 
 function validateAttributeCondition(condition, attributeIds, label) {
@@ -152,13 +169,24 @@ function validateCondition(condition, references, label) {
   assert("equals" in condition.objectState, `${label}的物件状态缺少 equals`);
 }
 
-function validate(meta, scenes, events, items, attributeData, skills, diceIds, minigameIds) {
+function validate(meta, scenes, events, items, attributeData, skills, audio, diceIds, minigameIds) {
   assert(meta.formatVersion === 3, "当前编译器只支持 formatVersion=3");
   assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
   assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
   const sceneIds = assertUnique(scenes, "场景");
   const eventIds = assertUnique(events, "事件");
   const itemIds = assertUnique(items, "物品");
+  const soundIds = assertUnique(audio, "音效");
+  for (const entry of audio) {
+    assertOnlyKeys(entry, ["id", "name", "file", "volume", "description"], `音效 ${entry.id}`);
+    assert(typeof entry.name === "string" && entry.name, `音效名称不能为空：${entry.id}`);
+    assert(typeof entry.file === "string" && entry.file, `音效 ${entry.id} 的 file 不能为空`);
+    if (entry.volume != null) {
+      assert(typeof entry.volume === "number" && entry.volume >= 0 && entry.volume <= 1,
+        `音效 ${entry.id} 的 volume 必须是 0~1 的数字`);
+    }
+    assert(entry.description == null || typeof entry.description === "string", `音效 ${entry.id} 的 description 必须是字符串`);
+  }
   assertPlainObject(attributeData, "属性注册表格式无效");
   assertOnlyKeys(attributeData, ["totalPoints", "attributes"], "属性注册表");
   assert(Number.isInteger(attributeData.totalPoints) && attributeData.totalPoints >= 0, "属性总点数必须是非负整数");
@@ -246,7 +274,7 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
   const actionTypes = new Set([
     "dialogue", "inspect", "choice", "check", "changeScene", "setFlag",
     "modifyAttribute", "setSkill", "learnSkill", "loseSkill", "addItem", "removeItem",
-    "setObjectState", "custom", "minigame", "conditionalJump"
+    "setObjectState", "custom", "minigame", "conditionalJump", "sound"
   ]);
   for (const event of events) {
     assert(Array.isArray(event.actions), `事件缺少 actions：${event.id}`);
@@ -294,6 +322,25 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
       if (action.type === "custom") {
         assert(typeof action.name === "string" && action.name, `事件 ${event.id} 的自定义动作缺少 name`);
       }
+      if (action.type === "sound") {
+        assert(typeof action.sound === "string" && soundIds.has(action.sound),
+          `事件 ${event.id} 的音效动作引用了未注册的编号：${action.sound || "空"}`);
+        if (action.await != null) {
+          assert(typeof action.await === "boolean", `事件 ${event.id} 的音效 await 必须是布尔值`);
+        }
+        if (action.start != null) {
+          assert(typeof action.start === "number" && action.start >= 0,
+            `事件 ${event.id} 的音效 start 必须是非负数字`);
+        }
+        if (action.duration != null) {
+          assert(typeof action.duration === "number" && action.duration > 0,
+            `事件 ${event.id} 的音效 duration 必须是正数`);
+        }
+        if (action.volume != null) {
+          assert(typeof action.volume === "number" && action.volume >= 0 && action.volume <= 1,
+            `事件 ${event.id} 的音效 volume 必须是 0~1 的数字`);
+        }
+      }
       if (action.type === "minigame") {
         assert(typeof action.game === "string" && minigameIds.has(action.game),
           `事件 ${event.id} 的小游戏动作引用了未注册的编号：${action.game || "空"}`);
@@ -302,20 +349,22 @@ function validate(meta, scenes, events, items, attributeData, skills, diceIds, m
   }
 }
 
-const [meta, scenes, events, items, attributes, skills] = await Promise.all([
+const [meta, scenes, events, items, attributes, skills, audio] = await Promise.all([
   readJson("data/meta.json"),
   readJson("data/scenes.json"),
   readJson("data/events.json"),
   readJson("data/items.json"),
   readJson("data/attributes.json"),
-  readJson("data/skills.json")
+  readJson("data/skills.json"),
+  readJson("data/audio.json")
 ]);
 
 const diceIds = await loadDiceIds();
 const minigameIds = await loadMinigameIds();
-validate(meta, scenes, events, items, attributes, skills, diceIds, minigameIds);
-const bundle = JSON.stringify({ meta, scenes, events, items, attributes, skills }, null, 2)
+validate(meta, scenes, events, items, attributes, skills, audio, diceIds, minigameIds);
+await assertAudioFilesExist(audio);
+const bundle = JSON.stringify({ meta, scenes, events, items, attributes, skills, audio }, null, 2)
   .replaceAll("\u2028", "\\u2028")
   .replaceAll("\u2029", "\\u2029");
 await writeFile(resolve(projectRoot, "data/compiled-game-data.js"), `window.GAME_DATA = ${bundle};\n`, "utf8");
-console.log(`编译完成：${scenes.length} 个场景，${events.length} 个事件，${items.length} 个物品，${attributes.attributes.length} 个属性，${skills.length} 个技能，${minigameIds.size} 个小游戏。`);
+console.log(`编译完成：${scenes.length} 个场景，${events.length} 个事件，${items.length} 个物品，${attributes.attributes.length} 个属性，${skills.length} 个技能，${minigameIds.size} 个小游戏，${audio.length} 个音效。`);

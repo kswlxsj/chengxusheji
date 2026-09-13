@@ -152,12 +152,26 @@
       },
       "additionalProperties": false
     },
+    "sound": {
+      "type": "object",
+      "required": ["type", "sound"],
+      "properties": {
+        "type": { "const": "sound" },
+        "sound": { "$ref": "#/$defs/id" },
+        "await": { "type": "boolean" },
+        "start": { "type": "number", "minimum": 0 },
+        "duration": { "type": "number", "exclusiveMinimum": 0 },
+        "volume": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
     "action": {
       "oneOf": [
         { "$ref": "#/$defs/dialogue" },
         { "$ref": "#/$defs/inspect" },
         { "$ref": "#/$defs/choice" },
         { "$ref": "#/$defs/check" },
+        { "$ref": "#/$defs/sound" },
         {
           "type": "object",
           "required": ["type", "scene"],

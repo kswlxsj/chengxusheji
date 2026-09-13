@@ -186,6 +186,23 @@ window.GAME_DATA = {
             "flag": "mg3d_demo_visible",
             "equals": true
           }
+        },
+        {
+          "id": "sfx_test_spot_06",
+          "name": "（开发演示）音效测试按钮",
+          "image": "assets/mg3d-demo-spot.svg",
+          "position": {
+            "x": 33,
+            "y": 61,
+            "width": 12,
+            "height": 16
+          },
+          "zIndex": 13,
+          "clickEvent": "E_SFX_TEST",
+          "visibleWhen": {
+            "flag": "sfx_test_spot_visible",
+            "equals": true
+          }
         }
       ]
     },
@@ -5263,6 +5280,32 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_SFX_TEST",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "（开发演示）音效测试按钮被按下。"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx_framework_test"
+        },
+        {
+          "type": "dialogue",
+          "text": "第一声是声画并行：这句话在播时，音效应同时可闻（不阻塞）。"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx_framework_test_await",
+          "await": true
+        },
+        {
+          "type": "dialogue",
+          "text": "第二声是阻塞播放：它播完（约 0.45 秒）之后，这句才出现。"
+        }
+      ]
+    },
+    {
       "id": "E_023_CHOICE",
       "actions": [
         {
@@ -6716,6 +6759,22 @@ window.GAME_DATA = {
       "name": "侦查",
       "description": "搜索环境、发现隐藏线索并判断潜在危险。",
       "initial": false
+    }
+  ],
+  "audio": [
+    {
+      "id": "sfx_framework_test",
+      "name": "音效框架验证（不阻塞）",
+      "file": "assets/audio/sfx-framework-test-tone.wav",
+      "volume": 0.6,
+      "description": "临时验证条目：事件用 sound 动作触发，验证音效与对话并行播放。素材是 0.45 秒 440Hz 短音，验收后连同 sfx_test_spot_06 与 E_SFX_TEST 一起删除。"
+    },
+    {
+      "id": "sfx_framework_test_await",
+      "name": "音效框架验证（阻塞截断）",
+      "file": "assets/audio/sfx-framework-test-tone.wav",
+      "volume": 0.6,
+      "description": "临时验证条目：配合动作里的 duration 截断验证 await:true 的阻塞等待。与上一条共用同一个短音文件，验收后一并删除。"
     }
   ]
 };
