@@ -5243,7 +5243,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "黑暗的尽头没有尽头。你深吸一口气，伸手推开了通往2号的车门。"
+          "text": "你深吸一口气，伸手推开了通往2号的车门。"
         },
         {
           "type": "changeScene",
@@ -5251,7 +5251,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "门后不是2号车厢——而是一节你从未见过的车厢。空荡荡的，连座椅也没有。"
+          "speaker": "你",
+          "text": "这里就是……"
+        },
+        {
+          "type": "dialogue",
+          "text": "不。门后不是2号车厢——而是一节你从未见过的车厢。空荡荡的，连座椅也没有。"
         },
         {
           "type": "dialogue",
@@ -5259,11 +5264,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "安静得像是整个世界都睡着了。"
+          "text": "列车行驶的声音在车厢里回荡，夹杂着断断续续的摩擦和断裂声。"
         },
         {
           "type": "dialogue",
-          "text": "你迈了进去。"
+          "text": "你迈了进去。车厢的噪音突然减弱，"
+        },
+        {
+          "type": "dialogue",
+          "text": "安静得像是整个世界都睡着了。"
         },
         {
           "type": "setFlag",
@@ -5361,10 +5370,6 @@ window.GAME_DATA = {
           "text": "门外是3号车厢，灯光昏黄，一切如常。"
         },
         {
-          "type": "dialogue",
-          "text": "那趟门后的旅程仿佛从未发生过。"
-        },
-        {
           "type": "setFlag",
           "key": "ev_inner_backtrack",
           "value": false
@@ -5392,7 +5397,28 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "色调有些不同的空车厢。车厢角落破裂，长出杂草植物。"
+          "text": "同样是一节空车厢，但是色调似乎有些不同。"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢角落有一些裂缝，从中长出来了很多杂草和植物。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "……这是什么地方？"
+        },
+        {
+          "type": "dialogue",
+          "text": "先前的噪音不知何时已经渐渐退去，车厢的振动也变得轻微。"
+        },
+        {
+          "type": "dialogue",
+          "text": "列车还在行驶吗？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你无法判断。"
         },
         {
           "type": "conditionalJump",
@@ -5428,7 +5454,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "握住瓶身的一瞬间，你听到像是人声的低语，又或者像哭声或祈祷。"
+          "text": "握住瓶身的一瞬间，你听到像是歌声的东西……又或者像哭声或祈祷？"
         },
         {
           "type": "dialogue",
@@ -5445,7 +5471,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "雾蒙蒙的，远方的一切都看不真切。"
+          "text": "雾蒙蒙的，远方的一切都看不清。"
         },
         {
           "type": "check",
@@ -5462,7 +5488,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "并不完全黑，似乎有隐隐约约的微光。你把耳朵贴着窗户，听到窸窸窣窣的声响。"
+          "text": "你发现窗外并不完全黑，似乎有隐隐约约的微光。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你把耳朵贴着窗户，听到窸窸窣窣的声响。"
         },
         {
           "type": "setFlag",
@@ -5494,7 +5524,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "不知从哪一刻起，身后的噪音逐渐减弱了。"
+          "text": "不知从哪一刻起，身后的噪音已经完全听不到了。"
         },
         {
           "type": "dialogue",
@@ -5660,7 +5690,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "……在那一瞬间就已经看到你了。"
+          "text": "……那些东西，"
+        },
+        {
+          "type": "dialogue",
+          "text": "在那一瞬间就已经看到你了。"
         },
         {
           "type": "dialogue",
@@ -5672,6 +5706,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
+          "speaker": "你",
           "text": "还来得及吗？快点……"
         },
         {
@@ -6457,7 +6492,7 @@ window.GAME_DATA = {
       "id": "bottle",
       "name": "瓶子",
       "image": "assets/bottle-inner.png",
-      "description": "一个可以用来制造声响、转移 Clicker 注意的瓶子。",
+      "description": "从诡异的花草车厢里捡到的空瓶子，瓶身是粉红色的普通玻璃。",
       "inspectEvent": "E_023_BOTTLE"
     },
     {
