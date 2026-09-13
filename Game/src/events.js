@@ -41,6 +41,7 @@
   // 小游戏结算动作列表的长度上限，防止模块返回无界列表拖垮事件链。
   const MINIGAME_SETTLEMENT_LIMIT = 100;
   const SCENE_RESOURCE_TIMEOUT_MS = 20000;
+  const MAX_CHECK_ATTEMPTS = 2;
   const DIALOGUE_TERMINATORS = new Set(["。", "！", "？", "!", "?"]);
   const DIALOGUE_TRAILING_MARKS = new Set([
     "\"", "'", "”", "’", "」", "』", "】", "）", ")", "》", "〉", "›", "»"
@@ -128,6 +129,11 @@
       this.customActions.register(name, handler);
     }
 
+    checkIdentity(action) {
+      if (typeof action.checkId === "string" && action.checkId) return `id:${action.checkId}`;
+      return `event:${this.state.currentEventId || "global"}:${action.dice}`;
+    }
+
     registerBuiltIns() {
       this.registerAction("dialogue", async (action) => {
         const run = this.activeRun;
@@ -167,19 +173,47 @@
       this.registerAction("check", async (action) => {
         if (!Game.Dice) throw new Error("检定系统未加载：缺少 src/dice.js");
         const outcomes = Array.isArray(action.outcomes) ? action.outcomes : [];
-        const resolver = Game.Dice.get(action.dice);
-        const index = await resolver(this.context(), outcomes);
         const hasBranch = outcomes.length > 0;
-        if (hasBranch && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)) {
-          throw new Error(`检定 ${action.dice} 返回了无效的结果编号：${index}`);
+        const checkKey = this.checkIdentity(action);
+        if (!this.state.checkAttempts) this.state.checkAttempts = {};
+        const previous = this.state.checkAttempts[checkKey];
+        const previousAttempts = Number.isInteger(previous?.attempts) && previous.attempts >= 0
+          ? previous.attempts
+          : 0;
+        const canRun = previousAttempts < MAX_CHECK_ATTEMPTS && previous?.success !== true;
+        let index;
+
+        if (canRun) {
+          const resolver = Game.Dice.get(action.dice);
+          index = await resolver(this.context(), outcomes);
+          if (hasBranch && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)) {
+            throw new Error(`检定 ${action.dice} 返回了无效的结果编号：${index}`);
+          }
+          this.state.checkAttempts[checkKey] = {
+            dice: action.dice,
+            attempts: previousAttempts + 1,
+            outcome: hasBranch ? index : null,
+            success: hasBranch && index === 0
+          };
+        } else {
+          index = previous?.outcome;
+          if (
+            hasBranch
+            && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)
+          ) {
+            throw new Error(`检定 ${action.dice} 的已完成记录无效`);
+          }
         }
-        // 自动留痕：以 dice 编号为键写入最小记录；检定函数可先写入补充字段，此处合并保留。
-        this.state.checkResults[action.dice] = Object.assign(
-          {},
-          this.state.checkResults[action.dice],
-          { dice: action.dice, outcome: hasBranch ? index : null }
-        );
-        await this.onCheckCompleted(action, hasBranch ? index : null);
+
+        if (canRun) {
+          // 自动留痕：以 dice 编号为键写入最小记录；检定函数可先写入补充字段，此处合并保留。
+          this.state.checkResults[action.dice] = Object.assign(
+            {},
+            this.state.checkResults[action.dice],
+            { dice: action.dice, outcome: hasBranch ? index : null }
+          );
+          await this.onCheckCompleted(action, hasBranch ? index : null);
+        }
         if (!hasBranch) return null;
         return { next: outcomes[index], stop: true };
       });

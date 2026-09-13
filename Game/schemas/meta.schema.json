@@ -18,7 +18,8 @@
         "flags": { "type": "object", "additionalProperties": true },
         "inventory": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
         "objectStates": { "type": "object", "additionalProperties": { "type": "object" } },
-        "checkResults": { "type": "object" }
+        "checkResults": { "type": "object" },
+        "checkAttempts": { "type": "object" }
       },
       "additionalProperties": false
     }

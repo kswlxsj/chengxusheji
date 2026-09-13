@@ -67,8 +67,9 @@
     const overlay = document.querySelector("#codex-ending-overlay");
     const video = document.querySelector("#codex-ending-video");
     const skipButton = document.querySelector("#codex-ending-skip");
-    const restartButton = document.querySelector("#codex-ending-restart");
-    if (!overlay || !video || !skipButton || !restartButton) {
+    const loadButton = document.querySelector("#codex-ending-load");
+    const homeButton = document.querySelector("#codex-ending-home");
+    if (!overlay || !video || !skipButton || !loadButton || !homeButton) {
       flow.navigate("ending", { reason }, true);
       return;
     }
@@ -86,7 +87,8 @@
     video.currentTime = 0;
     overlay.hidden = false;
     skipButton.hidden = false;
-    restartButton.hidden = true;
+    loadButton.hidden = true;
+    homeButton.hidden = true;
 
     let completed = false;
     const completeEnding = () => {
@@ -94,8 +96,13 @@
       completed = true;
       video.pause();
       skipButton.hidden = true;
-      restartButton.hidden = false;
-      restartButton.focus();
+      loadButton.hidden = false;
+      homeButton.hidden = false;
+      loadButton.focus();
+    };
+    const openSaveManager = () => {
+      flow.clearTransfer();
+      flow.navigate("saveManager");
     };
     const returnToMainMenu = () => {
       flow.clearTransfer();
@@ -114,7 +121,8 @@
       completeEnding();
     }, { once: true });
     skipButton.addEventListener("click", completeEnding, { once: true });
-    restartButton.addEventListener("click", returnToMainMenu, { once: true });
+    loadButton.addEventListener("click", openSaveManager, { once: true });
+    homeButton.addEventListener("click", returnToMainMenu, { once: true });
     overlay.addEventListener("pointerdown", tryPlay, { once: true });
     tryPlay();
   }

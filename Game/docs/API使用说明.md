@@ -134,6 +134,7 @@
 | `initialState.inventory` | 唯一 ID 数组 | 初始物品。 |
 | `initialState.objectStates` | 对象 | 以物件 ID 为键的初始状态。 |
 | `initialState.checkResults` | 对象 | 初始检定记录（以 dice 编号为键），通常为空。 |
+| `initialState.checkAttempts` | 对象 | 初始检定尝试记录，通常省略并默认为空。 |
 
 属性、技能、技能覆盖状态和属性分配标记由 `GameState` 创建，不写入 `initialState`。启动时先显示 `title`/`coverImage` 配置的主界面，玩家开始新游戏并完成属性分配后才自动播放 `startEvent`。
 
@@ -192,7 +193,7 @@
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
 | `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
-| `check` | `dice` | `outcomes` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。 |
+| `check` | `dice` | `outcomes`, `checkId` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。每个检定最多实际执行两次；第一次结果为下标 `0`（成功）后锁定，第一次失败才允许第二次。 |
 | `changeScene` | `scene` | — | 关闭对话，等待背景及可见贴图就绪，检查暂停/取消后提交场景，再执行下一句。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
 | `conditionalJump` | `when`, `next` | — | 条件成立时立即结束当前事件并进入 `next`，不成立则继续执行本事件后续动作（常用于按旗标/物品选择剧情变体，替代把分支拆成一整棵事件树）。 |
@@ -207,7 +208,9 @@
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 | `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
 
-检定记录按 `dice` 编号存于状态 `checkResults`。每个 `dice` 编号对应 `src/dice.js` 里唯一一条可编程检定规则，且必须全局唯一、长期稳定（规则或剧情修改不能改编号，旧记录才可追溯）。引擎每次执行检定后自动合并写入最小记录 `{ dice, outcome }`：`outcomes` 非空时 `outcome` 为函数返回的下标，为空时为 `null`；检定函数可在返回前先写入补充字段，引擎合并保留。`outcomes` 里的分支事件不要依赖数组位置之外的信息——编剧插入动作后位置会变。
+检定记录按 `dice` 编号存于状态 `checkResults`，尝试次数与最终结果按检定身份存于 `checkAttempts`。每个 `dice` 编号对应 `src/dice.js` 里唯一一条可编程检定规则，且必须全局唯一、长期稳定（规则或剧情修改不能改编号，旧记录才可追溯）。引擎实际执行检定后自动合并写入最小记录 `{ dice, outcome }`：`outcomes` 非空时 `outcome` 为函数返回的下标，为空时为 `null`；检定函数可在返回前先写入补充字段，引擎合并保留。受“最多两次、第一次成功后锁定”规则拦截时不会再次调用检定函数，有分支的检定会复用上一次分支结果。
+
+检定身份默认是“当前事件 ID + `dice` 编号”，因此不同事件复用同一个技能检定不会互相占用次数。若同一个逻辑检定跨多个事件执行（例如先进入尝试事件、失败后再进入重试事件），给这些 `check` 动作填写相同的 `checkId`。`outcomes` 里的分支事件不要依赖数组位置之外的信息——编剧插入动作后位置会变。
 
 完整事件示例：
 
@@ -383,7 +386,7 @@ const state = new TrainGame.GameState(
 
 框架代码可只读查询 `state.attributeDefinitions`、`state.skillDefinitions` 和 `state.totalAttributePoints`。**不要直接改 `state.attributes` 或 `state.skills`**，否则会跳过边界钳制和技能重算；属性接口只接受整数并把结果限制在注册的 `min` 与 `max` 之间。
 
-快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`。可序列化快照示例（存档与调试入口所见状态的结构）：
+快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`、`checkAttempts`。可序列化快照示例（存档与调试入口所见状态的结构）：
 
 ```json
 {
@@ -396,7 +399,8 @@ const state = new TrainGame.GameState(
   "flags": { "gameStarted": true },
   "inventory": ["old_ticket"],
   "objectStates": { "note_06": { "hidden": true } },
-  "checkResults": {}
+  "checkResults": {},
+  "checkAttempts": {}
 }
 ```
 
@@ -559,6 +563,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 | context | 与[自定义动作上下文](#自定义动作上下文)一致（`state`/`scene`/`ui`/`engine`/`items`/`attributes`/`skills`/`wait`/`throwIfCancelled`） |
 | 返回值 | 引擎校验 `0 <= 下标 < outcomes.length` 后跳 `outcomes[下标]`；越界或非整数报错并回滚本事件链；`outcomes` 省略/为空时返回值被忽略（纯副作用，事件继续） |
 | 记录 | 引擎每次执行后自动合并写入 `state.checkResults[dice] = { dice, outcome }`（无分支时 `outcome: null`）；函数可先写补充字段（如 `checkResults[dice] = { 成功: true }`）供排查/复用 |
+| 次数 | 每个检定最多实际执行两次；有 `outcomes` 时下标 `0` 视为成功，第一次成功后锁定，第一次失败才允许第二次，第二次后无论成败都不再掷。 |
 | 规则内状态 | 一律经 `context.state` 接口修改（含扣损）；等待用 `context.wait()`、写状态前用 `context.throwIfCancelled()`，与自定义动作同一套安全边界 |
 
 建议：需要重复使用的低层能力（标准 1d6 属性检定、SAN 扣损掷骰等）做成 dice.js 内部的工厂函数，具体检定条目一行引用，保持条目独立可读。新增检定 = 改 `src/dice.js`（追加条目）+ 在 `events.json` 引用其编号与 `outcomes`；编译器通过 node:vm 加载 `src/dice.js` 校验引用与注册唯一性，运行时对未注册编号同样报错回滚。

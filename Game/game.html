@@ -6,6 +6,7 @@
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=dialog-performance-20260913-1">
+  <link rel="stylesheet" href="styles/carriage-02-darkness.css?v=20260913-1">
   <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
@@ -50,7 +51,8 @@
     ></video>
     <div id="codex-ending-actions">
       <button id="codex-ending-skip" class="codex-ending-button" type="button">跳过</button>
-      <button id="codex-ending-restart" class="codex-ending-button codex-ending-restart" type="button" hidden>重新开始</button>
+      <button id="codex-ending-load" class="codex-ending-button" type="button" hidden>读取存档</button>
+      <button id="codex-ending-home" class="codex-ending-button" type="button" hidden>返回主页</button>
     </div>
   </div>
   <!-- CODEX ADD END -->
@@ -71,7 +73,7 @@
   <script src="src/audio.js"></script>
   <!-- TrainGame.AudioManager，音效播放：编号来自 data/audio.json，sound 动作经 ui.audio 调用。 -->
   
-  <script src="src/scene.js?v=scene-alpha-fast-20260913-1"></script>
+  <script src="src/scene.js?v=carriage-02-darkness-20260913-1"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
   <script src="src/events.js?v=resource-wait-20260913-3"></script>

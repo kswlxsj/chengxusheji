@@ -148,6 +148,7 @@
       "properties": {
         "type": { "const": "check" },
         "dice": { "$ref": "#/$defs/id" },
+        "checkId": { "$ref": "#/$defs/id" },
         "outcomes": { "type": "array", "items": { "$ref": "#/$defs/id" } }
       },
       "additionalProperties": false
