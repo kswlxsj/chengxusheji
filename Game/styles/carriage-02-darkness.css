@@ -1,0 +1,10 @@
+/* 2号车厢在首次照明前只保留极弱的轮廓，避免玩家提前看清 Clicker 场景。 */
+#scene-layer.is-unlit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: #010101;
+  opacity: .99;
+}

@@ -277,6 +277,7 @@ assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定应已注册");
+assert.equal(typeof Game.Dice.get("skill_medicine_confirmed"), "function", "点击乘务员后的急救检定应已注册");
 
 function createEngineUi() {
   return {
@@ -395,6 +396,15 @@ assert.equal(
   await Game.Dice.get("skill_first_aid")({ ...firstAidContext(firstAidHighInsightState), ui: declinedFirstAidUi }, []),
   1,
   "使用技能前询问时，放弃使用应视为检定失败"
+);
+const noSecondPromptUi = {
+  ...createEngineUi(),
+  choice: { choose: async () => { throw new Error("急救确认后不应二次询问"); } }
+};
+assert.equal(
+  await Game.Dice.get("skill_medicine_confirmed")({ ...firstAidContext(firstAidHighInsightState), ui: noSecondPromptUi }, []),
+  0,
+  "点击乘务员处完成急救确认后，检定不应再次弹出技能询问"
 );
 
 // E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。
@@ -523,6 +533,7 @@ const realDiceEngine = new Game.EventEngine({
 });
 try {
   // ev005 灵感检定：属性 7，骰点 6 成功、骰点 1 失败，走 outcomes 分支。
+  registeredState.currentEventId = "E_REAL_DICE_SUCCESS";
   sandbox.Math.random = () => 0.999;
   let branch = await realDiceEngine.actions.get("check")({
     type: "check", dice: "ev005_insight_01", outcomes: ["EV_SUCCESS", "EV_FAIL"]
@@ -531,6 +542,7 @@ try {
   assert.equal(registeredState.checkResults.ev005_insight_01.outcome, 0);
   assert.equal(realUiInspects[realUiInspects.length - 1].title, "检定成功", "应展示检定结果窗口");
 
+  registeredState.currentEventId = "E_REAL_DICE_FAIL";
   sandbox.Math.random = () => 0;
   branch = await realDiceEngine.actions.get("check")({
     type: "check", dice: "ev005_insight_01", outcomes: ["EV_SUCCESS", "EV_FAIL"]
@@ -648,6 +660,109 @@ const recordResult = await actionEngine.actions.get("check")({ type: "check", di
 assert.equal(recordResult.next, "EV_A", "应按返回下标跳转结果事件");
 assert.equal(actionState.checkResults.test_dice_custom_record.success, true, "骰子函数补充字段应保留");
 assert.equal(actionState.checkResults.test_dice_custom_record.outcome, 0, "引擎最小记录应写入 outcome");
+
+// 所有检定统一最多掷两次：第一次成功后锁定，第一次失败后才允许第二掷。
+let cappedDiceCalls = 0;
+const cappedDiceResults = [1, 0, 1];
+Game.Dice.register("test_dice_capped_attempts", async () => {
+  cappedDiceCalls += 1;
+  return cappedDiceResults.shift();
+});
+const cappedState = createState();
+cappedState.completeAttributeAllocation({ strength: 4, insight: 1 });
+cappedState.currentEventId = "E_CAPPED_CHECK";
+const cappedEngine = new Game.EventEngine({
+  events: [],
+  state: cappedState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+const cappedAction = {
+  type: "check",
+  dice: "test_dice_capped_attempts",
+  outcomes: ["EV_SUCCESS", "EV_FAIL"]
+};
+let cappedResult = await cappedEngine.actions.get("check")(cappedAction);
+assert.equal(cappedResult.next, "EV_FAIL", "第一次失败应进入失败分支");
+assert.equal(cappedState.checkAttempts["event:E_CAPPED_CHECK:test_dice_capped_attempts"].attempts, 1);
+cappedResult = await cappedEngine.actions.get("check")(cappedAction);
+assert.equal(cappedResult.next, "EV_SUCCESS", "第一次失败后允许第二次检定");
+assert.equal(cappedDiceCalls, 2);
+cappedResult = await cappedEngine.actions.get("check")(cappedAction);
+assert.equal(cappedResult.next, "EV_SUCCESS", "第二次成功后应复用结果");
+assert.equal(cappedDiceCalls, 2, "第一次成功后不得进行第二次，第二次后也不得再掷");
+
+// 同一 dice 编号在不同事件中仍是不同检定，不会互相锁定。
+let separateEventCalls = 0;
+Game.Dice.register("test_dice_separate_events", async () => {
+  separateEventCalls += 1;
+  return 0;
+});
+const separateEventState = createState();
+separateEventState.completeAttributeAllocation({ strength: 4, insight: 1 });
+const separateEventEngine = new Game.EventEngine({
+  events: [],
+  state: separateEventState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+separateEventState.currentEventId = "E_FIRST_CHECK";
+await separateEventEngine.actions.get("check")({
+  type: "check",
+  dice: "test_dice_separate_events",
+  outcomes: ["EV_SUCCESS"]
+});
+separateEventState.currentEventId = "E_SECOND_CHECK";
+await separateEventEngine.actions.get("check")({
+  type: "check",
+  dice: "test_dice_separate_events",
+  outcomes: ["EV_SUCCESS"]
+});
+assert.equal(separateEventCalls, 2, "不同事件的同名 dice 应分别计算尝试次数");
+
+// 跨事件属于同一个逻辑检定时，可通过 checkId 共享次数与已完成结果。
+let sharedCheckCalls = 0;
+const sharedCheckResults = [1, 0];
+Game.Dice.register("test_dice_shared_check", async () => {
+  sharedCheckCalls += 1;
+  return sharedCheckResults.shift();
+});
+const sharedCheckState = createState();
+sharedCheckState.completeAttributeAllocation({ strength: 4, insight: 1 });
+const sharedCheckEngine = new Game.EventEngine({
+  events: [],
+  state: sharedCheckState,
+  items: [],
+  scene: {},
+  ui: createEngineUi()
+});
+sharedCheckState.currentEventId = "E_SHARED_CHECK_FIRST";
+let sharedResult = await sharedCheckEngine.actions.get("check")({
+  type: "check",
+  checkId: "shared_check",
+  dice: "test_dice_shared_check",
+  outcomes: ["EV_SUCCESS", "EV_FAIL"]
+});
+assert.equal(sharedResult.next, "EV_FAIL");
+sharedCheckState.currentEventId = "E_SHARED_CHECK_SECOND";
+sharedResult = await sharedCheckEngine.actions.get("check")({
+  type: "check",
+  checkId: "shared_check",
+  dice: "test_dice_shared_check",
+  outcomes: ["EV_SUCCESS", "EV_FAIL"]
+});
+assert.equal(sharedResult.next, "EV_SUCCESS");
+sharedCheckState.currentEventId = "E_SHARED_CHECK_THIRD";
+sharedResult = await sharedCheckEngine.actions.get("check")({
+  type: "check",
+  checkId: "shared_check",
+  dice: "test_dice_shared_check",
+  outcomes: ["EV_SUCCESS", "EV_FAIL"]
+});
+assert.equal(sharedResult.next, "EV_SUCCESS", "共享检定成功后应复用第二次结果");
+assert.equal(sharedCheckCalls, 2, "共享检定跨事件也不得超过两次");
 
 await actionEngine.actions.get("modifyAttribute")({ type: "modifyAttribute", attribute: "strength", amount: -1 });
 assert.equal(actionState.getAttribute("strength"), 2);

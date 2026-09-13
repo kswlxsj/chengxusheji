@@ -295,6 +295,10 @@
       this.setHotEntry(null);
       this.canvasObjects = [];
       this.root.replaceChildren();
+      this.root.classList.toggle(
+        "is-unlit",
+        scene.id === "carriage_02" && this.state.flags.light_used !== true
+      );
       const background = document.createElement("img");
       background.className = "scene-background";
       background.decoding = "async";

@@ -54,6 +54,7 @@
       this.inventory = source.inventory || [];
       this.objectStates = source.objectStates || {};
       this.checkResults = source.checkResults || {};
+      this.checkAttempts = source.checkAttempts || {};
     }
 
     snapshot() {
@@ -67,16 +68,18 @@
         flags: this.flags,
         inventory: this.inventory,
         objectStates: this.objectStates,
-        checkResults: this.checkResults
+        checkResults: this.checkResults,
+        checkAttempts: this.checkAttempts
       });
     }
 
     restore(snapshot) {
       if (!isPlainObject(snapshot)) throw new TypeError("存档状态格式无效");
       const clean = Game.deepClone(snapshot);
+      if (clean.checkAttempts === undefined) clean.checkAttempts = {};
       if (clean.sceneId != null && typeof clean.sceneId !== "string") throw new TypeError("存档场景 ID 无效");
       if (clean.currentEventId != null && typeof clean.currentEventId !== "string") throw new TypeError("存档事件 ID 无效");
-      for (const key of ["attributes", "skills", "skillOverrides", "flags", "objectStates", "checkResults"]) {
+      for (const key of ["attributes", "skills", "skillOverrides", "flags", "objectStates", "checkResults", "checkAttempts"]) {
         if (!isPlainObject(clean[key])) throw new TypeError(`存档字段 ${key} 格式无效`);
       }
 
@@ -117,6 +120,7 @@
       this.inventory = clean.inventory;
       this.objectStates = clean.objectStates;
       this.checkResults = clean.checkResults;
+      this.checkAttempts = clean.checkAttempts;
 
       // 兼容旧版本已经翻到便签背面的存档：旧版本没有把便签加入物品栏，
       // 恢复后补入同一个物品 ID，避免已完成的进度丢失。

@@ -124,16 +124,17 @@
     };
   }
 
-  // 技能检定：先询问是否使用；技能未学会或玩家放弃时直接视为失败。
+  // 技能检定：默认先询问是否使用；技能未学会时直接视为失败。
   function learnedSkillCheck(skillId, options = {}) {
     const announceSuccess = options.announceSuccess !== false;
+    const confirmUse = options.confirm !== false;
     return async (context) => {
       const learned = context.state.getSkill(skillId);
       if (!learned) {
         await showSkillResult(context, skillId, false, "尚未掌握");
         return 1;
       }
-      if (!(await confirmSkillUse(context, skillId))) {
+      if (confirmUse && !(await confirmSkillUse(context, skillId))) {
         await showSkillResult(context, skillId, false, "已放弃使用");
         return 1;
       }
@@ -194,6 +195,11 @@
   // 急救与医疗是同一个技能；保留旧检定编号，兼容旧事件和旧测试。
   registerDice("skill_first_aid", learnedSkillCheck("medicine"));
   registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
+  // 调用方已在点击乘务员时完成“是否使用急救”询问，检定本身不再二次询问。
+  registerDice("skill_medicine_confirmed", learnedSkillCheck("medicine", {
+    confirm: false,
+    announceSuccess: false
+  }));
   registerDice("skill_talk", learnedSkillCheck("talk"));
   registerDice("ev016_strength_01", attrCheck("strength"));
 

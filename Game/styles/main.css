@@ -191,6 +191,11 @@ a { color: inherit; }
 .page-error { min-height: 1.5em; color: #ffb7a7; }
 .page-footer { display: flex; justify-content: flex-end; margin-top: 24px; }
 .horizontal-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ending-actions {
+  width: min(480px, 100%);
+  margin-inline: auto;
+}
+.ending-actions a { text-align: center; }
 
 /* ============ 5. 认证页（登录 / 注册）：auth-* 表单与提示 ============ */
 
@@ -1202,6 +1207,8 @@ body.home-op-active .home-page .auth-user-status {
 .mg-tug-target {
   z-index: 2;
   translate: none;
+  width: auto;
+  min-width: 0;
   height: 11%;
   display: grid;
   place-items: center;
@@ -1914,40 +1921,36 @@ body.codex-start-video-ready #home-cover {
 #codex-ending-actions {
   position: absolute;
   left: 50%;
-  bottom: 7vh;
+  top: 80%;
   z-index: 2;
-  display: flex;
-  gap: 14px;
-  translate: -50% 0;
-    opacity: 0 !important;
-  pointer-events: auto !important;
+  display: grid;
+  width: min(30vw, 480px);
+  min-width: min(320px, 80vw);
+  gap: clamp(18px, 6vh, 68px);
+  translate: -50% -50%;
 }
 
 .codex-ending-button {
-  padding: 12px 26px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  background: #272a2f;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, .45);
+  width: 100%;
+  padding: clamp(10px, 2vh, 18px) 24px;
+  color: #f1eeee;
+  border: 0;
+  background: rgba(112, 108, 110, .68);
+  font-size: clamp(16px, 1.4vw, 24px);
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, .8);
+  backdrop-filter: blur(1px);
   cursor: pointer;
 }
 
 .codex-ending-button:hover {
-  background: #423a30;
+  background: rgba(138, 132, 134, .82);
 }
 
-#codex-ending-restart {
-  color: #17120a;
-  border-color: var(--accent);
-  background: var(--accent);
-  font-weight: 700;
-    opacity: 0 !important;
-  pointer-events: auto !important;
-}
-
-#codex-ending-restart:hover {
-  background: var(--accent);
-  filter: brightness(1.08);
+#codex-ending-load,
+#codex-ending-home {
+  opacity: 0;
 }
 
 .home-op-frame {
