@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.2.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.3.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -24,6 +24,7 @@
   - [scenes.json](#scenesjson)
   - [events.json 与内置动作](#eventsjson-与内置动作)
   - [条件表达式](#条件表达式)
+  - [audio.json](#audiojson)
   - [items.json](#itemsjson)
   - [attributes.json](#attributesjson)
   - [skills.json](#skillsjson)
@@ -38,6 +39,7 @@
   - [EventEngine 与 Registry（事件引擎）](#eventengine-与-registry事件引擎)
   - [自定义动作上下文](#自定义动作上下文)
   - [小游戏：TrainGame.Minigames 注册表与 minigame 动作](#小游戏traingame-minigames-注册表与-minigame-动作)
+  - [音效：`data/audio.json` 与 `sound` 动作](#音效dataaudiojson-与-sound-动作)
   - [UI：GameWindow / TextPlayer / UIManager](#ui-gamewindow-textplayer-uimanager)
   - [浏览器调试入口](#浏览器调试入口)
 - [复杂维护工作示例](#复杂维护工作示例)
@@ -51,7 +53,7 @@
 
 1. 在 `assets/` 放入素材（透明背景的 PNG、WebP 或 SVG；场景背景按“正方形画布、内容居中排版”制作，运行时按 16:9 舞台居中裁切显示，见下文 scenes.json 一节的素材约定）。
 2. 修改对应的 `data/*.json`，**不要编辑编译产物** `data/compiled-game-data.js`。
-3. 根据 VS Code Schema 提示修正字段和类型（六份 JSON 已关联对应 Schema）。
+3. 根据 VS Code Schema 提示修正字段和类型（七份 JSON 已关联对应 Schema）。
 4. 运行 `npm run compile`，修正编译器报告的跨文件引用错误。
 5. 通过本地静态服务器登录后刷新 `home.html`，从"新的游戏"验证内容。
 6. 提交前运行 `npm run check`（重新编译 + 源码语法检查 + 运行时测试）。
@@ -115,7 +117,7 @@
 
 ## 数据接口参考
 
-`data/` 下有六份人工维护的 JSON（`meta.json`、`scenes.json`、`events.json`、`items.json`、`attributes.json`、`skills.json`），经 `npm run compile` 合并校验后生成浏览器数据包 `data/compiled-game-data.js`（`window.GAME_DATA`）。内容维护者只编辑六份源 JSON；编译产物**禁止手改**，但必须随游戏交付。
+`data/` 下有七份人工维护的 JSON（`meta.json`、`scenes.json`、`events.json`、`items.json`、`attributes.json`、`skills.json`、`audio.json`），经 `npm run compile` 合并校验后生成浏览器数据包 `data/compiled-game-data.js`（`window.GAME_DATA`）。内容维护者只编辑七份源 JSON；编译产物**禁止手改**，但必须随游戏交付。
 
 ### meta.json
 
@@ -201,6 +203,7 @@
 | `addItem` | `item` | — | 加入已注册物品；重复获得不会生成第二份。 |
 | `removeItem` | `item` | — | 移除已注册物品；未持有或重复移除不改变背包。 |
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
+| `sound` | `sound` | `await`, `start`, `duration`, `volume` | 播放 `audio.json` 里注册的音效。默认**不阻塞**（与后续对话并行）；`await: true` 时等它播完再继续。`start` 从第几毫秒开始，`duration` 最多播多少毫秒（截取一段音频），`volume` 是相对注册表音量的倍率（0–1）。暂停会掐断正在播放的音效，事件取消/回滚不追回已播音效。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 | `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
 
@@ -250,6 +253,30 @@
   ]
 }
 ```
+
+### audio.json
+
+`audio.json` 是音效注册表（顶层数组）：剧情事件只写编号，音频路径与音量配平集中在这里。字段：
+
+| 字段 | 必填 | 用法 |
+| --- | --- | --- |
+| `id` | 是 | 全局唯一编号；事件用 `{ "type": "sound", "sound": "<编号>" }` 引用。 |
+| `name` | 是 | 非空名称，供维护者阅读与检索。 |
+| `file` | 是 | 相对 `Game/` 的音频路径（如 `assets/audio/door-close.mp3`）；**编译器会校验文件真实存在且非空**。 |
+| `volume` | 否 | 0–1，缺省 `1`；该音效的默认音量，配平写在这里而不是散落到每条剧情动作里。 |
+| `description` | 否 | 字符串，维护者备注（来源、使用场合等）。 |
+
+```json
+{
+  "id": "door_close",
+  "name": "车门关闭",
+  "file": "assets/audio/door-close.mp3",
+  "volume": 0.8,
+  "description": "进出车厢时使用；素材来源见 Assets/Audio。"
+}
+```
+
+把素材放进 `Game/assets/audio/`（正式使用前从仓库根 `Assets/` 复制并改名），在 `audio.json` 登记编号，再在事件里播放。`audio.json` 是本项目唯一做**素材存在性校验**的数据文件：路径写错或文件为空时 `npm run compile` 直接失败，不会等到剧情跑到那一声才静默没声音。
 
 ### items.json
 
@@ -320,7 +347,7 @@
 
 | 接口 | 用法 |
 | --- | --- |
-| `TrainGame.version` | 当前运行时版本 `0.2.0`。 |
+| `TrainGame.version` | 当前运行时版本 `0.3.0`。 |
 | `deepClone(value)` | JSON 深拷贝；不适用函数、DOM 或循环引用。 |
 | `delay(ms)` | 普通延迟；事件演出应改用 `context.wait()`。 |
 | `evaluateCondition(condition, state)` | 计算通用条件；未知条件警告并返回 `false`。 |
@@ -569,6 +596,39 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 接入一个小游戏的完整步骤见[示例九：接入一个小游戏](#示例九接入一个小游戏)。
 
+### 音效：`data/audio.json` 与 `sound` 动作
+
+音效索引是纯数据文件 `data/audio.json`（字段表见[数据接口参考](#audiojson)），经编译器并入 `window.GAME_DATA.audio`；播放由 `src/audio.js` 的 `TrainGame.AudioManager` 负责，`UIManager` 构造时创建 `ui.audio`。事件里的写法：
+
+```json
+{ "type": "sound", "sound": "door_close" },
+{ "type": "sound", "sound": "alarm", "await": true, "start": 1500, "duration": 2000, "volume": 0.7 }
+```
+
+| 动作字段 | 说明 |
+| --- | --- |
+| `sound` | 必填，`data/audio.json` 注册的编号；未注册在编译期与运行期都会报错。 |
+| `await` | `true` 时等这条音效播完（或 `duration` 截断时长走完）再执行下一条动作；缺省为**触发即走**，音效与后续对话并行。 |
+| `start` | 从音频第几毫秒开始播放；配合 `duration` 可截取一段，不必为每段音效单独切文件。 |
+| `duration` | 最多播放多少毫秒；到时停止并结束等待。 |
+| `volume` | 相对 `audio.json` 中 `volume` 的倍率（0–1），供单次演出微调。 |
+
+`AudioManager` 契约：
+
+| 接口 | 说明 |
+| --- | --- |
+| `new AudioManager(root, registry)` | `root` 为音源挂载宿主（游戏页传 `document.body`）；`registry` 为 `GAME_DATA.audio`。构造不触碰 DOM，无 DOM 环境自动降级。 |
+| `play(soundId, options)` | 播放并返回句柄 `{ finished, duration, stop() }`：`finished` 在播完、出错、停止或到达截断时长时解决；`duration` 是本次播放的有效时长（秒，未知时为 `null`）；`stop()` 幂等。同一编号重播会先收掉上一条。 |
+| `stopAll()` | 停止全部活动音源；`UIManager.setPaused(true)` 与 `UIManager.cancelPending()` 都会调用它。 |
+
+语义与边界：
+
+- **暂停与取消**：暂停（Esc / 暂停菜单 / 结束页接管）立即静音，恢复后不补播；事件取消、回滚、终止同样掐断。**已经播出的非阻塞音效不回滚**——音效属演出资源，不写入游戏状态，因此不进存档快照。
+- **并发上限**：同时可闻音源上限 `TrainGame.AUDIO_MAX_VOICES`（8）；超出时停掉最早开始的一条，避免连点叠音。
+- **等待兜底**：`await: true` 复用引擎的可取消等待（取消立即结束等待），并以 `TrainGame.AUDIO_MAX_VOICE_WAIT_MS`（30 秒）兜底，元数据始终加载不出来时不会把事件链挂死。
+- **自动播放策略**：浏览器拒绝 `play()` 时只告警（控制台 + 一次 toast，文案常量 `TrainGame.AUDIO_AUTOPLAY_HINT`），该音效跳过、事件链继续——音效是可选演出，不因此回滚剧情。
+- **与 BGM 的区别**：`assets/audio/bgm.mp3` 由 `src/bgm.js` 作为跨页背景音乐独立播放（详见该文件顶部说明），与 `sound` 动作各管一套，互不停止。
+
 ### UI：GameWindow / TextPlayer / UIManager
 
 `new TrainGame.GameWindow(root, className)` 是窗口基类，负责窗口元素的基础生命周期与内容装载：
@@ -799,6 +859,23 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的小游戏段落补充回归（结算执行、无结算继续、未注册报错、非法结算回滚），运行 `npm run check`；按本节开头“变更协议时的联动清单”检查是否需同步文档/README。
 
 > 仓库自带的 `webgl3d_demo`（`src/minigame-games/webgl3d-demo.js`）是原生 WebGL 3D 技术演示：它同时验证“事件动作 → 宿主窗口内自绘独立可交互画面 → 3D canvas → 完成/退出两条结算路径 → 结算动作列表被执行”。演示触发物 `mg3d_demo_spot_06` 默认不可见（`visibleWhen` 检查旗标 `mg3d_demo_visible`），验收时进入游戏后在控制台执行 `game.state.flags.mg3d_demo_visible = true; game.scene.refresh();` 再点击该装置。该物件与事件 `E_MG3D_DEMO`、素材 `assets/mg3d-demo-spot.svg` 构成独立演示块，正式剧情不需要时可整体删除。
+
+### 示例十：新增一个音效并在剧情里播放
+
+目标：为“车门关闭”加一个音效，在进门事件里播放，并让里世界那次改为“等音效播完再继续”。
+
+1. **放素材**：把音频复制到 `Game/assets/audio/`（例如 `door-close.mp3`），文件名用小写英文、数字与连字符。
+2. **登记编号**：在 `data/audio.json` 追加：
+   ```json
+   { "id": "door_close", "name": "车门关闭", "file": "assets/audio/door-close.mp3", "volume": 0.8 }
+   ```
+   编辑器会按 `schemas/audio.schema.json` 提示字段。
+3. **接线**：在 `data/events.json` 的开门事件里写 `{ "type": "sound", "sound": "door_close" }`（不阻塞，与后续对话并行）；需要同步时写 `{ "type": "sound", "sound": "door_close", "await": true }`，需要截取中段时再加 `"start"` 与 `"duration"`。
+4. **编译校验**：运行 `npm run compile`；日志应显示音效数量，路径写错或文件为空会直接报错。
+5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
+6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
+
+> 仓库自带一条音效验证链路：`data/audio.json` 的 `sfx_framework_test` / `sfx_framework_test_await` 两条临时条目（共用 `assets/audio/sfx-framework-test-tone.wav`：0.45 秒 440Hz 短音，8kHz 8bit 单声道），触发物 `sfx_test_spot_06` 在 6 号车厢、默认由旗标 `sfx_test_spot_visible` 隐藏，验收时在控制台执行 `game.state.flags.sfx_test_spot_visible = true; game.scene.refresh();` 再点击它（事件 `E_SFX_TEST` 依次演示两种播放：第一条不阻塞、与对话并行；第二条 `await: true`、等它播完才继续）。正式音效就位后，删除这两条音频条目、该物件与 `E_SFX_TEST` 即可整块移除。
 
 ## 相关文档
 

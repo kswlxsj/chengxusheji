@@ -41,7 +41,7 @@
 
 ## 当前开发进度
 
-当前运行时版本为 **v0.2.0**，数据格式版本为 **3**，存档版本为 **3**。
+当前运行时版本为 **v0.3.0**，数据格式版本为 **3**，存档版本为 **3**。
 
 ### 已完成
 
@@ -64,7 +64,8 @@
 - 游戏内全部位图（场景背景、物件、物品栏图标、插图、封面）默认最近邻插值（`image-rendering: pixelated`），放大呈像素游戏的硬边感。
 - 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 底部常驻物品快捷栏：渲染持有物品的图标与名称（含数字快捷键），点击物品运行其 `inspectEvent` 做调查/使用；手机与手电筒的调查事件经项目 `useLight` 自定义动作提供“照亮”选择。
-- 六份内容 JSON 的 VS Code Schema、编译期交叉引用校验和运行时测试。
+- 原生音效播放：音效索引集中在 `data/audio.json`（编号、音频路径、默认音量；编译期校验音频文件真实存在且非空），事件用内置 `{ "type": "sound", "sound": "<编号>" }` 触发，默认与对话并行（不阻塞），可加 `await: true` 等它播完、用 `start`/`duration` 截取一段、用 `volume` 单次微调；暂停/取消/终止统一掐断正在播放的音效。验证链路为 6 号车厢的隐藏测试物件 `sfx_test_spot_06`（默认由旗标隐藏，验收与删除方法见 `docs/API使用说明.md` 示例十）。
+- 七份内容 JSON（含 `audio.json`）的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
 当前剧情主线已全部接线并通过编译校验（数据规模见下文「快速开始」的检查结果）。开局路径示例：
@@ -129,7 +130,7 @@ python -m http.server 8000 --bind 127.0.0.1
 需要 Node.js 与 npm。当前 `package.json` 没有依赖，无需执行 `npm install`。
 
 ```powershell
-# 校验六份内容数据并重新生成浏览器数据包
+# 校验七份内容数据并重新生成浏览器数据包
 npm run compile
 
 # 运行不依赖 DOM 的运行时测试
@@ -142,12 +143,14 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：12 个场景，232 个事件，9 个物品，8 个属性，5 个技能，6 个小游戏。
-运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。
+编译完成：12 个场景，233 个事件，9 个物品，8 个属性，5 个技能，6 个小游戏，2 个音效。
+运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态、小游戏结算与音效播放。
 里世界回归通过：逐句场景、随机出口、交互分支、回程接主剧本2号、道具、结局与切景取消。
 主线接线回归通过：4号车厢入口与一次性检定、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。
 资源等待、命中位图与对白计时器测试通过。
 ```
+
+> 事件数会随剧情接线继续变化；`audio.json` 里的两条 `sfx_framework_test*` 是音效框架的临时验证条目，新增正式音效时按需替换。
 
 ## 运行原理
 
@@ -188,7 +191,7 @@ data/compiled-game-data.js（生成 window.GAME_DATA）
 | `SaveManager` | 当前账号三个槽位的读取、写入、摘要与删除 | 判断事件状态是否稳定 |
 | `Auth` / `AuthGuard` | 本地账号键值对、当前标签页登录态、页面守卫与后退缓存恢复 | 提供真实安全认证 |
 | `PageFlow` | 页面路径、入口参数与 `sessionStorage` 跨页交接 | 持久化正式存档 |
-| 数据编译器 | 静态校验六份 JSON（含检定编号与结果分支引用，dice 清单由 vm 加载 `src/dice.js` 读取）并生成 `data/compiled-game-data.js` | 运行游戏 |
+| 数据编译器 | 静态校验七份 JSON（含检定编号与结果分支引用，dice 清单由 vm 加载 `src/dice.js` 读取；音效清单校验引用并确认音频文件真实存在且非空）并生成 `data/compiled-game-data.js` | 运行游戏 |
 
 各模块全部类与方法的契约见 `docs/API使用说明.md` 的[运行时接口参考](docs/API使用说明.md#运行时接口参考)。
 
@@ -230,6 +233,7 @@ Game/
 │  └─ flashlight.svg
 ├─ data/
 │  ├─ attributes.json
+│  ├─ audio.json
 │  ├─ compiled-game-data.js
 │  ├─ events.json
 │  ├─ items.json
@@ -307,6 +311,7 @@ Game/
 │     └─ index.html
 ├─ schemas/
 │  ├─ attributes.schema.json
+│  ├─ audio.schema.json
 │  ├─ events.schema.json
 │  ├─ game-data.schema.json
 │  ├─ items.schema.json
@@ -326,6 +331,7 @@ Game/
 ├─ src/
 │  ├─ auth-guard.js
 │  ├─ auth.js
+│  ├─ audio.js
 │  ├─ custom-actions.js
 │  ├─ dice.js
 │  ├─ events.js
@@ -371,7 +377,7 @@ Game/
 
 | 文件 | 用途 |
 | --- | --- |
-| `settings.json` | 将六份 `data/*.json` 关联到对应 Schema。用 VS Code 打开整个目录即可获得补全和错误提示。 |
+| `settings.json` | 将七份 `data/*.json` 关联到对应 Schema。用 VS Code 打开整个目录即可获得补全和错误提示。 |
 
 ### `assets/`
 
@@ -392,6 +398,9 @@ Game/
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
+| `audio/bgm.mp3` | 全局背景音乐，由 `src/bgm.js` 跨页续播（与 `sound` 动作各管一套）。 |
+| `audio/op.mp3` | 主页开场（OP）音乐，由 `src/home-op.js` 播放。 |
+| `audio/sfx-framework-test-tone.wav` | 音效框架验证用短音（0.45 秒 440Hz，8kHz 8bit 单声道，仅 3.6KB）；正式音效就位后可随验证链路一并删除。 |
 
 背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
 
@@ -402,6 +411,7 @@ Game/
 | `meta.json` | 是 | 标题、封面、入口和初始状态。 |
 | `scenes.json` | 是 | 场景背景、物件位置、点击入口和显示条件。 |
 | `events.json` | 是 | 剧情事件、动作、选择和检定分支。 |
+| `audio.json` | 是 | 音效注册表；配置名称、音频路径与默认音量，事件用 `sound` 动作引用其编号。编译期会校验音频文件真实存在且非空。 |
 | `items.json` | 是 | 物品注册表；配置名称、图标、说明和点击调查事件。 |
 | `attributes.json` | 是 | 属性、边界和新游戏可分配点数。 |
 | `skills.json` | 是 | 技能和可选的属性自动触发条件。 |
@@ -448,7 +458,8 @@ Game/
 | `items.schema.json` | 物品注册表。 |
 | `attributes.schema.json` | 属性注册表和点数类型。 |
 | `skills.schema.json` | 技能和属性自动触发条件。 |
-| `game-data.schema.json` | 六类数据合并后的总结构参考；当前 VS Code 不直接关联它。 |
+| `audio.schema.json` | 音效注册表：编号、名称、音频路径与默认音量。 |
+| `game-data.schema.json` | 七类数据合并后的总结构参考；当前 VS Code 不直接关联它。 |
 
 Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校验。修改数据协议时通常要同步更新 Schema、编译器、运行时、测试和本文。
 
@@ -466,6 +477,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `events.js` | 注册表、取消机制、终止条件、内置动作与 `EventEngine`。 |
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`、`useLight`、`endGame`、`weightedBranch`（按权重随机分岔，静默判定）。 |
+| `audio.js` | `TrainGame.AudioManager` 音效播放：编号来自 `data/audio.json`（编译进 `GAME_DATA.audio`），事件用内置 `sound` 动作播放；无 DOM 环境自动降级，暂停/取消统一掐断。 |
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
@@ -479,7 +491,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | 文件 | 用途 |
 | --- | --- |
 | `styles/main.css` | 16:9 容器、场景、HUD、窗口、菜单和动画的全部样式。 |
-| `tools/compile-data.mjs` | 读取六份 JSON，校验并覆盖生成编译数据。 |
+| `tools/compile-data.mjs` | 读取七份 JSON，校验并覆盖生成编译数据。 |
 | `tools/test-runtime.mjs` | 在 Node.js `vm` 沙箱测试本地认证、状态、技能、条件、存档和部分动作。 |
 | `tools/test-inner-world.mjs` | 里世界主力回归：逐句场景轨迹、随机出口、门禁、道具、钥匙、返程接主剧本2号与结局。 |
 | `tools/test-main-route.mjs` | 主线接线回归：4号车厢入口与一次性检定、4号折返描写、3号→2号点门驱动与里世界返程接线、Clicker 与控制杆接线。 |
@@ -494,7 +506,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 ### 游戏内容维护者：从这里开始
 
-你是编剧、场景/素材制作或剧本数据转换人员，工作对象是 `data/*.json` 六份内容数据与 `assets/` 素材。字段级规则统一放在接口手册，本文只保留入口导读：
+你是编剧、场景/素材制作或剧本数据转换人员，工作对象是 `data/*.json` 七份内容数据与 `assets/` 素材。字段级规则统一放在接口手册，本文只保留入口导读：
 
 - **内容怎么改**：素材放 `assets/` → 修改 `data/*.json`（编辑器有 Schema 补全提示）→ `npm run compile` → 静态服务器刷新验证 → `npm run check`。全部字段与动作规则见[接口手册：数据接口参考](docs/API使用说明.md#数据接口参考)，维护工作流与 ID/路径约定见[接口手册：维护工作流与约定](docs/API使用说明.md#维护工作流与约定)。
 - **红线**：只编辑源 JSON，不碰 `data/compiled-game-data.js`（由 `npm run compile` 生成，但必须随游戏交付）；JSON 不能执行 JavaScript，自定义演出只能引用程序员白名单动作。
@@ -515,7 +527,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 `npm run compile` 会检查 JSON 结构、部分未知字段、ID 格式和唯一性、初始入口、跨文件引用、属性边界与分配容量、技能条件、显示/选项条件以及动作关键类型和值。
 
-它目前**不会**检查素材文件是否存在、旗标是否声明、自定义动作是否注册，也不会证明所有分支可达或检定函数返回的下标总是落在列表内，因此仍需实际游玩。
+它目前**不会**检查图片素材文件是否存在、旗标是否声明、自定义动作是否注册，也不会证明所有分支可达或检定函数返回的下标总是落在列表内，因此仍需实际游玩。唯一的例外是 `audio.json` 的音效路径：编译器会校验音频文件真实存在且非空。
 
 ### 常见问题
 
