@@ -5,7 +5,8 @@
 // 覆盖范围（5号车厢 → 4号 → 3号 → 2号 → 先头车厢）：
 // - 5号右门只过门（切景 + 过门句，不触发医学检定）；剧情路线统一经 E_013_ENTRY 进4号。
 // - 进4号车厢的医学检定每次存档只发生一次；失败结果写入 crew_04_medical_failed。
-// - 4号→3号折返有折返描写；3号→2号在“踏进2号车厢”之前切到 carriage_02。
+// - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_501）才进入。
+// - 里世界返程 E_524 回到真2号后接 E_025 喘息段，播完停下，不自动进入 Clicker 遭遇。
 // - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行通过也置 carriage_02_passed。
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -117,10 +118,16 @@ assert.deepEqual(door04[0], { type: "changeScene", scene: "carriage_03" });
 assert.equal(door04[door04.length - 1].type, "dialogue");
 assert.match(door04[door04.length - 1].text, /返回3号车厢/);
 
-// 3号→2号：两条光源检定分支都要先切景。
-assert.deepEqual(actionsOf("E_024_S_CONTINUE")[0], { type: "changeScene", scene: "carriage_02" });
-const failBranch = actionsOf("E_024_F");
-assert.deepEqual(failBranch[failBranch.length - 1], { type: "changeScene", scene: "carriage_02" });
+// 3号→2号不再由剧情自动进车：E_022_ITEM 拿完手电即停，E_023 末段直接接里世界入口；
+// 进车只能由玩家点 door_03_to_02（E_501）。E_024 光源侦查已不在主线上（见 docs/main-route-wiring.md）。
+assert.equal(eventById.get("E_022_ITEM").next, undefined);
+assert.equal(eventById.get("E_023_LOOP").next, "E_501");
+
+// 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
+assert.equal(eventById.get("E_524_DONE").next, "E_025");
+assert.equal(eventById.get("E_524_CREW").next, "E_025");
+assert.equal(eventById.get("E_025").next, undefined);
+assert.equal(eventById.get("E_025_CARRIED").next, undefined);
 
 // 潜行通过也算通过，前门不再永远被堵；前门通向先头车厢到达事件。
 assert.equal(actionsOf("E_027_S").some((action) => action.type === "setFlag" && action.key === "carriage_02_passed" && action.value === true), true);
@@ -172,24 +179,16 @@ await game.play("E_DOOR_04");
 assert.equal(game.state.sceneId, "carriage_03");
 assert.match(game.trace[0].text, /大量行李/);
 
-// 3号→2号：切到 carriage_02 之后才播“踏进2号车厢”，此后不再回到3号。
-game = fixture({ sceneId: "carriage_03", dice: { skill_medicine: 1 } });
-await game.play("E_024_S_CONTINUE");
-let cut = assertCutBefore(game, "carriage_03", "carriage_02");
-assert.equal(cut, 0, "该事件应以切景开头");
-assert.equal(game.trace[cut].text, "你屏住呼吸，压低身形，踏进2号车厢。");
-assert.equal(game.state.flags.carriage_02_passed, true, "潜行通过也要置通过状态");
-const sceneSeq = scenesOf(game);
-const firstFront = sceneSeq.indexOf("front_carriage");
-assert.ok(firstFront > cut, "潜行通过后应到达先头车厢");
-assert.equal(sceneSeq.slice(cut, firstFront).every((id) => id === "carriage_02"), true, "2号车厢段的每句都应在 carriage_02");
-
-// 光源检定失败分支：先播出发场景的判断，再切到2号车厢。
-game = fixture({ sceneId: "carriage_03" });
-await game.play("E_024_F");
-cut = assertCutBefore(game, "carriage_03", "carriage_02");
-assert.equal(cut, 1, "失败分支应先播“什么都看不清”，再切景");
-assert.equal(game.trace[cut].text, "四周毫无光源。");
+// 里世界返程：先切到真2号再播到达描写，接着走 E_025 喘息段后停下（进车与点门接线见上方结构断言）。
+game = fixture({ sceneId: "carriage_inner_01" });
+await game.play("E_524");
+const cut = assertCutBefore(game, "carriage_inner_01", "carriage_02");
+assert.equal(game.trace[cut].text, "这一次，门后是真正的2号车厢。");
+assert.equal(game.trace[cut - 1].text, "你推开门——", "推门句仍属于里世界一侧");
+assert.match(game.trace[game.trace.length - 1].text, /那不是人类的喘息/);
+assert.equal(game.state.sceneId, "carriage_02");
+assert.equal(game.trace.some((entry) => entry.scene === "carriage_02" && entry.text === "四周毫无光源。"), true);
+assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "返程不得自动进入 Clicker 遭遇");
 
 // 2号车厢点 Clicker：直接进入怪物遭遇，不再出现3号车厢的取工具文案。
 game = fixture({ sceneId: "carriage_02", choiceLabels: ["屏住呼吸，尝试潜行通过"] });
@@ -198,6 +197,8 @@ assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /那个怪物/);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
+assert.equal(game.state.flags.carriage_02_passed, true, "潜行通过后要置通过状态");
+assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), true, "潜行成功应到达先头车厢");
 
 // 先头车厢点控制把手：打开操作面板，不再触发2号车厢的潜行检定。
 game = fixture({ sceneId: "front_carriage", inventory: ["crew_keys"], choiceLabels: ["右杆下拉——加速，继续前进"] });
@@ -207,4 +208,4 @@ assert.match(game.trace[0].text, /操作面板/);
 assert.equal(game.diceCalls.includes("ev027_stealth_luck_01"), false, "控制把手不得触发潜行检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
 
-console.log("主线接线回归通过：4号车厢入口与一次性检定、折返描写、3号→2号切景、Clicker 与控制杆接线。");
+console.log("主线接线回归通过：4号车厢入口与一次性检定、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");

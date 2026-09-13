@@ -4150,8 +4150,7 @@ window.GAME_DATA = {
           },
           "next": "E_025_CARRIED"
         }
-      ],
-      "next": "E_026"
+      ]
     },
     {
       "id": "E_025_CARRIED",
@@ -4165,8 +4164,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你听出她声音里的恐惧，与她警告你时如出一辙。"
         }
-      ],
-      "next": "E_026"
+      ]
     },
     {
       "id": "E_025_SINGLE",
@@ -6290,11 +6288,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "这一次，门后是真正的2号车厢。你听见明显的喘息声。"
-        },
-        {
-          "type": "dialogue",
-          "text": "那不是人类的喘息。"
+          "text": "这一次，门后是真正的2号车厢。"
         },
         {
           "type": "setFlag",
@@ -6523,7 +6517,8 @@ window.GAME_DATA = {
           },
           "next": "E_524_CREW"
         }
-      ]
+      ],
+      "next": "E_025"
     },
     {
       "id": "E_524_CREW",
@@ -6532,7 +6527,8 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "乘务员似乎并不知道这一切。"
         }
-      ]
+      ],
+      "next": "E_025"
     }
   ],
   "items": [

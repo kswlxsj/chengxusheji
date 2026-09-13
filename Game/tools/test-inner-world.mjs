@@ -148,7 +148,8 @@ for (const met of [false, true]) {
 }
 
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
-// 返程链路＝伪4号左门（花海调头后，或窗边谈话结束后）→ 花草车厢 → 空车厢 → 磨损门 → 真实2号车厢。
+// 返程链路＝伪4号左门（花海调头后，或窗边谈话结束后）→ 花草车厢 → 空车厢 → 磨损门 → 真实2号车厢
+// → E_025 喘息段（播完停下，等玩家照明后自己点 Clicker；E_524 的喘息描写已并入 E_025）。
 for (const fromSea of [false, true]) for (const bottle of [false, true]) for (const given of [false, true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
     [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], fromSea ? "flower_sea" : "carriage_fake_04");
@@ -178,7 +179,11 @@ for (const fromSea of [false, true]) for (const bottle of [false, true]) for (co
   assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), true);
   assert.equal(game.state.inventory.filter(i => i === "crew_keys").length, 1);
   assert.equal(game.trace.some(t => t.text?.includes("钥匙不知何时")), given);
-  assert.equal(game.trace.some(t => t.event?.startsWith("E_025")), false);
+  assert.equal(game.trace.some(t => t.event?.startsWith("E_025")), true, "返程回到真2号后接 E_025 喘息段");
+  assert.equal(game.trace.some(t => t.scene === "carriage_02" && t.text === "四周毫无光源。"), true);
+  assert.equal(game.trace.some(t => t.text?.includes("你听见明显的喘息声")), false, "E_524 的喘息描写已并入 E_025");
+  assert.equal(game.trace.filter(t => t.text?.includes("那不是人类的喘息")).length, 1, "喘息描写只播一次");
+  assert.equal(game.trace.some(t => t.event === "E_026"), false, "回到2号后不自动进入 Clicker 遭遇");
   const snapshot = game.state.snapshot(); game.state.restore(snapshot);
   assert.equal(game.state.flags.ev519_key_ever_given, given);
 }
@@ -288,6 +293,11 @@ assert.equal(events.find(e => e.id === "E_501").actions
 const e022Item = events.find(e => e.id === "E_022_ITEM");
 assert.equal(e022Item.next, undefined, "E_022_ITEM 结束后应停在3号车厢，等待玩家点门");
 assert.equal(events.find(e => e.id === "E_023_LOOP").next, "E_501", "E_023 末段应进入里世界");
+// 里世界出口接回主剧本：E_524 回到真2号后由 E_025 提供喘息段，播完停下等玩家点 Clicker。
+assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_025");
+assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_025");
+assert.equal(events.find(e => e.id === "E_025").next, undefined);
+assert.equal(events.find(e => e.id === "E_025_CARRIED").next, undefined);
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);
@@ -314,4 +324,4 @@ await new Promise(resolve => setTimeout(resolve, 80));
 assert.equal(activeElapsed, undefined);
 game.engine.setPaused(false); await running;
 assert.ok(activeElapsed >= 55 && activeElapsed < 130, "有效计时不应累计暂停时间");
-console.log("里世界回归通过：逐句场景、随机出口、交互分支、回程、道具、结局与切景取消。");
+console.log("里世界回归通过：逐句场景、随机出口、交互分支、回程接主剧本2号、道具、结局与切景取消。");
