@@ -541,7 +541,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_DOOR_03"
+          "clickEvent": "E_501"
         },
         {
           "id": "black_bag_03",

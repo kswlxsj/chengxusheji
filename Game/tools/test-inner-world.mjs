@@ -233,9 +233,11 @@ assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负
 const carriage02 = scenes.find(s => s.id === "carriage_02");
 const bottle02 = carriage02.objects.find(o => o.id === "bottle_02");
 assert.equal(bottle02.clickEvent, "E_028_PICK_BOTTLE");
-// 里世界内容保留为可单独测试的开发分支，但不得再劫持当前主线入口或 E-029 战斗。
+// 3号通往2号的门重新接入里世界入口：未到过伪4时进门走里世界，到过之后由 E_501 的守卫落到主线。
 const carriage03 = scenes.find(s => s.id === "carriage_03");
-assert.equal(carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent, "E_DOOR_03");
+assert.equal(carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent, "E_501");
+assert.equal(events.find(e => e.id === "E_501").actions
+  .some(a => a.type === "conditionalJump" && a.next === "E_DOOR_03" && a.when?.flag === "inner_world_entered"), true);
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);
