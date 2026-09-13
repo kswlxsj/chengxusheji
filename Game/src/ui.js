@@ -787,7 +787,7 @@
   }
 
   class UIManager {
-    constructor(root) {
+    constructor(root, audio = []) {
       this.root = root;
       this.dialog = new DialogWindow(root);
       this.attributeAllocation = new AttributeAllocationWindow(root);
@@ -798,10 +798,16 @@
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
       this.confirmMenu = new MenuWindow(root, "confirm-menu-window");
       this.minigame = new MinigameWindow(root);
+      // 音效管理器：注册表来自 data/audio.json（编译器并入 GAME_DATA.audio），
+      // sound 动作经 ui.audio 播放；暂停/取消统一在这里掐断。
+      this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
       this.cueLayer = document.querySelector("#acquisition-layer");
       this.cueSerial = 0;
+      if (this.audio) {
+        this.audio.onAutoplayBlocked = (message) => this.toast(message);
+      }
     }
 
     closeDialog() {
@@ -810,6 +816,8 @@
 
     setPaused(value) {
       this.dialog.setPaused(value);
+      // 暂停即静音：暂停菜单背后不该还在响，恢复后也不补播（本次约定的口径）。
+      if (value && this.audio) this.audio.stopAll();
     }
 
     cancelPending() {
@@ -818,6 +826,7 @@
       this.inspect.close();
       this.dice.close();
       this.minigame.close();
+      if (this.audio) this.audio.stopAll();
     }
 
     closePauseMenus() {

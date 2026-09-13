@@ -11,7 +11,7 @@
   const mode = params.get("mode");
   const requestedSlot = flow.parseSlot(params.get("slot"));
   const state = new Game.GameState(data.meta.initialState, data.attributes, data.skills);
-  const ui = new Game.UIManager(document.querySelector("#window-layer"));
+  const ui = new Game.UIManager(document.querySelector("#window-layer"), data.audio);
   const sceneRoot = document.querySelector("#scene-layer");
   const scene = new Game.SceneManager(sceneRoot, data.scenes, state);
   const saves = new Game.SaveManager(state);

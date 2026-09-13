@@ -249,6 +249,28 @@
         return { next: action.next, stop: true };
       });
 
+      // 音效播放：JSON 只写 data/audio.json 里的编号，路径与音量配平留在数据文件。
+      // 默认“触发即走”，与对话并行；写 await: true 时等这条音效播完再继续，
+      // 等待复用可取消的 waitFor：取消立即结束、元数据异常时有安全超时兜底。
+      this.registerAction("sound", async (action) => {
+        if (!this.ui.audio) throw new Error("音效系统未加载：缺少 src/audio.js 或 ui.audio");
+        const voice = this.ui.audio.play(action.sound, {
+          start: action.start,
+          duration: action.duration,
+          volume: action.volume
+        });
+        if (action.await !== true) return null;
+        try {
+          await this.waitFor(voice.finished, this.activeRun, {
+            timeoutMs: Game.AUDIO_MAX_VOICE_WAIT_MS,
+            label: `音效 ${action.sound}`
+          });
+        } finally {
+          voice.stop();
+        }
+        return null;
+      });
+
       this.registerAction("custom", async (action) => {
         const handler = this.customActions.get(action.name);
         await handler(action.params || {}, this.context());
