@@ -590,6 +590,13 @@
   - 修法：`E_013_ENTRY`（进入4号车厢，乘务员首次接触）首次到达时置 `crew_met = true`；`E_506` 改读同一旗标。`E_013_ENTRY` 位于主线通往4号车厢的必经路径，且里世界的 `E_506` 只能从主线进入，因此该旗标在判定点必定已置位。
   - 口径说明：这是"乘务员是否遇到过"，不是"是否存活"。剧本里"若乘务员已死"那一支（死亡状态与置位点）仍未定义，`E_507`（疯狂低语）暂时只能由其它线路抵达，登记在 Q9 待编剧确认。
 
+- **素材重同步：里世界 StillLife 贴图更新（2026-09-13）** —— 美术同学在 `Assets/Image/Scene/StillLife/` 更新了四张里世界贴图（`inner_02_window`、`inner_02_bottle`、`inner_03_flower_window`、`inner_03_fog_window`），本次按同一映射同步到 `Game/assets/`，游戏内即生效：
+  - 对应关系：`inner_02_window.png → assets/inner-02-window.png`（`carriage_inner_02.window_inner`）、`inner_02_bottle.png → assets/inner-02-bottle.png`（`carriage_inner_02.bottle_inner`）、`inner_03_flower_window.png → assets/inner-03-flower-window.png`（`carriage_fake_04.window_fake04_flower`）、`inner_03_fog_window.png → assets/inner-03-fog-window.png`（`carriage_fake_04.window_fake04_fog`）。
+  - 仅替换贴图二进制内容：`data/scenes.json` 的路径、`position` 与 `visibleWhen` 全部未动，故无需重新编译 `compiled-game-data.js`（`assets/` 为运行时按 URL 直接取用）。
+  - 新旧图尺寸一致（2843×1600），审阅者确认 alpha 对齐等价，`fullCanvas` 整幅蒙版的命中区域不受影响。
+  - 回归：`npm test` 四个套件（运行时 / 里世界 / 主线接线 / 资源等待与命中位图）全部通过。
+  - 对应提交：`685fb80`。
+
 ## 收尾
 
 全部完成（每条提问都有答复、每行素材都有显式结果）后，回复我下列任一固定口令：
