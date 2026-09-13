@@ -170,6 +170,23 @@
           "flag": "mg3d_demo_visible",
           "equals": true
         }
+      },
+      {
+        "id": "sfx_test_spot_06",
+        "name": "（开发演示）音效测试按钮",
+        "image": "assets/mg3d-demo-spot.svg",
+        "position": {
+          "x": 33,
+          "y": 61,
+          "width": 12,
+          "height": 16
+        },
+        "zIndex": 13,
+        "clickEvent": "E_SFX_TEST",
+        "visibleWhen": {
+          "flag": "sfx_test_spot_visible",
+          "equals": true
+        }
       }
     ]
   },

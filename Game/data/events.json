@@ -4240,6 +4240,32 @@
     ]
   },
   {
+    "id": "E_SFX_TEST",
+    "actions": [
+      {
+        "type": "dialogue",
+        "text": "（开发演示）音效测试按钮被按下。"
+      },
+      {
+        "type": "sound",
+        "sound": "sfx_framework_test"
+      },
+      {
+        "type": "dialogue",
+        "text": "第一声是声画并行：这句话在播时，音效应同时可闻（不阻塞）。"
+      },
+      {
+        "type": "sound",
+        "sound": "sfx_framework_test_await",
+        "await": true
+      },
+      {
+        "type": "dialogue",
+        "text": "第二声是阻塞播放：它播完（约 0.45 秒）之后，这句才出现。"
+      }
+    ]
+  },
+  {
     "id": "E_023_CHOICE",
     "actions": [
       {
