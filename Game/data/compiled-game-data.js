@@ -4716,32 +4716,11 @@ window.GAME_DATA = {
       "id": "E_030",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
-        },
-        {
-          "type": "dialogue",
-          "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
-        },
-        {
-          "type": "dialogue",
-          "text": "意识与身体一同消失……"
-        },
-        {
-          "type": "dialogue",
-          "text": "在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你发现背包里多了一个背带切断的黑色包。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（SAN 减少 1d4/1d10）"
-        },
-        {
-          "type": "check",
-          "dice": "ev030_san_01"
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "bad_end"
+          }
         }
       ]
     },
@@ -5336,32 +5315,11 @@ window.GAME_DATA = {
       "id": "E_035",
       "actions": [
         {
-          "type": "sound",
-          "sound": "metro_speed_down"
-        },
-        {
-          "type": "dialogue",
-          "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
-        },
-        {
-          "type": "dialogue",
-          "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你想起一路上那些字：\n\n「MOVE FORWARD」\n\n你停下的那一刻，就已经输了。"
-        },
-        {
-          "type": "dialogue",
-          "text": "意识与身体一同消失……在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你发现背包里多了一个背带被切断的黑色包。"
-        },
-        {
-          "type": "check",
-          "dice": "ev030_san_01"
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "bad_end"
+          }
         }
       ]
     },
@@ -7023,6 +6981,13 @@ window.GAME_DATA = {
       "file": "assets/audio/eating-crisps.mp3",
       "volume": 0.45,
       "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
+    },
+    {
+      "id": "pouring_sake",
+      "name": "粘稠液体流过",
+      "file": "assets/audio/pouring-sake.mp3",
+      "volume": 0.72,
+      "description": "停车结局中血水流过脚下的声音。"
     },
     {
       "id": "opening_cracker_bag",

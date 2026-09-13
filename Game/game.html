@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=carriage-motion-20260913-6">
+  <link rel="stylesheet" href="styles/main.css?v=parking-ending-video-20260913-1">
   <link rel="stylesheet" href="styles/carriage-02-darkness.css?v=20260913-1">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
@@ -57,7 +57,7 @@
   <!-- CODEX ADD END -->
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js?v=carriage-06-guide-20260913-1"></script>
+  <script src="data/compiled-game-data.js?v=parking-ending-20260913-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/page-flow.js"></script>
@@ -69,7 +69,7 @@
   <script src="src/ui.js?v=dice-sfx-20260913-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
 
-  <script src="src/audio.js?v=inner-fake-20260913-1"></script>
+  <script src="src/audio.js?v=parking-ending-20260913-1"></script>
   <!-- TrainGame.AudioManager，音效播放：编号来自 data/audio.json，sound 动作经 ui.audio 调用。 -->
   
   <script src="src/scene.js?v=carriage-motion-20260913-2"></script>
@@ -89,6 +89,9 @@
 
   <script src="src/ending-a-sequence.js?v=ending-a-20260913-1"></script>
   <!-- 结局 A：终点站、站台与 MOVE FORWARD 的完整过场演出。 -->
+
+  <script src="src/parking-ending-sequence.js?v=parking-ending-video-20260913-1"></script>
+  <!-- 停车结局：减速停车、黑暗吞噬、血水与啃食声的完整过场演出。 -->
   
   <script src="src/minigames.js"></script>
   <!-- TrainGame.Minigames，小游戏注册表：JSON 的 minigame 动作只引用这里的编号。 -->
@@ -111,7 +114,7 @@
   <script src="src/train-bgm.js"></script>
   <!-- 正式游戏页循环播放列车背景音；进入里世界后由 main.js 暂停。 -->
 
-  <script src="src/main.js?v=inner-fake-20260913-1"></script>
+  <script src="src/main.js?v=parking-ending-20260913-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

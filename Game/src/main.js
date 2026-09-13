@@ -44,6 +44,16 @@
           console.error("结局 A 演出失败：", error);
         }
       }
+      if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
+        try {
+          await Game.playParkingEndingSequence({
+            root: gameShell,
+            audio: ui.audio
+          });
+        } catch (error) {
+          console.error("停车结局演出失败：", error);
+        }
+      }
       if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
         try {
           await Game.playSanZeroSequence();

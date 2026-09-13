@@ -72,7 +72,8 @@
         finished: null,
         duration: null,
         settle: () => {},
-        stop: () => {}
+        stop: () => {},
+        setVolume: () => {}
       };
 
       if (mutedSilent) {
@@ -125,6 +126,10 @@
       voice.finished = new Promise((resolve) => { resolveFinished = resolve; });
       voice.settle = settle;
       voice.stop = () => settle();
+      voice.setVolume = (value) => {
+        if (!element) return;
+        element.volume = baseVolume * clamp(Number(value) || 0, 0, 1);
+      };
 
       const handlePlaybackFailure = (error) => {
         console.warn(`音效 ${soundId} 播放失败：`, error);
