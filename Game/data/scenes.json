@@ -840,7 +840,7 @@
         }
       },
       {
-        "id": "door_inner02_to_02",
+        "id": "door_inner02_to_inner01",
         "name": "来路的车门",
         "image": "assets/door.svg",
         "invisible": true,
@@ -889,7 +889,7 @@
           "height": 49
         },
         "zIndex": 13,
-        "clickEvent": "E_509_BACK"
+        "clickEvent": "E_522"
       },
       {
         "id": "door_fake04_to_flower",

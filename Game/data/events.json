@@ -4333,14 +4333,6 @@
     "id": "E_503",
     "actions": [
       {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev_inner_backtrack",
-          "equals": true
-        },
-        "next": "E_522"
-      },
-      {
         "type": "dialogue",
         "text": "你穿过车门。"
       },
@@ -4752,11 +4744,6 @@
         "text": "你退出花海，向来路折返。"
       },
       {
-        "type": "setFlag",
-        "key": "ev_inner_backtrack",
-        "value": true
-      },
-      {
         "type": "changeScene",
         "scene": "carriage_fake_04"
       },
@@ -5054,11 +5041,6 @@
       {
         "type": "dialogue",
         "text": "你站在窗边。车厢两头的门仍在原处，你得决定接下来往哪边走。"
-      },
-      {
-        "type": "setFlag",
-        "key": "ev_inner_backtrack",
-        "value": true
       }
     ]
   },
@@ -5133,11 +5115,6 @@
         "value": true
       },
       {
-        "type": "setFlag",
-        "key": "ev_inner_backtrack",
-        "value": false
-      },
-      {
         "type": "conditionalJump",
         "when": {
           "flag": "ev519_key_given",
@@ -5173,40 +5150,8 @@
     "id": "E_503_BACK",
     "actions": [
       {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev_inner_backtrack",
-          "equals": true
-        },
-        "next": "E_523"
-      },
-      {
         "type": "dialogue",
         "text": "你向来路折返。"
-      },
-      {
-        "type": "custom",
-        "name": "weightedBranch",
-        "params": {
-          "outcomes": [
-            {
-              "weight": 50,
-              "flag": "ev503_return_carriage01"
-            },
-            {
-              "weight": 50,
-              "flag": "ev503_return_forward"
-            }
-          ]
-        }
-      },
-      {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev503_return_forward",
-          "equals": true
-        },
-        "next": "E_503_RETURN_FORWARD"
       },
       {
         "type": "changeScene",
@@ -5214,30 +5159,6 @@
       }
     ],
     "next": "E_502"
-  },
-  {
-    "id": "E_503_RETURN_FORWARD",
-    "actions": [
-      {
-        "type": "dialogue",
-        "text": "你摇了摇头，转身继续前进。"
-      }
-    ],
-    "next": "E_505"
-  },
-  {
-    "id": "E_509_BACK",
-    "actions": [
-      {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev_inner_backtrack",
-          "equals": true
-        },
-        "next": "E_522"
-      }
-    ],
-    "next": "E_503"
   },
   {
     "id": "E_503_BOTTLES",

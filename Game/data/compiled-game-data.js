@@ -856,7 +856,7 @@ window.GAME_DATA = {
           }
         },
         {
-          "id": "door_inner02_to_02",
+          "id": "door_inner02_to_inner01",
           "name": "来路的车门",
           "image": "assets/door.svg",
           "invisible": true,
@@ -905,7 +905,7 @@ window.GAME_DATA = {
             "height": 49
           },
           "zIndex": 13,
-          "clickEvent": "E_509_BACK"
+          "clickEvent": "E_522"
         },
         {
           "id": "door_fake04_to_flower",
@@ -5392,14 +5392,6 @@ window.GAME_DATA = {
       "id": "E_503",
       "actions": [
         {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev_inner_backtrack",
-            "equals": true
-          },
-          "next": "E_522"
-        },
-        {
           "type": "dialogue",
           "text": "你穿过车门。"
         },
@@ -5810,11 +5802,6 @@ window.GAME_DATA = {
           "text": "你退出花海，向来路折返。"
         },
         {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": true
-        },
-        {
           "type": "changeScene",
           "scene": "carriage_fake_04"
         },
@@ -6112,11 +6099,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你站在窗边。车厢两头的门仍在原处，你得决定接下来往哪边走。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": true
         }
       ]
     },
@@ -6191,11 +6173,6 @@ window.GAME_DATA = {
           "value": true
         },
         {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": false
-        },
-        {
           "type": "conditionalJump",
           "when": {
             "flag": "ev519_key_given",
@@ -6231,40 +6208,8 @@ window.GAME_DATA = {
       "id": "E_503_BACK",
       "actions": [
         {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev_inner_backtrack",
-            "equals": true
-          },
-          "next": "E_523"
-        },
-        {
           "type": "dialogue",
           "text": "你向来路折返。"
-        },
-        {
-          "type": "custom",
-          "name": "weightedBranch",
-          "params": {
-            "outcomes": [
-              {
-                "weight": 50,
-                "flag": "ev503_return_carriage01"
-              },
-              {
-                "weight": 50,
-                "flag": "ev503_return_forward"
-              }
-            ]
-          }
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev503_return_forward",
-            "equals": true
-          },
-          "next": "E_503_RETURN_FORWARD"
         },
         {
           "type": "changeScene",
@@ -6272,30 +6217,6 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_502"
-    },
-    {
-      "id": "E_503_RETURN_FORWARD",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你摇了摇头，转身继续前进。"
-        }
-      ],
-      "next": "E_505"
-    },
-    {
-      "id": "E_509_BACK",
-      "actions": [
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev_inner_backtrack",
-            "equals": true
-          },
-          "next": "E_522"
-        }
-      ],
-      "next": "E_503"
     },
     {
       "id": "E_503_BOTTLES",
