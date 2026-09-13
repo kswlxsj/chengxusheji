@@ -300,7 +300,7 @@
           "height": 63
         },
         "zIndex": 11,
-        "clickEvent": "E_013"
+        "clickEvent": "E_GO_05_04"
       },
       {
         "id": "clutter_05_a",
@@ -657,7 +657,7 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_021",
+        "clickEvent": "E_026",
         "visibleWhen": {
           "all": [
             {
@@ -750,7 +750,7 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_027",
+        "clickEvent": "E_032",
         "visibleWhen": {
           "hasItem": "crew_keys"
         }

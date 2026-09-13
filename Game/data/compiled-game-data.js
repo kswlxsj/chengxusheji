@@ -316,7 +316,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_013"
+          "clickEvent": "E_GO_05_04"
         },
         {
           "id": "clutter_05_a",
@@ -673,7 +673,7 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_021",
+          "clickEvent": "E_026",
           "visibleWhen": {
             "all": [
               {
@@ -766,7 +766,7 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_027",
+          "clickEvent": "E_032",
           "visibleWhen": {
             "hasItem": "crew_keys"
           }
@@ -1474,6 +1474,24 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_GO_05_04",
+      "actions": [
+        {
+          "type": "changeScene",
+          "scene": "carriage_04"
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_met",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，来到4号车厢。"
+        }
+      ]
+    },
+    {
       "id": "E_903",
       "actions": [
         {
@@ -1979,7 +1997,7 @@ window.GAME_DATA = {
           "next": "E_012"
         }
       ],
-      "next": "E_013"
+      "next": "E_013_ENTRY"
     },
     {
       "id": "E_010_JOIN",
@@ -1993,7 +2011,7 @@ window.GAME_DATA = {
           "next": "E_012"
         }
       ],
-      "next": "E_013"
+      "next": "E_013_ENTRY"
     },
     {
       "id": "E_011",
@@ -2118,7 +2136,7 @@ window.GAME_DATA = {
           "next": "E_012"
         }
       ],
-      "next": "E_013"
+      "next": "E_013_ENTRY"
     },
     {
       "id": "E_011_F",
@@ -2178,7 +2196,7 @@ window.GAME_DATA = {
           "next": "E_012"
         }
       ],
-      "next": "E_013"
+      "next": "E_013_ENTRY"
     },
     {
       "id": "E_012",
@@ -2242,10 +2260,10 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "本能驱使着你向前跑去，你来到4号车厢。"
+          "text": "本能驱使着你向前跑去。"
         }
       ],
-      "next": "E_013"
+      "next": "E_013_ENTRY"
     },
     {
       "id": "E_013_ENTRY",
@@ -2262,8 +2280,25 @@ window.GAME_DATA = {
       "next": "E_013"
     },
     {
+      "id": "E_013_REVISIT",
+      "actions": []
+    },
+    {
       "id": "E_013",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_entry_medical_done",
+            "equals": true
+          },
+          "next": "E_013_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_04_entry_medical_done",
+          "value": true
+        },
         {
           "type": "setFlag",
           "key": "crew_met",
@@ -2290,6 +2325,11 @@ window.GAME_DATA = {
           "type": "dialogue",
           "speaker": "乘务员",
           "text": "啊...呃...天哪..."
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_04_interacted",
+          "value": true
         }
       ],
       "next": "E_014_TALK_ENTRY"
@@ -2304,6 +2344,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "多次尝试无果后，你只能放弃对这位乘务员的救治。"
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_04_medical_failed",
+          "value": true
         }
       ]
     },
@@ -4069,6 +4114,10 @@ window.GAME_DATA = {
       "id": "E_024_S_CONTINUE",
       "actions": [
         {
+          "type": "changeScene",
+          "scene": "carriage_02"
+        },
+        {
           "type": "dialogue",
           "text": "你屏住呼吸，压低身形，踏进2号车厢。"
         }
@@ -4081,6 +4130,10 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你觉得很黑，什么都看不清。"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_02"
         }
       ],
       "next": "E_025"
@@ -4247,7 +4300,7 @@ window.GAME_DATA = {
           "options": [
             {
               "label": "推开安全门",
-              "next": "E_026",
+              "next": "E_031",
               "when": {
                 "flag": "carriage_02_passed",
                 "equals": true
@@ -4295,6 +4348,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你谨慎通过，到达先头车厢门前。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
         }
       ],
       "next": "E_031"
@@ -4668,6 +4726,10 @@ window.GAME_DATA = {
             }
           },
           "next": "E_018"
+        },
+        {
+          "type": "dialogue",
+          "text": "你穿过门，返回3号车厢。"
         }
       ]
     },
