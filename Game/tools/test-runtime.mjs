@@ -37,7 +37,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
@@ -922,4 +922,319 @@ registerStubMinigame("mg_test_quit", async (context) => {
   }
 }
 
-console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态与小游戏结算。");
+// ==== 音效（sound 动作：不阻塞 / await 阻塞 / 暂停停止 / 取消中止 / 未注册）====
+
+const SOUND_TEST_REGISTRY = [
+  { id: "sfx_test_short", name: "测试短音效", file: "assets/audio/sfx-test.mp3", volume: 0.5 },
+  { id: "sfx_test_positional", name: "测试定位音效", file: "assets/audio/sfx-test-2.mp3" }
+];
+
+// Audio 元素桩：readyState 为 1 时“元数据已就绪”，play() 立即开始；
+// 也可用 prepare() 模拟需要异步加载元数据的元素（先 play() 后 loadedmetadata）。
+class StubAudioElement {
+  constructor({ readyState = 1, duration = 0.35, failPlayback = false } = {}) {
+    this.tagName = "AUDIO";
+    this.readyState = readyState;
+    this.duration = readyState >= 1 ? duration : NaN;
+    this.plannedDuration = duration;
+    this.currentTime = 0;
+    this.volume = 1;
+    this.src = "";
+    this.hidden = false;
+    this.isConnected = false;
+    this.paused = true;
+    this.plays = 0;
+    this.pauses = 0;
+    this.removes = 0;
+    this.failPlayback = failPlayback;
+    this.attributes = {};
+    this.playCalls = [];
+    this.listeners = new Map();
+  }
+
+  setAttribute(name, value) { this.attributes[name] = value; }
+
+  addEventListener(name, handler, options = {}) {
+    if (!this.listeners.has(name)) this.listeners.set(name, []);
+    this.listeners.get(name).push({ handler, once: Boolean(options.once) });
+  }
+
+  removeEventListener(name, handler) {
+    if (!handler) {
+      this.listeners.delete(name);
+      return;
+    }
+    const remaining = (this.listeners.get(name) || []).filter((entry) => entry.handler !== handler);
+    if (remaining.length) this.listeners.set(name, remaining);
+    else this.listeners.delete(name);
+  }
+
+  emit(name) {
+    for (const entry of [...(this.listeners.get(name) || [])]) {
+      if (entry.once) this.removeEventListener(name, entry.handler);
+      entry.handler();
+    }
+  }
+
+  // 模拟元数据加载完成（需要 readyState 从 0 走起的元素）。
+  prepare() {
+    this.readyState = 1;
+    this.duration = this.plannedDuration;
+    this.emit("loadedmetadata");
+  }
+
+  play() {
+    this.plays += 1;
+    this.playCalls.push({ currentTime: this.currentTime, volume: this.volume, duration: this.duration });
+    this.paused = false;
+    if (this.failPlayback) return Promise.reject(new Error("NotAllowedError: 自动播放被拒绝"));
+    return Promise.resolve();
+  }
+
+  pause() { this.pauses += 1; this.paused = true; }
+
+  remove() { this.removes += 1; this.isConnected = false; }
+}
+
+// 每个编号一条 Audio 桩，便于断言各自收到的播放参数与停止情况。
+function createAudioStub(registry = SOUND_TEST_REGISTRY, elementOptions = {}) {
+  const elements = new Map();
+  const root = {
+    children: [],
+    append(element) {
+      element.isConnected = true;
+      element.owner = root;
+      root.children.push(element);
+    }
+  };
+  const audio = new Game.AudioManager(root, registry);
+  audio.testElements = elements;
+  audio.createElement = (entry) => {
+    const element = new StubAudioElement(elementOptions);
+    element.registryFile = entry.file;
+    elements.set(entry.id, element);
+    return element;
+  };
+  return audio;
+}
+
+async function settleMicrotasks(count = 8) {
+  for (let index = 0; index < count; index += 1) await Promise.resolve();
+}
+
+// 1) 未注册编号：管理器抛错，事件链回滚，后续动作不执行。
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const engine = new Game.EventEngine({
+    events: [{
+      id: "E_SFX_BAD",
+      actions: [
+        { type: "sound", sound: "sfx_not_registered" },
+        { type: "setFlag", key: "after_bad_sound", value: true }
+      ]
+    }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: { ...createEngineUi(), audio: createAudioStub() }
+  });
+  assert.equal(await engine.play("E_SFX_BAD"), false, "引用未注册音效应报错回滚");
+  assert.equal(state.flags.after_bad_sound, undefined, "报错后不应继续执行后续动作");
+}
+
+// 2) ui.audio 缺失：明确报错，不静默跳过。
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const engine = new Game.EventEngine({
+    events: [{ id: "E_SFX_NO_MANAGER", actions: [{ type: "sound", sound: "sfx_test_short" }] }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: createEngineUi()
+  });
+  assert.equal(await engine.play("E_SFX_NO_MANAGER"), false, "缺少音效系统应报错回滚");
+}
+
+// 3) 默认不阻塞：音效与对话并行，播放通过参数原样传递，且不等播放结束。
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const audio = createAudioStub();
+  const engine = new Game.EventEngine({
+    events: [{
+      id: "E_SFX_ASYNC",
+      actions: [
+        { type: "sound", sound: "sfx_test_positional", start: 500, duration: 1200, volume: 0.4 },
+        { type: "setFlag", key: "after_async_sound", value: true }
+      ]
+    }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: { ...createEngineUi(), audio }
+  });
+  assert.equal(await engine.play("E_SFX_ASYNC"), true, "不阻塞音效应正常结束事件");
+  assert.equal(state.flags.after_async_sound, true, "音效不应挡住后续动作");
+  const element = audio.testElements.get("sfx_test_positional");
+  assert.equal(element.plays, 1, "音效应被播放一次");
+  assert.equal(element.owner, audio.root, "音源应挂到宿主上");
+  assert.equal(element.src, "assets/audio/sfx-test-2.mp3", "应加载注册表里的文件");
+  assert.equal(element.currentTime, 500 / 1000, "start 参数应从指定位置开始");
+  assert.equal(element.volume, 0.4, "动作级 volume 应作为注册表音量（默认 1）的倍率");
+  assert.equal(audio.voices.has("sfx_test_positional"), true, "不阻塞音效应继续播放，等待结束/截断");
+  element.emit("ended");
+  assert.equal(audio.voices.size, 0, "音效结束或截断后应从活动表移除");
+  assert.equal(element.pauses, 1, "结束后应停掉音源");
+}
+
+// 4) await: true：事件等音效结束（或截断时长）才继续，并在结束时停掉本条音效。
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const audio = createAudioStub();
+  const engine = new Game.EventEngine({
+    events: [{
+      id: "E_SFX_AWAIT",
+      actions: [
+        { type: "sound", sound: "sfx_test_short", await: true, duration: 40 },
+        { type: "setFlag", key: "after_await_sound", value: true }
+      ]
+    }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: { ...createEngineUi(), audio }
+  });
+  let finished = false;
+  const playback = engine.play("E_SFX_AWAIT").then((value) => { finished = true; return value; });
+  await settleMicrotasks();
+  assert.equal(finished, false, "await: true 应等待音效播完");
+  assert.equal(state.flags.after_await_sound, undefined, "等待期间后续动作不应执行");
+  assert.equal(await playback, true, "截断时长走完后事件应正常结束");
+  assert.equal(state.flags.after_await_sound, true, "等待结束后应继续执行后续动作");
+  const element = audio.testElements.get("sfx_test_short");
+  assert.equal(element.plays, 1);
+  assert.equal(element.pauses, 1, "阻塞音效结束后应停止本条音效");
+  assert.equal(element.volume, 0.5, "未指定动作级音量时应使用注册表音量");
+}
+
+// 5) 取消：事件运行中取消会中止阻塞中的音效等待，并掐断正在播放的音效。
+{
+  const state = createState();
+  state.completeAttributeAllocation({ strength: 4, insight: 1 });
+  const audio = createAudioStub();
+  const engine = new Game.EventEngine({
+    events: [{
+      id: "E_SFX_CANCEL",
+      actions: [
+        { type: "sound", sound: "sfx_test_short", await: true },
+        { type: "setFlag", key: "after_cancelled_sound", value: true }
+      ]
+    }],
+    state,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      audio,
+      cancelPending: () => audio.stopAll()
+    }
+  });
+  const playback = engine.play("E_SFX_CANCEL");
+  await settleMicrotasks();
+  assert.equal(audio.voices.size, 1, "取消前音效应在播放中");
+  await engine.cancelToStable();
+  assert.equal(await playback, false, "取消后事件应回滚结束");
+  assert.equal(audio.voices.size, 0, "取消应掐断正在播放的音效");
+  assert.equal(state.flags.after_cancelled_sound, undefined, "取消后不应继续执行后续动作");
+}
+
+// 6) 暂停：setPaused(true) 停掉全部音效，恢复后不补播。
+{
+  const audio = createAudioStub();
+  const engine = new Game.EventEngine({
+    events: [{ id: "E_SFX_PAUSE", actions: [{ type: "sound", sound: "sfx_test_short" }] }],
+    state: createState(),
+    items: [],
+    scene: createEngineScene(),
+    ui: { ...createEngineUi(), audio, setPaused: (value) => { if (value) audio.stopAll(); } }
+  });
+  engine.ui.audio.play("sfx_test_short");
+  assert.equal(audio.voices.size, 1);
+  engine.setPaused(true);
+  assert.equal(audio.voices.size, 0, "暂停应停掉全部音效");
+  engine.setPaused(false);
+  assert.equal(audio.voices.size, 0, "恢复后不应补播已停止的音效");
+}
+
+// 7) 并发上限：超出上限时停掉最早开始的一条，最老的音源不会无限叠播。
+{
+  const registry = Array.from({ length: Game.AUDIO_MAX_VOICES + 2 }, (_value, index) => ({
+    id: `sfx_overflow_${index}`,
+    name: `溢出音效 ${index}`,
+    file: `assets/audio/sfx-overflow-${index}.mp3`
+  }));
+  const audio = createAudioStub(registry);
+  for (const entry of registry) audio.play(entry.id);
+  assert.equal(audio.voices.size, Game.AUDIO_MAX_VOICES, "活动音源不应超过并发上限");
+  assert.equal(audio.testElements.get("sfx_overflow_0").pauses, 1, "超出上限时应停掉最早开始的一条");
+  assert.equal(audio.testElements.get(registry[registry.length - 1].id).pauses, 0, "最新的音效应保持播放");
+}
+
+// 8) 无 DOM 环境：所有播放静默降级，不抛错、不挂住事件。
+{
+  const audio = new Game.AudioManager(null, SOUND_TEST_REGISTRY);
+  const voice = audio.play("sfx_test_short", { duration: 5000 });
+  assert.equal(audio.createElement({ file: "x" }), null, "无 DOM 时不应创建音源");
+  await voice.finished;
+  voice.stop();
+}
+
+// 9) 异步加载元数据（真实浏览器路径）：时长依赖 loadedmetadata，播完由 ended 结束。
+{
+  const audio = createAudioStub(SOUND_TEST_REGISTRY, { readyState: 0, duration: 0.3 });
+  const voice = audio.play("sfx_test_positional");
+  const element = audio.testElements.get("sfx_test_positional");
+  assert.equal(element.plays, 0, "元数据未就绪时不应调用 play()");
+  assert.equal(voice.duration, null, "元数据未就绪时有效时长未知");
+  element.prepare();
+  assert.equal(element.plays, 1, "元数据就绪后应开始播放");
+  assert.equal(voice.started, true, "播放已开始");
+  assert.equal(voice.duration, 0.3, "有效时长应取自音频自身时长");
+  assert.equal(element.playCalls[0].volume, 1, "未指定动作级音量时使用注册表默认音量");
+  element.emit("ended");
+  await voice.finished;
+  assert.equal(audio.voices.size, 0, "ended 后应结束并退出活动表");
+  assert.equal(element.pauses, 1, "结束后应暂停音源");
+  assert.equal(element.removes, 0, "移除音源应延迟到归还时机，不在结束瞬间立即移除");
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(element.removes, 1, "归还时机到达后应移除音源");
+}
+
+// 10) 元数据就绪前暂停：不得在停止后补播。
+{
+  const audio = createAudioStub(SOUND_TEST_REGISTRY, { readyState: 0 });
+  audio.play("sfx_test_short", { duration: 100 });
+  const element = audio.testElements.get("sfx_test_short");
+  audio.stopAll();
+  assert.equal(audio.voices.size, 0, "stopAll 应清空活动音源");
+  element.prepare();
+  assert.equal(element.plays, 0, "已被停止的音效不应在元数据到达后补播");
+}
+
+// 11) 自动播放被拒绝：跳过该音效并立刻结算，不让 await 白等一整段时长。
+{
+  const audio = createAudioStub(SOUND_TEST_REGISTRY, { failPlayback: true });
+  const voice = audio.play("sfx_test_short", { duration: 5000 });
+  let settled = false;
+  const playback = voice.finished.then(() => { settled = true; });
+  await settleMicrotasks(12);
+  assert.equal(settled, true, "play() 被拒绝时音效应立即结算，而不是等满 5 秒");
+  assert.equal(voice.failed, true, "play() 被拒绝时应标记失败");
+  assert.equal(audio.voices.size, 0, "被拒绝的音效应退出活动表");
+  await playback;
+}
+
+console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态、小游戏结算与音效播放。");
