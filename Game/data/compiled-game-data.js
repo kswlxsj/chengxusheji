@@ -5840,13 +5840,13 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "crew_met",
+            "flag": "crew_04_dead",
             "equals": true
           },
-          "next": "E_508"
+          "next": "E_507"
         }
       ],
-      "next": "E_507"
+      "next": "E_508"
     },
     {
       "id": "E_507",
@@ -6120,6 +6120,14 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你走向车窗。就在指尖将要碰到玻璃的一刻，一个声音在身后响起——"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_dead",
+            "equals": true
+          },
+          "next": "E_516_DEAD"
         },
         {
           "type": "conditionalJump",
@@ -6552,6 +6560,16 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "是她的声音，平静得好像她本来就属于这里。"
+        }
+      ],
+      "next": "E_516_VOICE"
+    },
+    {
+      "id": "E_516_DEAD",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "是她的声音。你认得出来——她不是已经死了吗？是谁在说话……？"
         }
       ],
       "next": "E_516_VOICE"
