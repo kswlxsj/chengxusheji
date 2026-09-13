@@ -184,7 +184,12 @@ assert.deepEqual(actionsOf("E_0008_S")[0], { type: "sound", sound: "loud_noise" 
 assert.deepEqual(actionsOf("E_034"), [
   { type: "custom", name: "endGame", params: { reason: "true_end" } }
 ]);
-assert.deepEqual(actionsOf("E_035")[0], { type: "sound", sound: "metro_speed_down" });
+assert.deepEqual(actionsOf("E_030"), [
+  { type: "custom", name: "endGame", params: { reason: "bad_end" } }
+]);
+assert.deepEqual(actionsOf("E_035"), [
+  { type: "custom", name: "endGame", params: { reason: "bad_end" } }
+]);
 assert.deepEqual(actionsOf("E_003")[0], { type: "sound", sound: "tearing" });
 assert.equal(
   actionsOf("E_005_GUIDE").some((action) => action.type === "sound" && action.sound === "opening_cracker_bag"),

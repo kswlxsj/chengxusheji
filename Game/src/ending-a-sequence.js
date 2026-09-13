@@ -82,6 +82,8 @@
         if (event.type === "keydown") event.preventDefault();
         this.advance();
       };
+      this.handleResize = () => this.alignPortraitToDialogue();
+      window.addEventListener("resize", this.handleResize);
     }
 
     play() {
@@ -229,6 +231,8 @@
       this.line.textContent = text;
       this.hint.hidden = auto > 0 || !text;
       this.dialogue.classList.toggle("is-visible", text !== "");
+      this.alignPortraitToDialogue();
+      requestAnimationFrame(() => this.alignPortraitToDialogue());
 
       if (auto > 0) await this.waitForAdvance(auto);
       else if (text) await this.waitForAdvance(0);
@@ -307,10 +311,19 @@
       this.autoAdvanceTimer = null;
       this.overlay.removeEventListener("click", this.handleAdvance);
       document.removeEventListener("keydown", this.handleAdvance);
+      window.removeEventListener("resize", this.handleResize);
       this.resolveAdvance = null;
       this.stopAudio();
       this.overlay.remove();
       this.running = null;
+    }
+
+    alignPortraitToDialogue() {
+      if (this.portrait.hidden || !this.dialogue.classList.contains("is-visible")) return;
+      const stageRect = this.root.getBoundingClientRect();
+      const dialogueRect = this.dialogue.getBoundingClientRect();
+      const bottom = Math.max(0, stageRect.bottom - dialogueRect.top);
+      this.portrait.style.bottom = `${bottom}px`;
     }
   }
 
