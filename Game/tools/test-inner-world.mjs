@@ -56,15 +56,32 @@ await game.play("E_501");
 assert.equal(game.state.sceneId, "carriage_02", "正式进过里世界后推门直接走主线");
 assert.equal(game.trace.some(t => t.scene === "carriage_inner_01"), false);
 
-for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_02"], [0.9, "carriage_03"]]) {
+// 空车厢左门：首次点击做一次 10%/60%/30% 静默判定，此后重复调查一律被锁上并留在空车厢；
+// 到过伪4（inner_world_entered）后该门解锁，改为磨损门描写 → 真实2号车厢。
+for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_01"], [0.9, "carriage_03"]]) {
   game = fixture({ carriage_06_eaten: true }, [], "carriage_inner_01");
-  sandbox.Math.random = () => roll;
+  let calls = 0;
+  sandbox.Math.random = () => { calls += 1; return roll; };
   await game.play("E_502_RETURN");
   assert.equal(game.state.sceneId, destination);
+  assert.equal(calls, 1, "首次调查只掷一次随机");
+  assert.equal(game.state.flags.ev502_return_rolled, true);
+  assert.equal(game.trace.some(t => t.text === "门被关死，打不开。"), roll === 0.4);
   assert.equal(game.state.flags.carriage_06_eaten, true, "啃食标签只由入口置位，与返回分支无关");
   assert.ok(!game.state.flags.inner_world_entered, "未到伪4时返回仍可再进里世界");
   assert.equal(game.trace.some(t => t.event === "E_002"), false);
 }
+game = fixture({ ev502_return_rolled: true }, [], "carriage_inner_01");
+let repeatCalls = 0;
+sandbox.Math.random = () => { repeatCalls += 1; return 0.05; };
+await game.play("E_502_RETURN");
+assert.equal(repeatCalls, 0, "判定用掉后重复调查不再掷随机");
+assert.equal(game.state.sceneId, "carriage_inner_01", "被锁上时留在空车厢");
+assert.equal(game.trace.filter(t => t.text === "门被关死，打不开。").length, 1);
+game = fixture({ inner_world_entered: true }, [], "carriage_inner_01");
+await game.play("E_502_RETURN");
+assert.equal(game.state.sceneId, "carriage_02", "到过伪4后左门解锁为返程出口");
+assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), true);
 for (const [roll, destination] of [[0.1, "carriage_inner_01"], [0.8, "carriage_fake_04"]]) {
   game = fixture({}, [], "carriage_inner_02"); sandbox.Math.random = () => roll;
   await game.play("E_503_BACK"); assert.equal(game.state.sceneId, destination);

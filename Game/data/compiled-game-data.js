@@ -5299,8 +5299,29 @@ window.GAME_DATA = {
       "id": "E_502_RETURN",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "inner_world_entered",
+            "equals": true
+          },
+          "next": "E_523"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev502_return_rolled",
+            "equals": true
+          },
+          "next": "E_502_LOCKED"
+        },
+        {
           "type": "dialogue",
           "text": "你折返向身后的车门，握住门把。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev502_return_rolled",
+          "value": true
         },
         {
           "type": "custom",
@@ -5337,22 +5358,18 @@ window.GAME_DATA = {
             "equals": true
           },
           "next": "E_502_CARRIAGE03"
-        },
+        }
+      ],
+      "next": "E_502_LOCKED"
+    },
+    {
+      "id": "E_502_LOCKED",
+      "actions": [
         {
           "type": "dialogue",
           "text": "门被关死，打不开。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你放弃了回头，转身向前。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": false
         }
-      ],
-      "next": "E_503"
+      ]
     },
     {
       "id": "E_502_CARRIAGE03",
@@ -5368,11 +5385,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "门外是3号车厢，灯光昏黄，一切如常。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev_inner_backtrack",
-          "value": false
         }
       ]
     },
