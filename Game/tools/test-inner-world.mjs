@@ -219,6 +219,11 @@ assert.match(game.trace.find(t => t.error).error, /测试图片加载失败/);
 for (const event of events.filter(e => /^E_5/.test(e.id))) for (const action of event.actions) {
   assert.doesNotMatch(action.text || "", /（(?:音效|场景|演出|若|结局|获得)|【状态|具体数值|4。4。3。4。/);
 }
+// 回程旗标与两个只做单跳/随机的派生路由事件已删除，里世界事件不得再引用。
+const innerEvents = events.filter(e => /^E_5/.test(e.id));
+assert.equal(innerEvents.some(e => JSON.stringify(e).includes("ev_inner_backtrack")), false);
+assert.equal(innerEvents.some(e => e.id === "E_509_BACK" || e.id === "E_503_RETURN_FORWARD"), false);
+assert.equal(events.some(e => e.actions.some(a => a.next === "E_509_BACK" || a.next === "E_503_RETURN_FORWARD")), false);
 const fake = scenes.find(s => s.id === "carriage_fake_04");
 assert.match(fake.background, /fog/);
 assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed");
