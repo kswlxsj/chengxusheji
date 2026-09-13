@@ -5813,6 +5813,14 @@ window.GAME_DATA = {
       "id": "E_506",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev506_intro_seen",
+            "equals": true
+          },
+          "next": "E_506_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "门上的编号写着：4。"
         },
@@ -5838,6 +5846,11 @@ window.GAME_DATA = {
           "text": "想到之前在车厢中的见闻，你不由得打了个寒颤。"
         },
         {
+          "type": "setFlag",
+          "key": "ev506_intro_seen",
+          "value": true
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "flag": "crew_04_dead",
@@ -5847,6 +5860,10 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_508"
+    },
+    {
+      "id": "E_506_REVISIT",
+      "actions": []
     },
     {
       "id": "E_507",
@@ -6081,14 +6098,31 @@ window.GAME_DATA = {
           "sound": "fake"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev513_intro_seen",
+            "equals": true
+          },
+          "next": "E_513_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
         },
         {
           "type": "dialogue",
           "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，眼前的一切反而显得不真实。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev513_intro_seen",
+          "value": true
         }
       ]
+    },
+    {
+      "id": "E_513_REVISIT",
+      "actions": []
     },
     {
       "id": "E_515",
