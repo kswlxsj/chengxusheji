@@ -1022,6 +1022,10 @@ window.GAME_DATA = {
       "id": "E_005_LOCKED",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_locked"
+        },
+        {
           "type": "dialogue",
           "text": "你试图打开门，但门锁住了，打不开。"
         }
@@ -1038,6 +1042,10 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "诡异的气氛笼罩着这节6号车厢。"
+        },
+        {
+          "type": "sound",
+          "sound": "opening_cracker_bag"
         },
         {
           "type": "dialogue",
@@ -1135,6 +1143,10 @@ window.GAME_DATA = {
       "id": "E_005_DEPARTURE_A",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "setFlag",
           "key": "carriage_06_entry_route_a",
           "value": true
@@ -1172,6 +1184,10 @@ window.GAME_DATA = {
     {
       "id": "E_005_DEPARTURE_B",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "setFlag",
           "key": "carriage_06_entry_route_a",
@@ -1262,6 +1278,10 @@ window.GAME_DATA = {
       "id": "E_0008_S",
       "actions": [
         {
+          "type": "sound",
+          "sound": "loud_noise"
+        },
+        {
           "type": "dialogue",
           "text": "你听到收音机传到了混杂着电流声的人声:"
         },
@@ -1330,6 +1350,10 @@ window.GAME_DATA = {
     {
       "id": "E_008",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_locked"
+        },
         {
           "type": "dialogue",
           "text": "你颤抖着望向车厢深处。"
@@ -1449,6 +1473,10 @@ window.GAME_DATA = {
       "id": "E_GO_06_05",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_05"
         },
@@ -1461,6 +1489,10 @@ window.GAME_DATA = {
     {
       "id": "E_GO_05_04",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "changeScene",
           "scene": "carriage_04"
@@ -1511,6 +1543,10 @@ window.GAME_DATA = {
     {
       "id": "E_905",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "changeScene",
           "scene": "carriage_06"
@@ -1597,6 +1633,10 @@ window.GAME_DATA = {
     {
       "id": "E_003",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "tearing"
+        },
         {
           "type": "inspect",
           "title": "便签·背面",
@@ -1959,6 +1999,10 @@ window.GAME_DATA = {
     {
       "id": "E_010_F",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
         {
           "type": "dialogue",
           "text": "你翻找了一番，并没有发现什么看起来有用的东西。"
@@ -2936,6 +2980,10 @@ window.GAME_DATA = {
       "id": "E_018_SEARCH_PHONE",
       "actions": [
         {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
+        {
           "type": "dialogue",
           "text": "你决定先看看四周有什么能用的东西，在杂乱中翻找到了一部手机。"
         },
@@ -3582,6 +3630,10 @@ window.GAME_DATA = {
           "text": "......找到了。"
         },
         {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
+        {
           "type": "dialogue",
           "text": "你把黑包拿到她面前。她伸手进去翻找。"
         },
@@ -3664,6 +3716,10 @@ window.GAME_DATA = {
     {
       "id": "E_021_ALONE",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
         {
           "type": "dialogue",
           "text": "你打开黑包，在里面翻找。"
@@ -3819,6 +3875,10 @@ window.GAME_DATA = {
       "id": "E_022_ALONE",
       "actions": [
         {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
+        {
           "type": "dialogue",
           "text": "你继续检查包里的东西。"
         },
@@ -3846,6 +3906,10 @@ window.GAME_DATA = {
             "hasItem": "flashlight"
           },
           "next": "E_022_ITEM_END"
+        },
+        {
+          "type": "sound",
+          "sound": "finding_in_papers"
         },
         {
           "type": "dialogue",
@@ -4351,6 +4415,10 @@ window.GAME_DATA = {
       "id": "E_026_BLOCKED",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_locked"
+        },
+        {
           "type": "dialogue",
           "text": "Clicker还堵在通往先头车厢的门前，你无法安全开门通过。"
         }
@@ -4516,6 +4584,10 @@ window.GAME_DATA = {
       "id": "E_028_THROW_FIRST",
       "actions": [
         {
+          "type": "sound",
+          "sound": "breaking_glass"
+        },
+        {
           "type": "dialogue",
           "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
         },
@@ -4556,6 +4628,10 @@ window.GAME_DATA = {
     {
       "id": "E_028_THROW_AFTER_SUCCESS",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "breaking_glass"
+        },
         {
           "type": "dialogue",
           "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
@@ -4739,6 +4815,10 @@ window.GAME_DATA = {
       "id": "E_DOOR_04",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_03"
         },
@@ -4779,6 +4859,10 @@ window.GAME_DATA = {
       "id": "E_GO_05_06",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "setFlag",
           "key": "carriage_06_entry_route_a",
           "value": false
@@ -4802,6 +4886,10 @@ window.GAME_DATA = {
       "id": "E_GO_04_05",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_05"
         },
@@ -4815,6 +4903,10 @@ window.GAME_DATA = {
       "id": "E_GO_03_04",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_04"
         },
@@ -4827,6 +4919,10 @@ window.GAME_DATA = {
     {
       "id": "E_GO_02_03",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "changeScene",
           "scene": "carriage_03"
@@ -4850,6 +4946,10 @@ window.GAME_DATA = {
     {
       "id": "E_GO_FRONT_02",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "changeScene",
           "scene": "carriage_02"
@@ -4878,6 +4978,10 @@ window.GAME_DATA = {
     {
       "id": "E_05_SEARCH_TOOLS",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "finding_in_papers"
+        },
         {
           "type": "dialogue",
           "text": "你决定仔细翻找这只倒下的背包。"
@@ -4967,6 +5071,10 @@ window.GAME_DATA = {
       "id": "E_031",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "changeScene",
           "scene": "front_carriage"
         },
@@ -5019,6 +5127,10 @@ window.GAME_DATA = {
       "id": "E_031_PLAYER_KEY",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你摸出钥匙，插进锁孔。金属咬合的声音在安静中格外清晰。"
         }
@@ -5028,6 +5140,10 @@ window.GAME_DATA = {
     {
       "id": "E_031_CREW_KEY",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "dialogue",
           "text": "她颤抖着摸出钥匙，替你打开门。"
@@ -5045,6 +5161,10 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是另一位乘务员留下的。"
+        },
+        {
+          "type": "sound",
+          "sound": "door_open"
         },
         {
           "type": "dialogue",
@@ -5070,6 +5190,10 @@ window.GAME_DATA = {
     {
       "id": "E_031_NO_KEY_F",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_locked"
+        },
         {
           "type": "dialogue",
           "text": "你找不到任何能打开门的东西。身后的黑暗越来越近。"
@@ -5200,6 +5324,10 @@ window.GAME_DATA = {
       "id": "E_034",
       "actions": [
         {
+          "type": "sound",
+          "sound": "metro_speed_up"
+        },
+        {
           "type": "dialogue",
           "text": "电车加速到极致，视野被刺眼白光覆盖。"
         },
@@ -5231,6 +5359,10 @@ window.GAME_DATA = {
     {
       "id": "E_035",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "metro_speed_down"
+        },
         {
           "type": "dialogue",
           "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
@@ -5320,6 +5452,10 @@ window.GAME_DATA = {
     {
       "id": "E_501",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "conditionalJump",
           "when": {
@@ -5478,6 +5614,10 @@ window.GAME_DATA = {
       "id": "E_502_LOCKED",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_locked"
+        },
+        {
           "type": "dialogue",
           "text": "门被关死，打不开。"
         }
@@ -5486,6 +5626,10 @@ window.GAME_DATA = {
     {
       "id": "E_502_CARRIAGE03",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "dialogue",
           "text": "你推开了车门。"
@@ -5503,6 +5647,10 @@ window.GAME_DATA = {
     {
       "id": "E_503",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "dialogue",
           "text": "你穿过车门。"
@@ -5654,6 +5802,10 @@ window.GAME_DATA = {
       "id": "E_505",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你继续前进。"
         },
@@ -5668,6 +5820,10 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_fake_04"
+        },
+        {
+          "type": "sound",
+          "sound": "fake"
         },
         {
           "type": "setFlag",
@@ -5812,12 +5968,20 @@ window.GAME_DATA = {
       "id": "E_510",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你推开那扇门。"
         },
         {
           "type": "changeScene",
           "scene": "flower_sea"
+        },
+        {
+          "type": "sound",
+          "sound": "fake"
         },
         {
           "type": "dialogue",
@@ -5935,6 +6099,10 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_fake_04"
+        },
+        {
+          "type": "sound",
+          "sound": "fake"
         },
         {
           "type": "dialogue",
@@ -6237,6 +6405,10 @@ window.GAME_DATA = {
       "id": "E_522",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你穿过来路的车门。"
         },
@@ -6315,6 +6487,10 @@ window.GAME_DATA = {
       "id": "E_524",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你推开门——"
         },
@@ -6346,6 +6522,10 @@ window.GAME_DATA = {
       "id": "E_525",
       "actions": [
         {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
           "type": "dialogue",
           "text": "你推开那扇门——门外不是来路。"
         },
@@ -6366,6 +6546,10 @@ window.GAME_DATA = {
     {
       "id": "E_503_BACK",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
         {
           "type": "dialogue",
           "text": "你向来路折返。"
@@ -6754,5 +6938,115 @@ window.GAME_DATA = {
       "initial": false
     }
   ],
-  "audio": []
+  "audio": [
+    {
+      "id": "dice_rolling",
+      "name": "检定滚动",
+      "file": "assets/audio/dice-rolling.mp3",
+      "description": "检定动画抖动阶段播放。"
+    },
+    {
+      "id": "dice_success",
+      "name": "检定成功",
+      "file": "assets/audio/dice-success.mp3",
+      "description": "检定结果显示成功时播放。"
+    },
+    {
+      "id": "dice_fail",
+      "name": "检定失败",
+      "file": "assets/audio/dice-fail.mp3",
+      "description": "检定结果显示失败时播放。"
+    },
+    {
+      "id": "train_ambient",
+      "name": "列车行驶背景音",
+      "file": "assets/audio/train-ambient.mp3",
+      "volume": 0.45,
+      "description": "正式进入游戏后循环播放的背景音。"
+    },
+    {
+      "id": "door_open",
+      "name": "铁门打开",
+      "file": "assets/audio/iron-door-open.mp3",
+      "volume": 0.8,
+      "description": "车门可以打开并实际通行时播放。"
+    },
+    {
+      "id": "door_locked",
+      "name": "车门无法打开",
+      "file": "assets/audio/iron-door-knock.mp3",
+      "volume": 0.8,
+      "description": "车门锁死、被堵住或无法打开时播放。"
+    },
+    {
+      "id": "loud_noise",
+      "name": "收音机成功后的巨响",
+      "file": "assets/audio/loud-noise.mp3",
+      "volume": 0.8,
+      "description": "收音机调频小游戏成功、在7号车厢解码广播后播放。"
+    },
+    {
+      "id": "metro_speed_up",
+      "name": "列车加速",
+      "file": "assets/audio/metro-speed-up.mp3",
+      "volume": 0.8,
+      "description": "头车选择加速并成功控制列车时播放。"
+    },
+    {
+      "id": "metro_speed_down",
+      "name": "列车减速",
+      "file": "assets/audio/metro-speed-down.mp3",
+      "volume": 0.8,
+      "description": "头车选择减速或控制杆争夺失败时播放。"
+    },
+    {
+      "id": "devil_scared",
+      "name": "二号车厢循环环境音",
+      "file": "assets/audio/devil-scared.mp3",
+      "volume": 0.45,
+      "description": "玩家位于2号车厢时循环播放。"
+    },
+    {
+      "id": "breaking_glass",
+      "name": "玻璃瓶破碎",
+      "file": "assets/audio/breaking-glass.mp3",
+      "volume": 0.8,
+      "description": "在2号车厢成功投掷并击碎玻璃瓶时播放。"
+    },
+    {
+      "id": "tearing",
+      "name": "撕裂声",
+      "file": "assets/audio/tearing.mp3",
+      "volume": 0.7,
+      "description": "6号车厢查看便签背面时播放。"
+    },
+    {
+      "id": "finding_in_papers",
+      "name": "翻找物品",
+      "file": "assets/audio/finding-in-papers.mp3",
+      "volume": 0.6,
+      "description": "翻找背包、行李或杂物时播放。"
+    },
+    {
+      "id": "eating_crisps",
+      "name": "啃食循环音",
+      "file": "assets/audio/eating-crisps.mp3",
+      "volume": 0.45,
+      "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
+    },
+    {
+      "id": "opening_cracker_bag",
+      "name": "拆开包装",
+      "file": "assets/audio/opening-cracker-bag.mp3",
+      "volume": 0.7,
+      "description": "6号车厢听到远处怪异声音时播放。"
+    },
+    {
+      "id": "fake",
+      "name": "假4号与花海进入音",
+      "file": "assets/audio/fake.mp3",
+      "volume": 0.7,
+      "description": "进入假4号车厢或花海场景时播放。"
+    }
+  ]
 };

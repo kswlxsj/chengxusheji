@@ -1,1 +1,111 @@
-[]
+[
+  {
+    "id": "dice_rolling",
+    "name": "检定滚动",
+    "file": "assets/audio/dice-rolling.mp3",
+    "description": "检定动画抖动阶段播放。"
+  },
+  {
+    "id": "dice_success",
+    "name": "检定成功",
+    "file": "assets/audio/dice-success.mp3",
+    "description": "检定结果显示成功时播放。"
+  },
+  {
+    "id": "dice_fail",
+    "name": "检定失败",
+    "file": "assets/audio/dice-fail.mp3",
+    "description": "检定结果显示失败时播放。"
+  },
+  {
+    "id": "train_ambient",
+    "name": "列车行驶背景音",
+    "file": "assets/audio/train-ambient.mp3",
+    "volume": 0.45,
+    "description": "正式进入游戏后循环播放的背景音。"
+  },
+  {
+    "id": "door_open",
+    "name": "铁门打开",
+    "file": "assets/audio/iron-door-open.mp3",
+    "volume": 0.8,
+    "description": "车门可以打开并实际通行时播放。"
+  },
+  {
+    "id": "door_locked",
+    "name": "车门无法打开",
+    "file": "assets/audio/iron-door-knock.mp3",
+    "volume": 0.8,
+    "description": "车门锁死、被堵住或无法打开时播放。"
+  },
+  {
+    "id": "loud_noise",
+    "name": "收音机成功后的巨响",
+    "file": "assets/audio/loud-noise.mp3",
+    "volume": 0.8,
+    "description": "收音机调频小游戏成功、在7号车厢解码广播后播放。"
+  },
+  {
+    "id": "metro_speed_up",
+    "name": "列车加速",
+    "file": "assets/audio/metro-speed-up.mp3",
+    "volume": 0.8,
+    "description": "头车选择加速并成功控制列车时播放。"
+  },
+  {
+    "id": "metro_speed_down",
+    "name": "列车减速",
+    "file": "assets/audio/metro-speed-down.mp3",
+    "volume": 0.8,
+    "description": "头车选择减速或控制杆争夺失败时播放。"
+  },
+  {
+    "id": "devil_scared",
+    "name": "二号车厢循环环境音",
+    "file": "assets/audio/devil-scared.mp3",
+    "volume": 0.45,
+    "description": "玩家位于2号车厢时循环播放。"
+  },
+  {
+    "id": "breaking_glass",
+    "name": "玻璃瓶破碎",
+    "file": "assets/audio/breaking-glass.mp3",
+    "volume": 0.8,
+    "description": "在2号车厢成功投掷并击碎玻璃瓶时播放。"
+  },
+  {
+    "id": "tearing",
+    "name": "撕裂声",
+    "file": "assets/audio/tearing.mp3",
+    "volume": 0.7,
+    "description": "6号车厢查看便签背面时播放。"
+  },
+  {
+    "id": "finding_in_papers",
+    "name": "翻找物品",
+    "file": "assets/audio/finding-in-papers.mp3",
+    "volume": 0.6,
+    "description": "翻找背包、行李或杂物时播放。"
+  },
+  {
+    "id": "eating_crisps",
+    "name": "啃食循环音",
+    "file": "assets/audio/eating-crisps.mp3",
+    "volume": 0.45,
+    "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
+  },
+  {
+    "id": "opening_cracker_bag",
+    "name": "拆开包装",
+    "file": "assets/audio/opening-cracker-bag.mp3",
+    "volume": 0.7,
+    "description": "6号车厢听到远处怪异声音时播放。"
+  },
+  {
+    "id": "fake",
+    "name": "假4号与花海进入音",
+    "file": "assets/audio/fake.mp3",
+    "volume": 0.7,
+    "description": "进入假4号车厢或花海场景时播放。"
+  }
+]

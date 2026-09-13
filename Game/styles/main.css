@@ -426,6 +426,52 @@ body.home-op-active .home-page .auth-user-status {
 
 .scene-background { object-fit: cover; }
 
+/* 车厢整体沿垂直方向反复颠簸；边缘略微放大，避免上下位移时露出底色。 */
+#scene-layer.is-carriage {
+  animation: carriage-bounce 4.2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* 顶灯偶尔断电。闪烁只压暗画面，不增加亮度。2号车厢开灯后才会加上 .is-lit。 */
+#scene-layer.is-carriage.is-lit::before {
+  content: "";
+  position: absolute;
+  inset: -1%;
+  z-index: 25;
+  pointer-events: none;
+  opacity: 0;
+  background: #000;
+  animation: carriage-light-flicker 8.4s steps(1, end) infinite;
+  will-change: opacity;
+}
+
+@keyframes carriage-bounce {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.018); }
+  14% { transform: translate3d(0, -.62%, 0) scale(1.018); }
+  28% { transform: translate3d(0, .16%, 0) scale(1.018); }
+  44% { transform: translate3d(0, -.42%, 0) scale(1.018); }
+  58% { transform: translate3d(0, .12%, 0) scale(1.018); }
+  74% { transform: translate3d(0, -.26%, 0) scale(1.018); }
+  88% { transform: translate3d(0, .06%, 0) scale(1.018); }
+}
+
+@keyframes carriage-light-flicker {
+  0%, 7.9%, 8.4%, 9.4%, 13.6%, 14.2%, 30.9%, 31.9%, 48%, 49.2%, 71.9%, 73%, 100% {
+    opacity: 0;
+  }
+  8% { opacity: .18; }
+  8.9% { opacity: .42; }
+  13.9% { opacity: .16; }
+  14.7% { opacity: .38; }
+  31.2% { opacity: .12; }
+  31.6% { opacity: .34; }
+  48.3% { opacity: .1; }
+  48.9% { opacity: .3; }
+  72.2% { opacity: .17; }
+  72.6% { opacity: .4; }
+}
+
 .scene-object {
   position: absolute;
   z-index: 10;
@@ -472,7 +518,6 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .scene-object-art.is-glow {
-  filter: drop-shadow(0 0 3px rgba(255, 239, 174, .78)) drop-shadow(0 0 8px rgba(255, 193, 83, .58));
   animation: scene-object-art-glow 1.2s ease-in-out infinite;
   will-change: opacity;
 }
@@ -484,18 +529,18 @@ body.home-op-active .home-page .auth-user-status {
 
 .scene-object-art.is-hot,
 .scene-object-art.is-focused {
-  filter: drop-shadow(0 0 2px #fff0bf) drop-shadow(0 0 8px rgba(255, 210, 120, .92));
+  filter: brightness(1.18);
   transition: filter 120ms ease;
 }
 
 .scene-object-art[data-object-id="crew_04"].is-hot,
 .scene-object-art[data-object-id="crew_04"].is-focused {
-  filter: brightness(1.45) drop-shadow(0 0 4px #fff0bf) drop-shadow(0 0 14px rgba(255, 210, 120, .98));
+  filter: brightness(1.45);
 }
 
 .scene-object-art[data-object-id="radio_07"].is-hot,
 .scene-object-art[data-object-id="radio_07"].is-focused {
-  filter: drop-shadow(0 0 2px #fff0bf) drop-shadow(0 0 8px rgba(255, 210, 120, .92));
+  filter: brightness(1.18);
   image-rendering: pixelated;
 }
 
@@ -1622,9 +1667,22 @@ body.home-op-active .home-page .auth-user-status {
 .acquisition-card-content strong { color: var(--accent); font-size: 12px; }
 .acquisition-card-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
 .acquisition-card-content small { color: rgba(241, 234, 220, .62); font-size: 11px; }
-#game-shell.flash { animation: flash 420ms ease; }
 #game-shell.paused { animation-play-state: paused; }
-@keyframes flash { 35% { filter: brightness(2.4) contrast(1.25); } }
+#game-shell.paused #scene-layer.is-carriage,
+#game-shell.paused #scene-layer.is-carriage.is-lit::before {
+  animation-play-state: paused;
+}
+#game-shell.flash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 140;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: flash-overlay 420ms ease;
+}
+@keyframes flash-overlay { 35% { opacity: .78; } }
 
 /* SAN 归零演出：覆盖整个游戏舞台，播放采访、PC 崩溃与雪花屏转场。 */
 .san-zero-sequence {
@@ -1859,6 +1917,11 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #scene-layer.is-carriage,
+  #scene-layer.is-carriage.is-lit::before {
+    animation: none;
+  }
+
   .home-op,
   .home-op-frame,
   .home-op-blackout {

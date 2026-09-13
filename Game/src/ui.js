@@ -555,10 +555,16 @@
   // CSS 的抖动关键帧周期按同一倍速缩放（见 styles/main.css 的 --check-animation-scale）。
   const CHECK_ROLL_BASE_MS = 1100;
   const CHECK_ANIMATION_SPEED = 2;
+  const DICE_SOUNDS = {
+    rolling: "dice_rolling",
+    success: "dice_success",
+    fail: "dice_fail"
+  };
 
   class DiceRollWindow {
-    constructor(root) {
+    constructor(root, audio = null) {
       this.root = root;
+      this.audio = audio;
       this.backdrop = null;
       this.diceBox = null;
       this.image = null;
@@ -594,30 +600,36 @@
       this.image = image;
       this.status = status;
       this.result = result;
+      const rollingVoice = this.audio?.play(DICE_SOUNDS.rolling);
 
       try {
         await wait(CHECK_ROLL_BASE_MS / CHECK_ANIMATION_SPEED);
         if (this.backdrop !== backdrop) return;
+        rollingVoice?.stop();
         const face = Number.isInteger(value) && value >= 1 && value <= 6
           ? `assets/ui/dice_0${value}.png`
           : "assets/ui/dice_00.png";
         this.image.src = face;
         this.diceBox.classList.remove("dice-rolling");
         this.diceBox.classList.add("dice-result-static");
-      this.status.hidden = true;
-      this.result.textContent = text;
-      this.result.classList.add(success ? "success" : "fail", "is-visible");
-      await wait(1200);
-      if (this.backdrop !== backdrop) return;
-      if (outcomeText) {
-        this.result.classList.remove("is-visible");
-        await wait(220);
+        this.status.hidden = true;
+        this.result.textContent = text;
+        this.result.classList.add(success ? "success" : "fail", "is-visible");
+        await wait(1200);
         if (this.backdrop !== backdrop) return;
-        this.result.textContent = outcomeText;
-        this.result.classList.add("is-visible");
-      }
-      await wait(1900);
+        if (outcomeText) {
+          this.result.classList.remove("is-visible");
+          await wait(220);
+          if (this.backdrop !== backdrop) return;
+          this.result.textContent = outcomeText;
+          this.result.classList.add("is-visible");
+          this.audio?.play(success ? DICE_SOUNDS.success : DICE_SOUNDS.fail);
+        } else {
+          this.audio?.play(success ? DICE_SOUNDS.success : DICE_SOUNDS.fail);
+        }
+        await wait(1900);
       } finally {
+        rollingVoice?.stop();
         if (this.backdrop === backdrop) this.close();
       }
     }
@@ -793,14 +805,13 @@
       this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
-      this.dice = new DiceRollWindow(root);
+      this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      this.dice = new DiceRollWindow(root, this.audio);
       this.mainMenu = new MenuWindow(root, "main-menu-window");
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
       this.confirmMenu = new MenuWindow(root, "confirm-menu-window");
       this.minigame = new MinigameWindow(root);
-      // 音效管理器：注册表来自 data/audio.json（编译器并入 GAME_DATA.audio），
-      // sound 动作经 ui.audio 播放；暂停/取消统一在这里掐断。
-      this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      // sound 动作与检定演出共用 ui.audio；暂停/取消统一在这里掐断。
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
       this.cueLayer = document.querySelector("#acquisition-layer");

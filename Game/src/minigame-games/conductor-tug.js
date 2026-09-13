@@ -153,6 +153,8 @@
 
     const frame = (timestamp) => {
       if (finished) return;
+      // 先排下一帧，避免一次异常让整个小游戏停在最后一帧。
+      frameHandle = requestAnimationFrame(frame);
       const delta = Math.min(0.035, Math.max(0.001, (timestamp - lastFrame) / 1000));
       lastFrame = timestamp;
       elapsed += delta;
@@ -179,7 +181,6 @@
 
       if (progress >= 100) { progress = 100; render(); finish(true); return; }
       if (progress <= 0 || elapsed >= config.timeLimit) { progress = Math.max(0, progress); render(); finish(false); return; }
-      frameHandle = requestAnimationFrame(frame);
     };
 
     const onKeyDown = (event) => {

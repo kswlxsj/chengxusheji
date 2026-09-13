@@ -64,7 +64,8 @@
 - 游戏内全部位图（场景背景、物件、物品栏图标、插图、封面）默认最近邻插值（`image-rendering: pixelated`），放大呈像素游戏的硬边感。
 - 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 底部常驻物品快捷栏：渲染持有物品的图标与名称（含数字快捷键），点击物品运行其 `inspectEvent` 做调查/使用；手机与手电筒的调查事件经项目 `useLight` 自定义动作提供“照亮”选择。
-- 原生音效播放：音效索引集中在 `data/audio.json`（编号、音频路径、默认音量；编译期校验音频文件真实存在且非空），事件用内置 `{ "type": "sound", "sound": "<编号>" }` 触发，默认与对话并行（不阻塞），可加 `await: true` 等它播完、用 `start`/`duration` 截取一段、用 `volume` 单次微调；暂停/取消/终止统一掐断正在播放的音效。注册表当前为空，正式音效素材到位后按 `docs/API使用说明.md` 示例十登记编号即可接线。
+- 原生音效播放：音效索引集中在 `data/audio.json`（编号、音频路径、默认音量；编译期校验音频文件真实存在且非空），事件用内置 `{ "type": "sound", "sound": "<编号>" }` 触发，默认与对话并行（不阻塞），可加 `await: true` 等它播完、用 `start`/`duration` 截取一段、用 `volume` 单次微调；暂停/取消/终止统一掐断正在播放的音效。检定动画会自动播放滚动音，并在结果显示时切换为成功或失败音；车门、碎玻璃、翻找、收音机和头车演出音均已接线，2号、7号及被啃食后的里6号车厢使用循环环境音。
+- 背景音乐按页面与场景切换：标题页和结束页由 `src/bgm.js` 播放并跨页续播 `bgm.mp3`；正式游戏页由 `src/train-bgm.js` 循环播放列车行驶背景音。进入里世界场景后暂停列车背景音，并静音除车门开/关以外的全部音效；离开里世界后恢复。
 - 七份内容 JSON（含 `audio.json`）的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
@@ -143,14 +144,14 @@ npm run check
 当前数据的完整检查结果最后应包含：
 
 ```text
-编译完成：12 个场景，233 个事件，9 个物品，8 个属性，5 个技能，6 个小游戏，2 个音效。
+编译完成：12 个场景，233 个事件，9 个物品，8 个属性，5 个技能，6 个小游戏，16 个音效。
 运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态、小游戏结算与音效播放。
 里世界回归通过：逐句场景、随机出口、交互分支、回程接主剧本2号、道具、结局与切景取消。
 主线接线回归通过：4号车厢首次发现与急救询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。
 资源等待、命中位图与对白计时器测试通过。
 ```
 
-> 事件数会随剧情接线继续变化；`audio.json` 当前是空注册表（框架已就绪、尚无正式音效素材），新增音效时按 `npm run compile` 的校验要求登记编号与音频文件。
+> 事件数会随剧情接线继续变化；`audio.json` 当前登记检定、背景、车门、搜索与剧情演出音效，新增音效时按 `npm run compile` 的校验要求登记编号与音频文件。
 
 ## 运行原理
 
@@ -398,8 +399,20 @@ Game/
 | `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
 | `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
 | `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
-| `audio/bgm.mp3` | 全局背景音乐，由 `src/bgm.js` 跨页续播（与 `sound` 动作各管一套）。 |
+| `audio/bgm.mp3` | 标题页和结束页背景音乐，由 `src/bgm.js` 跨页续播。 |
 | `audio/op.mp3` | 主页开场（OP）音乐，由 `src/home-op.js` 播放。 |
+| `audio/train-ambient.mp3` | 正式游戏页循环播放的列车行驶背景音，由 `src/train-bgm.js` 播放。 |
+| `audio/dice-*.mp3` | 检定滚动、成功和失败音效。 |
+| `audio/iron-door-open.mp3`、`audio/iron-door-knock.mp3` | 车门成功打开与无法打开时的事件音效。 |
+| `audio/loud-noise.mp3` | 收音机调频成功后在 7 号车厢播放的巨响。 |
+| `audio/metro-speed-up.mp3`、`audio/metro-speed-down.mp3` | 头车加速成功与减速/争夺失败时的演出音效。 |
+| `audio/devil-scared.mp3` | 玩家位于 2 号车厢时循环播放的环境音。 |
+| `audio/breaking-glass.mp3` | 2 号车厢成功投掷玻璃瓶时播放的破碎声。 |
+| `audio/tearing.mp3` | 6 号车厢查看便签背面时播放。 |
+| `audio/finding-in-papers.mp3` | 翻找背包、行李或杂物时播放。 |
+| `audio/eating-crisps.mp3` | 7 号车厢和被啃食后的里6号车厢循环播放，每轮之间有 1600ms 间隔。 |
+| `audio/opening-cracker-bag.mp3` | 6 号车厢听到远处怪异声音时播放。 |
+| `audio/fake.mp3` | 进入花海、首次进入假4号或从花海返回假4号时播放。 |
 
 `assets/audio/` 下的文件由 `data/audio.json` 登记后经 `sound` 动作播放；登记前请勿只在剧情里写路径（JSON 只写编号，路径与音量配平集中在注册表）。
 
@@ -479,6 +492,8 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`、`useLight`、`endGame`、`weightedBranch`（按权重随机分岔，静默判定）。 |
 | `audio.js` | `TrainGame.AudioManager` 音效播放：编号来自 `data/audio.json`（编译进 `GAME_DATA.audio`），事件用内置 `sound` 动作播放；无 DOM 环境自动降级，暂停/取消统一掐断。 |
+| `bgm.js` | 仅在 `home.html` 和 `ending.html` 播放跨页 BGM；其他页面保持静默。 |
+| `train-bgm.js` | 游戏页循环播放 `train_ambient`，处理浏览器自动播放限制、页面隐藏和里世界静音。 |
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |

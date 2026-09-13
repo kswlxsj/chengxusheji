@@ -623,8 +623,9 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 | 接口 | 说明 |
 | --- | --- |
 | `new AudioManager(root, registry)` | `root` 为音源挂载宿主（游戏页传 `document.body`）；`registry` 为 `GAME_DATA.audio`。构造不触碰 DOM，无 DOM 环境自动降级。 |
-| `play(soundId, options)` | 播放并返回句柄 `{ finished, duration, stop() }`：`finished` 在播完、出错、停止或到达截断时长时解决；`duration` 是本次播放的有效时长（秒，未知时为 `null`）；`stop()` 幂等。同一编号重播会先收掉上一条。 |
+| `play(soundId, options)` | 播放并返回句柄 `{ finished, duration, stop() }`：`finished` 在播完、出错、停止或到达截断时长时解决；`duration` 是本次播放的有效时长（秒，未知时为 `null`）；`stop()` 幂等。`options.loop: true` 启用循环，`options.loopGapMs` 可在两轮之间留出间隔；循环音只由停止或场景切换结束。同一编号重播会先收掉上一条。 |
 | `stopAll()` | 停止全部活动音源；`UIManager.setPaused(true)` 与 `UIManager.cancelPending()` 都会调用它。 |
+| `setMuted(value, allowedSoundIds)` | 进入或离开静音区；静音时只允许白名单编号播放，其余正在播放的声音立即停止，后续请求静默降级。 |
 
 语义与边界：
 
@@ -632,7 +633,10 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **并发上限**：同时可闻音源上限 `TrainGame.AUDIO_MAX_VOICES`（8）；超出时停掉最早开始的一条，避免连点叠音。
 - **等待兜底**：`await: true` 复用引擎的可取消等待（取消立即结束等待），并以 `TrainGame.AUDIO_MAX_VOICE_WAIT_MS`（30 秒）兜底，元数据始终加载不出来时不会把事件链挂死。
 - **自动播放策略**：浏览器拒绝 `play()` 时只告警（控制台 + 一次 toast，文案常量 `TrainGame.AUDIO_AUTOPLAY_HINT`），该音效跳过、事件链继续——音效是可选演出，不因此回滚剧情。
-- **与 BGM 的区别**：`assets/audio/bgm.mp3` 由 `src/bgm.js` 作为跨页背景音乐独立播放（详见该文件顶部说明），与 `sound` 动作各管一套，互不停止。
+- **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
+- **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`；其他事件音与检定音均静默。回到真实车厢后恢复。
+- **场景循环音**：`carriage_02` 循环播放 `devil_scared`；`carriage_07` 以及 `carriage_06` 且置有 `carriage_06_eaten` 时循环播放 `eating_crisps`，每轮结束等待 1600ms 后再播。普通 6 号车厢不播放。离开场景、暂停、结束或进入其他静音场景时停止，恢复后重新开始。
+- **与 BGM 的区别**：`assets/audio/bgm.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
 
 ### UI：GameWindow / TextPlayer / UIManager
 
@@ -880,7 +884,7 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
 6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
 
-> `data/audio.json` 当前为空数组：注册表已就位、`sound` 动作与编译器校验都已可用，但项目尚无正式音效素材，未登记任何编号。正式音效到位后按上面第 1–2 步登记编号即可开始接线；在此之前剧情里的「（音效：…）」占位仍按转换规则登记为待办。
+> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景循环环境音共 16 个音效。检定音由检定窗口自动播放，列车背景音由游戏页脚本循环播放，其余音效在对应事件的 `sound` 动作或场景同步中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
 
 ## 相关文档
 

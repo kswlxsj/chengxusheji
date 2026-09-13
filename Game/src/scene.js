@@ -205,6 +205,10 @@
     return object[query.property];
   }
 
+  function isCarriageScene(sceneId) {
+    return sceneId === "front_carriage" || /^carriage_\d{2}$/.test(sceneId);
+  }
+
   const comparisonOperators = {
     eq: (left, right) => left === right,
     ne: (left, right) => left !== right,
@@ -244,6 +248,7 @@
       this.canvasObjects = [];
       this.hotEntry = null;
       this.ready = Promise.resolve();
+      this.renderSignature = null;
       this.root.addEventListener("pointermove", (event) => this.handlePointerMove(event), { passive: true });
       this.root.addEventListener("pointerleave", () => this.setHotEntry(null));
       this.root.addEventListener("click", (event) => this.handleCanvasClick(event));
@@ -282,7 +287,12 @@
     }
 
     refresh() {
-      if (this.state.sceneId) this.load(this.state.sceneId);
+      if (!this.state.sceneId) return;
+      const scene = this.scenes.get(this.state.sceneId);
+      if (!scene) return;
+      const signature = this.buildRenderSignature(scene);
+      if (signature === this.renderSignature) return;
+      this.render(scene);
     }
 
     setInteractionEnabled(value) {
@@ -291,10 +301,41 @@
       if (!value) this.setHotEntry(null);
     }
 
+    buildRenderSignature(scene) {
+      const backgroundVariant = (scene.backgroundVariants || [])
+        .find((variant) => evaluateCondition(variant.visibleWhen, this.state));
+      const visibleObjects = [];
+      for (const object of scene.objects || []) {
+        if (!evaluateCondition(object.visibleWhen, this.state)) continue;
+        visibleObjects.push([
+          object.id,
+          object.image,
+          object.zIndex || 10,
+          object.visualOnly === true,
+          object.glow === true || (
+            object.glowWhen && evaluateCondition(object.glowWhen, this.state)
+          )
+        ].join(":"));
+      }
+      return JSON.stringify([
+        scene.id,
+        backgroundVariant?.image || scene.background,
+        scene.id === "carriage_02" && this.state.flags.light_used !== true,
+        visibleObjects
+      ]);
+    }
+
     render(scene) {
       this.setHotEntry(null);
       this.canvasObjects = [];
+      this.renderSignature = this.buildRenderSignature(scene);
       this.root.replaceChildren();
+      const carriageScene = isCarriageScene(scene.id);
+      const carriageLit = carriageScene
+        && !(scene.id === "carriage_02" && this.state.flags.light_used !== true);
+      this.root.dataset.sceneId = scene.id;
+      this.root.classList.toggle("is-carriage", carriageScene);
+      this.root.classList.toggle("is-lit", carriageLit);
       this.root.classList.toggle(
         "is-unlit",
         scene.id === "carriage_02" && this.state.flags.light_used !== true

@@ -80,6 +80,10 @@
     "id": "E_005_LOCKED",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_locked"
+      },
+      {
         "type": "dialogue",
         "text": "你试图打开门，但门锁住了，打不开。"
       }
@@ -96,6 +100,10 @@
       {
         "type": "dialogue",
         "text": "诡异的气氛笼罩着这节6号车厢。"
+      },
+      {
+        "type": "sound",
+        "sound": "opening_cracker_bag"
       },
       {
         "type": "dialogue",
@@ -193,6 +201,10 @@
     "id": "E_005_DEPARTURE_A",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "setFlag",
         "key": "carriage_06_entry_route_a",
         "value": true
@@ -230,6 +242,10 @@
   {
     "id": "E_005_DEPARTURE_B",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "setFlag",
         "key": "carriage_06_entry_route_a",
@@ -320,6 +336,10 @@
     "id": "E_0008_S",
     "actions": [
       {
+        "type": "sound",
+        "sound": "loud_noise"
+      },
+      {
         "type": "dialogue",
         "text": "你听到收音机传到了混杂着电流声的人声:"
       },
@@ -388,6 +408,10 @@
   {
     "id": "E_008",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_locked"
+      },
       {
         "type": "dialogue",
         "text": "你颤抖着望向车厢深处。"
@@ -507,6 +531,10 @@
     "id": "E_GO_06_05",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "changeScene",
         "scene": "carriage_05"
       },
@@ -519,6 +547,10 @@
   {
     "id": "E_GO_05_04",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "changeScene",
         "scene": "carriage_04"
@@ -569,6 +601,10 @@
   {
     "id": "E_905",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "changeScene",
         "scene": "carriage_06"
@@ -655,6 +691,10 @@
   {
     "id": "E_003",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "tearing"
+      },
       {
         "type": "inspect",
         "title": "便签·背面",
@@ -1017,6 +1057,10 @@
   {
     "id": "E_010_F",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
       {
         "type": "dialogue",
         "text": "你翻找了一番，并没有发现什么看起来有用的东西。"
@@ -1994,6 +2038,10 @@
     "id": "E_018_SEARCH_PHONE",
     "actions": [
       {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
+      {
         "type": "dialogue",
         "text": "你决定先看看四周有什么能用的东西，在杂乱中翻找到了一部手机。"
       },
@@ -2640,6 +2688,10 @@
         "text": "......找到了。"
       },
       {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
+      {
         "type": "dialogue",
         "text": "你把黑包拿到她面前。她伸手进去翻找。"
       },
@@ -2722,6 +2774,10 @@
   {
     "id": "E_021_ALONE",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
       {
         "type": "dialogue",
         "text": "你打开黑包，在里面翻找。"
@@ -2877,6 +2933,10 @@
     "id": "E_022_ALONE",
     "actions": [
       {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
+      {
         "type": "dialogue",
         "text": "你继续检查包里的东西。"
       },
@@ -2904,6 +2964,10 @@
           "hasItem": "flashlight"
         },
         "next": "E_022_ITEM_END"
+      },
+      {
+        "type": "sound",
+        "sound": "finding_in_papers"
       },
       {
         "type": "dialogue",
@@ -3409,6 +3473,10 @@
     "id": "E_026_BLOCKED",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_locked"
+      },
+      {
         "type": "dialogue",
         "text": "Clicker还堵在通往先头车厢的门前，你无法安全开门通过。"
       }
@@ -3528,6 +3596,7 @@
   {
     "id": "E_028_THROW_FIRST",
     "actions": [
+      {"type": "sound", "sound": "breaking_glass"},
       {"type": "dialogue", "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"},
       {"type": "removeItem", "item": "bottle"},
       {"type": "dialogue", "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"},
@@ -3547,6 +3616,7 @@
   {
     "id": "E_028_THROW_AFTER_SUCCESS",
     "actions": [
+      {"type": "sound", "sound": "breaking_glass"},
       {"type": "dialogue", "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"},
       {"type": "removeItem", "item": "bottle"},
       {"type": "setFlag", "key": "carriage_02_passed", "value": true},
@@ -3716,6 +3786,10 @@
     "id": "E_DOOR_04",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "changeScene",
         "scene": "carriage_03"
       },
@@ -3756,6 +3830,10 @@
     "id": "E_GO_05_06",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "setFlag",
         "key": "carriage_06_entry_route_a",
         "value": false
@@ -3779,6 +3857,10 @@
     "id": "E_GO_04_05",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "changeScene",
         "scene": "carriage_05"
       },
@@ -3792,6 +3874,10 @@
     "id": "E_GO_03_04",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "changeScene",
         "scene": "carriage_04"
       },
@@ -3804,6 +3890,10 @@
   {
     "id": "E_GO_02_03",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "changeScene",
         "scene": "carriage_03"
@@ -3827,6 +3917,10 @@
   {
     "id": "E_GO_FRONT_02",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "changeScene",
         "scene": "carriage_02"
@@ -3855,6 +3949,10 @@
   {
     "id": "E_05_SEARCH_TOOLS",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "finding_in_papers"
+      },
       {
         "type": "dialogue",
         "text": "你决定仔细翻找这只倒下的背包。"
@@ -3944,6 +4042,10 @@
     "id": "E_031",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "changeScene",
         "scene": "front_carriage"
       },
@@ -3996,6 +4098,10 @@
     "id": "E_031_PLAYER_KEY",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你摸出钥匙，插进锁孔。金属咬合的声音在安静中格外清晰。"
       }
@@ -4005,6 +4111,10 @@
   {
     "id": "E_031_CREW_KEY",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "dialogue",
         "text": "她颤抖着摸出钥匙，替你打开门。"
@@ -4022,6 +4132,10 @@
       {
         "type": "dialogue",
         "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是另一位乘务员留下的。"
+      },
+      {
+        "type": "sound",
+        "sound": "door_open"
       },
       {
         "type": "dialogue",
@@ -4047,6 +4161,10 @@
   {
     "id": "E_031_NO_KEY_F",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_locked"
+      },
       {
         "type": "dialogue",
         "text": "你找不到任何能打开门的东西。身后的黑暗越来越近。"
@@ -4177,6 +4295,10 @@
     "id": "E_034",
     "actions": [
       {
+        "type": "sound",
+        "sound": "metro_speed_up"
+      },
+      {
         "type": "dialogue",
         "text": "电车加速到极致，视野被刺眼白光覆盖。"
       },
@@ -4208,6 +4330,10 @@
   {
     "id": "E_035",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "metro_speed_down"
+      },
       {
         "type": "dialogue",
         "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
@@ -4297,6 +4423,10 @@
   {
     "id": "E_501",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "conditionalJump",
         "when": {
@@ -4455,6 +4585,10 @@
     "id": "E_502_LOCKED",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_locked"
+      },
+      {
         "type": "dialogue",
         "text": "门被关死，打不开。"
       }
@@ -4463,6 +4597,10 @@
   {
     "id": "E_502_CARRIAGE03",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "dialogue",
         "text": "你推开了车门。"
@@ -4480,6 +4618,10 @@
   {
     "id": "E_503",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "dialogue",
         "text": "你穿过车门。"
@@ -4631,6 +4773,10 @@
     "id": "E_505",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你继续前进。"
       },
@@ -4645,6 +4791,10 @@
       {
         "type": "changeScene",
         "scene": "carriage_fake_04"
+      },
+      {
+        "type": "sound",
+        "sound": "fake"
       },
       {
         "type": "setFlag",
@@ -4789,12 +4939,20 @@
     "id": "E_510",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你推开那扇门。"
       },
       {
         "type": "changeScene",
         "scene": "flower_sea"
+      },
+      {
+        "type": "sound",
+        "sound": "fake"
       },
       {
         "type": "dialogue",
@@ -4912,6 +5070,10 @@
       {
         "type": "changeScene",
         "scene": "carriage_fake_04"
+      },
+      {
+        "type": "sound",
+        "sound": "fake"
       },
       {
         "type": "dialogue",
@@ -5214,6 +5376,10 @@
     "id": "E_522",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你穿过来路的车门。"
       },
@@ -5292,6 +5458,10 @@
     "id": "E_524",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你推开门——"
       },
@@ -5323,6 +5493,10 @@
     "id": "E_525",
     "actions": [
       {
+        "type": "sound",
+        "sound": "door_open"
+      },
+      {
         "type": "dialogue",
         "text": "你推开那扇门——门外不是来路。"
       },
@@ -5343,6 +5517,10 @@
   {
     "id": "E_503_BACK",
     "actions": [
+      {
+        "type": "sound",
+        "sound": "door_open"
+      },
       {
         "type": "dialogue",
         "text": "你向来路折返。"

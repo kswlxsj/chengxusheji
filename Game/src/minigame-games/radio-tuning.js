@@ -155,6 +155,8 @@
 
     function tick(now) {
       if (resolved) return;
+      // 先排下一帧：即使某次渲染意外抛错，循环也不会静默死在当前回调里。
+      animationFrame = requestAnimationFrame(tick);
       const elapsed = Math.min(80, now - lastFrame);
       lastFrame = now;
       if (now >= nextDirectionChange) randomizeRangeMotion(now);
@@ -163,7 +165,6 @@
       heldFor = inside ? heldFor + elapsed : 0;
       render(inside);
       if (heldFor >= HOLD_DURATION) void finish();
-      else animationFrame = requestAnimationFrame(tick);
     }
 
     function rotate(direction) {

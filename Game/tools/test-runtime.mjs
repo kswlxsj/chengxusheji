@@ -1352,4 +1352,53 @@ async function settleMicrotasks(count = 8) {
   await playback;
 }
 
+// 12) 静音门禁：里世界只允许白名单音效，其余请求静默且停止中的声音立即截断。
+{
+  const audio = createAudioStub();
+  audio.play("sfx_test_short");
+  assert.equal(audio.voices.has("sfx_test_short"), true);
+  audio.setMuted(true, ["sfx_test_positional"]);
+  assert.equal(audio.voices.has("sfx_test_short"), false, "进入静音区应停止非白名单音效");
+
+  const blocked = audio.play("sfx_test_short");
+  await blocked.finished;
+  assert.equal(audio.testElements.get("sfx_test_short").plays, 1, "静音时不应重新播放非白名单音效");
+
+  audio.play("sfx_test_positional");
+  assert.equal(audio.testElements.get("sfx_test_positional").plays, 1, "白名单音效应正常播放");
+
+  audio.setMuted(false);
+  audio.play("sfx_test_short");
+  assert.equal(audio.testElements.get("sfx_test_short").plays, 1, "离开静音区后音效应恢复");
+}
+
+// 13) 循环音：loop 音源不按时长自动结算，只由 stop() 或场景切换停止。
+{
+  const audio = createAudioStub();
+  const voice = audio.play("sfx_test_short", { loop: true });
+  const element = audio.testElements.get("sfx_test_short");
+  assert.equal(element.loop, true, "loop 应写入 Audio 元素");
+  assert.equal(voice.duration, null, "未知时长的循环音不设结束时长");
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.equal(audio.voices.has("sfx_test_short"), true, "循环音应持续播放");
+  voice.stop();
+  assert.equal(audio.voices.has("sfx_test_short"), false);
+}
+
+// 14) 带间隔的循环音：一轮结束后先静音等待，再复位并重新播放。
+{
+  const audio = createAudioStub();
+  const voice = audio.play("sfx_test_short", { loop: true, loopGapMs: 10 });
+  const element = audio.testElements.get("sfx_test_short");
+  assert.equal(element.loop, false, "带间隔的循环应关闭浏览器无缝 loop");
+  element.emit("ended");
+  assert.equal(element.plays, 1, "间隔期间不应立即重播");
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(element.plays, 1);
+  await new Promise((resolve) => setTimeout(resolve, 12));
+  assert.equal(element.plays, 2, "间隔结束后应重新播放");
+  assert.equal(audio.voices.has("sfx_test_short"), true);
+  voice.stop();
+}
+
 console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态、小游戏结算与音效播放。");

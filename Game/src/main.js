@@ -60,6 +60,27 @@
   let autosavedCarriageIds = new Set();
   const scoutingClickTarget = 3;
   const scoutingClickFlag = "scouting_click_count";
+  const INNER_WORLD_SCENES = new Set([
+    "carriage_inner_01",
+    "carriage_inner_02",
+    "carriage_fake_04",
+    "flower_sea",
+    "flower_sea_inside"
+  ]);
+  const INNER_WORLD_ALLOWED_SOUNDS = ["door_open", "door_locked", "fake"];
+  const SCENE_LOOP_TRACKS = [
+    {
+      id: "devil_scared",
+      matches: (sceneId) => sceneId === "carriage_02"
+    },
+    {
+      id: "eating_crisps",
+      matches: (sceneId, flags) => sceneId === "carriage_07"
+        || (sceneId === "carriage_06" && flags?.carriage_06_eaten === true),
+      options: { loop: true, loopGapMs: 1600 }
+    }
+  ];
+  const sceneLoopVoices = new Map();
   let scoutingOfferTask = null;
 
   // CODEX ADD START
@@ -168,7 +189,29 @@
     }
   }
 
+  function syncAudioForScene() {
+    const innerWorld = INNER_WORLD_SCENES.has(state.sceneId);
+    const playbackEnabled = !innerWorld && !paused && !startupLocked;
+    ui.audio?.setMuted?.(innerWorld, INNER_WORLD_ALLOWED_SOUNDS);
+    window.__TRAIN_GAME_TRAIN_AUDIO__?.setEnabled?.(playbackEnabled);
+
+    for (const track of SCENE_LOOP_TRACKS) {
+      const active = playbackEnabled && track.matches(state.sceneId, state.flags);
+      const voice = sceneLoopVoices.get(track.id);
+      const playing = voice && !voice.stopped;
+      if (active && !playing) {
+        const nextVoice = ui.audio?.play?.(track.id, track.options || { loop: true });
+        if (nextVoice) sceneLoopVoices.set(track.id, nextVoice);
+        else sceneLoopVoices.delete(track.id);
+      } else if (!active && voice) {
+        if (playing) voice.stop();
+        sceneLoopVoices.delete(track.id);
+      }
+    }
+  }
+
   function updateHud() {
+    syncAudioForScene();
     document.querySelector("#attributes").textContent = Object.entries(state.attributes)
       .map(([key, value]) => `${state.attributeDefinitions.get(key)?.name || key} ${value}`)
       .join(" · ");

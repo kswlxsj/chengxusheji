@@ -27,13 +27,26 @@
       this.voices = new Map();
       this.serial = 0;
       this.autoplayWarned = false;
+      this.muted = false;
+      this.mutedAllowlist = new Set();
       // 由 UIManager 接上 toast；未接时只写控制台。
       this.onAutoplayBlocked = null;
     }
 
+    // 进入剧情静音区时只保留白名单音效，并立即停掉其余正在播放的声音。
+    setMuted(value, allowedSoundIds = []) {
+      this.muted = value === true;
+      this.mutedAllowlist = new Set(Array.isArray(allowedSoundIds) ? allowedSoundIds : []);
+      if (!this.muted) return;
+      for (const voice of [...this.voices.values()]) {
+        if (!this.mutedAllowlist.has(voice.id)) voice.stop();
+      }
+    }
+
     // 播放编号对应的音效，返回句柄 { finished, duration, stop() }。
     // options.start 从第几毫秒开始；options.duration 最多播放多少毫秒（截取一段音频）；
-    // options.volume 是相对注册表音量的倍率，供单次演出微调。
+    // options.volume 是相对注册表音量的倍率；options.loop 用于场景循环音；
+    // options.loopGapMs 为正时在每轮之间留出间隔。
     play(soundId, options = {}) {
       const entry = this.registry.get(soundId);
       if (!entry) throw new Error(`音效未注册：${soundId || "空"}`);
@@ -43,9 +56,13 @@
 
       const start = Math.max(0, Number(options.start) || 0);
       const limit = Number(options.duration) > 0 ? Number(options.duration) : null;
+      const loop = options.loop === true;
+      const loopGapMs = loop ? Math.max(0, Number(options.loopGapMs) || 0) : 0;
+      const gappedLoop = loop && loopGapMs > 0;
       const multiplier = options.volume == null ? 1 : clamp(Number(options.volume) || 0, 0, 1);
       const baseVolume = entry.volume == null ? 1 : clamp(Number(entry.volume) || 0, 0, 1);
-      const element = this.createElement(entry);
+      const mutedSilent = this.muted && !this.mutedAllowlist.has(soundId);
+      const element = mutedSilent ? null : this.createElement(entry);
       const voice = {
         id: soundId,
         element,
@@ -58,10 +75,17 @@
         stop: () => {}
       };
 
+      if (mutedSilent) {
+        voice.finished = Promise.resolve();
+        voice.duration = limit == null ? (loop ? null : 0) : limit / 1000;
+        this.voices.set(soundId, voice);
+        return voice;
+      }
+
       if (!element) {
         // 无 DOM 环境（测试沙箱）：不建音源，立即“播完”，调用方逻辑照常推进。
         voice.finished = Promise.resolve();
-        voice.duration = limit == null ? 0 : limit / 1000;
+        voice.duration = limit == null ? (loop ? null : 0) : limit / 1000;
         this.voices.set(soundId, voice);
         return voice;
       }
@@ -69,6 +93,7 @@
       // 实际开始播放后才会产生有效时长：显式截断优先，否则取音频自身时长减去起点。
       const applyDuration = () => {
         if (limit !== null) voice.duration = limit / 1000;
+        else if (loop) voice.duration = null;
         else if (Number.isFinite(Number(element.duration)) && Number(element.duration) > 0) {
           voice.duration = Math.max(1, Number(element.duration) * 1000 - start) / 1000;
         } else {
@@ -77,12 +102,17 @@
         return voice.duration;
       };
 
+      let timeoutHandle = null;
+      let loopGapHandle = null;
+      let resolveFinished = () => {};
+
       // 每次播放只结算一次：静音、清监听、清时钟、退出活动表、归还元素、解决 finished。
       const settle = () => {
         if (voice.stopped) return;
         voice.stopped = true;
         if (timeoutHandle !== null) clearTimeout(timeoutHandle);
-        element.removeEventListener("ended", settle);
+        if (loopGapHandle !== null) clearTimeout(loopGapHandle);
+        element.removeEventListener("ended", handleEnded);
         element.removeEventListener("error", settle);
         element.pause();
         if (this.voices.get(soundId) === voice) this.voices.delete(soundId);
@@ -92,17 +122,47 @@
         }, 0);
         resolveFinished();
       };
-      let timeoutHandle = null;
-      let resolveFinished = () => {};
       voice.finished = new Promise((resolve) => { resolveFinished = resolve; });
       voice.settle = settle;
       voice.stop = () => settle();
-      element.addEventListener("ended", settle);
+
+      const handlePlaybackFailure = (error) => {
+        console.warn(`音效 ${soundId} 播放失败：`, error);
+        voice.failed = true;
+        this.warnAutoplay();
+        settle();
+      };
+      const playElement = () => {
+        const promise = element.play();
+        if (promise && typeof promise.catch === "function") {
+          promise.catch(handlePlaybackFailure);
+        }
+      };
+      const handleEnded = () => {
+        if (!gappedLoop) {
+          settle();
+          return;
+        }
+        element.pause();
+        loopGapHandle = setTimeout(() => {
+          loopGapHandle = null;
+          if (voice.stopped) return;
+          try {
+            element.currentTime = start / 1000;
+          } catch (_error) {
+            // 播放位置复位失败时仍尝试继续，避免循环链永久停住。
+          }
+          playElement();
+        }, loopGapMs);
+      };
+
+      element.addEventListener("ended", handleEnded);
       element.addEventListener("error", settle);
 
       element.volume = baseVolume * multiplier;
       element.src = entry.file;
       element.preload = "auto";
+      element.loop = loop && !gappedLoop;
       element.hidden = true;
       element.setAttribute("aria-hidden", "true");
       if (this.root && typeof this.root.append === "function") this.root.append(element);
@@ -121,18 +181,16 @@
         }
         applyDuration();
         if (timeoutHandle !== null) clearTimeout(timeoutHandle);
-        timeoutHandle = setTimeout(settle, voice.duration === null ? MAX_VOICE_WAIT_MS : voice.duration * 1000);
-        const promise = element.play();
+        if (limit !== null) timeoutHandle = setTimeout(settle, limit);
+        else if (!loop) {
+          timeoutHandle = setTimeout(
+            settle,
+            voice.duration === null ? MAX_VOICE_WAIT_MS : voice.duration * 1000
+          );
+        }
         // 浏览器自动播放策略或解码失败：音效是可选演出，只告警并立刻结算，
         // 不让“根本不会响的声音”把 await 中的事件链白等一整段时长。
-        if (promise && typeof promise.catch === "function") {
-          promise.catch((error) => {
-            console.warn(`音效 ${soundId} 播放失败：`, error);
-            voice.failed = true;
-            this.warnAutoplay();
-            settle();
-          });
-        }
+        playElement();
       };
       timeoutHandle = setTimeout(settle, MAX_VOICE_WAIT_MS);
       if (element.readyState >= 1) startPlayback();

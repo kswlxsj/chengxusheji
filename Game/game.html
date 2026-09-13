@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=dialog-performance-20260913-1">
+  <link rel="stylesheet" href="styles/main.css?v=carriage-motion-20260913-6">
   <link rel="stylesheet" href="styles/carriage-02-darkness.css?v=20260913-1">
-  <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
 
@@ -67,13 +66,13 @@
   <script src="src/state.js?v=local-ui-flow-20260912-3"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
-  <script src="src/ui.js?v=dialog-performance-20260913-1"></script>
+  <script src="src/ui.js?v=dice-sfx-20260913-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
 
-  <script src="src/audio.js"></script>
+  <script src="src/audio.js?v=inner-fake-20260913-1"></script>
   <!-- TrainGame.AudioManager，音效播放：编号来自 data/audio.json，sound 动作经 ui.audio 调用。 -->
   
-  <script src="src/scene.js?v=carriage-02-darkness-20260913-1"></script>
+  <script src="src/scene.js?v=carriage-motion-20260913-2"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
   <script src="src/events.js?v=resource-wait-20260913-3"></script>
@@ -97,16 +96,19 @@
   <script src="src/minigame-games/card-battle.js?v=20260911-bg"></script>
   <!-- 战斗轮卡牌小游戏：四张牌单出/双出、敌人候选牌与濒死无限体力。 -->
 
-    <script src="src/minigame-games/radio-tuning.js?v=radio-minigame-2"></script>
+    <script src="src/minigame-games/radio-tuning.js?v=scene-stability-20260913-1"></script>
   <!-- E-0008 收音机调频小游戏：追踪移动频段并稳定解码广播。 -->
 
   <script src="src/minigame-games/crew-negotiation.js"></script>
   <!-- 乘务员安抚与交涉小游戏模块（属于 src/minigame-games/*.js）：顶层只注册、运行期再碰 DOM。 -->
 
-  <script src="src/minigame-games/conductor-tug.js?v=conductor-tug-20260912-1"></script>
+    <script src="src/minigame-games/conductor-tug.js?v=scene-stability-20260913-1"></script>
   <!-- 终局控制杆争夺小游戏：进入先头车厢后触发，抓握区大小读取里世界交钥匙历史。 -->
 
-  <script src="src/main.js?v=dialogue-flow-20260913-5"></script>
+  <script src="src/train-bgm.js"></script>
+  <!-- 正式游戏页循环播放列车背景音；进入里世界后由 main.js 暂停。 -->
+
+  <script src="src/main.js?v=inner-fake-20260913-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

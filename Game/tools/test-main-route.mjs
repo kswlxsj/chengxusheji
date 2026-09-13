@@ -45,6 +45,7 @@ function fixture({ flags = {}, inventory = [], sceneId, dice = {}, choiceLabels 
         return options.find((option) => choiceLabels.includes(option.label)) || options[0];
       }
     },
+    audio: { play() { return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
   };
   const scene = {
@@ -155,7 +156,8 @@ assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && 
 
 // 4号→3号折返有折返描写。
 const door04 = actionsOf("E_DOOR_04");
-assert.deepEqual(door04[0], { type: "changeScene", scene: "carriage_03" });
+assert.deepEqual(door04[0], { type: "sound", sound: "door_open" });
+assert.deepEqual(door04[1], { type: "changeScene", scene: "carriage_03" });
 assert.equal(door04[door04.length - 1].type, "dialogue");
 assert.match(door04[door04.length - 1].text, /返回3号车厢/);
 
@@ -164,11 +166,44 @@ assert.match(door04[door04.length - 1].text, /返回3号车厢/);
 assert.equal(eventById.get("E_022_ITEM").next, undefined);
 assert.equal(eventById.get("E_023_LOOP").next, "E_501");
 
+for (const [id, sceneId] of [["E_505", "carriage_fake_04"], ["E_510", "flower_sea"], ["E_513", "carriage_fake_04"]]) {
+  const actions = actionsOf(id);
+  const sceneIndex = actions.findIndex((action) => action.type === "changeScene" && action.scene === sceneId);
+  assert.deepEqual(actions[sceneIndex + 1], { type: "sound", sound: "fake" }, `${id} 进入 ${sceneId} 后应播放 fake`);
+}
+
 // 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
 assert.equal(eventById.get("E_524_DONE").next, "E_025");
 assert.equal(eventById.get("E_524_CREW").next, "E_025");
 assert.equal(eventById.get("E_025").next, undefined);
 assert.equal(eventById.get("E_025_CARRIED").next, undefined);
+
+// 收音机成功音与头车最终速度演出音。
+assert.deepEqual(actionsOf("E_0008_S")[0], { type: "sound", sound: "loud_noise" });
+assert.deepEqual(actionsOf("E_034")[0], { type: "sound", sound: "metro_speed_up" });
+assert.deepEqual(actionsOf("E_035")[0], { type: "sound", sound: "metro_speed_down" });
+assert.deepEqual(actionsOf("E_003")[0], { type: "sound", sound: "tearing" });
+assert.equal(
+  actionsOf("E_005_GUIDE").some((action) => action.type === "sound" && action.sound === "opening_cracker_bag"),
+  true
+);
+assert.deepEqual(actionsOf("E_028_THROW_FIRST")[0], { type: "sound", sound: "breaking_glass" });
+assert.deepEqual(actionsOf("E_028_THROW_AFTER_SUCCESS")[0], { type: "sound", sound: "breaking_glass" });
+for (const id of [
+  "E_010_F",
+  "E_018_SEARCH_PHONE",
+  "E_021_CARRIED",
+  "E_021_ALONE",
+  "E_022_ALONE",
+  "E_022_ITEM",
+  "E_05_SEARCH_TOOLS"
+]) {
+  assert.equal(
+    actionsOf(id).some((action) => action.type === "sound" && action.sound === "finding_in_papers"),
+    true,
+    `${id} 翻找时应播放搜索音`
+  );
+}
 
 // 潜行通过也算通过，前门不再永远被堵；前门通向先头车厢到达事件。
 assert.equal(actionsOf("E_027_S").some((action) => action.type === "setFlag" && action.key === "carriage_02_passed" && action.value === true), true);

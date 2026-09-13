@@ -19,6 +19,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const ui = {
     dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory] }); } },
     choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
+    audio: { play() { return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
   };
   const scene = {

@@ -10,6 +10,21 @@
   const VOLUME = 0.55;
   const SAVE_INTERVAL = 1000;
   const FADE_MS = 800;          // 淡入淡出时长
+  const BGM_PAGE_FILES = new Set(["home.html", "ending.html"]);
+  const pageFile = new URL(window.location.href).pathname.split("/").pop() || "index.html";
+
+  // 标题页与结束页保留跨页 BGM；游戏页和其余辅助页面不播放这套 BGM。
+  if (!BGM_PAGE_FILES.has(pageFile)) {
+    window.__TRAIN_GAME_BGM__ = {
+      resume: () => Promise.resolve(),
+      restart: () => Promise.resolve(),
+      pause: () => {},
+      save: () => {},
+      getAudio: () => null,
+      getVolume: () => VOLUME
+    };
+    return;
+  }
 
   if (window.__TRAIN_GAME_BGM__) {
     window.__TRAIN_GAME_BGM__.resume();
