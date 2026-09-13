@@ -157,6 +157,7 @@
       this.fast = false;
       this.paused = false;
       this.advance = null;
+      this.advanceHook = null;
       this.autoTimer = null;
       this.lineToken = 0;
       this.speaker = document.createElement("div");
@@ -279,15 +280,19 @@
     resolveLine() {
       this.clearAutoTimer();
       if (!this.advance) return;
+      const advanceHook = this.advanceHook;
+      if (advanceHook && advanceHook() === false) return;
       const resolve = this.advance;
       this.advance = null;
+      this.advanceHook = null;
       resolve();
     }
 
-    async showLine({ speaker = "", text = "", speed = 28 }) {
+    async showLine({ speaker = "", text = "", speed = 28, onAdvance = null }) {
       const token = ++this.lineToken;
       this.open();
       this.speaker.textContent = speaker;
+      this.advanceHook = typeof onAdvance === "function" ? onAdvance : null;
       await this.player.play(text, this.fast ? 1 : speed);
       if (token !== this.lineToken) return;
       return new Promise((resolve) => {
@@ -300,6 +305,7 @@
       this.lineToken += 1;
       this.player.cancel();
       this.resolveLine();
+      this.advanceHook = null;
       super.close();
     }
   }

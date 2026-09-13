@@ -46,7 +46,8 @@
     // 播放编号对应的音效，返回句柄 { finished, duration, stop() }。
     // options.start 从第几毫秒开始；options.duration 最多播放多少毫秒（截取一段音频）；
     // options.volume 是相对注册表音量的倍率；options.loop 用于场景循环音；
-    // options.loopGapMs 为正时在每轮之间留出间隔。
+    // options.loopGapMs 为正时在每轮之间留出间隔；
+    // options.segmentDuration 为正时只循环音频开头的这段时长，直到 voice.stop()。
     play(soundId, options = {}) {
       const entry = this.registry.get(soundId);
       if (!entry) throw new Error(`音效未注册：${soundId || "空"}`);
@@ -57,6 +58,8 @@
       const start = Math.max(0, Number(options.start) || 0);
       const limit = Number(options.duration) > 0 ? Number(options.duration) : null;
       const loop = options.loop === true;
+      const segmentDuration = loop ? Math.max(0, Number(options.segmentDuration) || 0) : 0;
+      const segmentedLoop = loop && segmentDuration > 0;
       const loopGapMs = loop ? Math.max(0, Number(options.loopGapMs) || 0) : 0;
       const gappedLoop = loop && loopGapMs > 0;
       const multiplier = options.volume == null ? 1 : clamp(Number(options.volume) || 0, 0, 1);
@@ -71,6 +74,7 @@
         serial: 0,
         finished: null,
         duration: null,
+        segmentReady: !segmentedLoop || !element,
         settle: () => {},
         stop: () => {}
       };
@@ -104,14 +108,17 @@
 
       let timeoutHandle = null;
       let loopGapHandle = null;
+      let segmentHandle = null;
       let resolveFinished = () => {};
 
       // 每次播放只结算一次：静音、清监听、清时钟、退出活动表、归还元素、解决 finished。
       const settle = () => {
         if (voice.stopped) return;
         voice.stopped = true;
+        voice.segmentReady = true;
         if (timeoutHandle !== null) clearTimeout(timeoutHandle);
         if (loopGapHandle !== null) clearTimeout(loopGapHandle);
+        if (segmentHandle !== null) clearTimeout(segmentHandle);
         element.removeEventListener("ended", handleEnded);
         element.removeEventListener("error", settle);
         element.pause();
@@ -129,6 +136,7 @@
       const handlePlaybackFailure = (error) => {
         console.warn(`音效 ${soundId} 播放失败：`, error);
         voice.failed = true;
+        voice.segmentReady = true;
         this.warnAutoplay();
         settle();
       };
@@ -138,7 +146,32 @@
           promise.catch(handlePlaybackFailure);
         }
       };
+      const scheduleSegmentRestart = () => {
+        if (!segmentedLoop || voice.stopped) return;
+        if (segmentHandle !== null) clearTimeout(segmentHandle);
+        segmentHandle = setTimeout(() => {
+          segmentHandle = null;
+          voice.segmentReady = true;
+          restartSegment();
+        }, segmentDuration);
+      };
+      const restartSegment = () => {
+        if (!segmentedLoop || voice.stopped) return;
+        voice.segmentReady = true;
+        element.pause();
+        try {
+          element.currentTime = start / 1000;
+        } catch (_error) {
+          // 设置播放位置失败时从当前可用位置继续，避免循环链中断。
+        }
+        playElement();
+        scheduleSegmentRestart();
+      };
       const handleEnded = () => {
+        if (segmentedLoop) {
+          restartSegment();
+          return;
+        }
         if (!gappedLoop) {
           settle();
           return;
@@ -162,7 +195,7 @@
       element.volume = baseVolume * multiplier;
       element.src = entry.file;
       element.preload = "auto";
-      element.loop = loop && !gappedLoop;
+      element.loop = loop && !gappedLoop && !segmentedLoop;
       element.hidden = true;
       element.setAttribute("aria-hidden", "true");
       if (this.root && typeof this.root.append === "function") this.root.append(element);
@@ -181,7 +214,8 @@
         }
         applyDuration();
         if (timeoutHandle !== null) clearTimeout(timeoutHandle);
-        if (limit !== null) timeoutHandle = setTimeout(settle, limit);
+        if (segmentedLoop) scheduleSegmentRestart();
+        else if (limit !== null) timeoutHandle = setTimeout(settle, limit);
         else if (!loop) {
           timeoutHandle = setTimeout(
             settle,

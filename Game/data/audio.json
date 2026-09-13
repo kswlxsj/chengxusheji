@@ -121,5 +121,26 @@
     "file": "assets/audio/fake.mp3",
     "volume": 0.7,
     "description": "进入假4号车厢或花海场景时播放。"
+  },
+  {
+    "id": "tinnitus_e011",
+    "name": "E-011耳鸣",
+    "file": "assets/audio/tinnitus1.mp3",
+    "volume": 0.7,
+    "description": "E-011成功分支只循环音频开头2秒，点击当前对白后停止。"
+  },
+  {
+    "id": "siren_e011",
+    "name": "E-011警报",
+    "file": "assets/audio/siren2.mp3",
+    "volume": 0.7,
+    "description": "E-011成功分支只循环音频开头3秒，覆盖连续三句对白后停止。"
+  },
+  {
+    "id": "distortion_e006",
+    "name": "E-006维度失真",
+    "file": "assets/audio/distortion_of_the_dim.mp3",
+    "volume": 0.7,
+    "description": "进入7号车厢时播放2秒。"
   }
 ]

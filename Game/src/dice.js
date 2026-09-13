@@ -191,6 +191,8 @@
   registerDice("ev001_insight_01", attrCheck("insight"));
   registerDice("ev004_insight_01", attrCheck("insight"));
   registerDice("skill_scouting", scoutingSkillCheck);
+  // E-011报纸只做一次侦查技能确认，不再连带触发第二次灵感检定。
+  registerDice("ev011_scouting_01", learnedSkillCheck("scouting"));
   registerDice("ev011_insight_01", attrCheck("insight"));
   // 急救与医疗是同一个技能；保留旧检定编号，兼容旧事件和旧测试。
   registerDice("skill_first_aid", learnedSkillCheck("medicine"));

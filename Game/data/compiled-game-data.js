@@ -1231,6 +1231,11 @@ window.GAME_DATA = {
           "scene": "carriage_07"
         },
         {
+          "type": "sound",
+          "sound": "distortion_e006",
+          "duration": 2000
+        },
+        {
           "type": "dialogue",
           "text": "车厢内部，被撕裂的人类肢体散落一地。"
         },
@@ -1246,6 +1251,11 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_07"
+        },
+        {
+          "type": "sound",
+          "sound": "distortion_e006",
+          "duration": 2000
         },
         {
           "type": "dialogue",
@@ -1884,6 +1894,11 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "setFlag",
+          "key": "ev008_scouting_done",
+          "value": true
+        },
+        {
           "type": "check",
           "dice": "ev008_san_01"
         },
@@ -1910,6 +1925,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev008_scouting_ok",
           "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "ev008_scouting_done",
+          "value": true
         },
         {
           "type": "setFlag",
@@ -1969,20 +1989,17 @@ window.GAME_DATA = {
           "scene": "carriage_05"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_05_newspaper_available",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "5号车厢空无一人。四周散落着各种各样的物品。"
         },
         {
           "type": "dialogue",
           "text": "你回头看6号车厢，物品还在，灯也还亮着。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_010_S",
-            "E_010_F"
-          ]
         }
       ]
     },
@@ -2052,8 +2069,32 @@ window.GAME_DATA = {
           "text": "先看看报纸再说吧。"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev008_scouting_ok",
+            "equals": true
+          },
+          "next": "E_011_S"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "ev008_scouting_done",
+                "equals": true
+              },
+              {
+                "flag": "ev008_scouting_ok",
+                "equals": false
+              }
+            ]
+          },
+          "next": "E_011_F"
+        },
+        {
           "type": "check",
-          "dice": "skill_scouting",
+          "dice": "ev011_scouting_01",
           "outcomes": [
             "E_011_S",
             "E_011_F"
@@ -2069,8 +2110,11 @@ window.GAME_DATA = {
           "text": "你发现报纸的日期是7月17日。"
         },
         {
-          "type": "dialogue",
-          "text": "（音效：惊悚诡异）"
+          "type": "sound",
+          "sound": "tinnitus_e011",
+          "loop": true,
+          "segmentDuration": 2000,
+          "stopOnDialogueAdvance": true
         },
         {
           "type": "dialogue",
@@ -2101,8 +2145,12 @@ window.GAME_DATA = {
           "text": "你不可置信地反复确认，却只见版面上写着："
         },
         {
-          "type": "dialogue",
-          "text": "（音效：连续的警报声）"
+          "type": "sound",
+          "sound": "siren_e011",
+          "loop": true,
+          "segmentDuration": 3000,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 3
         },
         {
           "type": "dialogue",
@@ -2179,6 +2227,14 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你正要放下报纸，眼角却扫到底边有一行潦草的小字："
+        },
+        {
+          "type": "sound",
+          "sound": "siren_e011",
+          "loop": true,
+          "segmentDuration": 3000,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 1
         },
         {
           "type": "dialogue",
@@ -3024,10 +3080,6 @@ window.GAME_DATA = {
           "text": "屏幕上赫然显示：2013年7月15日。"
         },
         {
-          "type": "dialogue",
-          "text": "（音效：惊悚诡异）"
-        },
-        {
           "type": "conditionalJump",
           "when": {
             "hasItem": "newspaper"
@@ -3311,10 +3363,6 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "【状态·工具齐备】"
-        },
-        {
-          "type": "dialogue",
           "text": "你带着她返回3号车厢。"
         },
         {
@@ -3392,20 +3440,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "【状态·工具齐备】"
-        },
-        {
-          "type": "dialogue",
           "text": "你把她扶起来。这一次，她没有拒绝。"
         },
         {
           "type": "setFlag",
           "key": "carried_crew",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·乘务员同行】"
         },
         {
           "type": "changeScene",
@@ -3467,7 +3507,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "【状态·乘务员同行（虚弱）】她可以跟着你走，但无法提供完整的对话情报。"
+          "text": "她可以跟着你走，但无法提供完整的对话情报。"
         },
         {
           "type": "dialogue",
@@ -3521,10 +3561,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": false
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·乘务员死亡】"
         },
         {
           "type": "conditionalJump",
@@ -3676,10 +3712,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "keys_crew",
           "value": false
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·钥匙由主角保管】"
         }
       ],
       "next": "E_022"
@@ -3705,10 +3737,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "keys_crew",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·钥匙由乘务员保管】E-031进入驾驶室时由她开门；E-033中她离操作台更近，干预检定难度 +10%。"
         }
       ],
       "next": "E_022"
@@ -3758,10 +3786,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "keys_missing",
           "value": false
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·钥匙由主角保管】"
         }
       ],
       "next": "E_022"
@@ -3786,10 +3810,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "keys_missing",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "【状态·未获得钥匙】E-031进入驾驶室时将再进行一次侦查，若仍失败 → E-036结局C。"
         }
       ],
       "next": "E_022"
@@ -4025,7 +4045,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "灯，灭了。\n\n（音效：电流嘶鸣）\n\n黑暗中，你摸到了通往2号车厢的门。"
+          "text": "灯，灭了。\n\n黑暗中，你摸到了通往2号车厢的门。"
         }
       ],
       "next": "E_501"
@@ -4974,6 +4994,10 @@ window.GAME_DATA = {
       "id": "E_05_SEARCH_NEWS",
       "actions": [],
       "next": "E_011"
+    },
+    {
+      "id": "E_05_SEARCH_NEWS_CANCEL",
+      "actions": []
     },
     {
       "id": "E_05_SEARCH_TOOLS",
@@ -7037,6 +7061,27 @@ window.GAME_DATA = {
       "file": "assets/audio/fake.mp3",
       "volume": 0.7,
       "description": "进入假4号车厢或花海场景时播放。"
+    },
+    {
+      "id": "tinnitus_e011",
+      "name": "E-011耳鸣",
+      "file": "assets/audio/tinnitus1.mp3",
+      "volume": 0.7,
+      "description": "E-011成功分支只循环音频开头2秒，点击当前对白后停止。"
+    },
+    {
+      "id": "siren_e011",
+      "name": "E-011警报",
+      "file": "assets/audio/siren2.mp3",
+      "volume": 0.7,
+      "description": "E-011成功分支只循环音频开头3秒，覆盖连续三句对白后停止。"
+    },
+    {
+      "id": "distortion_e006",
+      "name": "E-006维度失真",
+      "file": "assets/audio/distortion_of_the_dim.mp3",
+      "volume": 0.7,
+      "description": "进入7号车厢时播放2秒。"
     }
   ]
 };

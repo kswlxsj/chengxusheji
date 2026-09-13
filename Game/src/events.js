@@ -113,6 +113,7 @@
       this.pauseWaiters = new Set();
       this.timers = new Set();
       this.pendingWaits = new Set();
+      this.advanceBoundVoices = new Map();
       this.stableSnapshot = state.snapshot();
       this.onStateChanged = () => {};
       this.shouldTerminate = shouldTerminate;
@@ -134,6 +135,23 @@
       return `event:${this.state.currentEventId || "global"}:${action.dice}`;
     }
 
+    stopAdvanceBoundVoices(force = false) {
+      const bindings = [...this.advanceBoundVoices.entries()]
+        .filter(([voice]) => !voice.stopped);
+      if (!force && bindings.some(([voice, advances]) => (
+        advances <= 1 && voice.segmentReady === false
+      ))) return false;
+      for (const [voice, advances] of bindings) {
+        if (advances <= 1) {
+          voice.stop();
+          this.advanceBoundVoices.delete(voice);
+        } else {
+          this.advanceBoundVoices.set(voice, advances - 1);
+        }
+      }
+      return true;
+    }
+
     registerBuiltIns() {
       this.registerAction("dialogue", async (action) => {
         const run = this.activeRun;
@@ -143,7 +161,11 @@
         });
         await this.waitWhilePaused(run);
         for (const text of splitDialogueText(action.text)) {
-          await this.ui.dialog.showLine({ ...action, text });
+          await this.ui.dialog.showLine({
+            ...action,
+            text,
+            onAdvance: () => this.stopAdvanceBoundVoices()
+          });
         }
       });
 
@@ -291,8 +313,16 @@
         const voice = this.ui.audio.play(action.sound, {
           start: action.start,
           duration: action.duration,
-          volume: action.volume
+          volume: action.volume,
+          loop: action.loop === true,
+          loopGapMs: action.loopGapMs,
+          segmentDuration: action.segmentDuration
         });
+        if (action.stopOnDialogueAdvance === true) {
+          const advances = Math.max(1, Number(action.stopAfterDialogueAdvances) || 1);
+          this.advanceBoundVoices.set(voice, advances);
+          voice.finished.then(() => this.advanceBoundVoices.delete(voice));
+        }
         if (action.await !== true) return null;
         try {
           await this.waitFor(voice.finished, this.activeRun, {
@@ -598,6 +628,7 @@
         }
         return false;
       } finally {
+        this.stopAdvanceBoundVoices(true);
         this.ui.cancelPending();
         this.activeRun = null;
         this.busy = false;
