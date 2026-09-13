@@ -5324,30 +5324,6 @@ window.GAME_DATA = {
       "id": "E_034",
       "actions": [
         {
-          "type": "sound",
-          "sound": "metro_speed_up"
-        },
-        {
-          "type": "dialogue",
-          "text": "电车加速到极致，视野被刺眼白光覆盖。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你睁开眼，发现自己仍坐在6号车厢。广播声响起：终点站已到。"
-        },
-        {
-          "type": "dialogue",
-          "text": "车厢里的人们陆续醒来，揉着眼睛下车。你翻看背包：便签、报纸、手机、手电筒——全都不在了。"
-        },
-        {
-          "type": "dialogue",
-          "text": "那是一场共同的噩梦。恐怖的记忆慢慢淡忘。你跟在人群后面走出站台。"
-        },
-        {
-          "type": "dialogue",
-          "text": "身后，末班电车的车门缓缓关闭。抬头，你看见站台的指引牌上，写着熟悉字迹的——\n\n「MOVE FORWARD」"
-        },
-        {
           "type": "custom",
           "name": "endGame",
           "params": {
@@ -6998,6 +6974,20 @@ window.GAME_DATA = {
       "file": "assets/audio/metro-speed-down.mp3",
       "volume": 0.8,
       "description": "头车选择减速或控制杆争夺失败时播放。"
+    },
+    {
+      "id": "metro_arriving",
+      "name": "终点站到达广播",
+      "file": "assets/audio/metro-arriving.mp3",
+      "volume": 0.8,
+      "description": "结局 A 醒来后播放的终点站广播。"
+    },
+    {
+      "id": "airport_gate1",
+      "name": "站台人流与出站环境音",
+      "file": "assets/audio/airport-gate1.mp3",
+      "volume": 0.72,
+      "description": "结局 A 跟随人群走出站台时播放。"
     },
     {
       "id": "devil_scared",

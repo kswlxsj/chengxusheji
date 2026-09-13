@@ -178,9 +178,12 @@ assert.equal(eventById.get("E_524_CREW").next, "E_025");
 assert.equal(eventById.get("E_025").next, undefined);
 assert.equal(eventById.get("E_025_CARRIED").next, undefined);
 
-// 收音机成功音与头车最终速度演出音。
+// 收音机成功音与头车结局入口。结局 A 的完整演出由 main.js 在终止路径播放，
+// E_034 只负责写入 true_end，避免旧版简化对白与正式过场重复。
 assert.deepEqual(actionsOf("E_0008_S")[0], { type: "sound", sound: "loud_noise" });
-assert.deepEqual(actionsOf("E_034")[0], { type: "sound", sound: "metro_speed_up" });
+assert.deepEqual(actionsOf("E_034"), [
+  { type: "custom", name: "endGame", params: { reason: "true_end" } }
+]);
 assert.deepEqual(actionsOf("E_035")[0], { type: "sound", sound: "metro_speed_down" });
 assert.deepEqual(actionsOf("E_003")[0], { type: "sound", sound: "tearing" });
 assert.equal(

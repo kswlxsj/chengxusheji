@@ -60,6 +60,20 @@
     "description": "头车选择减速或控制杆争夺失败时播放。"
   },
   {
+    "id": "metro_arriving",
+    "name": "终点站到达广播",
+    "file": "assets/audio/metro-arriving.mp3",
+    "volume": 0.8,
+    "description": "结局 A 醒来后播放的终点站广播。"
+  },
+  {
+    "id": "airport_gate1",
+    "name": "站台人流与出站环境音",
+    "file": "assets/audio/airport-gate1.mp3",
+    "volume": 0.72,
+    "description": "结局 A 跟随人群走出站台时播放。"
+  },
+  {
     "id": "devil_scared",
     "name": "二号车厢循环环境音",
     "file": "assets/audio/devil-scared.mp3",

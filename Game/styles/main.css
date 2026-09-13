@@ -1875,6 +1875,140 @@ body.home-op-active .home-page .auth-user-status {
   45%, 55% { opacity: .92; }
 }
 
+/* 结局 A：终点站广播、阳光站台与 MOVE FORWARD 的专用过场。 */
+.ending-a-sequence {
+  position: absolute;
+  inset: 0;
+  z-index: 190;
+  overflow: hidden;
+  opacity: 0;
+  color: #f4f0e8;
+  background: #000;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 380ms ease;
+}
+
+.ending-a-sequence.is-visible { opacity: 1; }
+
+.ending-a-cinema,
+.ending-a-background,
+.ending-a-white {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ending-a-cinema {
+  overflow: hidden;
+  background: #000;
+  transition: filter 120ms ease, transform 2200ms ease;
+}
+
+.ending-a-sequence.is-accelerating .ending-a-cinema {
+  transform: scale(1.045);
+}
+
+.ending-a-background {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.ending-a-background.is-active { opacity: 1; }
+
+.ending-a-portrait {
+  position: absolute;
+  z-index: 3;
+  left: 6%;
+  bottom: 31%;
+  width: auto;
+  height: 47%;
+  max-width: 30%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 9px 18px rgba(0, 0, 0, .68));
+  transform: translateY(12px) scale(.96);
+  transform-origin: left bottom;
+  transition: opacity 240ms ease, transform 280ms ease;
+}
+
+.ending-a-portrait.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.ending-a-portrait.is-scared {
+  left: 3%;
+  height: 54%;
+  max-width: 34%;
+  filter: drop-shadow(0 0 12px rgba(192, 26, 21, .72)) drop-shadow(0 12px 22px rgba(0, 0, 0, .78));
+  transform: translateY(0) scale(1.04);
+}
+
+.ending-a-dialogue {
+  position: absolute;
+  z-index: 6;
+  left: 4%;
+  right: 4%;
+  bottom: 2%;
+  min-height: 26%;
+  padding: 24px 58px 70px;
+  opacity: 0;
+  border: 0;
+  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  box-shadow: none;
+  transition: opacity 220ms ease;
+}
+
+.ending-a-dialogue.is-visible { opacity: 1; }
+
+.ending-a-line {
+  margin: 4px 0 0;
+  font-size: clamp(17px, 1.7vw, 25px);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.ending-a-hint {
+  position: absolute;
+  right: 58px;
+  bottom: 28px;
+  opacity: .62;
+  font-size: clamp(11px, 1vw, 13px);
+}
+
+.ending-a-sequence:not(.is-loading) .ending-a-hint:not([hidden]) {
+  animation: san-zero-hint-pulse 1s steps(2, end) infinite;
+}
+
+.ending-a-white {
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  background: #fff;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.ending-a-white.is-visible { opacity: 1; }
+
+.ending-a-sequence.is-silent-cut .ending-a-cinema {
+  filter: brightness(.16) contrast(1.32);
+}
+
+.ending-a-sequence.is-final .ending-a-background.is-active {
+  animation: ending-a-final-push 4s ease-out both;
+}
+
+@keyframes ending-a-final-push {
+  from { transform: scale(1.01); }
+  to { transform: scale(1.045); }
+}
+
 /* ============ 14. 窄屏适配（@media (max-width: 700px)） ============ */
 
 @media (max-width: 700px) {
@@ -1914,6 +2048,11 @@ body.home-op-active .home-page .auth-user-status {
   .san-zero-line { font-size: clamp(15px, 4vw, 19px); }
   .san-zero-portrait.is-doctor { left: 0; height: 58%; }
   .san-zero-portrait.is-pc { left: 0; height: 45%; }
+  .ending-a-dialogue { min-height: 0; padding: 24px 28px 64px; }
+  .ending-a-line { font-size: clamp(15px, 4vw, 19px); }
+  .ending-a-hint { right: 28px; bottom: 20px; }
+  .ending-a-portrait { left: 2%; height: 43%; max-width: 38%; }
+  .ending-a-portrait.is-scared { left: 0; height: 50%; max-width: 42%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1937,6 +2076,18 @@ body.home-op-active .home-page .auth-user-status {
 
   .san-zero-sequence.is-screaming .san-zero-cinema,
   .san-zero-sequence.is-waiting .san-zero-hint {
+    animation: none;
+  }
+
+  .ending-a-sequence,
+  .ending-a-background,
+  .ending-a-portrait,
+  .ending-a-dialogue,
+  .ending-a-white {
+    transition-duration: 1ms;
+  }
+
+  .ending-a-sequence.is-final .ending-a-background.is-active {
     animation: none;
   }
 }

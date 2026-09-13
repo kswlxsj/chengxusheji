@@ -34,6 +34,16 @@
         return;
       }
       // CODEX ADD START
+      if (reason === "true_end" && typeof Game.playEndingASequence === "function") {
+        try {
+          await Game.playEndingASequence({
+            root: gameShell,
+            audio: ui.audio
+          });
+        } catch (error) {
+          console.error("结局 A 演出失败：", error);
+        }
+      }
       if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
         try {
           await Game.playSanZeroSequence();
