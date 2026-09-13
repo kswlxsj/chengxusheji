@@ -82,12 +82,49 @@ game = fixture({ inner_world_entered: true }, [], "carriage_inner_01");
 await game.play("E_502_RETURN");
 assert.equal(game.state.sceneId, "carriage_02", "到过伪4后左门解锁为返程出口");
 assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), true);
+assert.equal(game.state.flags.ev523_seen, true);
 // 花草车厢左门不设防：无论正程/回程都直接回空车厢，不再有 50/50 静默随机。
 for (const roll of [0.1, 0.8]) {
   game = fixture({}, [], "carriage_inner_02"); sandbox.Math.random = () => roll;
   await game.play("E_503_BACK");
   assert.equal(game.state.sceneId, "carriage_inner_01");
 }
+
+// 同一段描写只播一次：空车厢入口/车厢描写、花草车厢初见/返程描写、磨损门描写各播一次；
+// 瓶子相关的两段（瓶堆提示、摸瓶描写）按约定不去重。
+game = fixture({}, [], "carriage_03");
+await game.play("E_501");
+assert.equal(game.state.flags.ev502_intro_seen, true);
+game.trace.length = 0;
+await game.play("E_501");
+assert.equal(game.state.sceneId, "carriage_inner_01");
+assert.equal(game.trace.some(t => t.text?.includes("这里就是")), false, "二次进入不再重播入口描写");
+assert.equal(game.trace.some(t => t.text?.includes("你从未见过的车厢")), false);
+assert.equal(game.trace.some(t => t.text?.includes("不知名的空车厢")), false, "空车厢描写只播一次");
+game = fixture({}, [], "carriage_inner_01");
+await game.play("E_503");
+assert.equal(game.state.flags.ev503_intro_seen, true);
+assert.equal(game.trace.some(t => t.text?.includes("同样是一节空车厢")), true);
+assert.equal(game.trace.some(t => t.text?.includes("角落里散落着几支彩色的空玻璃瓶")), true);
+game.trace.length = 0;
+await game.play("E_503_BACK");
+assert.equal(game.state.sceneId, "carriage_inner_01");
+await game.play("E_503");
+assert.equal(game.state.sceneId, "carriage_inner_02");
+assert.equal(game.trace.some(t => t.text?.includes("同样是一节空车厢")), false, "初见描写只播一次");
+assert.equal(game.trace.some(t => t.text?.includes("角落里散落着几支彩色的空玻璃瓶")), true, "未拾瓶时瓶堆提示不去重");
+game = fixture({ ev503_bottle_taken: true }, ["bottle"], "carriage_fake_04");
+await game.play("E_522");
+assert.equal(game.state.flags.ev522_intro_seen, true);
+assert.equal(game.trace.some(t => t.text?.includes("你认得这里")), true);
+game.trace.length = 0;
+await game.play("E_505"); await game.play("E_522");
+assert.equal(game.trace.some(t => t.text?.includes("你认得这里")), false, "返程描写只播一次");
+assert.equal(game.trace.some(t => t.text?.includes("瓶身冰凉")), true, "持瓶时摸瓶描写不去重");
+game = fixture({ inner_world_entered: true, ev523_seen: true }, [], "carriage_inner_01");
+await game.play("E_502_RETURN");
+assert.equal(game.state.sceneId, "carriage_02", "已看过磨损门仍从该门离开里世界");
+assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), false, "磨损门描写只播一次");
 
 for (const met of [false, true]) {
   game = fixture({ crew_met: met }, [], "carriage_inner_02");

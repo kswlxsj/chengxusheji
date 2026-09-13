@@ -5250,6 +5250,19 @@ window.GAME_DATA = {
           "scene": "carriage_inner_01"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev502_intro_seen",
+            "equals": true
+          },
+          "next": "E_502"
+        },
+        {
           "type": "dialogue",
           "speaker": "你",
           "text": "这里就是……"
@@ -5273,11 +5286,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "安静得像是整个世界都睡着了。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         }
       ],
       "next": "E_502"
@@ -5286,14 +5294,31 @@ window.GAME_DATA = {
       "id": "E_502",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev502_intro_seen",
+            "equals": true
+          },
+          "next": "E_502_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "不知名的空车厢，甚至没有座椅。四面的墙壁光秃秃的，地板跟着车轮的震动轻轻发颤。"
         },
         {
           "type": "dialogue",
           "text": "车厢两头各有一扇门。你站在正中央，两侧都望不到尽头。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev502_intro_seen",
+          "value": true
         }
       ]
+    },
+    {
+      "id": "E_502_REVISIT",
+      "actions": []
     },
     {
       "id": "E_502_RETURN",
@@ -5400,6 +5425,14 @@ window.GAME_DATA = {
           "scene": "carriage_inner_02"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev503_intro_seen",
+            "equals": true
+          },
+          "next": "E_503_TAIL"
+        },
+        {
           "type": "dialogue",
           "text": "同样是一节空车厢，但是色调似乎有些不同。"
         },
@@ -5424,6 +5457,17 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你无法判断。"
         },
+        {
+          "type": "setFlag",
+          "key": "ev503_intro_seen",
+          "value": true
+        }
+      ],
+      "next": "E_503_TAIL"
+    },
+    {
+      "id": "E_503_TAIL",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {
@@ -6114,9 +6158,28 @@ window.GAME_DATA = {
           "scene": "carriage_inner_02"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev522_intro_seen",
+            "equals": true
+          },
+          "next": "E_522_TAIL"
+        },
+        {
           "type": "dialogue",
           "text": "角落里又长着花草。你认得这里。"
         },
+        {
+          "type": "setFlag",
+          "key": "ev522_intro_seen",
+          "value": true
+        }
+      ],
+      "next": "E_522_TAIL"
+    },
+    {
+      "id": "E_522_TAIL",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {
@@ -6129,6 +6192,14 @@ window.GAME_DATA = {
     {
       "id": "E_523",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev523_seen",
+            "equals": true
+          },
+          "next": "E_524"
+        },
         {
           "type": "dialogue",
           "text": "你注意到新出现了一扇高度磨损的车门，散发着不祥的气息。"
@@ -6144,6 +6215,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你深吸一口气。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev523_seen",
+          "value": true
         }
       ],
       "next": "E_524"
