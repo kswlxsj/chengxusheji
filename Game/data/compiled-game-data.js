@@ -1417,6 +1417,15 @@ window.GAME_DATA = {
           "scene": "carriage_06"
         },
         {
+          "type": "sound",
+          "sound": "dark_atmosphere_e009",
+          "start": 0,
+          "loop": true,
+          "segmentDuration": 5000,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 10
+        },
+        {
           "type": "dialogue",
           "text": "6号车厢空无一人。"
         },
@@ -1458,7 +1467,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（主角表情：惊恐）刚才的人，都去哪了？"
+          "text": "（主角表情：惊恐）刚才的人，都去哪了？",
+          "audio": {
+            "sound": "bullying_e009",
+            "start": 0,
+            "duration": 3000
+          }
         },
         {
           "type": "dialogue",
@@ -3078,6 +3092,49 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "屏幕上赫然显示：2013年7月15日。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_018_PHONE_SOUND_CARRIED"
+        }
+      ],
+      "next": "E_018_PHONE_SOUND_ALONE"
+    },
+    {
+      "id": "E_018_PHONE_SOUND_CARRIED",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "horror_piano_e018",
+          "loop": true,
+          "segmentDuration": 5000,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 10
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "newspaper"
+          },
+          "next": "E_018_NEWSPAPER_MEMORY"
+        }
+      ],
+      "next": "E_018_NO_NEWSPAPER_MEMORY"
+    },
+    {
+      "id": "E_018_PHONE_SOUND_ALONE",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "horror_piano_e018",
+          "loop": true,
+          "segmentDuration": 5000,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 8
         },
         {
           "type": "conditionalJump",
@@ -7099,6 +7156,27 @@ window.GAME_DATA = {
       "file": "assets/audio/distortion_of_the_dim.mp3",
       "volume": 0.7,
       "description": "进入7号车厢时播放2秒。"
+    },
+    {
+      "id": "dark_atmosphere_e009",
+      "name": "E-009阴暗氛围",
+      "file": "assets/audio/dark_atmosphere.mp3",
+      "volume": 0.7,
+      "description": "E-009进入6号车厢后循环播放音频开头5秒，推进完前十句旁白后停止。"
+    },
+    {
+      "id": "bullying_e009",
+      "name": "E-009刺耳诡异",
+      "file": "assets/audio/bullying.mp3",
+      "volume": 0.7,
+      "description": "E-009‘刚才的人，都去哪了？’播放音频开头0至3秒，不循环。"
+    },
+    {
+      "id": "horror_piano_e018",
+      "name": "E-018恐怖钢琴",
+      "file": "assets/audio/horror_piano_chord4.mp3",
+      "volume": 0.7,
+      "description": "E-018手机日期后循环音频开头5秒，直到‘你不知道该相信哪一个。’推进后停止。"
     }
   ]
 };

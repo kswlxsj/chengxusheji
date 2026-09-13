@@ -475,6 +475,15 @@
         "scene": "carriage_06"
       },
       {
+        "type": "sound",
+        "sound": "dark_atmosphere_e009",
+        "start": 0,
+        "loop": true,
+        "segmentDuration": 5000,
+        "stopOnDialogueAdvance": true,
+        "stopAfterDialogueAdvances": 10
+      },
+      {
         "type": "dialogue",
         "text": "6号车厢空无一人。"
       },
@@ -516,7 +525,12 @@
       },
       {
         "type": "dialogue",
-        "text": "（主角表情：惊恐）刚才的人，都去哪了？"
+        "text": "（主角表情：惊恐）刚才的人，都去哪了？",
+        "audio": {
+          "sound": "bullying_e009",
+          "start": 0,
+          "duration": 3000
+        }
       },
       {
         "type": "dialogue",
@@ -2136,6 +2150,49 @@
       {
         "type": "dialogue",
         "text": "屏幕上赫然显示：2013年7月15日。"
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "flag": "carried_crew",
+          "equals": true
+        },
+        "next": "E_018_PHONE_SOUND_CARRIED"
+      }
+    ],
+    "next": "E_018_PHONE_SOUND_ALONE"
+  },
+  {
+    "id": "E_018_PHONE_SOUND_CARRIED",
+    "actions": [
+      {
+        "type": "sound",
+        "sound": "horror_piano_e018",
+        "loop": true,
+        "segmentDuration": 5000,
+        "stopOnDialogueAdvance": true,
+        "stopAfterDialogueAdvances": 10
+      },
+      {
+        "type": "conditionalJump",
+        "when": {
+          "hasItem": "newspaper"
+        },
+        "next": "E_018_NEWSPAPER_MEMORY"
+      }
+    ],
+    "next": "E_018_NO_NEWSPAPER_MEMORY"
+  },
+  {
+    "id": "E_018_PHONE_SOUND_ALONE",
+    "actions": [
+      {
+        "type": "sound",
+        "sound": "horror_piano_e018",
+        "loop": true,
+        "segmentDuration": 5000,
+        "stopOnDialogueAdvance": true,
+        "stopAfterDialogueAdvances": 8
       },
       {
         "type": "conditionalJump",

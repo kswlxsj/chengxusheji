@@ -161,6 +161,17 @@
         });
         await this.waitWhilePaused(run);
         for (const text of splitDialogueText(action.text)) {
+          if (action.audio) {
+            if (!this.ui.audio) throw new Error("音效系统未加载：缺少 src/audio.js 或 ui.audio");
+            this.ui.audio.play(action.audio.sound, {
+              start: action.audio.start,
+              duration: action.audio.duration,
+              volume: action.audio.volume,
+              loop: action.audio.loop === true,
+              loopGapMs: action.audio.loopGapMs,
+              segmentDuration: action.audio.segmentDuration
+            });
+          }
           await this.ui.dialog.showLine({
             ...action,
             text,

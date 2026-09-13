@@ -149,5 +149,26 @@
     "file": "assets/audio/distortion_of_the_dim.mp3",
     "volume": 0.7,
     "description": "进入7号车厢时播放2秒。"
+  },
+  {
+    "id": "dark_atmosphere_e009",
+    "name": "E-009阴暗氛围",
+    "file": "assets/audio/dark_atmosphere.mp3",
+    "volume": 0.7,
+    "description": "E-009进入6号车厢后循环播放音频开头5秒，推进完前十句旁白后停止。"
+  },
+  {
+    "id": "bullying_e009",
+    "name": "E-009刺耳诡异",
+    "file": "assets/audio/bullying.mp3",
+    "volume": 0.7,
+    "description": "E-009‘刚才的人，都去哪了？’播放音频开头0至3秒，不循环。"
+  },
+  {
+    "id": "horror_piano_e018",
+    "name": "E-018恐怖钢琴",
+    "file": "assets/audio/horror_piano_chord4.mp3",
+    "volume": 0.7,
+    "description": "E-018手机日期后循环音频开头5秒，直到‘你不知道该相信哪一个。’推进后停止。"
   }
 ]
