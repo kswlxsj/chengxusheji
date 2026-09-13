@@ -1923,7 +1923,7 @@ body.home-op-active .home-page .auth-user-status {
   position: absolute;
   z-index: 3;
   left: 6%;
-  bottom: 31%;
+  bottom: 28%;
   width: auto;
   height: 47%;
   max-width: 30%;
@@ -2009,6 +2009,303 @@ body.home-op-active .home-page .auth-user-status {
   to { transform: scale(1.045); }
 }
 
+/* 停车结局：减速、熄灯、吞噬与惊醒的专用过场。 */
+.parking-ending-sequence {
+  position: absolute;
+  inset: 0;
+  z-index: 195;
+  overflow: hidden;
+  opacity: 0;
+  color: #f4f0e8;
+  background: #000;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 380ms ease;
+}
+
+.parking-ending-sequence.is-visible { opacity: 1; }
+
+.parking-ending-cinema,
+.parking-ending-background,
+.parking-ending-video,
+.parking-ending-speed,
+.parking-ending-blood,
+.parking-ending-vignette,
+.parking-ending-memory,
+.parking-ending-caption,
+.parking-ending-blackout {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.parking-ending-cinema {
+  overflow: hidden;
+  background: #000;
+  transition: filter 1200ms ease, transform 1800ms ease;
+}
+
+.parking-ending-sequence.is-braking .parking-ending-cinema {
+  animation: parking-ending-brake 130ms steps(2, end) infinite;
+}
+
+.parking-ending-background {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0;
+  filter: brightness(.78) saturate(.7) contrast(1.08);
+  transform: scale(1.01);
+  transition: opacity 700ms ease, filter 1200ms ease, transform 1800ms ease;
+}
+
+.parking-ending-background.is-active { opacity: 1; }
+
+.parking-ending-video {
+  z-index: 1;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.015);
+  transition: opacity 800ms ease, filter 1200ms ease, transform 1800ms ease;
+}
+
+.parking-ending-sequence.is-braking .parking-ending-background.is-active {
+  filter: brightness(.66) saturate(.58) contrast(1.14);
+  transform: scale(1.045);
+}
+
+.parking-ending-speed {
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5.5%,
+      rgba(235, 225, 208, .18) 5.7% 5.9%,
+      transparent 6.1% 12%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, .08), transparent 34%);
+  mix-blend-mode: screen;
+  transform: scaleX(1.08);
+  transition: opacity 700ms ease;
+}
+
+.parking-ending-sequence.is-braking .parking-ending-speed {
+  opacity: .72;
+  animation: parking-ending-speed-fade 2.8s ease-out both;
+}
+
+.parking-ending-blood {
+  z-index: 8;
+  inset: auto 0 0;
+  height: 42%;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 100%, rgba(98, 5, 9, .98) 0 18%, transparent 52%),
+    radial-gradient(ellipse at 52% 105%, rgba(122, 7, 13, .96) 0 23%, transparent 58%),
+    radial-gradient(ellipse at 84% 108%, rgba(74, 3, 7, .98) 0 20%, transparent 55%),
+    linear-gradient(180deg, transparent 0, rgba(66, 2, 5, .68) 35%, #1b0002 100%);
+  filter: blur(.4px);
+  transform: translateY(24%) scaleY(.72);
+  transform-origin: center bottom;
+  transition: opacity 1400ms ease, transform 3200ms ease;
+}
+
+.parking-ending-blood::before,
+.parking-ending-blood::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(119, 7, 11, .72);
+  filter: blur(5px);
+}
+
+.parking-ending-blood::before {
+  left: 16%;
+  top: 18%;
+  width: 38%;
+  height: 56%;
+}
+
+.parking-ending-blood::after {
+  right: 9%;
+  top: 32%;
+  width: 44%;
+  height: 48%;
+}
+
+.parking-ending-sequence.is-blood .parking-ending-blood {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+}
+
+.parking-ending-vignette {
+  z-index: 5;
+  opacity: .82;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, .82), transparent 24%, transparent 62%, rgba(0, 0, 0, .88)),
+    radial-gradient(circle at 50% 48%, transparent 28%, rgba(0, 0, 0, .78) 100%);
+}
+
+.parking-ending-memory {
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  gap: 26px;
+  padding: 8%;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  background: rgba(0, 0, 0, .38);
+  transform: translateY(12px);
+  transition: opacity 900ms ease, transform 1200ms ease;
+}
+
+.parking-ending-sequence.is-memory .parking-ending-memory {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.parking-ending-memory-label {
+  margin: 0;
+  color: rgba(235, 226, 209, .68);
+  font-size: clamp(15px, 1.55vw, 22px);
+}
+
+.parking-ending-memory-word {
+  margin: 0;
+  color: #eee6d7;
+  font-size: clamp(34px, 5.3vw, 78px);
+  font-weight: 800;
+  line-height: 1.15;
+  text-shadow: 0 0 10px rgba(255, 255, 255, .2), 0 10px 28px #000;
+  animation: parking-ending-memory-pulse 2.4s ease-in-out infinite;
+}
+
+.parking-ending-caption {
+  z-index: 12;
+  inset: auto 9% 10%;
+  display: grid;
+  place-items: end center;
+  width: auto;
+  height: auto;
+  min-height: 24%;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  transform: translateY(18px);
+  transition: opacity 800ms ease, transform 1000ms ease;
+}
+
+.parking-ending-caption.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.parking-ending-caption-line {
+  max-width: 1100px;
+  margin: 0;
+  padding: 14px 22px;
+  color: #f1e9dd;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, .72) 14%, rgba(0, 0, 0, .72) 86%, transparent);
+  font-size: clamp(19px, 2.15vw, 32px);
+  line-height: 1.55;
+  text-shadow: 0 3px 12px #000;
+}
+
+.parking-ending-dialogue {
+  position: absolute;
+  z-index: 16;
+  left: 4%;
+  right: 4%;
+  bottom: 2%;
+  min-height: 26%;
+  padding: 24px 58px 70px;
+  opacity: 0;
+  border: 0;
+  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  box-shadow: none;
+  transition: opacity 220ms ease;
+}
+
+.parking-ending-dialogue.is-visible { opacity: 1; }
+
+.parking-ending-line {
+  margin: 4px 0 0;
+  font-size: clamp(17px, 1.7vw, 25px);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.parking-ending-hint {
+  position: absolute;
+  right: 58px;
+  bottom: 28px;
+  opacity: .62;
+  font-size: clamp(11px, 1vw, 13px);
+}
+
+.parking-ending-sequence:not(.is-loading) .parking-ending-hint:not([hidden]) {
+  animation: san-zero-hint-pulse 1s steps(2, end) infinite;
+}
+
+.parking-ending-blackout {
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  background: #000;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.parking-ending-blackout.is-visible { opacity: 1; }
+
+.parking-ending-sequence.is-devoured .parking-ending-video {
+  opacity: 1;
+}
+
+.parking-ending-sequence.is-swallowing .parking-ending-video {
+  filter: brightness(.32) saturate(.45) contrast(1.2) blur(2px);
+  transform: scale(1.075);
+}
+
+.parking-ending-sequence.is-awakening .parking-ending-background.is-active {
+  filter: brightness(.38) saturate(.38) contrast(1.24);
+  animation: parking-ending-wake-drift 5.2s ease-out both;
+}
+
+.parking-ending-sequence.is-awakening .parking-ending-vignette {
+  opacity: 1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, .9), transparent 28%, transparent 56%, rgba(0, 0, 0, .94)),
+    radial-gradient(circle at 50% 46%, transparent 18%, rgba(0, 0, 0, .86) 100%);
+}
+
+@keyframes parking-ending-brake {
+  0% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  100% { transform: translate(-1px, -2px); }
+}
+
+@keyframes parking-ending-speed-fade {
+  from { opacity: .78; }
+  to { opacity: 0; }
+}
+
+@keyframes parking-ending-memory-pulse {
+  0%, 100% { opacity: .78; text-shadow: 0 0 8px rgba(255, 255, 255, .16), 0 10px 28px #000; }
+  50% { opacity: 1; text-shadow: 0 0 16px rgba(255, 255, 255, .3), 0 10px 28px #000; }
+}
+
+@keyframes parking-ending-wake-drift {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.015); }
+}
+
 /* ============ 14. 窄屏适配（@media (max-width: 700px)） ============ */
 
 @media (max-width: 700px) {
@@ -2053,6 +2350,13 @@ body.home-op-active .home-page .auth-user-status {
   .ending-a-hint { right: 28px; bottom: 20px; }
   .ending-a-portrait { left: 2%; height: 43%; max-width: 38%; }
   .ending-a-portrait.is-scared { left: 0; height: 50%; max-width: 42%; }
+  .parking-ending-dialogue { min-height: 0; padding: 24px 28px 64px; }
+  .parking-ending-line { font-size: clamp(15px, 4vw, 19px); }
+  .parking-ending-hint { right: 28px; bottom: 20px; }
+  .parking-ending-caption { inset: auto 4% 6%; min-height: 30%; }
+  .parking-ending-caption-line { padding: 10px 14px; font-size: clamp(17px, 4.5vw, 22px); }
+  .parking-ending-memory { gap: 18px; padding: 5%; }
+  .parking-ending-memory-word { font-size: clamp(30px, 9vw, 48px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2088,6 +2392,26 @@ body.home-op-active .home-page .auth-user-status {
   }
 
   .ending-a-sequence.is-final .ending-a-background.is-active {
+    animation: none;
+  }
+
+  .parking-ending-sequence,
+  .parking-ending-background,
+  .parking-ending-video,
+  .parking-ending-speed,
+  .parking-ending-blood,
+  .parking-ending-memory,
+  .parking-ending-caption,
+  .parking-ending-dialogue,
+  .parking-ending-blackout {
+    transition-duration: 1ms;
+  }
+
+  .parking-ending-sequence.is-braking .parking-ending-cinema,
+  .parking-ending-sequence.is-braking .parking-ending-speed,
+  .parking-ending-memory-word,
+  .parking-ending-sequence.is-awakening .parking-ending-background.is-active,
+  .parking-ending-sequence:not(.is-loading) .parking-ending-hint:not([hidden]) {
     animation: none;
   }
 }

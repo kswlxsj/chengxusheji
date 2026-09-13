@@ -105,8 +105,8 @@ for (const roll of [0.1, 0.8]) {
   assert.equal(game.state.sceneId, "carriage_inner_01");
 }
 
-// 同一段描写只播一次：空车厢入口/车厢描写、花草车厢初见/返程描写、磨损门描写各播一次；
-// 瓶子相关的两段（瓶堆提示、摸瓶描写）按约定不去重。
+// 同一段描写只播一次：空车厢入口/车厢描写、花草车厢初见/返程描写、伪4进场（花草右门 E_506／花海调头 E_513）、
+// 磨损门描写各播一次；瓶子相关的两段（瓶堆提示、摸瓶描写）按约定不去重。
 game = fixture({}, [], "carriage_03");
 await game.play("E_501");
 assert.equal(game.state.flags.ev502_intro_seen, true);
@@ -141,10 +141,34 @@ await game.play("E_502_RETURN");
 assert.equal(game.state.sceneId, "carriage_02", "已看过磨损门仍从该门离开里世界");
 assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), false, "磨损门描写只播一次");
 
-for (const met of [false, true]) {
-  game = fixture({ crew_met: met }, [], "carriage_inner_02");
+// 伪4进场描写两条路各只播一次：花草右门（E_506）与花海调头（E_513）分别记旗标，
+// 重复进入落到静默落点，既不重播描写，也不重播死亡线的「停下来」惊吓。
+game = fixture({ crew_met: true, crew_04_dead: true }, [], "carriage_inner_02");
+await game.play("E_505");
+assert.equal(game.state.flags.ev506_intro_seen, true);
+assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), true);
+game.trace.length = 0;
+await game.play("E_505");
+assert.equal(game.state.sceneId, "carriage_fake_04", "二次进入仍落在伪4号场景");
+assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), false, "伪4进场描写只播一次");
+assert.equal(game.trace.some(t => t.scare), false, "二次进入不重播「停下来」惊吓");
+game = fixture({}, [], "flower_sea");
+await game.play("E_513");
+assert.equal(game.state.flags.ev513_intro_seen, true);
+assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), true);
+game.trace.length = 0;
+await game.play("E_513");
+assert.equal(game.state.sceneId, "carriage_fake_04");
+assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), false, "花海调头描写只播一次");
+assert.equal(game.trace.some(t => t.text === "你退出花海，向来路折返。"), true, "调头动作句仍保留");
+
+// 「停下来」惊吓的触发条件是乘务员死亡线（E_507），不是「是否交互过」：
+// crew_met 在通往4号车厢的必经路径上必然置位，读它会让 E_507 永远不可达。
+for (const dead of [false, true]) {
+  game = fixture({ crew_met: true, crew_04_dead: dead }, [], "carriage_inner_02");
   await game.play("E_505");
-  assert.equal(game.trace.some(t => t.scare), !met);
+  assert.equal(game.trace.some(t => t.scare), dead, "只有乘务员死亡线才播「停下来」惊吓");
+  assert.equal(game.trace.some(t => t.event === "E_508"), !dead, "在世线走 E_508");
   assert.equal(game.trace.filter(t => t.event === "E_506").every(t => t.scene === "carriage_fake_04"), true);
 }
 
@@ -189,11 +213,16 @@ for (const fromSea of [false, true]) for (const bottle of [false, true]) for (co
   assert.equal(game.state.flags.ev519_key_ever_given, given);
 }
 
-for (const met of [false, true]) for (const scouting of [false, true]) {
-  game = fixture({ crew_met: met, ev504_scouting_ok: scouting }, [], "carriage_fake_04");
+// 窗边插话三档：死亡线（E_516_DEAD）／在世线（E_516_MET）／未交互兜底（正常不可达）。
+for (const [flags, expected] of [
+  [{ crew_met: true, crew_04_dead: true }, "她不是已经死了吗"],
+  [{ crew_met: true }, "平静得好像她本来就属于这里"],
+  [{}, "一个陌生的声音"]
+]) for (const scouting of [false, true]) {
+  game = fixture({ ...flags, ev504_scouting_ok: scouting }, [], "carriage_fake_04");
   await game.play("E_516");
-  assert.equal(game.trace.some(t => t.text?.startsWith("是她的声音")), met);
-  assert.equal(game.trace.some(t => t.text?.startsWith("一个陌生的声音")), !met);
+  assert.equal(game.trace.some(t => t.text?.includes(expected)), true, `窗边插话应播：${expected}`);
+  assert.equal(game.trace.some(t => t.text?.startsWith("一个陌生的声音")), expected === "一个陌生的声音");
   assert.equal(Boolean(game.state.flags.ev517_flower_revealed), scouting);
   assert.equal(Boolean(game.state.flags.ev510_flower_sea), false, "窗边看花海不产生污染");
   assert.equal(game.state.sceneId, "carriage_fake_04", "窗边谈话链不自动切景，也不自动离开");
@@ -299,6 +328,36 @@ assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_025");
 assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_025");
 assert.equal(events.find(e => e.id === "E_025").next, undefined);
 assert.equal(events.find(e => e.id === "E_025_CARRIED").next, undefined);
+// 里世界的乘务员分支读死亡状态：crew_met 在必经路径上恒为 true，只有 crew_04_dead 能区分剧本两条线。
+const e506 = events.find(e => e.id === "E_506");
+assert.equal(
+  e506.actions.some((action) => action.type === "conditionalJump"
+    && action.when?.flag === "crew_04_dead" && action.next === "E_507"),
+  true,
+  "E_506 应在乘务员死亡时走疯狂低语与「停下来」惊吓"
+);
+assert.equal(e506.next, "E_508", "在世线仍应落到 E_508");
+const e516 = events.find(e => e.id === "E_516");
+assert.equal(
+  e516.actions.some((action) => action.type === "conditionalJump"
+    && action.when?.flag === "crew_04_dead" && action.next === "E_516_DEAD"),
+  true,
+  "E_516 同样按死亡线分支"
+);
+assert.equal(events.find(e => e.id === "E_516_DEAD").next, "E_516_VOICE");
+// 伪4进场描写各自只播一次：门禁在描写之前，静默落点不再接任何事件。
+assert.equal(e506.actions[0].type, "conditionalJump", "E_506 应先判「伪4进场描写是否已播」");
+assert.equal(e506.actions[0].when?.flag, "ev506_intro_seen");
+assert.equal(e506.actions[0].next, "E_506_REVISIT");
+assert.equal(events.find(e => e.id === "E_506_REVISIT").next, undefined, "静默落点不应再接事件");
+const e513 = events.find(e => e.id === "E_513");
+assert.equal(
+  e513.actions.some((action) => action.type === "conditionalJump"
+    && action.when?.flag === "ev513_intro_seen" && action.next === "E_513_REVISIT"),
+  true,
+  "E_513 花海调头描写也应只播一次"
+);
+assert.equal(events.find(e => e.id === "E_513_REVISIT").next, undefined);
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);

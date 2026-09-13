@@ -109,6 +109,13 @@
     "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
   },
   {
+    "id": "pouring_sake",
+    "name": "粘稠液体流过",
+    "file": "assets/audio/pouring-sake.mp3",
+    "volume": 0.72,
+    "description": "停车结局中血水流过脚下的声音。"
+  },
+  {
     "id": "opening_cracker_bag",
     "name": "拆开包装",
     "file": "assets/audio/opening-cracker-bag.mp3",

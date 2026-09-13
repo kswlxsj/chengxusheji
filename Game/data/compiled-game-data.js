@@ -4736,32 +4736,11 @@ window.GAME_DATA = {
       "id": "E_030",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
-        },
-        {
-          "type": "dialogue",
-          "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
-        },
-        {
-          "type": "dialogue",
-          "text": "意识与身体一同消失……"
-        },
-        {
-          "type": "dialogue",
-          "text": "在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你发现背包里多了一个背带切断的黑色包。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（SAN 减少 1d4/1d10）"
-        },
-        {
-          "type": "check",
-          "dice": "ev030_san_01"
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "bad_end"
+          }
         }
       ]
     },
@@ -5360,32 +5339,11 @@ window.GAME_DATA = {
       "id": "E_035",
       "actions": [
         {
-          "type": "sound",
-          "sound": "metro_speed_down"
-        },
-        {
-          "type": "dialogue",
-          "text": "拉杆减速，列车停下的瞬间，四周陷入漆黑。"
-        },
-        {
-          "type": "dialogue",
-          "text": "嘎吱嘎吱的咀嚼声接近，脚下流过粘稠血水与残骸。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你想起一路上那些字：\n\n「MOVE FORWARD」\n\n你停下的那一刻，就已经输了。"
-        },
-        {
-          "type": "dialogue",
-          "text": "意识与身体一同消失……在座位上醒来，分不清梦境与现实。啃食声挥之不去，从此恐惧度日。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你发现背包里多了一个背带被切断的黑色包。"
-        },
-        {
-          "type": "check",
-          "dice": "ev030_san_01"
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "bad_end"
+          }
         }
       ]
     },
@@ -5837,6 +5795,14 @@ window.GAME_DATA = {
       "id": "E_506",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev506_intro_seen",
+            "equals": true
+          },
+          "next": "E_506_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "门上的编号写着：4。"
         },
@@ -5862,15 +5828,24 @@ window.GAME_DATA = {
           "text": "想到之前在车厢中的见闻，你不由得打了个寒颤。"
         },
         {
+          "type": "setFlag",
+          "key": "ev506_intro_seen",
+          "value": true
+        },
+        {
           "type": "conditionalJump",
           "when": {
-            "flag": "crew_met",
+            "flag": "crew_04_dead",
             "equals": true
           },
-          "next": "E_508"
+          "next": "E_507"
         }
       ],
-      "next": "E_507"
+      "next": "E_508"
+    },
+    {
+      "id": "E_506_REVISIT",
+      "actions": []
     },
     {
       "id": "E_507",
@@ -6105,14 +6080,31 @@ window.GAME_DATA = {
           "sound": "fake"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev513_intro_seen",
+            "equals": true
+          },
+          "next": "E_513_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
         },
         {
           "type": "dialogue",
           "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，眼前的一切反而显得不真实。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev513_intro_seen",
+          "value": true
         }
       ]
+    },
+    {
+      "id": "E_513_REVISIT",
+      "actions": []
     },
     {
       "id": "E_515",
@@ -6144,6 +6136,14 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你走向车窗。就在指尖将要碰到玻璃的一刻，一个声音在身后响起——"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_dead",
+            "equals": true
+          },
+          "next": "E_516_DEAD"
         },
         {
           "type": "conditionalJump",
@@ -6576,6 +6576,16 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "是她的声音，平静得好像她本来就属于这里。"
+        }
+      ],
+      "next": "E_516_VOICE"
+    },
+    {
+      "id": "E_516_DEAD",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "是她的声音。你认得出来——她不是已经死了吗？是谁在说话……？"
         }
       ],
       "next": "E_516_VOICE"
@@ -7047,6 +7057,13 @@ window.GAME_DATA = {
       "file": "assets/audio/eating-crisps.mp3",
       "volume": 0.45,
       "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
+    },
+    {
+      "id": "pouring_sake",
+      "name": "粘稠液体流过",
+      "file": "assets/audio/pouring-sake.mp3",
+      "volume": 0.72,
+      "description": "停车结局中血水流过脚下的声音。"
     },
     {
       "id": "opening_cracker_bag",

@@ -1198,6 +1198,9 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.src, "assets/audio/sfx-test-2.mp3", "应加载注册表里的文件");
   assert.equal(element.currentTime, 500 / 1000, "start 参数应从指定位置开始");
   assert.equal(element.volume, 0.4, "动作级 volume 应作为注册表音量（默认 1）的倍率");
+  const positionedVoice = audio.voices.get("sfx_test_positional");
+  positionedVoice.setVolume(0.15);
+  assert.equal(element.volume, 0.15, "演出应能在播放中调整相对音量");
   assert.equal(audio.voices.has("sfx_test_positional"), true, "不阻塞音效应继续播放，等待结束/截断");
   element.emit("ended");
   assert.equal(audio.voices.size, 0, "音效结束或截断后应从活动表移除");
