@@ -83,10 +83,6 @@
         if (!isPlainObject(clean[key])) throw new TypeError(`存档字段 ${key} 格式无效`);
       }
 
-      // 旧存档迁移：意志和体质已从当前属性表删除，不再参与分配或检定。
-      delete clean.attributes.will;
-      delete clean.attributes.constitution;
-
       // 兼容旧版本把急救单独存为 firstAid 的存档：急救现在统一使用 medicine。
       if (Object.hasOwn(clean.skills, "firstAid")) {
         clean.skills.medicine = Boolean(clean.skills.medicine || clean.skills.firstAid);

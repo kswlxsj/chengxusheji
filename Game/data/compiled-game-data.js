@@ -2418,10 +2418,10 @@ window.GAME_DATA = {
         },
         {
           "type": "choice",
-          "prompt": "是否使用医学技能？",
+          "prompt": "是否使用急救？",
           "options": [
             {
-              "label": "使用医学",
+              "label": "使用急救",
               "next": "E_013_USE"
             },
             {
@@ -2512,7 +2512,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你尝试用医学知识处理伤势，但颤抖的双手没能完成包扎。"
+          "text": "你尝试进行急救，但颤抖的双手没能完成包扎。"
         },
         {
           "type": "dialogue",
@@ -2530,7 +2530,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "学校里教的医学知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+          "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
         },
         {
           "type": "dialogue",
@@ -6919,9 +6919,25 @@ window.GAME_DATA = {
         "max": 10
       },
       {
+        "id": "will",
+        "name": "意志",
+        "description": "衡量坚持行动、抵抗压力和控制恐惧的能力。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
         "id": "luck",
         "name": "幸运",
         "description": "衡量偶然事件对角色有利的程度。",
+        "initial": 3,
+        "min": 3,
+        "max": 10
+      },
+      {
+        "id": "constitution",
+        "name": "体质",
+        "description": "衡量耐力、健康程度和承受伤害的能力。",
         "initial": 3,
         "min": 3,
         "max": 10
