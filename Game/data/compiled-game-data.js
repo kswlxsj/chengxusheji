@@ -4412,8 +4412,11 @@ window.GAME_DATA = {
               "next": "E_027"
             },
             {
-              "label": "捡起手边的东西，制造声响引开它们",
-              "next": "E_028"
+              "label": "投掷彩色玻璃瓶，制造声响引开它们",
+              "next": "E_028",
+              "when": {
+                "hasItem": "bottle"
+              }
             }
           ]
         }
@@ -4439,8 +4442,11 @@ window.GAME_DATA = {
               "next": "E_027"
             },
             {
-              "label": "捡起手边的东西，制造声响引开它们",
-              "next": "E_028"
+              "label": "投掷彩色玻璃瓶，制造声响引开它们",
+              "next": "E_028",
+              "when": {
+                "hasItem": "bottle"
+              }
             }
           ]
         }
@@ -4550,8 +4556,11 @@ window.GAME_DATA = {
               "next": "E_029"
             },
             {
-              "label": "退回阴影，捡起瓶子制造声响引开它们",
-              "next": "E_028"
+              "label": "退回阴影，投掷彩色玻璃瓶制造声响引开它们",
+              "next": "E_028",
+              "when": {
+                "hasItem": "bottle"
+              }
             }
           ]
         }
@@ -4561,37 +4570,12 @@ window.GAME_DATA = {
       "id": "E_028",
       "actions": [
         {
-          "type": "conditionalJump",
-          "when": {
-            "hasItem": "bottle"
-          },
-          "next": "E_028_HAS_BOTTLE"
-        },
-        {
-          "type": "dialogue",
-          "text": "你在脚边摸到一个空瓶子，把它捡了起来。"
-        },
-        {
-          "type": "addItem",
-          "item": "bottle"
-        },
-        {
           "type": "learnSkill",
           "skill": "throwing"
         },
         {
           "type": "dialogue",
           "text": "你获得了投掷技能。"
-        }
-      ],
-      "next": "E_028_BOTTLE_READY"
-    },
-    {
-      "id": "E_028_HAS_BOTTLE",
-      "actions": [
-        {
-          "type": "learnSkill",
-          "skill": "throwing"
         }
       ],
       "next": "E_028_BOTTLE_READY"

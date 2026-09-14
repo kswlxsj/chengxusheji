@@ -281,33 +281,46 @@ const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/carriage-06-eaten.png", import.meta.url))).size > 0);
+// 瓶子只能从里世界获取：2号车厢不再就地拾取，投掷选项一律要求已持有瓶子。
 const e028 = events.find(e => e.id === "E_028");
-assert.deepEqual(
-  e028.actions[0],
-  {
-    type: "conditionalJump",
-    when: { hasItem: "bottle" },
-    next: "E_028_HAS_BOTTLE"
-  },
-  "已有瓶子时应直接进入通过方式选择"
-);
-assert.equal(e028.actions.some(a => a.type === "addItem" && a.item === "bottle"), true);
+assert.equal(e028.actions.some(a => a.type === "addItem"), false, "E-028 不得再就地发放瓶子");
 assert.equal(e028.actions.some(a => a.type === "learnSkill" && a.skill === "throwing"), true);
 assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负责瓶子与投掷，不得进入小游戏");
+assert.equal(events.some(e => e.id === "E_028_HAS_BOTTLE"), false, "就地拾瓶分支已删除，不得留下死事件");
 assert.equal(events.find(e => e.id === "E_028_THROW_FIRST").actions.some(a => a.type === "removeItem" && a.item === "bottle"), true);
+for (const [eventId, label] of [
+  ["E_026", "投掷彩色玻璃瓶，制造声响引开它们"],
+  ["E_026_KNOWLEDGE", "投掷彩色玻璃瓶，制造声响引开它们"],
+  ["E_027_F", "退回阴影，投掷彩色玻璃瓶制造声响引开它们"]
+]) {
+  const choice = events.find(e => e.id === eventId).actions.find(a => a.type === "choice");
+  const option = choice.options.find(o => o.label === label);
+  assert.equal(option?.next, "E_028", `${eventId} 的投掷选项应指向 E_028`);
+  assert.deepEqual(option.when, { hasItem: "bottle" }, `${eventId} 的投掷选项必须要求持有瓶子`);
+}
+for (const [inventory, expected] of [
+  [[], ["屏住呼吸，尝试潜行通过"]],
+  [["bottle"], ["屏住呼吸，尝试潜行通过", "投掷彩色玻璃瓶，制造声响引开它们"]]
+]) {
+  game = fixture({ monster_behavior_known: true }, inventory, "carriage_02");
+  let offered = [];
+  // 只记录第一个选择框：E_026 之后剧情会继续走到先头车厢的操作面板。
+  game.ui.choice.choose = async (_prompt, options) => { if (!offered.length) offered = options; return options[0]; };
+  await game.play("E_026");
+  assert.deepEqual(offered.map(o => o.label), expected, "无瓶子时投掷选项必须被过滤掉");
+}
 game = fixture({}, [], "carriage_02");
 game.ui.choice.choose = async () => null;
 await game.play("E_028");
-assert.equal(game.state.inventory.includes("bottle"), true, "E-028 应在进入选择前自动捡起瓶子");
-assert.equal(game.state.getSkill("throwing"), true, "E-028 拾瓶后应解锁投掷");
-assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), true);
+assert.equal(game.state.inventory.includes("bottle"), false, "E-028 不再给没有瓶子的玩家补发瓶子");
+assert.equal(game.state.getSkill("throwing"), true, "E-028 仍应解锁投掷");
+assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), false);
 
 game = fixture({}, ["bottle"], "carriage_02");
 game.ui.choice.choose = async () => null;
 await game.play("E_028");
 assert.equal(game.state.inventory.filter(item => item === "bottle").length, 1, "已有瓶子时不应重复入包");
 assert.equal(game.state.getSkill("throwing"), true, "已有瓶子时仍应解锁投掷");
-assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), false);
 const carriage02 = scenes.find(s => s.id === "carriage_02");
 assert.equal(carriage02.objects.some(o => o.id === "bottle_02"), false);
 assert.equal(
