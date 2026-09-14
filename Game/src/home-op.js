@@ -31,8 +31,8 @@
   const BLACK_HOLD_MS = 900;          // 全黑停留时间
   const BLACK_FADE_OUT_MS = 2000;     // 全黑渐隐并露出封面
   const AUDIO_FADE_OUT_MS = 3000;     // OP 音乐淡出时长
-  const AUDIO_SILENCE_MS = 600;       // 两段音乐之间的纯静音间隔
-  const AUDIO_FADE_IN_MS = 3000;      // BGM 淡入时长
+  const AUDIO_SILENCE_MS = 250;       // 两段音乐之间的纯静音间隔
+  const AUDIO_FADE_IN_MS = 2000;      // BGM 淡入时长
 
   const overlay = document.querySelector("#home-op");
   if (!overlay) return;

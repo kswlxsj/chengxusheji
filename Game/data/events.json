@@ -4723,7 +4723,10 @@
       },
       {
         "type": "dialogue",
-        "text": "握住瓶身的一瞬间，你听到像是歌声的东西……又或者像哭声或祈祷？"
+        "text": "握住瓶身的一瞬间，你听到像是歌声的东西……又或者像哭声或祈祷？",
+        "audio": {
+          "sound": "ghost_calling"
+        }
       },
       {
         "type": "dialogue",
@@ -4806,10 +4809,6 @@
       {
         "type": "changeScene",
         "scene": "carriage_fake_04"
-      },
-      {
-        "type": "sound",
-        "sound": "fake"
       },
       {
         "type": "setFlag",
@@ -4983,10 +4982,6 @@
         "scene": "flower_sea"
       },
       {
-        "type": "sound",
-        "sound": "fake"
-      },
-      {
         "type": "dialogue",
         "text": "车门外就是花海。无边无际的花漫过车轨，铺到天尽头。这里真的还是现实世界吗？"
       },
@@ -5102,10 +5097,6 @@
       {
         "type": "changeScene",
         "scene": "carriage_fake_04"
-      },
-      {
-        "type": "sound",
-        "sound": "fake"
       },
       {
         "type": "conditionalJump",

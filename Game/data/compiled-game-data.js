@@ -5752,7 +5752,10 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "握住瓶身的一瞬间，你听到像是歌声的东西……又或者像哭声或祈祷？"
+          "text": "握住瓶身的一瞬间，你听到像是歌声的东西……又或者像哭声或祈祷？",
+          "audio": {
+            "sound": "ghost_calling"
+          }
         },
         {
           "type": "dialogue",
@@ -5835,10 +5838,6 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_fake_04"
-        },
-        {
-          "type": "sound",
-          "sound": "fake"
         },
         {
           "type": "setFlag",
@@ -6012,10 +6011,6 @@ window.GAME_DATA = {
           "scene": "flower_sea"
         },
         {
-          "type": "sound",
-          "sound": "fake"
-        },
-        {
           "type": "dialogue",
           "text": "车门外就是花海。无边无际的花漫过车轨，铺到天尽头。这里真的还是现实世界吗？"
         },
@@ -6131,10 +6126,6 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_fake_04"
-        },
-        {
-          "type": "sound",
-          "sound": "fake"
         },
         {
           "type": "conditionalJump",
@@ -7131,10 +7122,17 @@ window.GAME_DATA = {
     },
     {
       "id": "fake",
-      "name": "假4号与花海进入音",
+      "name": "伪4号与花海场景音乐",
       "file": "assets/audio/fake.mp3",
       "volume": 0.7,
-      "description": "进入假4号车厢或花海场景时播放。"
+      "description": "停留在伪4号车厢或花海场景时连续循环播放，跨场景不重置进度。"
+    },
+    {
+      "id": "ghost_calling",
+      "name": "玻璃瓶中的歌声",
+      "file": "assets/audio/ghost-calling.mp3",
+      "volume": 0.7,
+      "description": "里世界花草车厢拾起彩色玻璃瓶、听见歌声时播放。"
     },
     {
       "id": "tinnitus_e011",

@@ -124,10 +124,17 @@
   },
   {
     "id": "fake",
-    "name": "假4号与花海进入音",
+    "name": "伪4号与花海场景音乐",
     "file": "assets/audio/fake.mp3",
     "volume": 0.7,
-    "description": "进入假4号车厢或花海场景时播放。"
+    "description": "停留在伪4号车厢或花海场景时连续循环播放，跨场景不重置进度。"
+  },
+  {
+    "id": "ghost_calling",
+    "name": "玻璃瓶中的歌声",
+    "file": "assets/audio/ghost-calling.mp3",
+    "volume": 0.7,
+    "description": "里世界花草车厢拾起彩色玻璃瓶、听见歌声时播放。"
   },
   {
     "id": "tinnitus_e011",

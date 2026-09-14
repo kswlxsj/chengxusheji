@@ -16,6 +16,11 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [events, scenes, items, attributes, skills, meta] = await Promise.all(
   ["events", "scenes", "items", "attributes", "skills", "meta"].map(async (name) => JSON.parse(await read(`data/${name}.json`)))
 );
+const [mainSource, bgmSource, homeOpSource] = await Promise.all([
+  read("src/main.js"),
+  read("src/bgm.js"),
+  read("src/home-op.js")
+]);
 const sandbox = { window: {}, console, performance, setTimeout, clearTimeout, Math: Object.create(Math) };
 vm.createContext(sandbox);
 for (const name of ["namespace", "state", "scene", "events", "custom-actions"]) {
@@ -168,9 +173,25 @@ assert.equal(eventById.get("E_023_LOOP").next, "E_501");
 
 for (const [id, sceneId] of [["E_505", "carriage_fake_04"], ["E_510", "flower_sea"], ["E_513", "carriage_fake_04"]]) {
   const actions = actionsOf(id);
-  const sceneIndex = actions.findIndex((action) => action.type === "changeScene" && action.scene === sceneId);
-  assert.deepEqual(actions[sceneIndex + 1], { type: "sound", sound: "fake" }, `${id} 进入 ${sceneId} 后应播放 fake`);
+  assert.equal(
+    actions.some((action) => action.type === "changeScene" && action.scene === sceneId),
+    true,
+    `${id} 应切入 ${sceneId}`
+  );
+  assert.equal(
+    actions.some((action) => action.type === "sound" && action.sound === "fake"),
+    false,
+    `${id} 不应再从剧情动作重启场景音乐`
+  );
 }
+
+const bottleSongLine = actionsOf("E_503_PICK")
+  .find((action) => action.type === "dialogue" && action.text.includes("像是歌声"));
+assert.deepEqual(bottleSongLine.audio, { sound: "ghost_calling" });
+assert.match(mainSource, /id: "fake",[\s\S]*sceneId === "carriage_fake_04"[\s\S]*sceneId === "flower_sea"[\s\S]*playInInnerWorld: true/);
+assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/audio\/op\.mp3/);
+assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
+assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);
 
 // 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
 assert.equal(eventById.get("E_524_DONE").next, "E_025");

@@ -4,16 +4,19 @@
   const scriptUrl = document.currentScript && document.currentScript.src
     ? document.currentScript.src
     : new URL("src/bgm.js", window.location.href).href;
-  const SOURCE = new URL("../assets/audio/bgm.mp3", scriptUrl).href;
+  const pageFile = new URL(window.location.href).pathname.split("/").pop() || "index.html";
+  const sourceFile = pageFile === "ending.html"
+    ? "../assets/audio/op.mp3"
+    : "../assets/audio/bgm.mp3";
+  const SOURCE = new URL(sourceFile, scriptUrl).href;
   const STORAGE_KEY = "train-game-bgm-state-v1";
   const OP_ACTIVE_FLAG = "__TRAIN_GAME_OP_ACTIVE__";
   const VOLUME = 0.55;
   const SAVE_INTERVAL = 1000;
   const FADE_MS = 800;          // 淡入淡出时长
   const BGM_PAGE_FILES = new Set(["home.html", "ending.html"]);
-  const pageFile = new URL(window.location.href).pathname.split("/").pop() || "index.html";
 
-  // 标题页与结束页保留跨页 BGM；游戏页和其余辅助页面不播放这套 BGM。
+  // 标题页播放主页 BGM，结束页播放 OP；游戏页和其余辅助页面不播放这套音乐。
   if (!BGM_PAGE_FILES.has(pageFile)) {
     window.__TRAIN_GAME_BGM__ = {
       resume: () => Promise.resolve(),

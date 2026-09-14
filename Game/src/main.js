@@ -87,8 +87,16 @@
     "flower_sea",
     "flower_sea_inside"
   ]);
-  const INNER_WORLD_ALLOWED_SOUNDS = ["door_open", "door_locked", "fake"];
+  const INNER_WORLD_ALLOWED_SOUNDS = ["door_open", "door_locked", "fake", "ghost_calling"];
   const SCENE_LOOP_TRACKS = [
+    {
+      id: "fake",
+      matches: (sceneId) => sceneId === "carriage_fake_04"
+        || sceneId === "flower_sea"
+        || sceneId === "flower_sea_inside",
+      options: { loop: true },
+      playInInnerWorld: true
+    },
     {
       id: "devil_scared",
       matches: (sceneId) => sceneId === "carriage_02"
@@ -211,12 +219,15 @@
 
   function syncAudioForScene() {
     const innerWorld = INNER_WORLD_SCENES.has(state.sceneId);
-    const playbackEnabled = !innerWorld && !paused && !startupLocked;
+    const sceneAudioEnabled = !paused && !startupLocked;
+    const trainAudioEnabled = sceneAudioEnabled && !innerWorld;
     ui.audio?.setMuted?.(innerWorld, INNER_WORLD_ALLOWED_SOUNDS);
-    window.__TRAIN_GAME_TRAIN_AUDIO__?.setEnabled?.(playbackEnabled);
+    window.__TRAIN_GAME_TRAIN_AUDIO__?.setEnabled?.(trainAudioEnabled);
 
     for (const track of SCENE_LOOP_TRACKS) {
-      const active = playbackEnabled && track.matches(state.sceneId, state.flags);
+      const active = sceneAudioEnabled
+        && (!innerWorld || track.playInInnerWorld === true)
+        && track.matches(state.sceneId, state.flags);
       const voice = sceneLoopVoices.get(track.id);
       const playing = voice && !voice.stopped;
       if (active && !playing) {
