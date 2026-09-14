@@ -3222,7 +3222,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+        "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
       },
       {
         "type": "dialogue",
@@ -3258,7 +3258,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+        "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"
       },
       {
         "type": "setFlag",
@@ -3618,7 +3618,7 @@
         "prompt": "你要怎么通过或引开 Clicker？",
         "options": [
           {"label": "直接冲过去", "next": "E_028_AGILITY_CHECK"},
-          {"label": "投掷瓶子", "next": "E_028_THROW_FIRST"}
+          {"label": "投掷彩色玻璃瓶", "next": "E_028_THROW_FIRST"}
         ]
       }
     ]
@@ -3642,11 +3642,11 @@
   {
     "id": "E_028_AGILITY_FAIL",
     "actions": [
-      {"type": "dialogue", "text": "你没能冲过去，仍然可以退回阴影，投掷瓶子制造声响。"},
+      {"type": "dialogue", "text": "你没能冲过去，仍然可以退回阴影，投掷彩色玻璃瓶制造声响。"},
       {
         "type": "choice",
-        "prompt": "是否投掷瓶子？",
-        "options": [{"label": "投掷瓶子", "next": "E_028_THROW_AFTER_FAIL"}]
+        "prompt": "是否投掷彩色玻璃瓶？",
+        "options": [{"label": "投掷彩色玻璃瓶", "next": "E_028_THROW_AFTER_FAIL"}]
       }
     ]
   },
@@ -3654,7 +3654,7 @@
     "id": "E_028_THROW_FIRST",
     "actions": [
       {"type": "sound", "sound": "breaking_glass"},
-      {"type": "dialogue", "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"},
+      {"type": "dialogue", "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"},
       {"type": "removeItem", "item": "bottle"},
       {"type": "dialogue", "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"},
       {"type": "setFlag", "key": "carriage_02_passed", "value": true},
@@ -3674,7 +3674,7 @@
     "id": "E_028_THROW_AFTER_SUCCESS",
     "actions": [
       {"type": "sound", "sound": "breaking_glass"},
-      {"type": "dialogue", "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"},
+      {"type": "dialogue", "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"},
       {"type": "removeItem", "item": "bottle"},
       {"type": "setFlag", "key": "carriage_02_passed", "value": true},
       {"type": "setFlag", "key": "clicker_cleared", "value": true}
@@ -4413,7 +4413,7 @@
             "next": "E_023_AGILITY_CHECK"
           },
           {
-            "label": "投掷瓶子",
+            "label": "投掷彩色玻璃瓶",
             "next": "E_023_THROW_FIRST"
           }
         ]

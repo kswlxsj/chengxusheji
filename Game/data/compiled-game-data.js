@@ -4176,7 +4176,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+          "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
         },
         {
           "type": "dialogue",
@@ -4212,7 +4212,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+          "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"
         },
         {
           "type": "setFlag",
@@ -4592,7 +4592,7 @@ window.GAME_DATA = {
               "next": "E_028_AGILITY_CHECK"
             },
             {
-              "label": "投掷瓶子",
+              "label": "投掷彩色玻璃瓶",
               "next": "E_028_THROW_FIRST"
             }
           ]
@@ -4632,14 +4632,14 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你没能冲过去，仍然可以退回阴影，投掷瓶子制造声响。"
+          "text": "你没能冲过去，仍然可以退回阴影，投掷彩色玻璃瓶制造声响。"
         },
         {
           "type": "choice",
-          "prompt": "是否投掷瓶子？",
+          "prompt": "是否投掷彩色玻璃瓶？",
           "options": [
             {
-              "label": "投掷瓶子",
+              "label": "投掷彩色玻璃瓶",
               "next": "E_028_THROW_AFTER_FAIL"
             }
           ]
@@ -4655,7 +4655,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把空瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
+          "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
         },
         {
           "type": "removeItem",
@@ -4700,7 +4700,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "瓶子的声响成功引开了Clicker，你抓紧机会脱身并通过。"
+          "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"
         },
         {
           "type": "removeItem",
@@ -5451,7 +5451,7 @@ window.GAME_DATA = {
               "next": "E_023_AGILITY_CHECK"
             },
             {
-              "label": "投掷瓶子",
+              "label": "投掷彩色玻璃瓶",
               "next": "E_023_THROW_FIRST"
             }
           ]
@@ -6820,7 +6820,7 @@ window.GAME_DATA = {
     },
     {
       "id": "bottle",
-      "name": "瓶子",
+      "name": "彩色玻璃瓶",
       "image": "assets/bottle-inner.png",
       "description": "从诡异的花草车厢里捡到的空瓶子，瓶身是粉红色的普通玻璃。",
       "inspectEvent": "E_023_BOTTLE"
