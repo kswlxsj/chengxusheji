@@ -4235,8 +4235,8 @@ window.GAME_DATA = {
       "id": "E_023_BOTTLE",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "这是一个可以用来制造声响、转移 Clicker 注意的瓶子。"
+          "type": "inspect",
+          "item": "bottle"
         }
       ]
     },
