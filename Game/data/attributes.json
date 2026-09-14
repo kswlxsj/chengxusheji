@@ -1,18 +1,10 @@
 {
-  "totalPoints": 30,
+  "totalPoints": 20,
   "attributes": [
     {
-      "id": "strength",
-      "name": "力量",
-      "description": "衡量肌肉力量、负重和近身对抗能力。",
-      "initial": 3,
-      "min": 3,
-      "max": 10
-    },
-    {
-      "id": "agility",
-      "name": "敏捷",
-      "description": "衡量移动速度、反应和身体协调能力。",
+      "id": "constitution",
+      "name": "体质",
+      "description": "衡量身体力量、耐力、行动和负重能力。",
       "initial": 3,
       "min": 3,
       "max": 10
@@ -29,14 +21,6 @@
       "id": "insight",
       "name": "灵感",
       "description": "衡量观察异常、联想线索和理解现象的能力。",
-      "initial": 3,
-      "min": 3,
-      "max": 10
-    },
-    {
-      "id": "luck",
-      "name": "幸运",
-      "description": "衡量偶然事件对角色有利的程度。",
       "initial": 3,
       "min": 3,
       "max": 10

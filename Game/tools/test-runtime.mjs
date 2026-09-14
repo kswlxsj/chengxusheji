@@ -242,20 +242,13 @@ assert.deepEqual(
   "已从5号车厢工具背包获得手电筒时，E_022_ITEM 不应重复发放"
 );
 const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
-assert.equal(registeredState.getSkill("talk"), false);
-assert.equal(registeredState.getSkill("stealth"), false);
-assert.equal(registeredState.getSkill("medicine"), false);
+assert.equal(registeredState.getSkill("throwing"), false);
 registeredState.completeAttributeAllocation({
-  strength: 10,
-  agility: 10,
+  constitution: 10,
   education: 8,
-  insight: 7,
-  luck: 10,
-  san: 5
+  insight: 8,
+  san: 8
 });
-assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达到14时应触发话术");
-assert.equal(registeredState.getSkill("stealth"), true, "敏捷与力量之和达到14时应触发潜行");
-assert.equal(registeredState.getSkill("medicine"), true, "教育超过5时应触发医学");
 
 let inspectedItem = null;
 const inspectEngine = new Game.EventEngine({
@@ -275,7 +268,8 @@ assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定应已注册");
-assert.equal(typeof Game.Dice.get("skill_medicine_confirmed"), "function", "点击乘务员后的医学检定应已注册");
+assert.equal(typeof Game.Dice.get("ev013_education_01"), "function", "点击乘务员后的教育检定应已注册");
+assert.equal(typeof Game.Dice.get("ev021_education_insight_01"), "function", "话术剧情的教育+灵感检定应已注册");
 
 function createEngineUi() {
   return {
@@ -336,33 +330,25 @@ const originalRandom = sandbox.Math.random;
 function createRegisteredStateWith(values = {}) {
   const state = new Game.GameState(initialState, registeredAttributes, registeredSkills);
   state.completeAttributeAllocation({
-    strength: 10,
-    agility: 10,
+    constitution: 10,
     education: 8,
-    insight: 7,
-    luck: 10,
-    san: 5,
+    insight: 8,
+    san: 8,
     ...values
   });
   return state;
 }
 
-// 当前项目约定：教育 > 5 解锁医学技能。
+// 医学剧情直接使用教育属性检定，不再依赖技能状态或弹出确认。
 const firstAidLowState = createRegisteredStateWith({
-  strength: 10,
-  agility: 10,
   education: 5,
   insight: 9,
-  luck: 10,
-  san: 6
+  san: 10
 });
 const firstAidHighInsightState = createRegisteredStateWith({
-  strength: 10,
-  agility: 10,
   education: 6,
   insight: 8,
-  luck: 10,
-  san: 6
+  san: 10
 });
 const firstAidContext = (state) => ({
   state,
@@ -370,34 +356,19 @@ const firstAidContext = (state) => ({
   skills: state.skillDefinitions,
   ui: createEngineUi()
 });
+sandbox.Math.random = () => 0;
 assert.equal(
-  await Game.Dice.get("skill_medicine")(firstAidContext(firstAidLowState), []),
+  await Game.Dice.get("ev013_education_01")(firstAidContext(firstAidLowState), []),
   1,
-  "教育 5 不应解锁医学"
+  "教育 5、骰点 1 时教育检定应失败"
 );
+sandbox.Math.random = () => 0.999999;
 assert.equal(
-  await Game.Dice.get("skill_medicine")(firstAidContext(firstAidHighInsightState), []),
+  await Game.Dice.get("ev013_education_01")(firstAidContext(firstAidHighInsightState), []),
   0,
-  "教育 6 应解锁医学"
+  "教育 6、骰点 6 时教育检定应成功"
 );
-const declinedFirstAidUi = {
-  ...createEngineUi(),
-  choice: { choose: async () => ({ value: false }) }
-};
-assert.equal(
-  await Game.Dice.get("skill_medicine")({ ...firstAidContext(firstAidHighInsightState), ui: declinedFirstAidUi }, []),
-  1,
-  "使用技能前询问时，放弃使用应视为检定失败"
-);
-const noSecondPromptUi = {
-  ...createEngineUi(),
-  choice: { choose: async () => { throw new Error("医学确认后不应二次询问"); } }
-};
-assert.equal(
-  await Game.Dice.get("skill_medicine_confirmed")({ ...firstAidContext(firstAidHighInsightState), ui: noSecondPromptUi }, []),
-  0,
-  "点击乘务员处完成医学确认后，检定不应再次弹出技能询问"
-);
+sandbox.Math.random = originalRandom;
 
 // E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。
 const routeState = createRegisteredStateWith();
@@ -492,7 +463,7 @@ await assert.rejects(
 );
 
 // E-030 的 SAN 1d4/1d10 应真实掷骰，并标记为 Bad End；即使 SAN 归零也不能改跳 SAN 结局。
-const badEndingState = createRegisteredStateWith({ san: 5 });
+const badEndingState = createRegisteredStateWith({ education: 9, insight: 10, san: 5 });
 const badEndingUi = createEngineUi();
 const badEndingEngine = new Game.EventEngine({
   events: [],
@@ -573,11 +544,9 @@ try {
 // SAN 检定损失（真实属性表，SAN 初始分配 5）。
 const sanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 sanState.completeAttributeAllocation({
-  strength: 10,
-  agility: 10,
-  education: 8,
-  insight: 7,
-  luck: 10,
+  constitution: 10,
+  education: 9,
+  insight: 10,
   san: 5
 });
 const sanDiceEngine = new Game.EventEngine({

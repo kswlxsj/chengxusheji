@@ -299,8 +299,8 @@ for (const [eventId, label] of [
   assert.deepEqual(option.when, { hasItem: "bottle" }, `${eventId} 的投掷选项必须要求持有瓶子`);
 }
 for (const [inventory, expected] of [
-  [[], ["屏住呼吸，尝试潜行通过"]],
-  [["bottle"], ["屏住呼吸，尝试潜行通过", "投掷彩色玻璃瓶，制造声响引开它们"]]
+  [[], ["屏住呼吸，尝试安静通过"]],
+  [["bottle"], ["屏住呼吸，尝试安静通过", "投掷彩色玻璃瓶，制造声响引开它们"]]
 ]) {
   game = fixture({ monster_behavior_known: true }, inventory, "carriage_02");
   let offered = [];
@@ -373,7 +373,7 @@ assert.equal(
 assert.equal(events.find(e => e.id === "E_513_REVISIT").next, undefined);
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
-assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_agility_01"), true);
+assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_constitution_01"), true);
 assert.equal(events.find(e => e.id === "E_033").actions.some(a => a.game === "conductor_tug"), true);
 const cardBattleSource = await read("src/minigame-games/card-battle.js");
 assert.match(cardBattleSource, /won \? \[[\s\S]*?jump", next: "E_031"[\s\S]*?jump", next: "E_030"/);

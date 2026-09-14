@@ -873,25 +873,6 @@ body.home-op-active .home-page .auth-user-status {
 
 .confirm-backdrop { background: rgba(0,0,0,.88); }
 
-/* 侦察获得提示只出现一次，并固定显示在屏幕中央。 */
-.scouting-offer-backdrop {
-  place-items: center;
-  padding: 8%;
-  pointer-events: auto;
-  background: rgba(0,0,0,.78);
-}
-
-.scouting-offer-backdrop .confirm-menu-window {
-  width: min(360px, 88%);
-  padding: 18px;
-  pointer-events: auto;
-}
-
-.scouting-offer-backdrop .confirm-menu-window h1 {
-  margin-bottom: 16px;
-  font-size: clamp(20px, 2vw, 30px);
-}
-
 /* ============ 11b. 游戏页：小游戏宿主窗口（.minigame-backdrop、.minigame-window、.minigame-stage） ============ */
 
 /* 小游戏进行时游戏本体画面变暗：深色遮罩铺满舞台；窗口居中且接近占满，四边留适当间距。 */

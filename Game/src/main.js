@@ -78,8 +78,6 @@
   let activeSlot = requestedSlot;
   const autosavedCarriagesFlag = "autosaved_carriages";
   let autosavedCarriageIds = new Set();
-  const scoutingClickTarget = 3;
-  const scoutingClickFlag = "scouting_click_count";
   const INNER_WORLD_SCENES = new Set([
     "carriage_inner_01",
     "carriage_inner_02",
@@ -120,7 +118,6 @@
     }
   ];
   const sceneLoopVoices = new Map();
-  let scoutingOfferTask = null;
 
   // CODEX ADD START
   function showEndingOverlay(reason) {
@@ -265,7 +262,6 @@
     updateInventoryBar();
     maybeTriggerE009();
     maybeTriggerCarriage06Guide();
-    maybeOfferScouting();
     autoSaveOnNewCarriage();
   }
 
@@ -313,58 +309,6 @@
     void engine.play("E_009");
   }
 
-  function scoutingClickCount() {
-    const value = state.flags[scoutingClickFlag];
-    return Number.isInteger(value) && value > 0 ? value : 0;
-  }
-
-  function scoutingOfferAvailable() {
-    return !state.getSkill("scouting")
-      && state.flags.scouting_offer_shown !== true
-      && !scoutingOfferTask
-      && scoutingClickCount() >= scoutingClickTarget;
-  }
-
-  function markScoutingOfferShown() {
-    state.flags.scouting_offer_shown = true;
-    engine.adoptStableState();
-  }
-
-  async function offerScouting() {
-    if (!scoutingOfferAvailable()) return false;
-    markScoutingOfferShown();
-    const choice = await ui.confirmMenu.choose({
-      title: "已满足侦察的获得条件。",
-      backdropClass: "scouting-offer-backdrop",
-      options: [{ label: "获得侦察", value: true }]
-    });
-    if (choice !== true || state.getSkill("scouting")) return false;
-    state.learnSkill("scouting");
-    engine.adoptStableState();
-    return true;
-  }
-
-  function recordScoutingClick(event) {
-    if (
-      event.detail === 0
-      || startupLocked
-      || paused
-      || engine.busy
-      || ui.dialog.element.isConnected
-      || ui.minigame.isOpen()
-      || state.getSkill("scouting")
-      || state.flags.scouting_offer_shown === true
-      || scoutingOfferTask
-    ) return;
-
-    const currentCount = scoutingClickCount();
-    const nextCount = Math.min(currentCount + 1, scoutingClickTarget);
-    if (nextCount === currentCount) return;
-    state.flags[scoutingClickFlag] = nextCount;
-    engine.adoptStableState();
-    if (nextCount >= scoutingClickTarget) queueMicrotask(maybeOfferScouting);
-  }
-
   function hasInvestigatedAllCarriage06Items() {
     return state.flags.note_back_seen === true
       && state.flags.map_seen === true;
@@ -380,24 +324,6 @@
       || state.flags.carriage_06_guide_seen === true
     ) return;
     void engine.play("E_005_GUIDE");
-  }
-
-  function maybeOfferScouting() {
-    if (
-      startupLocked
-      || paused
-      || engine.busy
-      || !scoutingOfferAvailable()
-    ) return;
-
-    scoutingOfferTask = offerScouting().then((learned) => {
-      if (learned) updateHud();
-    }).catch((error) => {
-      console.error("显示侦察获得按钮失败：", error);
-    }).finally(() => {
-      scoutingOfferTask = null;
-      if (!startupLocked) scene.setInteractionEnabled(!paused && !engine.busy);
-    });
   }
 
   engine.onStateChanged = updateHud;
@@ -664,8 +590,6 @@
       if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
     }
   });
-  sceneRoot.addEventListener("click", recordScoutingClick, { capture: true });
-
   scene.load(data.meta.initialScene);
   scene.setInteractionEnabled(false);
   updateHud();

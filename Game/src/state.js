@@ -83,18 +83,27 @@
         if (!isPlainObject(clean[key])) throw new TypeError(`存档字段 ${key} 格式无效`);
       }
 
-      // 旧存档迁移：意志和体质已从当前属性表删除，不再参与分配或检定。
+      // 旧存档迁移：力量、敏捷和幸运已从当前属性表删除；新的体质是独立属性，
+      // 没有旧值可以直接对应，因此旧存档按体质初始值继续载入。
       delete clean.attributes.will;
-      delete clean.attributes.constitution;
-
-      // 兼容旧版本把急救单独存为 firstAid 的存档：急救现在统一使用 medicine。
-      if (Object.hasOwn(clean.skills, "firstAid")) {
-        clean.skills.medicine = Boolean(clean.skills.medicine || clean.skills.firstAid);
-        delete clean.skills.firstAid;
+      if (this.attributeDefinitions.has("constitution")) {
+        if (
+          !Object.hasOwn(clean.attributes, "constitution")
+          && (Object.hasOwn(clean.attributes, "strength")
+            || Object.hasOwn(clean.attributes, "agility")
+            || Object.hasOwn(clean.attributes, "luck"))
+        ) {
+          clean.attributes.constitution = this.attributeDefinitions.get("constitution").initial;
+        }
+        delete clean.attributes.strength;
+        delete clean.attributes.agility;
+        delete clean.attributes.luck;
       }
-      if (Object.hasOwn(clean.skillOverrides, "firstAid")) {
-        if (clean.skillOverrides.firstAid === true) clean.skillOverrides.medicine = true;
-        delete clean.skillOverrides.firstAid;
+
+      // 旧版本的侦查、医学和话术已改为直接点击或属性检定，不再保留技能状态。
+      for (const removedSkill of ["talk", "medicine", "scouting", "firstAid"]) {
+        delete clean.skills[removedSkill];
+        delete clean.skillOverrides[removedSkill];
       }
       if (typeof clean.attributeAllocationComplete !== "boolean") throw new TypeError("存档缺少属性分配状态");
       if (!Array.isArray(clean.inventory) || clean.inventory.some((item) => typeof item !== "string")) throw new TypeError("存档物品栏格式无效");

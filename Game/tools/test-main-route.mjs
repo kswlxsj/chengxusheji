@@ -4,10 +4,10 @@
 //
 // 覆盖范围（5号车厢 → 4号 → 3号 → 2号 → 先头车厢）：
 // - 5号右门只过门（切景 + 过门句，不触发医学检定）；剧情路线统一经 E_013_ENTRY 进4号。
-// - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后先询问是否使用医学技能。
+// - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后直接进行教育检定。
 // - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_501）才进入。
 // - 里世界返程 E_524 回到真2号后接 E_025 喘息段，播完停下，不自动进入 Clicker 遭遇。
-// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行通过也置 carriage_02_passed。
+// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；安静通过也置 carriage_02_passed。
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
@@ -107,7 +107,7 @@ assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", 
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026", "Clicker 应进入2号车厢怪物遭遇");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_501", "3号通往2号的门仍归里世界入口");
-assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应先进入医学询问");
+assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
 
 // 剧情路线的 next 统一指向 E_013_ENTRY，首次到达只播发现描写，不自动检定。
 for (const id of ["E_010_F", "E_010_JOIN", "E_011_S", "E_011_F", "E_012_AFTER"]) {
@@ -127,19 +127,14 @@ assert.equal(entryActions.some((action) => action.type === "check"), false, "到
 // 到达描写不能留在出发场景。
 assert.equal(actionsOf("E_012_AFTER").some((action) => action.type === "dialogue" && action.text.includes("4号车厢")), false);
 
-// 点击乘务员先询问是否使用医学技能；暂不使用不消耗热点，使用后最多检定两次。
+// 点击乘务员直接进行教育检定；失败后允许再试一次，成功或第二次失败后结束。
 assert.deepEqual(actionsOf("E_013_REVISIT"), [], "重复到达应是静默落点");
 const firstAidActions = actionsOf("E_013");
 assert.equal(firstAidActions[0].type, "conditionalJump", "已完成医学处理后再次点击应直接离开");
 assert.deepEqual(firstAidActions[0].when, { flag: "crew_04_interacted", equals: true });
 assert.equal(firstAidActions[0].next, "E_013_CANCEL");
-const firstAidPrompt = firstAidActions[1];
-assert.equal(firstAidPrompt.type, "choice");
-assert.equal(firstAidPrompt.prompt, "是否使用医学技能？");
-assert.deepEqual(firstAidPrompt.options.map((option) => option.label), ["使用医学", "暂不使用"]);
-assert.equal(firstAidPrompt.options[0].next, "E_013_USE");
-assert.equal(firstAidPrompt.options[1].next, "E_013_CANCEL");
-assert.deepEqual(actionsOf("E_013_CANCEL"), [], "暂不使用应直接留在4号车厢");
+assert.equal(eventById.get("E_013").next, "E_013_USE");
+assert.deepEqual(actionsOf("E_013_CANCEL"), [], "已完成处理后应直接留在4号车厢");
 const firstAidUseActions = actionsOf("E_013_USE");
 assert.deepEqual(firstAidUseActions[0], {
   type: "conditionalJump",
@@ -234,7 +229,7 @@ for (const id of [
   );
 }
 
-// 潜行通过也算通过，前门不再永远被堵；前门通向先头车厢到达事件。
+// 安静通过也算通过，前门不再永远被堵；前门通向先头车厢到达事件。
 assert.equal(actionsOf("E_027_S").some((action) => action.type === "setFlag" && action.key === "carriage_02_passed" && action.value === true), true);
 const frontDoorOption = actionsOf("E_GO_02_FRONT_DOOR")[0].options.find((option) => option.label === "推开安全门");
 assert.equal(frontDoorOption.next, "E_031");
@@ -243,7 +238,7 @@ assert.deepEqual(frontDoorOption.when, { flag: "carriage_02_passed", equals: tru
 // ---------- 逐句场景轨迹 ----------
 
 // 5号右门：只切景、只说一句过门话，绝不触发医学检定。
-let game = fixture({ sceneId: "carriage_05", dice: { skill_medicine: 0 } });
+let game = fixture({ sceneId: "carriage_05" });
 await game.play("E_GO_05_04");
 assert.deepEqual(scenesOf(game), ["carriage_04"]);
 assert.match(game.trace[0].text, /来到4号车厢/);
@@ -262,21 +257,16 @@ await game.play("E_013_ENTRY");
 assert.deepEqual(game.trace, [], "重复到达4号车厢不得重播首次发现描写");
 assert.deepEqual(game.diceCalls, []);
 
-// 点击乘务员：选择不使用医学技能时保留热点；失败后允许再试一次，成功或第二次失败后结束。
-game = fixture({ sceneId: "carriage_04", choiceLabels: ["暂不使用"] });
+// 点击乘务员：直接教育检定；失败后允许再试一次，成功或第二次失败后结束。
+game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: [1, 0] } });
 await game.play("E_013");
-assert.deepEqual(game.diceCalls, [], "暂不使用医学不得执行检定");
-assert.equal(game.state.flags.crew_04_interacted, undefined, "暂不使用不应消耗乘务员调查");
-
-game = fixture({ sceneId: "carriage_04", dice: { skill_medicine_confirmed: [1, 0] } });
-await game.play("E_013");
-assert.deepEqual(game.diceCalls, ["skill_medicine_confirmed"]);
+assert.deepEqual(game.diceCalls, ["ev013_education_01"]);
 assert.equal(game.state.flags.crew_04_medical_attempted, true);
 assert.equal(game.state.flags.crew_04_interacted, undefined, "第一次医学检定失败后应保留乘务员热点");
 assert.equal(game.state.flags.crew_04_medical_failed, true, "第一次医学检定失败要写入临时状态");
 await game.play("E_013");
 assert.equal(
-  game.diceCalls.filter((id) => id === "skill_medicine_confirmed").length,
+  game.diceCalls.filter((id) => id === "ev013_education_01").length,
   2,
   "第一次失败后应允许第二次医学检定"
 );
@@ -284,21 +274,21 @@ assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定�
 assert.equal(game.state.flags.crew_04_medical_success, true);
 assert.equal(game.state.flags.crew_04_medical_failed, false);
 
-game = fixture({ sceneId: "carriage_04", dice: { skill_medicine_confirmed: 0 } });
+game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: 0 } });
 await game.play("E_013");
-assert.equal(game.diceCalls.filter((id) => id === "skill_medicine_confirmed").length, 1);
+assert.equal(game.diceCalls.filter((id) => id === "ev013_education_01").length, 1);
 await game.play("E_013");
 assert.equal(
-  game.diceCalls.filter((id) => id === "skill_medicine_confirmed").length,
+  game.diceCalls.filter((id) => id === "ev013_education_01").length,
   1,
   "第一次成功后不允许再次检定"
 );
 assert.equal(game.state.flags.crew_04_interacted, true);
 
-game = fixture({ sceneId: "carriage_04", dice: { skill_medicine_confirmed: [1, 1] } });
+game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: [1, 1] } });
 await game.play("E_013");
 await game.play("E_013");
-assert.deepEqual(game.diceCalls, ["skill_medicine_confirmed", "skill_medicine_confirmed"]);
+assert.deepEqual(game.diceCalls, ["ev013_education_01", "ev013_education_01"]);
 assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定失败后应结束调查");
 assert.equal(game.state.flags.crew_04_medical_failed, true);
 
@@ -336,21 +326,21 @@ assert.equal(game.trace.some((entry) => entry.scene === "carriage_02" && entry.t
 assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "返程不得自动进入 Clicker 遭遇");
 
 // 2号车厢点 Clicker：直接进入怪物遭遇，不再出现3号车厢的取工具文案。
-game = fixture({ sceneId: "carriage_02", choiceLabels: ["屏住呼吸，尝试潜行通过"] });
+game = fixture({ sceneId: "carriage_02", choiceLabels: ["屏住呼吸，尝试安静通过"] });
 await game.play("E_026");
 assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /那个怪物/);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
-assert.equal(game.state.flags.carriage_02_passed, true, "潜行通过后要置通过状态");
-assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), true, "潜行成功应到达先头车厢");
+assert.equal(game.state.flags.carriage_02_passed, true, "安静通过后要置通过状态");
+assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), true, "安静通过成功应到达先头车厢");
 
-// 先头车厢点控制把手：打开操作面板，不再触发2号车厢的潜行检定。
+// 先头车厢点控制把手：打开操作面板，不再触发2号车厢的体质检定。
 game = fixture({ sceneId: "front_carriage", inventory: ["crew_keys"], choiceLabels: ["右杆下拉——加速，继续前进"] });
 await game.play("E_032");
 assert.deepEqual([...new Set(scenesOf(game))], ["front_carriage"]);
 assert.match(game.trace[0].text, /操作面板/);
-assert.equal(game.diceCalls.includes("ev027_stealth_luck_01"), false, "控制把手不得触发潜行检定");
+assert.equal(game.diceCalls.includes("ev027_constitution_01"), false, "控制把手不得触发体质检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
 
 console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");

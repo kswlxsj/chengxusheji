@@ -1361,7 +1361,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "skill_medicine",
+          "dice": "ev007_education_01",
           "outcomes": [
             "E_007_S",
             "E_007_F"
@@ -1395,16 +1395,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "这里……到底发生了什么？！"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_008_S",
-            "E_008_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_008_S"
     },
     {
       "id": "E_009",
@@ -2098,16 +2091,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "先看看报纸再说吧。"
-        },
-        {
-          "type": "check",
-          "dice": "ev011_scouting_01",
-          "outcomes": [
-            "E_011_S",
-            "E_011_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_011_S"
     },
     {
       "id": "E_011_S",
@@ -2408,22 +2394,9 @@ window.GAME_DATA = {
             "equals": true
           },
           "next": "E_013_CANCEL"
-        },
-        {
-          "type": "choice",
-          "prompt": "是否使用医学技能？",
-          "options": [
-            {
-              "label": "使用医学",
-              "next": "E_013_USE"
-            },
-            {
-              "label": "暂不使用",
-              "next": "E_013_CANCEL"
-            }
-          ]
         }
-      ]
+      ],
+      "next": "E_013_USE"
     },
     {
       "id": "E_013_USE",
@@ -2443,7 +2416,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "skill_medicine_confirmed",
+          "dice": "ev013_education_01",
           "checkId": "crew_04_medical",
           "outcomes": [
             "E_013_S",
@@ -2457,7 +2430,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "skill_medicine_confirmed",
+          "dice": "ev013_education_01",
           "checkId": "crew_04_medical",
           "outcomes": [
             "E_013_S",
@@ -2793,7 +2766,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev016_strength_01",
+          "dice": "ev016_constitution_01",
           "outcomes": [
             "E_016_CARRY_SUCCESS",
             "E_016_CARRY_FAIL"
@@ -3517,7 +3490,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "skill_medicine",
+          "dice": "ev020_education_01",
           "outcomes": [
             "E_020_SECOND_MEDICAL_S",
             "E_020_SECOND_MEDICAL_F"
@@ -3725,7 +3698,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "skill_talk",
+          "dice": "ev021_education_insight_01",
           "outcomes": [
             "E_021_CARRIED_S",
             "E_021_CARRIED_F"
@@ -3801,16 +3774,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你打开黑包，在里面翻找。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_021_ALONE_S",
-            "E_021_ALONE_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_021_ALONE_S"
     },
     {
       "id": "E_021_ALONE_S",
@@ -4113,11 +4079,11 @@ window.GAME_DATA = {
       "next": "E_501"
     },
     {
-      "id": "E_023_AGILITY_CHECK",
+      "id": "E_023_CONSTITUTION_CHECK",
       "actions": [
         {
           "type": "check",
-          "dice": "ev023_agility_01",
+          "dice": "ev023_constitution_01",
           "outcomes": [
             "E_023_CARD_BATTLE_EASY",
             "E_023_CARD_BATTLE_HARD"
@@ -4126,7 +4092,7 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_AGILITY_SUCCESS",
+      "id": "E_023_CONSTITUTION_SUCCESS",
       "actions": [
         {
           "type": "setFlag",
@@ -4140,7 +4106,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你抓住空隙冲向Clicker。敏捷检定成功，战斗轮进入简单模式。"
+          "text": "你抓住空隙冲向Clicker。体质检定成功，战斗轮进入简单模式。"
         },
         {
           "type": "setFlag",
@@ -4195,20 +4161,20 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_THROW_AFTER_AGILITY_FAIL",
+      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL",
       "actions": [
         {
           "type": "check",
-          "dice": "ev023_throw_after_agility_fail_01",
+          "dice": "ev023_throw_after_fail_luck_01",
           "outcomes": [
-            "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
-            "E_023_THROW_AFTER_AGILITY_FAIL_FAIL"
+            "E_023_THROW_AFTER_CONSTITUTION_FAIL_SUCCESS",
+            "E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL"
           ]
         }
       ]
     },
     {
-      "id": "E_023_THROW_AFTER_AGILITY_FAIL_SUCCESS",
+      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL_SUCCESS",
       "actions": [
         {
           "type": "dialogue",
@@ -4227,7 +4193,7 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_THROW_AFTER_AGILITY_FAIL_FAIL",
+      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL",
       "actions": [],
       "next": "E_024"
     },
@@ -4353,7 +4319,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev025_strength_01",
+          "dice": "ev025_constitution_01",
           "outcomes": [
             "E_025_ESCAPE",
             "E_031"
@@ -4408,7 +4374,7 @@ window.GAME_DATA = {
           "prompt": "你打算怎么做？",
           "options": [
             {
-              "label": "屏住呼吸，尝试潜行通过",
+              "label": "屏住呼吸，尝试安静通过",
               "next": "E_027"
             },
             {
@@ -4438,7 +4404,7 @@ window.GAME_DATA = {
           "prompt": "你打算怎么做？",
           "options": [
             {
-              "label": "屏住呼吸，尝试潜行通过",
+              "label": "屏住呼吸，尝试安静通过",
               "next": "E_027"
             },
             {
@@ -4517,7 +4483,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev027_stealth_luck_01",
+          "dice": "ev027_constitution_01",
           "outcomes": [
             "E_027_S",
             "E_027_F"
@@ -4575,7 +4541,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你获得了投掷技能。"
+          "text": "你记住了投掷的手法。"
         }
       ],
       "next": "E_028_BOTTLE_READY"
@@ -4589,7 +4555,7 @@ window.GAME_DATA = {
           "options": [
             {
               "label": "直接冲过去",
-              "next": "E_028_AGILITY_CHECK"
+              "next": "E_028_CONSTITUTION_CHECK"
             },
             {
               "label": "投掷彩色玻璃瓶",
@@ -4600,20 +4566,20 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_028_AGILITY_CHECK",
+      "id": "E_028_CONSTITUTION_CHECK",
       "actions": [
         {
           "type": "check",
-          "dice": "ev028_agility_01",
+          "dice": "ev028_constitution_01",
           "outcomes": [
-            "E_028_AGILITY_SUCCESS",
-            "E_028_AGILITY_FAIL"
+            "E_028_CONSTITUTION_SUCCESS",
+            "E_028_CONSTITUTION_FAIL"
           ]
         }
       ]
     },
     {
-      "id": "E_028_AGILITY_SUCCESS",
+      "id": "E_028_CONSTITUTION_SUCCESS",
       "actions": [
         {
           "type": "dialogue",
@@ -4628,7 +4594,7 @@ window.GAME_DATA = {
       "next": "E_031"
     },
     {
-      "id": "E_028_AGILITY_FAIL",
+      "id": "E_028_CONSTITUTION_FAIL",
       "actions": [
         {
           "type": "dialogue",
@@ -4683,7 +4649,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev028_luck_half_01",
+          "dice": "ev028_luck_01",
           "outcomes": [
             "E_028_THROW_AFTER_SUCCESS",
             "E_029"
@@ -4724,7 +4690,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "check",
-          "dice": "ev029_agility_01",
+          "dice": "ev029_constitution_01",
           "outcomes": [
             "E_029_CARD_EASY",
             "E_029_CARD_HARD"
@@ -5039,16 +5005,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你决定仔细翻找这只倒下的背包。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_05_TOOLS_SUCCESS",
-            "E_05_TOOLS_FAIL"
-          ]
         }
-      ]
+      ],
+      "next": "E_05_TOOLS_SUCCESS"
     },
     {
       "id": "E_05_TOOLS_SUCCESS",
@@ -5095,10 +5054,6 @@ window.GAME_DATA = {
           "text": "你伸手翻动散落的行李和衣物。"
         },
         {
-          "type": "check",
-          "dice": "skill_scouting"
-        },
-        {
           "type": "dialogue",
           "text": "你仔细翻过，仍然只是一堆普通杂物。"
         }
@@ -5110,10 +5065,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你拨开堆叠的杂物开始寻找。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting"
         },
         {
           "type": "dialogue",
@@ -5166,16 +5117,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你伸手推了推门——锁着。"
-        },
-        {
-          "type": "check",
-          "dice": "ev031_scouting_02",
-          "outcomes": [
-            "E_031_NO_KEY_S",
-            "E_031_NO_KEY_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_031_NO_KEY_S"
     },
     {
       "id": "E_031_PLAYER_KEY",
@@ -5448,7 +5392,7 @@ window.GAME_DATA = {
           "options": [
             {
               "label": "直接冲过去",
-              "next": "E_023_AGILITY_CHECK"
+              "next": "E_023_CONSTITUTION_CHECK"
             },
             {
               "label": "投掷彩色玻璃瓶",
@@ -5767,16 +5711,9 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "雾蒙蒙的，远方的一切都看不清。"
-        },
-        {
-          "type": "check",
-          "dice": "skill_scouting",
-          "outcomes": [
-            "E_504_S",
-            "E_504_F"
-          ]
         }
-      ]
+      ],
+      "next": "E_504_S"
     },
     {
       "id": "E_504_S",
@@ -6869,20 +6806,12 @@ window.GAME_DATA = {
     }
   ],
   "attributes": {
-    "totalPoints": 30,
+    "totalPoints": 20,
     "attributes": [
       {
-        "id": "strength",
-        "name": "力量",
-        "description": "衡量肌肉力量、负重和近身对抗能力。",
-        "initial": 3,
-        "min": 3,
-        "max": 10
-      },
-      {
-        "id": "agility",
-        "name": "敏捷",
-        "description": "衡量移动速度、反应和身体协调能力。",
+        "id": "constitution",
+        "name": "体质",
+        "description": "衡量身体力量、耐力、行动和负重能力。",
         "initial": 3,
         "min": 3,
         "max": 10
@@ -6904,14 +6833,6 @@ window.GAME_DATA = {
         "max": 10
       },
       {
-        "id": "luck",
-        "name": "幸运",
-        "description": "衡量偶然事件对角色有利的程度。",
-        "initial": 3,
-        "min": 3,
-        "max": 10
-      },
-      {
         "id": "san",
         "name": "SAN",
         "description": "衡量角色承受精神冲击的能力，游戏过程中可降低至0。",
@@ -6923,54 +6844,9 @@ window.GAME_DATA = {
   },
   "skills": [
     {
-      "id": "talk",
-      "name": "话术",
-      "description": "通过表达、劝说和交涉影响他人的判断。",
-      "initial": false,
-      "autoTrigger": {
-        "sum": [
-          "education",
-          "insight"
-        ],
-        "operator": "gte",
-        "value": 14
-      }
-    },
-    {
-      "id": "stealth",
-      "name": "潜行",
-      "description": "降低行动时产生的声响，避免被敌人发现。",
-      "initial": false,
-      "autoTrigger": {
-        "sum": [
-          "agility",
-          "strength"
-        ],
-        "operator": "gte",
-        "value": 14
-      }
-    },
-    {
       "id": "throwing",
       "name": "投掷",
       "description": "将物品准确投向目标位置或利用声响转移敌人注意。",
-      "initial": false
-    },
-    {
-      "id": "medicine",
-      "name": "医学",
-      "description": "运用医学知识判断伤势、死因和死亡时间。",
-      "initial": false,
-      "autoTrigger": {
-        "attribute": "education",
-        "operator": "gt",
-        "value": 5
-      }
-    },
-    {
-      "id": "scouting",
-      "name": "侦查",
-      "description": "搜索环境、发现隐藏线索并判断潜在危险。",
       "initial": false
     }
   ],

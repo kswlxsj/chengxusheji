@@ -634,7 +634,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **等待兜底**：`await: true` 复用引擎的可取消等待（取消立即结束等待），并以 `TrainGame.AUDIO_MAX_VOICE_WAIT_MS`（30 秒）兜底，元数据始终加载不出来时不会把事件链挂死。
 - **自动播放策略**：浏览器拒绝 `play()` 时只告警（控制台 + 一次 toast，文案常量 `TrainGame.AUDIO_AUTOPLAY_HINT`），该音效跳过、事件链继续——音效是可选演出，不因此回滚剧情。
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
-- **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`、`fake`、`ghost_calling` 与检定三音（`dice_rolling`、`dice_success`、`dice_fail`，见 `main.js` 的 `INNER_WORLD_ALLOWED_SOUNDS`）；其他事件音均静默。检定音属于玩家主动触发检定的即时反馈而非里世界环境音，因此在静音区内照常播放（例如 `E_504` 的侦察检定）。回到真实车厢后恢复。
+- **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`、`fake`、`ghost_calling` 与检定三音（`dice_rolling`、`dice_success`、`dice_fail`，见 `main.js` 的 `INNER_WORLD_ALLOWED_SOUNDS`）；其他事件音均静默。回到真实车厢后恢复。
 - **场景循环音**：`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 循环播放 `fake`；`carriage_02` 循环播放 `devil_scared`；`carriage_07` 以及 `carriage_06` 且置有 `carriage_06_eaten` 时循环播放 `eating_crisps`，每轮结束等待 1600ms 后再播。普通 6 号车厢不播放。离开场景、暂停、结束或进入其他静音场景时停止，恢复后重新开始。
 - **与 BGM 的区别**：`assets/audio/bgm.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
 

@@ -34,10 +34,6 @@
     return context.attributes.get(attribute)?.name || attribute;
   }
 
-  function skillName(context, skill) {
-    return context.skills.get(skill)?.name || skill;
-  }
-
   // 先显示算式，过一会再显示“成功/失败”。
   // 由 DiceRollWindow.roll 在同一窗口内完成，动画只播一遍。
   async function showDiceRollAnimation(context, rollValue, success, detailText) {
@@ -59,21 +55,6 @@
     });
   }
 
-  async function showSkillResult(context, skill, success, detail) {
-    await context.ui.inspect.show({
-      title: success ? "技能检定成功" : "技能检定失败",
-      text: `${skillName(context, skill)}：${detail || (success ? "已掌握" : "尚未掌握")}。`
-    });
-  }
-
-  async function confirmSkillUse(context, skillId) {
-    const name = skillName(context, skillId);
-    const selected = await context.ui.choice.choose(`是否要使用【${name}】？`, [
-      { label: "使用", value: true },
-      { label: "不使用", value: false }
-    ]);
-    return Boolean(selected && selected.value === true);
-  }
 
   // 标准 d6 属性检定：掷出 + 属性值 >= 阈值（默认 11）即成功。
   // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
@@ -84,6 +65,20 @@
       const total = roll + base;
       const success = total >= threshold;
       const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${threshold}。`;
+      await showDiceRollAnimation(context, roll, success, detail);
+      return success ? 0 : 1;
+    };
+  }
+
+  function sumAttrCheck(attributes, threshold = DEFAULT_THRESHOLD) {
+    return async (context) => {
+      const values = attributes.map((attribute) => context.state.getAttribute(attribute));
+      const roll = rollDie(6);
+      const total = roll + values.reduce((sum, value) => sum + value, 0);
+      const success = total >= threshold;
+      const names = attributes.map((attribute) => attributeName(context, attribute)).join(" + ");
+      const detail = names + "：掷出 " + roll + " + 属性 " + values.join(" + ")
+        + " = " + total + "\n需要达到 " + threshold + "。";
       await showDiceRollAnimation(context, roll, success, detail);
       return success ? 0 : 1;
     };
@@ -124,41 +119,6 @@
     };
   }
 
-  // 技能检定：默认先询问是否使用；技能未学会时直接视为失败。
-  function learnedSkillCheck(skillId, options = {}) {
-    const announceSuccess = options.announceSuccess !== false;
-    const confirmUse = options.confirm !== false;
-    return async (context) => {
-      const learned = context.state.getSkill(skillId);
-      if (!learned) {
-        await showSkillResult(context, skillId, false, "尚未掌握");
-        return 1;
-      }
-      if (confirmUse && !(await confirmSkillUse(context, skillId))) {
-        await showSkillResult(context, skillId, false, "已放弃使用");
-        return 1;
-      }
-      if (announceSuccess) {
-        await showSkillResult(context, skillId, true, "已掌握");
-      }
-      return learned ? 0 : 1;
-    };
-  }
-
-  // 侦察成功 = 已掌握侦察 + 灵感检定成功；使用前同样先确认。
-  async function scoutingSkillCheck(context) {
-    if (!context.state.getSkill("scouting")) {
-      await showSkillResult(context, "scouting", false, "尚未掌握");
-      return 1;
-    }
-    if (!(await confirmSkillUse(context, "scouting"))) {
-      await showSkillResult(context, "scouting", false, "已放弃使用");
-      return 1;
-    }
-    await showSkillResult(context, "scouting", true, "已掌握，开始观察");
-    return attrCheck("insight")(context);
-  }
-
   function conditionalSanCheck(attribute, passLoss, failLoss, condition) {
     const check = sanCheck(attribute, passLoss, failLoss);
     return async (context) => (condition(context) ? check(context) : 0);
@@ -174,14 +134,11 @@
     };
   }
 
-  // 幸运半值路线：奇数向下取整，再加 1d6 与阈值比较。
-  async function luckHalfCheck(context, threshold, label) {
-    const luck = context.state.getAttribute("luck");
-    const halfLuck = Math.floor(luck / 2);
+  // 幸运检定：直接掷 1d6，结果大于 3 即成功。
+  async function luckCheck(context, label) {
     const roll = rollDie(6);
-    const total = halfLuck + roll;
-    const success = total >= threshold;
-    const detail = `${label}：幸运 ${luck}/2 向下取整为 ${halfLuck}，掷出 ${roll}，合计 ${total}\n需要达到 ${threshold}。`;
+    const success = roll > 3;
+    const detail = `${label}：掷出 ${roll}，需要大于 3。`;
     await showDiceRollAnimation(context, roll, success, detail);
     return success ? 0 : 1;
   }
@@ -190,32 +147,15 @@
 
   registerDice("ev001_insight_01", attrCheck("insight"));
   registerDice("ev004_insight_01", attrCheck("insight"));
-  registerDice("skill_scouting", scoutingSkillCheck);
-  // E-011报纸只做一次侦查技能确认，不再连带触发第二次灵感检定。
-  registerDice("ev011_scouting_01", learnedSkillCheck("scouting"));
+  registerDice("ev007_education_01", attrCheck("education"));
   registerDice("ev011_insight_01", attrCheck("insight"));
-  registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
-  // 调用方已在点击乘务员时完成“是否使用医学技能”询问，检定本身不再二次询问。
-  registerDice("skill_medicine_confirmed", learnedSkillCheck("medicine", {
-    confirm: false,
-    announceSuccess: false
-  }));
-  registerDice("skill_talk", learnedSkillCheck("talk"));
-  registerDice("ev016_strength_01", attrCheck("strength"));
+  registerDice("ev013_education_01", attrCheck("education"));
+  registerDice("ev020_education_01", attrCheck("education"));
+  registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"]));
+  registerDice("ev016_constitution_01", attrCheck("constitution"));
 
-  // E-022：拥有潜行直接成功；否则使用幸运半值检定。
-  registerDice("ev022_stealth_or_luck_01", async (context) => {
-    if (!context.state.getSkill("stealth")) return luckHalfCheck(context, 9, "潜行失败后的幸运检定");
-    if (await confirmSkillUse(context, "stealth")) {
-      await showSkillResult(context, "stealth", true, "已掌握，直接通过");
-      return 0;
-    }
-    return luckHalfCheck(context, 9, "放弃潜行后的幸运检定");
-  });
-
-  registerDice("ev023_agility_01", attrCheck("agility"));
-  registerDice("ev023_throw_after_agility_fail_01", (context) => luckHalfCheck(context, 9, "敏捷失败后的投掷检定"));
-  registerDice("ev024_agility_01", attrCheck("agility"));
+  registerDice("ev023_constitution_01", attrCheck("constitution"));
+  registerDice("ev023_throw_after_fail_luck_01", (context) => luckCheck(context, "失败后的投掷幸运检定"));
 
   // E-024：用 1d100 乘以光源系数判断能否看清 2 号车厢。
   // 手电筒 +10%，手机闪光 +5%，两项效果叠加；达到 50 视为成功。
@@ -235,44 +175,11 @@
     return success ? 0 : 1;
   });
 
-  registerDice("ev027_stealth_luck_01", async (context) => {
-    const hasFlashlight = context.state.inventory.includes("flashlight");
-    const hasPhone = context.state.inventory.includes("phone");
-    const lightModifier = hasFlashlight ? 20 : (hasPhone ? 10 : -15);
-    const canUseStealth = context.state.getSkill("stealth");
-    const useStealth = canUseStealth && (await confirmSkillUse(context, "stealth"));
-    const luck = context.state.getAttribute("luck");
-    const baseRate = useStealth ? 50 : Math.floor(luck / 2) * 10;
-    const rate = Math.max(5, Math.min(100, baseRate + lightModifier));
-    const roll = Math.floor(Math.random() * 100) + 1;
-    const success = roll <= rate;
-    const route = useStealth ? "潜行" : `幸运 ${luck}/2`;
-    const detail = `${route}：基础成功率 ${baseRate}% + 光源修正 ${lightModifier}% = ${rate}%。掷出 ${roll}%。`;
-    await showDiceRollAnimation(context, roll, success, detail);
-    return success ? 0 : 1;
-  });
-  registerDice("ev028_agility_01", attrCheck("agility"));
-  registerDice("ev028_luck_half_01", (context) => luckHalfCheck(context, 9, "投掷后的幸运检定"));
-  registerDice("ev029_agility_01", attrCheck("agility"));
-  registerDice("ev031_scouting_02", scoutingSkillCheck);
-
-  // E-025：返回 0=单只、1=两只，对应事件的两个结果分支。
-  registerDice("ev025_clicker_count_01", async (context) => {
-    const luck = context.state.getAttribute("luck");
-    if (luck < 7) {
-      await context.ui.inspect.show({
-        title: "数量判定",
-        text: `幸运 ${luck} < 7，固定遭遇两只 Clicker。`
-      });
-      return 1;
-    }
-    const roll = rollDie(6);
-    const one = roll >= 3;
-    const detail = `幸运 ${luck}，掷出 ${roll}，${one ? "遭遇一只" : "遭遇两只"} Clicker。`;
-    await showDiceRollAnimation(context, roll, one, detail);
-    return one ? 0 : 1;
-  });
-  registerDice("ev025_strength_01", attrCheck("strength"));
+  registerDice("ev027_constitution_01", attrCheck("constitution", 7));
+  registerDice("ev028_constitution_01", attrCheck("constitution"));
+  registerDice("ev028_luck_01", (context) => luckCheck(context, "投掷后的幸运检定"));
+  registerDice("ev029_constitution_01", attrCheck("constitution"));
+  registerDice("ev025_constitution_01", attrCheck("constitution"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
@@ -290,17 +197,6 @@
     "ev026_extra_san_01",
     conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => context.state.flags.visited_carriage_07 === true)
   );
-  registerDice("ev028_talk_or_strength_01", async (context) => {
-    const canTalk = context.state.getSkill("talk");
-    const talkUsed = canTalk && (await confirmSkillUse(context, "talk"));
-    const strength = context.state.getAttribute("strength");
-    const success = talkUsed || strength >= 8;
-    await context.ui.inspect.show({
-      title: success ? "结局判定成功" : "结局判定失败",
-      text: `话术：${talkUsed ? "已使用" : "未使用"}；力量：${strength}，需要话术成功或力量达到 8。`
-    });
-    return success ? 0 : 1;
-  });
   registerDice("ev030_san_01", endingSanCheck("bad_end", { count: 1, sides: 4 }, { count: 1, sides: 10 }));
 
   // ==== 游戏内检定条目（编号必须全局唯一、长期稳定，被 events.json 的 check.dice 引用）====
