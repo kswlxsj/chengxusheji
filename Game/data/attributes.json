@@ -34,9 +34,25 @@
       "max": 10
     },
     {
+      "id": "will",
+      "name": "意志",
+      "description": "衡量坚持行动、抵抗压力和控制恐惧的能力。",
+      "initial": 3,
+      "min": 3,
+      "max": 10
+    },
+    {
       "id": "luck",
       "name": "幸运",
       "description": "衡量偶然事件对角色有利的程度。",
+      "initial": 3,
+      "min": 3,
+      "max": 10
+    },
+    {
+      "id": "constitution",
+      "name": "体质",
+      "description": "衡量耐力、健康程度和承受伤害的能力。",
       "initial": 3,
       "min": 3,
       "max": 10

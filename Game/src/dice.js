@@ -194,8 +194,10 @@
   // E-011报纸只做一次侦查技能确认，不再连带触发第二次灵感检定。
   registerDice("ev011_scouting_01", learnedSkillCheck("scouting"));
   registerDice("ev011_insight_01", attrCheck("insight"));
+  // 急救与医疗是同一个技能；保留旧检定编号，兼容旧事件和旧测试。
+  registerDice("skill_first_aid", learnedSkillCheck("medicine"));
   registerDice("skill_medicine", learnedSkillCheck("medicine", { announceSuccess: false }));
-  // 调用方已在点击乘务员时完成“是否使用医学技能”询问，检定本身不再二次询问。
+  // 调用方已在点击乘务员时完成“是否使用急救”询问，检定本身不再二次询问。
   registerDice("skill_medicine_confirmed", learnedSkillCheck("medicine", {
     confirm: false,
     announceSuccess: false

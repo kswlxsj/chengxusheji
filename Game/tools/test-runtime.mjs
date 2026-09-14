@@ -246,11 +246,13 @@ assert.equal(registeredState.getSkill("talk"), false);
 assert.equal(registeredState.getSkill("stealth"), false);
 assert.equal(registeredState.getSkill("medicine"), false);
 registeredState.completeAttributeAllocation({
-  strength: 10,
-  agility: 10,
-  education: 8,
+  strength: 7,
+  agility: 7,
+  education: 7,
   insight: 7,
+  will: 10,
   luck: 10,
+  constitution: 3,
   san: 5
 });
 assert.equal(registeredState.getSkill("talk"), true, "教育与灵感之和达到14时应触发话术");
@@ -275,7 +277,7 @@ assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定应已注册");
-assert.equal(typeof Game.Dice.get("skill_medicine_confirmed"), "function", "点击乘务员后的医学检定应已注册");
+assert.equal(typeof Game.Dice.get("skill_medicine_confirmed"), "function", "点击乘务员后的急救检定应已注册");
 
 function createEngineUi() {
   return {
@@ -336,33 +338,39 @@ const originalRandom = sandbox.Math.random;
 function createRegisteredStateWith(values = {}) {
   const state = new Game.GameState(initialState, registeredAttributes, registeredSkills);
   state.completeAttributeAllocation({
-    strength: 10,
-    agility: 10,
-    education: 8,
+    strength: 7,
+    agility: 7,
+    education: 7,
     insight: 7,
+    will: 10,
     luck: 10,
+    constitution: 3,
     san: 5,
     ...values
   });
   return state;
 }
 
-// 当前项目约定：教育 > 5 解锁医学技能。
+// 当前项目约定：教育 > 5 解锁医学，并同步视为已掌握急救。
 const firstAidLowState = createRegisteredStateWith({
-  strength: 10,
-  agility: 10,
+  strength: 7,
+  agility: 7,
   education: 5,
   insight: 9,
+  will: 10,
   luck: 10,
-  san: 6
+  constitution: 3,
+  san: 5
 });
 const firstAidHighInsightState = createRegisteredStateWith({
-  strength: 10,
-  agility: 10,
+  strength: 7,
+  agility: 7,
   education: 6,
   insight: 8,
+  will: 10,
   luck: 10,
-  san: 6
+  constitution: 3,
+  san: 5
 });
 const firstAidContext = (state) => ({
   state,
@@ -371,32 +379,32 @@ const firstAidContext = (state) => ({
   ui: createEngineUi()
 });
 assert.equal(
-  await Game.Dice.get("skill_medicine")(firstAidContext(firstAidLowState), []),
+  await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidLowState), []),
   1,
-  "教育 5 不应解锁医学"
+  "教育 5 不应解锁医学或急救"
 );
 assert.equal(
-  await Game.Dice.get("skill_medicine")(firstAidContext(firstAidHighInsightState), []),
+  await Game.Dice.get("skill_first_aid")(firstAidContext(firstAidHighInsightState), []),
   0,
-  "教育 6 应解锁医学"
+  "教育 6 应解锁医学并同步视为掌握急救"
 );
 const declinedFirstAidUi = {
   ...createEngineUi(),
   choice: { choose: async () => ({ value: false }) }
 };
 assert.equal(
-  await Game.Dice.get("skill_medicine")({ ...firstAidContext(firstAidHighInsightState), ui: declinedFirstAidUi }, []),
+  await Game.Dice.get("skill_first_aid")({ ...firstAidContext(firstAidHighInsightState), ui: declinedFirstAidUi }, []),
   1,
   "使用技能前询问时，放弃使用应视为检定失败"
 );
 const noSecondPromptUi = {
   ...createEngineUi(),
-  choice: { choose: async () => { throw new Error("医学确认后不应二次询问"); } }
+  choice: { choose: async () => { throw new Error("急救确认后不应二次询问"); } }
 };
 assert.equal(
   await Game.Dice.get("skill_medicine_confirmed")({ ...firstAidContext(firstAidHighInsightState), ui: noSecondPromptUi }, []),
   0,
-  "点击乘务员处完成医学确认后，检定不应再次弹出技能询问"
+  "点击乘务员处完成急救确认后，检定不应再次弹出技能询问"
 );
 
 // E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。
@@ -573,11 +581,13 @@ try {
 // SAN 检定损失（真实属性表，SAN 初始分配 5）。
 const sanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 sanState.completeAttributeAllocation({
-  strength: 10,
-  agility: 10,
-  education: 8,
+  strength: 7,
+  agility: 7,
+  education: 7,
   insight: 7,
+  will: 10,
   luck: 10,
+  constitution: 3,
   san: 5
 });
 const sanDiceEngine = new Game.EventEngine({
