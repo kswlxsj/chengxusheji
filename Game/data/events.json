@@ -559,6 +559,11 @@
         "sound": "door_open"
       },
       {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_available",
+        "value": true
+      },
+      {
         "type": "changeScene",
         "scene": "carriage_05"
       },
@@ -1141,30 +1146,6 @@
         "text": "先看看报纸再说吧。"
       },
       {
-        "type": "conditionalJump",
-        "when": {
-          "flag": "ev008_scouting_ok",
-          "equals": true
-        },
-        "next": "E_011_S"
-      },
-      {
-        "type": "conditionalJump",
-        "when": {
-          "all": [
-            {
-              "flag": "ev008_scouting_done",
-              "equals": true
-            },
-            {
-              "flag": "ev008_scouting_ok",
-              "equals": false
-            }
-          ]
-        },
-        "next": "E_011_F"
-      },
-      {
         "type": "check",
         "dice": "ev011_scouting_01",
         "outcomes": [
@@ -1476,10 +1457,10 @@
       },
       {
         "type": "choice",
-        "prompt": "是否使用急救？",
+        "prompt": "是否使用医学技能？",
         "options": [
           {
-            "label": "使用急救",
+            "label": "使用医学",
             "next": "E_013_USE"
           },
           {
@@ -1570,7 +1551,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你尝试进行急救，但颤抖的双手没能完成包扎。"
+        "text": "你尝试用医学知识处理伤势，但颤抖的双手没能完成包扎。"
       },
       {
         "type": "dialogue",
@@ -1588,7 +1569,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+        "text": "学校里教的医学知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
       },
       {
         "type": "dialogue",
@@ -3156,7 +3137,19 @@
       },
       {
         "type": "dialogue",
-        "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。\n\n然后，一个声音一字一顿地说：\n\n“请不要下车。”"
+        "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
+      },
+      {
+        "type": "sound",
+        "sound": "electrical_noise_e023",
+        "loop": true,
+        "segmentDuration": 4500,
+        "stopOnDialogueAdvance": true,
+        "stopAfterDialogueAdvances": 4
+      },
+      {
+        "type": "dialogue",
+        "text": "然后，一个声音一字一顿地说：\n\n“请不要下车。”"
       },
       {
         "type": "dialogue",
@@ -3915,6 +3908,11 @@
       {
         "type": "sound",
         "sound": "door_open"
+      },
+      {
+        "type": "setFlag",
+        "key": "carriage_05_newspaper_available",
+        "value": true
       },
       {
         "type": "changeScene",

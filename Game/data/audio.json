@@ -165,6 +165,13 @@
     "description": "E-009‘刚才的人，都去哪了？’播放音频开头0至3秒，不循环。"
   },
   {
+    "id": "electrical_noise_e023",
+    "name": "E-023电流嘶鸣",
+    "file": "assets/audio/electrical_noise1.mp3",
+    "volume": 0.7,
+    "description": "E-023从‘然后，一个声音一字一顿地说’开始循环播放音频开头4.5秒，推进完后续三句对白后停止。"
+  },
+  {
     "id": "horror_piano_e018",
     "name": "E-018恐怖钢琴",
     "file": "assets/audio/horror_piano_chord4.mp3",

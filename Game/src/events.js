@@ -591,12 +591,14 @@
       run.finished = new Promise((resolve) => { run.finish = resolve; });
       this.activeRun = run;
       this.busy = true;
-      this.scene.setInteractionEnabled(false);
-      this.onStateChanged();
       let completed = false;
       let terminated = false;
 
       try {
+        // 事件启动阶段也必须放在 try/finally 内：如果 HUD、音效或自动存档刷新
+        // 在这里同步抛错，finally 仍要负责解除 busy 与场景交互锁，避免整页只能刷新恢复。
+        this.scene.setInteractionEnabled(false);
+        this.onStateChanged();
         let nextId = eventId;
         let guard = 0;
         while (nextId) {
@@ -631,22 +633,51 @@
             console.error("终止回调失败：", terminationError);
           }
         } else {
-          this.restoreStableState();
+          try {
+            this.restoreStableState();
+          } catch (restoreError) {
+            // 回滚只负责尽力恢复；即使状态刷新再次出错，也不能阻断 finally 解锁。
+            console.error("事件失败后的状态回滚失败：", restoreError);
+          }
         }
         if (!(error instanceof EventCancelled) && !terminated) {
           console.error(error);
-          this.ui.toast(`运行错误：${error.message}`);
+          try {
+            this.ui.toast(`运行错误：${error.message}`);
+          } catch (toastError) {
+            console.error("事件错误提示失败：", toastError);
+          }
         }
         return false;
       } finally {
-        this.stopAdvanceBoundVoices(true);
-        this.ui.cancelPending();
+        try {
+          this.stopAdvanceBoundVoices(true);
+        } catch (cleanupError) {
+          console.error("事件音效清理失败：", cleanupError);
+        }
+        try {
+          this.ui.cancelPending();
+        } catch (cleanupError) {
+          console.error("事件界面清理失败：", cleanupError);
+        }
         this.activeRun = null;
         this.busy = false;
         if (!terminated) {
-          this.scene.refresh();
-          this.scene.setInteractionEnabled(!this.paused);
-          this.onStateChanged();
+          try {
+            this.scene.refresh();
+          } catch (refreshError) {
+            console.error("事件结束后的场景刷新失败：", refreshError);
+          }
+          try {
+            this.scene.setInteractionEnabled(!this.paused);
+          } catch (interactionError) {
+            console.error("事件结束后的场景交互恢复失败：", interactionError);
+          }
+          try {
+            this.onStateChanged();
+          } catch (stateError) {
+            console.error("事件结束后的状态刷新失败：", stateError);
+          }
         }
         run.finish(completed);
       }

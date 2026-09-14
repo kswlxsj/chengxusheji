@@ -145,7 +145,7 @@
   {
     "id": "E_013",
     "actions": [
-      { "type": "dialogue", "text": "（检定：急救）" }
+      { "type": "dialogue", "text": "（检定：医学）" }
     ]
   },
   {
