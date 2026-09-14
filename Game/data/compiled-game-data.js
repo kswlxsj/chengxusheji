@@ -776,6 +776,12 @@ window.GAME_DATA = {
           "name": "窗外",
           "image": "assets/inner-02-window.png",
           "fullCanvas": true,
+          "hitPosition": {
+            "x": 58,
+            "y": 29,
+            "width": 22,
+            "height": 22
+          },
           "position": {
             "x": 0,
             "y": 0,
@@ -796,6 +802,12 @@ window.GAME_DATA = {
           "name": "彩色玻璃瓶",
           "image": "assets/inner-02-bottle.png",
           "fullCanvas": true,
+          "hitPosition": {
+            "x": 75,
+            "y": 63,
+            "width": 14,
+            "height": 10
+          },
           "position": {
             "x": 0,
             "y": 0,
