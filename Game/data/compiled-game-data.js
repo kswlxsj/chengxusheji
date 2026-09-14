@@ -776,6 +776,12 @@ window.GAME_DATA = {
           "name": "窗外",
           "image": "assets/inner-02-window.png",
           "fullCanvas": true,
+          "hitPosition": {
+            "x": 58,
+            "y": 29,
+            "width": 22,
+            "height": 22
+          },
           "position": {
             "x": 0,
             "y": 0,
@@ -796,6 +802,12 @@ window.GAME_DATA = {
           "name": "彩色玻璃瓶",
           "image": "assets/inner-02-bottle.png",
           "fullCanvas": true,
+          "hitPosition": {
+            "x": 75,
+            "y": 63,
+            "width": 14,
+            "height": 10
+          },
           "position": {
             "x": 0,
             "y": 0,
@@ -1501,6 +1513,11 @@ window.GAME_DATA = {
           "sound": "door_open"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_05_newspaper_available",
+          "value": true
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_05"
         },
@@ -2083,30 +2100,6 @@ window.GAME_DATA = {
           "text": "先看看报纸再说吧。"
         },
         {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev008_scouting_ok",
-            "equals": true
-          },
-          "next": "E_011_S"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "all": [
-              {
-                "flag": "ev008_scouting_done",
-                "equals": true
-              },
-              {
-                "flag": "ev008_scouting_ok",
-                "equals": false
-              }
-            ]
-          },
-          "next": "E_011_F"
-        },
-        {
           "type": "check",
           "dice": "ev011_scouting_01",
           "outcomes": [
@@ -2418,10 +2411,10 @@ window.GAME_DATA = {
         },
         {
           "type": "choice",
-          "prompt": "是否使用急救？",
+          "prompt": "是否使用医学技能？",
           "options": [
             {
-              "label": "使用急救",
+              "label": "使用医学",
               "next": "E_013_USE"
             },
             {
@@ -2512,7 +2505,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你尝试进行急救，但颤抖的双手没能完成包扎。"
+          "text": "你尝试用医学知识处理伤势，但颤抖的双手没能完成包扎。"
         },
         {
           "type": "dialogue",
@@ -2530,7 +2523,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "学校里教的那些急救知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+          "text": "学校里教的医学知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
         },
         {
           "type": "dialogue",
@@ -4098,7 +4091,19 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。\n\n然后，一个声音一字一顿地说：\n\n“请不要下车。”"
+          "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
+        },
+        {
+          "type": "sound",
+          "sound": "electrical_noise_e023",
+          "loop": true,
+          "segmentDuration": 4500,
+          "stopOnDialogueAdvance": true,
+          "stopAfterDialogueAdvances": 4
+        },
+        {
+          "type": "dialogue",
+          "text": "然后，一个声音一字一顿地说：\n\n“请不要下车。”"
         },
         {
           "type": "dialogue",
@@ -4944,6 +4949,11 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "door_open"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_newspaper_available",
+          "value": true
         },
         {
           "type": "changeScene",
@@ -6910,25 +6920,9 @@ window.GAME_DATA = {
         "max": 10
       },
       {
-        "id": "will",
-        "name": "意志",
-        "description": "衡量坚持行动、抵抗压力和控制恐惧的能力。",
-        "initial": 3,
-        "min": 3,
-        "max": 10
-      },
-      {
         "id": "luck",
         "name": "幸运",
         "description": "衡量偶然事件对角色有利的程度。",
-        "initial": 3,
-        "min": 3,
-        "max": 10
-      },
-      {
-        "id": "constitution",
-        "name": "体质",
-        "description": "衡量耐力、健康程度和承受伤害的能力。",
         "initial": 3,
         "min": 3,
         "max": 10
@@ -7168,6 +7162,13 @@ window.GAME_DATA = {
       "file": "assets/audio/bullying.mp3",
       "volume": 0.7,
       "description": "E-009‘刚才的人，都去哪了？’播放音频开头0至3秒，不循环。"
+    },
+    {
+      "id": "electrical_noise_e023",
+      "name": "E-023电流嘶鸣",
+      "file": "assets/audio/electrical_noise1.mp3",
+      "volume": 0.7,
+      "description": "E-023从‘然后，一个声音一字一顿地说’开始循环播放音频开头4.5秒，推进完后续三句对白后停止。"
     },
     {
       "id": "horror_piano_e018",

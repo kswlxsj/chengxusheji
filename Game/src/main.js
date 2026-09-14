@@ -87,7 +87,18 @@
     "flower_sea",
     "flower_sea_inside"
   ]);
-  const INNER_WORLD_ALLOWED_SOUNDS = ["door_open", "door_locked", "fake", "ghost_calling"];
+  // 里世界静音区：只保留车门开/关、场景演出音与检定演出音。
+  // 检定音（编号见 ui.js 的 DICE_SOUNDS）是玩家主动发起检定的即时反馈，不属于里世界的环境音，
+  // 若一并静音，玩家在里世界做检定时会完全没有声音反馈，因此始终放行。
+  const INNER_WORLD_ALLOWED_SOUNDS = [
+    "door_open",
+    "door_locked",
+    "fake",
+    "ghost_calling",
+    "dice_rolling",
+    "dice_success",
+    "dice_fail"
+  ];
   const SCENE_LOOP_TRACKS = [
     {
       id: "fake",
