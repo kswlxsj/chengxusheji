@@ -4,7 +4,7 @@
 //
 // 覆盖范围（5号车厢 → 4号 → 3号 → 2号 → 先头车厢）：
 // - 5号右门只过门（切景 + 过门句，不触发医学检定）；剧情路线统一经 E_013_ENTRY 进4号。
-// - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后先询问是否使用急救。
+// - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后先询问是否使用医学技能。
 // - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_501）才进入。
 // - 里世界返程 E_524 回到真2号后接 E_025 喘息段，播完停下，不自动进入 Clicker 遭遇。
 // - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行通过也置 carriage_02_passed。
@@ -102,7 +102,7 @@ assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", 
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026", "Clicker 应进入2号车厢怪物遭遇");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_501", "3号通往2号的门仍归里世界入口");
-assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应先进入急救询问");
+assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应先进入医学询问");
 
 // 剧情路线的 next 统一指向 E_013_ENTRY，首次到达只播发现描写，不自动检定。
 for (const id of ["E_010_F", "E_010_JOIN", "E_011_S", "E_011_F", "E_012_AFTER"]) {
@@ -118,20 +118,20 @@ assert.deepEqual(entryActions[1].when.any, [
 ]);
 assert.equal(entryActions[1].next, "E_013_REVISIT");
 assert.equal(entryActions.some((action) => action.type === "setFlag" && action.key === "crew_04_entry_seen"), true);
-assert.equal(entryActions.some((action) => action.type === "check"), false, "到达演出不得自动触发急救");
+assert.equal(entryActions.some((action) => action.type === "check"), false, "到达演出不得自动触发医学检定");
 // 到达描写不能留在出发场景。
 assert.equal(actionsOf("E_012_AFTER").some((action) => action.type === "dialogue" && action.text.includes("4号车厢")), false);
 
-// 点击乘务员先询问是否使用急救；暂不使用不消耗热点，使用后最多检定两次。
+// 点击乘务员先询问是否使用医学技能；暂不使用不消耗热点，使用后最多检定两次。
 assert.deepEqual(actionsOf("E_013_REVISIT"), [], "重复到达应是静默落点");
 const firstAidActions = actionsOf("E_013");
-assert.equal(firstAidActions[0].type, "conditionalJump", "已完成急救后再次点击应直接离开");
+assert.equal(firstAidActions[0].type, "conditionalJump", "已完成医学处理后再次点击应直接离开");
 assert.deepEqual(firstAidActions[0].when, { flag: "crew_04_interacted", equals: true });
 assert.equal(firstAidActions[0].next, "E_013_CANCEL");
 const firstAidPrompt = firstAidActions[1];
 assert.equal(firstAidPrompt.type, "choice");
-assert.equal(firstAidPrompt.prompt, "是否使用急救？");
-assert.deepEqual(firstAidPrompt.options.map((option) => option.label), ["使用急救", "暂不使用"]);
+assert.equal(firstAidPrompt.prompt, "是否使用医学技能？");
+assert.deepEqual(firstAidPrompt.options.map((option) => option.label), ["使用医学", "暂不使用"]);
 assert.equal(firstAidPrompt.options[0].next, "E_013_USE");
 assert.equal(firstAidPrompt.options[1].next, "E_013_CANCEL");
 assert.deepEqual(actionsOf("E_013_CANCEL"), [], "暂不使用应直接留在4号车厢");
@@ -147,7 +147,7 @@ const secondFirstAidCheck = actionsOf("E_013_USE_SECOND")[0];
 assert.deepEqual(firstAidCheck.outcomes, ["E_013_S", "E_013_F_RETRY"]);
 assert.deepEqual(secondFirstAidCheck.outcomes, ["E_013_S", "E_013_F"]);
 assert.equal(firstAidCheck.checkId, "crew_04_medical");
-assert.equal(secondFirstAidCheck.checkId, firstAidCheck.checkId, "两次急救必须共享同一个检定身份");
+assert.equal(secondFirstAidCheck.checkId, firstAidCheck.checkId, "两次医学检定必须共享同一个检定身份");
 assert.equal(actionsOf("E_013_F_RETRY").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted"), false);
 assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_failed" && action.value === true), true);
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_success" && action.value === true), true);
@@ -234,32 +234,32 @@ game = fixture({ sceneId: "carriage_05" });
 await game.play("E_010_F");
 assert.equal(game.state.sceneId, "carriage_04");
 assertArrival(game, "carriage_04", /一名重伤昏迷的乘务员倒在地上/);
-assert.deepEqual(game.diceCalls, [], "进入4号车厢不得自动触发急救");
+assert.deepEqual(game.diceCalls, [], "进入4号车厢不得自动触发医学检定");
 assert.equal(game.state.flags.crew_04_entry_seen, true);
 game.trace.length = 0;
 await game.play("E_013_ENTRY");
 assert.deepEqual(game.trace, [], "重复到达4号车厢不得重播首次发现描写");
 assert.deepEqual(game.diceCalls, []);
 
-// 点击乘务员：选择不使用急救时保留热点；失败后允许再试一次，成功或第二次失败后结束。
+// 点击乘务员：选择不使用医学技能时保留热点；失败后允许再试一次，成功或第二次失败后结束。
 game = fixture({ sceneId: "carriage_04", choiceLabels: ["暂不使用"] });
 await game.play("E_013");
-assert.deepEqual(game.diceCalls, [], "暂不使用急救不得执行检定");
+assert.deepEqual(game.diceCalls, [], "暂不使用医学不得执行检定");
 assert.equal(game.state.flags.crew_04_interacted, undefined, "暂不使用不应消耗乘务员调查");
 
 game = fixture({ sceneId: "carriage_04", dice: { skill_medicine_confirmed: [1, 0] } });
 await game.play("E_013");
 assert.deepEqual(game.diceCalls, ["skill_medicine_confirmed"]);
 assert.equal(game.state.flags.crew_04_medical_attempted, true);
-assert.equal(game.state.flags.crew_04_interacted, undefined, "第一次急救失败后应保留乘务员热点");
-assert.equal(game.state.flags.crew_04_medical_failed, true, "第一次急救失败要写入临时状态");
+assert.equal(game.state.flags.crew_04_interacted, undefined, "第一次医学检定失败后应保留乘务员热点");
+assert.equal(game.state.flags.crew_04_medical_failed, true, "第一次医学检定失败要写入临时状态");
 await game.play("E_013");
 assert.equal(
   game.diceCalls.filter((id) => id === "skill_medicine_confirmed").length,
   2,
-  "第一次失败后应允许第二次急救检定"
+  "第一次失败后应允许第二次医学检定"
 );
-assert.equal(game.state.flags.crew_04_interacted, true, "第二次急救成功后应结束调查");
+assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定成功后应结束调查");
 assert.equal(game.state.flags.crew_04_medical_success, true);
 assert.equal(game.state.flags.crew_04_medical_failed, false);
 
@@ -278,7 +278,7 @@ game = fixture({ sceneId: "carriage_04", dice: { skill_medicine_confirmed: [1, 1
 await game.play("E_013");
 await game.play("E_013");
 assert.deepEqual(game.diceCalls, ["skill_medicine_confirmed", "skill_medicine_confirmed"]);
-assert.equal(game.state.flags.crew_04_interacted, true, "第二次急救失败后应结束调查");
+assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定失败后应结束调查");
 assert.equal(game.state.flags.crew_04_medical_failed, true);
 
 // 其余剧情路线同样落到 carriage_04。
@@ -332,4 +332,4 @@ assert.match(game.trace[0].text, /操作面板/);
 assert.equal(game.diceCalls.includes("ev027_stealth_luck_01"), false, "控制把手不得触发潜行检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
 
-console.log("主线接线回归通过：4号车厢首次发现与急救询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
+console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
