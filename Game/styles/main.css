@@ -11,7 +11,7 @@
 /* 方舟像素字体 12px 等宽 简体中文 */
 @font-face {
   font-family: "Ark Pixel 12px";
-  src: url("../../Assets/fonts/ark-pixel-12px-monospaced-zh_cn.otf.woff2") format("woff2");
+  src: url("../assets/Fonts/ark-pixel-12px-monospaced-zh-cn.woff2") format("woff2");
   font-display: swap;
   font-weight: normal;
   font-style: normal;
@@ -637,7 +637,7 @@ body.home-op-active .home-page .auth-user-status {
   color: var(--ink);
   border: 0;
   background-color: transparent;
-  background-image: url("../assets/ui/hp-bar.png");
+  background-image: url("../assets/Image/Ui/status-bar.png");
   background-position: center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -675,7 +675,7 @@ body.home-op-active .home-page .auth-user-status {
   grid-template-columns: repeat(10, minmax(0, 1fr));
   padding: 0;
   overflow: hidden;
-  background: url("../assets/ui/beibao.png") left center / 10% 100% repeat-x;
+  background: url("../assets/Image/Ui/backpack-frame.png") left center / 10% 100% repeat-x;
 }
 
 .inventory-slot {
@@ -873,7 +873,7 @@ body.home-op-active .home-page .auth-user-status {
   min-height: 26%;
   padding: 24px 58px 70px;
   border: 0;
-  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
   box-shadow: none;
   cursor: pointer;
 }
@@ -1880,7 +1880,7 @@ body.home-op-active .home-page .auth-user-status {
   padding: 24px 58px 70px;
   opacity: 0;
   border: 0;
-  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -2063,7 +2063,7 @@ body.home-op-active .home-page .auth-user-status {
   padding: 24px 58px 70px;
   opacity: 0;
   border: 0;
-  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -2331,7 +2331,7 @@ body.home-op-active .home-page .auth-user-status {
   padding: 24px 58px 70px;
   opacity: 0;
   border: 0;
-  background: url("../assets/ui/dialog-box.png") center / 100% 100% no-repeat;
+  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -2708,7 +2708,7 @@ body.codex-start-video-ready .home-page .home-action::after {
   top: 50%;
   width: var(--menu-marker-size);
   aspect-ratio: 1;
-  background: url("../assets/ui/initial-menu-marker.png") center / contain no-repeat;
+  background: url("../assets/Image/Portrait/monster-pixel.png") center / contain no-repeat;
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%) scale(.82);

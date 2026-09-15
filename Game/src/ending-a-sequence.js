@@ -2,13 +2,13 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    frontCarriage: "assets/front-carriage.png",
-    carriage06: "assets/carriage-06.png",
-    platform: "assets/sunny-platform.png",
-    moveBlur: "assets/move-blur.png",
-    move: "assets/move.png",
-    pcHappy: "assets/pc-happy.png",
-    pcScared: "assets/pc-scared.png"
+    frontCarriage: "assets/Image/Scene/Background/front-carriage.png",
+    carriage06: "assets/Image/Scene/Background/carriage-06.png",
+    platform: "assets/Image/Scene/Background/sunny-platform.png",
+    moveBlur: "assets/Image/Scene/Background/move-blur.png",
+    move: "assets/Image/Scene/Background/move.png",
+    pcHappy: "assets/Image/Portrait/player-happy.png",
+    pcScared: "assets/Image/Portrait/player-scared.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
 

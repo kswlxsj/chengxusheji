@@ -11,9 +11,9 @@
   //   提前点“退出小游戏”视为交涉中断，加成记为 0（事件引擎随后仍会执行最终检定）。
   // - 布局按需求示意图：左右人物立绘、中央背景、顶部对话记录、中部当前问题与两个选项。
 
-  const BACKGROUND_IMAGE = "assets/miniGame/交涉背景.png";
-  const CREW_PORTRAIT = "assets/crew-portrait.png";
-  const PC_PORTRAIT = "assets/pc-portrait.png";
+  const BACKGROUND_IMAGE = "assets/Image/Scene/Background/crew-negotiation.png";
+  const CREW_PORTRAIT = "assets/Image/Portrait/conductor.png";
+  const PC_PORTRAIT = "assets/Image/Portrait/player.png";
 
   // 占位剧情数据：每轮一个“乘务员提问”，玩家在两个回应里二选一。
   // correct 为内部标记（true=安抚得当），不展示给玩家；reaction 为乘务员对你回应的反应。

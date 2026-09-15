@@ -2,9 +2,9 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    frontCarriage: "assets/front-carriage.png",
-    devoured: "assets/swallowed.mp4",
-    carriage03: "assets/carriage-03.png"
+    frontCarriage: "assets/Image/Scene/Background/front-carriage.png",
+    devoured: "assets/Video/swallowed.mp4",
+    carriage03: "assets/Image/Scene/Background/carriage-03.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const VIDEO_LOAD_TIMEOUT_MS = 30000;

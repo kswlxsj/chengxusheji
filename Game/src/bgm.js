@@ -6,8 +6,8 @@
     : new URL("src/bgm.js", window.location.href).href;
   const pageFile = new URL(window.location.href).pathname.split("/").pop() || "index.html";
   const sourceFile = pageFile === "ending.html"
-    ? "../assets/audio/op.mp3"
-    : "../assets/audio/bgm.mp3";
+    ? "../assets/Audio/Bgm/op-v2.mp3"
+    : "../assets/Audio/Bgm/bgm-v2.mp3";
   const SOURCE = new URL(sourceFile, scriptUrl).href;
   const STORAGE_KEY = "train-game-bgm-state-v1";
   const OP_ACTIVE_FLAG = "__TRAIN_GAME_OP_ACTIVE__";

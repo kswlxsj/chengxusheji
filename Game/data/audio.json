@@ -2,207 +2,207 @@
   {
     "id": "dice_rolling",
     "name": "检定滚动",
-    "file": "assets/audio/dice-rolling.mp3",
+    "file": "assets/Audio/SoundEffect/dice-rolling.mp3",
     "description": "检定动画抖动阶段播放。"
   },
   {
     "id": "dice_success",
     "name": "检定成功",
-    "file": "assets/audio/dice-success.mp3",
+    "file": "assets/Audio/SoundEffect/dice-success.mp3",
     "description": "检定结果显示成功时播放。"
   },
   {
     "id": "dice_fail",
     "name": "检定失败",
-    "file": "assets/audio/dice-fail.mp3",
+    "file": "assets/Audio/SoundEffect/dice-fail.mp3",
     "description": "检定结果显示失败时播放。"
   },
   {
     "id": "train_ambient",
     "name": "列车行驶背景音",
-    "file": "assets/audio/train-ambient.mp3",
+    "file": "assets/Audio/SoundEffect/train-ambient.mp3",
     "volume": 0.45,
     "description": "正式进入游戏后循环播放的背景音。"
   },
   {
     "id": "door_open",
     "name": "铁门打开",
-    "file": "assets/audio/iron-door-open.mp3",
+    "file": "assets/Audio/SoundEffect/iron-door-open.mp3",
     "volume": 0.8,
     "description": "车门可以打开并实际通行时播放。"
   },
   {
     "id": "door_locked",
     "name": "车门无法打开",
-    "file": "assets/audio/iron-door-knock.mp3",
+    "file": "assets/Audio/SoundEffect/iron-door-knock.mp3",
     "volume": 0.8,
     "description": "车门锁死、被堵住或无法打开时播放。"
   },
   {
     "id": "loud_noise",
     "name": "收音机成功后的巨响",
-    "file": "assets/audio/loud-noise.mp3",
+    "file": "assets/Audio/SoundEffect/loud-noise.mp3",
     "volume": 0.8,
     "description": "收音机调频小游戏成功、在7号车厢解码广播后播放。"
   },
   {
     "id": "metro_speed_up",
     "name": "列车加速",
-    "file": "assets/audio/metro-speed-up.mp3",
+    "file": "assets/Audio/SoundEffect/metro-speed-up.mp3",
     "volume": 0.8,
     "description": "头车选择加速并成功控制列车时播放。"
   },
   {
     "id": "metro_speed_down",
     "name": "列车减速",
-    "file": "assets/audio/metro-speed-down.mp3",
+    "file": "assets/Audio/SoundEffect/metro-speed-down.mp3",
     "volume": 0.8,
     "description": "头车选择减速或控制杆争夺失败时播放。"
   },
   {
     "id": "metro_arriving",
     "name": "终点站到达广播",
-    "file": "assets/audio/metro-arriving.mp3",
+    "file": "assets/Audio/SoundEffect/metro-arriving.mp3",
     "volume": 0.8,
     "description": "结局 A 醒来后播放的终点站广播。"
   },
   {
     "id": "airport_gate1",
     "name": "站台人流与出站环境音",
-    "file": "assets/audio/airport-gate1.mp3",
+    "file": "assets/Audio/SoundEffect/airport-gate1.mp3",
     "volume": 0.72,
     "description": "结局 A 跟随人群走出站台时播放。"
   },
   {
     "id": "devil_scared",
     "name": "二号车厢循环环境音",
-    "file": "assets/audio/devil-scared.mp3",
+    "file": "assets/Audio/SoundEffect/devil-scared.mp3",
     "volume": 0.45,
     "description": "玩家位于2号车厢时循环播放。"
   },
   {
     "id": "breaking_glass",
     "name": "玻璃瓶破碎",
-    "file": "assets/audio/breaking-glass.mp3",
+    "file": "assets/Audio/SoundEffect/breaking-glass.mp3",
     "volume": 0.8,
     "description": "在2号车厢成功投掷并击碎玻璃瓶时播放。"
   },
   {
     "id": "tearing",
     "name": "撕裂声",
-    "file": "assets/audio/tearing.mp3",
+    "file": "assets/Audio/SoundEffect/tearing.mp3",
     "volume": 0.7,
     "description": "6号车厢查看便签背面时播放。"
   },
   {
     "id": "finding_in_papers",
     "name": "翻找物品",
-    "file": "assets/audio/finding-in-papers.mp3",
+    "file": "assets/Audio/SoundEffect/finding-in-papers.mp3",
     "volume": 0.6,
     "description": "翻找背包、行李或杂物时播放。"
   },
   {
     "id": "eating_crisps",
     "name": "啃食循环音",
-    "file": "assets/audio/eating-crisps.mp3",
+    "file": "assets/Audio/SoundEffect/eating-crisps.mp3",
     "volume": 0.45,
     "description": "7号车厢和被啃食后的里6号车厢循环播放，每轮之间留出间隔。"
   },
   {
     "id": "pouring_sake",
     "name": "粘稠液体流过",
-    "file": "assets/audio/pouring-sake.mp3",
+    "file": "assets/Audio/SoundEffect/pouring-sake.mp3",
     "volume": 0.72,
     "description": "停车结局中血水流过脚下的声音。"
   },
   {
     "id": "opening_cracker_bag",
     "name": "拆开包装",
-    "file": "assets/audio/opening-cracker-bag.mp3",
+    "file": "assets/Audio/SoundEffect/opening-cracker-bag.mp3",
     "volume": 0.7,
     "description": "6号车厢听到远处怪异声音时播放。"
   },
   {
     "id": "fake",
     "name": "伪4号与花海场景音乐",
-    "file": "assets/audio/fake.mp3",
+    "file": "assets/Audio/SoundEffect/fake.mp3",
     "volume": 0.7,
     "description": "停留在伪4号车厢或花海场景时连续循环播放，跨场景不重置进度。"
   },
   {
     "id": "ghost_calling",
     "name": "玻璃瓶中的歌声",
-    "file": "assets/audio/ghost-calling.mp3",
+    "file": "assets/Audio/SoundEffect/ghost-calling.mp3",
     "volume": 0.7,
     "description": "里世界花草车厢拾起彩色玻璃瓶、听见歌声时播放。"
   },
   {
     "id": "tinnitus_e011",
     "name": "E-011耳鸣",
-    "file": "assets/audio/tinnitus1.mp3",
+    "file": "assets/Audio/SoundEffect/tinnitus-1.mp3",
     "volume": 0.7,
     "description": "E-011成功分支只循环音频开头2秒，点击当前对白后停止。"
   },
   {
     "id": "siren_e011",
     "name": "E-011警报",
-    "file": "assets/audio/siren2.mp3",
+    "file": "assets/Audio/SoundEffect/siren-2.mp3",
     "volume": 0.7,
     "description": "E-011成功分支只循环音频开头3秒，覆盖连续三句对白后停止。"
   },
   {
     "id": "distortion_e006",
     "name": "E-006维度失真",
-    "file": "assets/audio/distortion_of_the_dim.mp3",
+    "file": "assets/Audio/SoundEffect/distortion-of-the-dim.mp3",
     "volume": 0.7,
     "description": "进入7号车厢时播放2秒。"
   },
   {
     "id": "dark_atmosphere_e009",
     "name": "E-009阴暗氛围",
-    "file": "assets/audio/dark_atmosphere.mp3",
+    "file": "assets/Audio/SoundEffect/dark-atmosphere.mp3",
     "volume": 0.7,
     "description": "E-009进入6号车厢后循环播放音频开头5秒，推进完前十句旁白后停止。"
   },
   {
     "id": "bullying_e009",
     "name": "E-009刺耳诡异",
-    "file": "assets/audio/bullying.mp3",
+    "file": "assets/Audio/SoundEffect/bullying.mp3",
     "volume": 0.7,
     "description": "E-009‘刚才的人，都去哪了？’播放音频开头0至3秒，不循环。"
   },
   {
     "id": "electrical_noise_e023",
     "name": "E-023电流嘶鸣",
-    "file": "assets/audio/electrical_noise1.mp3",
+    "file": "assets/Audio/SoundEffect/electrical-noise-1.mp3",
     "volume": 0.7,
     "description": "E-023从‘然后，一个声音一字一顿地说’开始循环播放音频开头4.5秒，推进完后续三句对白后停止。"
   },
   {
     "id": "horror_piano_e018",
     "name": "E-018恐怖钢琴",
-    "file": "assets/audio/horror_piano_chord4.mp3",
+    "file": "assets/Audio/SoundEffect/horror-piano-chord-4.mp3",
     "volume": 0.7,
     "description": "E-018手机日期后循环音频开头5秒，直到‘你不知道该相信哪一个。’推进后停止。"
   },
   {
     "id": "knocking_wall",
     "name": "血手印拍击",
-    "file": "assets/audio/knocking-a-wall.mp3",
+    "file": "assets/Audio/SoundEffect/knocking-a-wall.mp3",
     "volume": 0.9,
     "description": "假里2号车厢每出现一个血手印时播放一次。"
   },
   {
     "id": "maze",
     "name": "假里1号车厢扭曲氛围",
-    "file": "assets/audio/maze.mp3",
+    "file": "assets/Audio/SoundEffect/maze.mp3",
     "volume": 0.76,
     "description": "进入假里1号车厢、空间开始扭曲时播放。"
   },
   {
     "id": "tinnitus_fake01",
     "name": "假里1号车厢耳鸣",
-    "file": "assets/audio/tinnitus3.mp3",
+    "file": "assets/Audio/SoundEffect/tinnitus-3.mp3",
     "volume": 0.8,
     "description": "假里1号车厢发现窗外乘务员前播放。"
   }

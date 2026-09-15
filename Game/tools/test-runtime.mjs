@@ -268,7 +268,7 @@ const inspectEngine = new Game.EventEngine({
 await inspectEngine.actions.get("inspect")({ type: "inspect", item: "phone" });
 assert.equal(inspectedItem.title, "手机", "物品调查应读取注册表中的名称");
 assert.equal(inspectedItem.text, "一部手机。", "物品调查应读取注册表中的说明");
-assert.equal(inspectedItem.image, "assets/phone.png", "物品调查应读取注册表中的图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/phone.png", "物品调查应读取注册表中的图片");
 
 // ==== 检定（dice.js 可编程检定）====
 assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");

@@ -341,7 +341,7 @@ assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed
 const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
-assert.ok((await stat(new URL("../assets/carriage-06-eaten.png", import.meta.url))).size > 0);
+assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.png", import.meta.url))).size > 0);
 // 瓶子只能从里世界获取：2号车厢不再就地拾取，投掷选项一律要求已持有瓶子。
 const e028 = events.find(e => e.id === "E_028");
 assert.equal(e028.actions.some(a => a.type === "addItem"), false, "E-028 不得再就地发放瓶子");
@@ -467,7 +467,7 @@ assert.equal(e513.next, "E_FAKE03_INTRO");
 assert.equal(events.some(e => e.id === "E_513_REVISIT"), false);
 const fake01 = scenes.find(scene => scene.id === "carriage_fake_01");
 assert.equal(
-  fake01.backgroundVariants.some(variant => variant.image === "assets/carriage-fake-01-crew.png"
+  fake01.backgroundVariants.some(variant => variant.image === "assets/Image/Scene/Background/carriage-fake-01-crew.png"
     && variant.visibleWhen?.flag === "ev_fake01_crew_seen"),
   true,
   "耳鸣后应切换到带乘务员的假1号背景"

@@ -404,7 +404,7 @@
         const minus = document.createElement("button");
         minus.type = "button";
         const minusImage = document.createElement("img");
-        minusImage.src = "../Assets/Image/UI/减.png";
+        minusImage.src = "assets/Image/Ui/attribute-minus.png";
         minusImage.alt = "";
         minusImage.setAttribute("aria-hidden", "true");
         minus.append(minusImage);
@@ -414,7 +414,7 @@
         const plus = document.createElement("button");
         plus.type = "button";
         const plusImage = document.createElement("img");
-        plusImage.src = "../Assets/Image/UI/加.png";
+        plusImage.src = "assets/Image/Ui/attribute-plus.png";
         plusImage.alt = "";
         plusImage.setAttribute("aria-hidden", "true");
         plus.append(plusImage);
@@ -589,7 +589,7 @@
       const diceBox = document.createElement("div");
       diceBox.className = "dice-box dice-rolling";
       const image = document.createElement("img");
-      image.src = "assets/ui/dice_00.png";
+      image.src = "assets/Image/Ui/dice-00.png";
       image.alt = "骰子";
       diceBox.append(image);
       const status = document.createElement("p");
@@ -613,8 +613,8 @@
         if (this.backdrop !== backdrop) return;
         rollingVoice?.stop();
         const face = Number.isInteger(value) && value >= 1 && value <= 6
-          ? `assets/ui/dice_0${value}.png`
-          : "assets/ui/dice_00.png";
+          ? `assets/Image/Ui/dice-0${value}.png`
+          : "assets/Image/Ui/dice-00.png";
         this.image.src = face;
         this.diceBox.classList.remove("dice-rolling");
         this.diceBox.classList.add("dice-result-static");

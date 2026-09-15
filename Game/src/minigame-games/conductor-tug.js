@@ -27,8 +27,8 @@
       config.zoneHeight = config.keyGivenZoneHeight;
     }
     // 独立预览仍可指定源资产目录；正式游戏只依赖 Game/assets。
-    const assetPath = (relativePath, filename) => context.assetBase
-      ? `${context.assetBase}/${relativePath}` : `assets/ui/conductor-tug/${filename}`;
+    const assetPath = (relativePath) => context.assetBase
+      ? `${context.assetBase}/${relativePath}` : `assets/${relativePath}`;
     const root = document.createElement("section");
     root.className = "mg-tug";
     root.setAttribute("aria-label", "控制杆争夺小游戏");
@@ -55,7 +55,7 @@
       <div class="mg-tug-board">
         <div class="mg-tug-fighter mg-tug-player">
           <div class="mg-tug-avatar-frame">
-            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/pc.png", "player.png")}" alt="" draggable="false">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/player.png")}" alt="" draggable="false">
           </div>
           <h2>你</h2>
           <p>稳住目标<br>一点点拉回来</p>
@@ -63,10 +63,10 @@
 
         <div class="mg-tug-track-wrap">
           <div class="mg-tug-track" id="mgTugTrack" aria-label="垂直抓握区">
-            <img class="mg-tug-track-art" src="${assetPath("Image/UI/钓鱼条.png", "track.png")}" alt="" draggable="false">
+            <img class="mg-tug-track-art" src="${assetPath("Image/Ui/ConductorTug/track.png")}" alt="" draggable="false">
             <div class="mg-tug-track-line"></div>
             <div class="mg-tug-target" id="mgTugTarget" aria-label="控制杆">
-              <img class="mg-tug-target-art" src="${assetPath("Image/UI/钓鱼条_浮块.png", "target.png")}" alt="" draggable="false">
+              <img class="mg-tug-target-art" src="${assetPath("Image/Ui/ConductorTug/target.png")}" alt="" draggable="false">
             </div>
             <div class="mg-tug-zone" id="mgTugZone" aria-label="绿色抓握区"></div>
           </div>
@@ -78,7 +78,7 @@
 
         <div class="mg-tug-fighter mg-tug-conductor">
           <div class="mg-tug-avatar-frame">
-            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/乘务员.png", "crew.png")}" alt="" draggable="false">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/conductor.png")}" alt="" draggable="false">
           </div>
           <h2>列车员</h2>
           <p>不断施压<br>别让他抢走控制杆</p>

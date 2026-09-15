@@ -184,7 +184,7 @@ const bottleSongLine = actionsOf("E_503_PICK")
   .find((action) => action.type === "dialogue" && action.text.includes("像是歌声"));
 assert.deepEqual(bottleSongLine.audio, { sound: "ghost_calling" });
 assert.match(mainSource, /id: "fake",[\s\S]*sceneId === "carriage_fake_04"[\s\S]*sceneId === "flower_sea"[\s\S]*playInInnerWorld: true/);
-assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/audio\/op\.mp3/);
+assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/Audio\/Bgm\/op-v2\.mp3/);
 assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
 assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);
 
