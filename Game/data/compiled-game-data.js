@@ -859,6 +859,15 @@ window.GAME_DATA = {
       "id": "carriage_fake_01",
       "name": "里世界·假1号车厢",
       "background": "assets/carriage-fake-01.png",
+      "backgroundVariants": [
+        {
+          "image": "assets/carriage-fake-01-crew.png",
+          "visibleWhen": {
+            "flag": "ev_fake01_crew_seen",
+            "equals": true
+          }
+        }
+      ],
       "objects": [
         {
           "id": "door_fake01_left",
@@ -6243,34 +6252,10 @@ window.GAME_DATA = {
         },
         {
           "type": "changeScene",
-          "scene": "carriage_fake_04"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev513_intro_seen",
-            "equals": true
-          },
-          "next": "E_513_REVISIT"
-        },
-        {
-          "type": "dialogue",
-          "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，眼前的一切反而显得不真实。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev513_intro_seen",
-          "value": true
+          "scene": "carriage_fake_03"
         }
-      ]
-    },
-    {
-      "id": "E_513_REVISIT",
-      "actions": []
+      ],
+      "next": "E_FAKE03_INTRO"
     },
     {
       "id": "E_515",
@@ -6640,7 +6625,7 @@ window.GAME_DATA = {
             ],
             "doneFlag": "ev_fake02_handprints_done",
             "sound": "knocking_wall",
-            "interval": 720,
+            "interval": 1200,
             "lockedEvent": "E_FAKE02_LEFT"
           }
         }
@@ -6657,6 +6642,11 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "door_open"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_fake01_crew_seen",
+          "value": false
         },
         {
           "type": "changeScene",
@@ -6696,6 +6686,32 @@ window.GAME_DATA = {
           "type": "changeScene",
           "scene": "carriage_fake_03"
         }
+      ],
+      "next": "E_FAKE03_INTRO"
+    },
+    {
+      "id": "E_FAKE03_INTRO",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你匆忙逃回原来的车厢，"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢的颜色发生了不可名状的变化。"
+        },
+        {
+          "type": "dialogue",
+          "text": "乘务员呢？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你定睛一看，乘务员的头颅已然掉在地上，鲜血流成了湖泊。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你不敢再仔细观察。"
+        }
       ]
     },
     {
@@ -6721,7 +6737,7 @@ window.GAME_DATA = {
             ],
             "doneFlag": "ev_fake02_handprints_done",
             "sound": "knocking_wall",
-            "interval": 720,
+            "interval": 1200,
             "lockedEvent": "E_FAKE02_LEFT"
           }
         }
@@ -6748,11 +6764,20 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你感到一阵强烈的晕眩，下意识地四处张望。"
+          "text": "你感到一阵强烈的晕眩，下意识的四处张望"
         },
         {
           "type": "sound",
           "sound": "tinnitus_fake01"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_fake01_crew_seen",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
         },
         {
           "type": "dialogue",

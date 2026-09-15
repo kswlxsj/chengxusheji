@@ -843,6 +843,12 @@
     "id": "carriage_fake_01",
     "name": "里世界·假1号车厢",
     "background": "assets/carriage-fake-01.png",
+    "backgroundVariants": [
+      {
+        "image": "assets/carriage-fake-01-crew.png",
+        "visibleWhen": { "flag": "ev_fake01_crew_seen", "equals": true }
+      }
+    ],
     "objects": [
       {
         "id": "door_fake01_left",
