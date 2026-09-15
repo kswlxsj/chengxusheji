@@ -780,6 +780,83 @@ body.home-op-active .home-page .auth-user-status {
   will-change: transform;
 }
 
+/* 不带对话框的里世界拒绝钥匙演出。 */
+.inner-cinematic {
+  position: absolute;
+  inset: 0;
+  z-index: 58;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #000;
+  pointer-events: auto;
+}
+
+.inner-cinematic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inner-cinematic p {
+  position: relative;
+  z-index: 1;
+  max-width: 84%;
+  margin: 0;
+  color: #f3f0e9;
+  font-size: clamp(24px, 3.1vw, 50px);
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+  letter-spacing: .08em;
+  text-shadow: 0 2px 4px #000, 0 0 18px #000, 0 0 36px rgba(120, 0, 0, .9);
+  animation: inner-cinematic-text-in 180ms ease-out both;
+}
+
+.inner-cinematic.is-flashback {
+  animation: inner-cinematic-flash 150ms steps(2, end) 3;
+}
+
+@keyframes inner-cinematic-text-in {
+  from { opacity: 0; transform: scale(1.06); filter: blur(3px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+@keyframes inner-cinematic-flash {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(3.2) contrast(1.8); }
+}
+
+/* 四张同画布血手印通过位移落在不同车窗/门板上，出现时各自做一次拍击。 */
+#scene-layer [data-object-id^="fake02_blood_"] {
+  animation: fake02-blood-hit 220ms cubic-bezier(.1, .82, .28, 1.35) both;
+  transform-origin: center;
+}
+#scene-layer [data-object-id="fake02_blood_1"] { transform: translate(-55%, -13%); }
+#scene-layer [data-object-id="fake02_blood_2"] { transform: translate(-34%, 2%); }
+#scene-layer [data-object-id="fake02_blood_3"] { transform: translate(-14%, 17%); }
+#scene-layer [data-object-id="fake02_blood_4"] { transform: translate(0, -8%); }
+
+@keyframes fake02-blood-hit {
+  from { opacity: 0; filter: brightness(3) blur(5px); }
+  65% { opacity: 1; filter: brightness(1.45) blur(0); }
+  to { opacity: 1; filter: brightness(1) blur(0); }
+}
+
+.inner-fade-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 59;
+  background: #000;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 1.6s ease-in;
+}
+.inner-fade-transition.is-black { opacity: 1; }
+.inner-fade-transition.is-revealing { opacity: 0; transition-duration: .9s; transition-timing-function: ease-out; }
+
 .game-window {
   pointer-events: auto;
   border: 2px solid var(--line);

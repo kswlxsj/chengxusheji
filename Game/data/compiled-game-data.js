@@ -856,6 +856,202 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "carriage_fake_01",
+      "name": "里世界·假1号车厢",
+      "background": "assets/carriage-fake-01.png",
+      "backgroundVariants": [
+        {
+          "image": "assets/carriage-fake-01-crew.png",
+          "visibleWhen": {
+            "flag": "ev_fake01_crew_seen",
+            "equals": true
+          }
+        }
+      ],
+      "objects": [
+        {
+          "id": "door_fake01_left",
+          "name": "扭曲的车门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_FAKE01_EXIT"
+        },
+        {
+          "id": "door_fake01_right",
+          "name": "扭曲的车门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_FAKE01_EXIT"
+        }
+      ]
+    },
+    {
+      "id": "carriage_fake_02",
+      "name": "里世界·假2号车厢",
+      "background": "assets/carriage-fake-02.png",
+      "objects": [
+        {
+          "id": "fake02_blood_1",
+          "name": "血手印",
+          "image": "assets/inner-blood-handprint.png",
+          "fullCanvas": true,
+          "visualOnly": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+          "visibleWhen": {
+            "flag": "ev_fake02_blood_1",
+            "equals": true
+          }
+        },
+        {
+          "id": "fake02_blood_2",
+          "name": "血手印",
+          "image": "assets/inner-blood-handprint.png",
+          "fullCanvas": true,
+          "visualOnly": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+          "visibleWhen": {
+            "flag": "ev_fake02_blood_2",
+            "equals": true
+          }
+        },
+        {
+          "id": "fake02_blood_3",
+          "name": "血手印",
+          "image": "assets/inner-blood-handprint.png",
+          "fullCanvas": true,
+          "visualOnly": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+          "visibleWhen": {
+            "flag": "ev_fake02_blood_3",
+            "equals": true
+          }
+        },
+        {
+          "id": "fake02_blood_4",
+          "name": "血手印",
+          "image": "assets/inner-blood-handprint.png",
+          "fullCanvas": true,
+          "visualOnly": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 12,
+          "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+          "visibleWhen": {
+            "flag": "ev_fake02_blood_4",
+            "equals": true
+          }
+        },
+        {
+          "id": "door_fake02_left",
+          "name": "通往假1号车厢的门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_FAKE02_LEFT"
+        },
+        {
+          "id": "door_fake02_right",
+          "name": "通往假3号车厢的门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_FAKE02_RIGHT"
+        }
+      ]
+    },
+    {
+      "id": "carriage_fake_03",
+      "name": "里世界·假3号车厢",
+      "background": "assets/carriage-fake-03.jpg",
+      "objects": [
+        {
+          "id": "door_fake03_left",
+          "name": "通往假2号车厢的门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 1,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_FAKE03_LEFT"
+        },
+        {
+          "id": "door_fake03_right",
+          "name": "通往花海的门",
+          "image": "assets/door.svg",
+          "invisible": true,
+          "noHighlight": true,
+          "position": {
+            "x": 90,
+            "y": 24,
+            "width": 9,
+            "height": 49
+          },
+          "zIndex": 13,
+          "clickEvent": "E_510"
+        }
+      ]
+    },
+    {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
       "background": "assets/carriage-fake-04-fog.png",
@@ -6056,34 +6252,10 @@ window.GAME_DATA = {
         },
         {
           "type": "changeScene",
-          "scene": "carriage_fake_04"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev513_intro_seen",
-            "equals": true
-          },
-          "next": "E_513_REVISIT"
-        },
-        {
-          "type": "dialogue",
-          "text": "穿过一扇门，是另一节车厢。门上的编号写着：4。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你总感觉这里怪怪的，或许是刚刚的精神冲击太大，眼前的一切反而显得不真实。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev513_intro_seen",
-          "value": true
+          "scene": "carriage_fake_03"
         }
-      ]
-    },
-    {
-      "id": "E_513_REVISIT",
-      "actions": []
+      ],
+      "next": "E_FAKE03_INTRO"
     },
     {
       "id": "E_515",
@@ -6362,14 +6534,278 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你没有把它拿出来。"
+          "speaker": "乘务员",
+          "text": "…"
         },
         {
           "type": "dialogue",
-          "text": "她看着你，没有伸手，也没有追问。"
+          "speaker": "乘务员",
+          "text": "这就是你的选择吗，亲爱的"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "愚蠢。"
+        },
+        {
+          "type": "custom",
+          "name": "centeredCinematic",
+          "params": {
+            "image": "assets/inner-refusal-crew-01.png",
+            "text": "你以为，不给我，你就能从这里出去吗？",
+            "duration": 2400
+          }
+        },
+        {
+          "type": "custom",
+          "name": "centeredCinematic",
+          "params": {
+            "image": "assets/inner-refusal-crew-02.png",
+            "text": "把钥匙给我",
+            "duration": 1600,
+            "flash": true
+          }
+        },
+        {
+          "type": "dialogue",
+          "speaker": "Pc",
+          "text": "（惊恐）"
+        },
+        {
+          "type": "custom",
+          "name": "timedStoryChoice",
+          "params": {
+            "prompt": "往哪边跑？",
+            "duration": 5000,
+            "flag": "ev519_escape_left",
+            "defaultValue": true,
+            "options": [
+              {
+                "label": "往左跑",
+                "value": true
+              },
+              {
+                "label": "往右跑",
+                "value": false
+              }
+            ]
+          }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev519_escape_left",
+            "equals": true
+          },
+          "next": "E_REFUSAL_LEFT"
         }
       ],
-      "next": "E_520"
+      "next": "E_REFUSAL_RIGHT"
+    },
+    {
+      "id": "E_REFUSAL_LEFT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_fake_02"
+        },
+        {
+          "type": "custom",
+          "name": "fakeCarriageHandprints",
+          "params": {
+            "flags": [
+              "ev_fake02_blood_1",
+              "ev_fake02_blood_2",
+              "ev_fake02_blood_3",
+              "ev_fake02_blood_4"
+            ],
+            "doneFlag": "ev_fake02_handprints_done",
+            "sound": "knocking_wall",
+            "interval": 1200,
+            "lockedEvent": "E_FAKE02_LEFT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_REFUSAL_RIGHT",
+      "actions": [],
+      "next": "E_510"
+    },
+    {
+      "id": "E_FAKE02_LEFT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_fake01_crew_seen",
+          "value": false
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_fake_01"
+        },
+        {
+          "type": "dialogue",
+          "text": "打开车门，周围天旋地转。万物好像都扭曲了，车厢，车门，把手，一切都变得畸形。"
+        },
+        {
+          "type": "dialogue",
+          "text": "体内的五脏六腑好像也被扭曲了，嚎叫着要冲破肉体可悲的屏障。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你感受到一阵控制不住的干呕。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你缓慢而绝望地走着，每一步都变得如此艰难。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "Pc",
+          "text": "（惊恐）放过我吧…"
+        }
+      ]
+    },
+    {
+      "id": "E_FAKE02_RIGHT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_fake_03"
+        }
+      ],
+      "next": "E_FAKE03_INTRO"
+    },
+    {
+      "id": "E_FAKE03_INTRO",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你匆忙逃回原来的车厢，"
+        },
+        {
+          "type": "dialogue",
+          "text": "车厢的颜色发生了不可名状的变化。"
+        },
+        {
+          "type": "dialogue",
+          "text": "乘务员呢？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你定睛一看，乘务员的头颅已然掉在地上，鲜血流成了湖泊。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你不敢再仔细观察。"
+        }
+      ]
+    },
+    {
+      "id": "E_FAKE03_LEFT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_fake_02"
+        },
+        {
+          "type": "custom",
+          "name": "fakeCarriageHandprints",
+          "params": {
+            "flags": [
+              "ev_fake02_blood_1",
+              "ev_fake02_blood_2",
+              "ev_fake02_blood_3",
+              "ev_fake02_blood_4"
+            ],
+            "doneFlag": "ev_fake02_handprints_done",
+            "sound": "knocking_wall",
+            "interval": 1200,
+            "lockedEvent": "E_FAKE02_LEFT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_FAKE02_HANDPRINT_NOOP",
+      "actions": []
+    },
+    {
+      "id": "E_FAKE01_EXIT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你心怀一丝侥幸地爬到了门口，抬手推门。"
+        },
+        {
+          "type": "sound",
+          "sound": "door_locked"
+        },
+        {
+          "type": "dialogue",
+          "text": "——打不开。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你感到一阵强烈的晕眩，下意识的四处张望"
+        },
+        {
+          "type": "sound",
+          "sound": "tinnitus_fake01"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_fake01_crew_seen",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
+          "type": "dialogue",
+          "text": "窗外那是什么？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你终于看清了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "是乘务员扭曲的脸。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你失去了呼喊的力气。"
+        },
+        {
+          "type": "custom",
+          "name": "fadeScene",
+          "params": {
+            "scene": "carriage_03",
+            "fadeIn": 1600,
+            "hold": 550,
+            "fadeOut": 900
+          }
+        }
+      ]
     },
     {
       "id": "E_520",
@@ -7036,6 +7472,27 @@ window.GAME_DATA = {
       "file": "assets/audio/horror_piano_chord4.mp3",
       "volume": 0.7,
       "description": "E-018手机日期后循环音频开头5秒，直到‘你不知道该相信哪一个。’推进后停止。"
+    },
+    {
+      "id": "knocking_wall",
+      "name": "血手印拍击",
+      "file": "assets/audio/knocking-a-wall.mp3",
+      "volume": 0.9,
+      "description": "假里2号车厢每出现一个血手印时播放一次。"
+    },
+    {
+      "id": "maze",
+      "name": "假里1号车厢扭曲氛围",
+      "file": "assets/audio/maze.mp3",
+      "volume": 0.76,
+      "description": "进入假里1号车厢、空间开始扭曲时播放。"
+    },
+    {
+      "id": "tinnitus_fake01",
+      "name": "假里1号车厢耳鸣",
+      "file": "assets/audio/tinnitus3.mp3",
+      "volume": 0.8,
+      "description": "假里1号车厢发现窗外乘务员前播放。"
     }
   ]
 };

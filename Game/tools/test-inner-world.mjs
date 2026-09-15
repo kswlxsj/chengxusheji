@@ -16,10 +16,11 @@ const Game = sandbox.window.TrainGame;
 function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const state = new Game.GameState({ ...meta.initialState, flags, inventory, sceneId }, attributes, skills);
   const trace = [];
+  const sounds = [];
   const ui = {
     dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory] }); } },
     choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
-    audio: { play() { return { finished: Promise.resolve(), stop() {} }; } },
+    audio: { play(sound) { sounds.push(sound); return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
   };
   const scene = {
@@ -31,7 +32,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   // 本文件测试剧情接线；真实覆盖层、5秒计时与暂停另在浏览器验收。
   engine.customActions.entries.set("innerWhisperScare", async () => { trace.push({ scare: true }); });
   Game.Dice = { get: () => async () => flags.scoutingResult || 0 };
-  return { state, engine, scene, ui, trace, async play(id) {
+  return { state, engine, scene, ui, trace, sounds, async play(id) {
     const result = await engine.play(id);
     assert.equal(trace.some(t => t.error), false, JSON.stringify(trace));
     return result;
@@ -141,8 +142,7 @@ await game.play("E_502_RETURN");
 assert.equal(game.state.sceneId, "carriage_02", "已看过磨损门仍从该门离开里世界");
 assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), false, "磨损门描写只播一次");
 
-// 伪4进场描写两条路各只播一次：花草右门（E_506）与花海调头（E_513）分别记旗标，
-// 重复进入落到静默落点，既不重播描写，也不重播死亡线的「停下来」惊吓。
+// 伪4进场描写只播一次：重复进入落到静默落点，不重播描写或死亡线惊吓。
 game = fixture({ crew_met: true, crew_04_dead: true }, [], "carriage_inner_02");
 await game.play("E_505");
 assert.equal(game.state.flags.ev506_intro_seen, true);
@@ -154,13 +154,10 @@ assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), fa
 assert.equal(game.trace.some(t => t.scare), false, "二次进入不重播「停下来」惊吓");
 game = fixture({}, [], "flower_sea");
 await game.play("E_513");
-assert.equal(game.state.flags.ev513_intro_seen, true);
-assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), true);
-game.trace.length = 0;
-await game.play("E_513");
-assert.equal(game.state.sceneId, "carriage_fake_04");
-assert.equal(game.trace.some(t => t.text?.includes("门上的编号写着")), false, "花海调头描写只播一次");
+assert.equal(game.state.sceneId, "carriage_fake_03");
 assert.equal(game.trace.some(t => t.text === "你退出花海，向来路折返。"), true, "调头动作句仍保留");
+assert.equal(game.trace.some(t => t.event === "E_FAKE03_INTRO" && t.text?.includes("头颅已然掉在地上")), true);
+assert.equal(game.trace.filter(t => t.event === "E_FAKE03_INTRO").every(t => t.scene === "carriage_fake_03"), true);
 
 // 「停下来」惊吓的触发条件是乘务员死亡线（E_507），不是「是否交互过」：
 // crew_met 在通往4号车厢的必经路径上必然置位，读它会让 E_507 永远不可达。
@@ -175,17 +172,12 @@ for (const dead of [false, true]) {
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
 // 返程链路＝伪4号左门（花海调头后，或窗边谈话结束后）→ 花草车厢 → 空车厢 → 磨损门 → 真实2号车厢
 // → E_025 喘息段（播完停下，等玩家照明后自己点 Clicker；E_524 的喘息描写已并入 E_025）。
-for (const fromSea of [false, true]) for (const bottle of [false, true]) for (const given of [false, true]) {
+for (const bottle of [false, true]) for (const given of [true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
-    [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], fromSea ? "flower_sea" : "carriage_fake_04");
-  await game.play(fromSea ? "E_513" : "E_516");
-  if (fromSea) {
-    assert.equal(game.state.sceneId, "carriage_fake_04");
-    assert.equal(game.trace.find(t => t.text?.includes("编号写着")).scene, "carriage_fake_04");
-  } else {
-    assert.equal(game.state.sceneId, "carriage_fake_04", "窗边谈话后不再弹选择框，仍停在伪4号等玩家点门");
-    assert.equal(game.trace.some(t => t.text?.includes("你穿过来路的车门")), false);
-  }
+    [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], "carriage_fake_04");
+  await game.play("E_516");
+  assert.equal(game.state.sceneId, "carriage_fake_04", "交出钥匙后仍停在伪4号等玩家点门");
+  assert.equal(game.trace.some(t => t.text?.includes("你穿过来路的车门")), false);
   await game.play("E_522");
   assert.equal(game.state.sceneId, "carriage_inner_02");
   assert.equal(game.state.inventory.includes("bottle"), bottle);
@@ -212,6 +204,53 @@ for (const fromSea of [false, true]) for (const bottle of [false, true]) for (co
   const snapshot = game.state.snapshot(); game.state.restore(snapshot);
   assert.equal(game.state.flags.ev519_key_ever_given, given);
 }
+
+// 拒绝交钥匙：中央 CG 后进入5秒选择；测试桩立即选首项（往左），落到假2号并完成四次拍击。
+const handprintActions = events
+  .flatMap(event => event.actions || [])
+  .filter(action => action.type === "custom" && action.name === "fakeCarriageHandprints");
+assert.equal(handprintActions.length, 2);
+assert.equal(handprintActions.every(action => action.params.interval === 1200), true, "血手印拍击间隔为1.2秒");
+game = fixture({}, ["crew_keys"], "carriage_fake_04");
+await game.play("E_519_KEEP");
+assert.equal(game.state.sceneId, "carriage_fake_02");
+assert.equal(game.state.flags.ev519_escape_left, true);
+assert.equal(game.state.flags.ev_fake02_handprints_done, true);
+assert.equal([1, 2, 3, 4].every(index => game.state.flags[`ev_fake02_blood_${index}`] === true), true);
+assert.equal(game.sounds.filter(sound => sound === "knocking_wall").length, 4, "每个血手印各响一次");
+assert.equal(game.trace.some(entry => entry.text === "这就是你的选择吗，亲爱的"), true);
+
+// 假车厢拓扑：假2左→假1→黑场切真3；假2右→假3，假3左→假2、右→既有花海事件。
+await game.play("E_FAKE02_LEFT");
+assert.equal(game.state.sceneId, "carriage_fake_01");
+assert.equal(game.trace.some(entry => entry.text?.includes("五脏六腑")), true);
+await game.play("E_FAKE01_EXIT");
+assert.equal(game.state.sceneId, "carriage_03");
+assert.equal(game.state.flags.ev_fake01_crew_seen, true);
+assert.equal(game.sounds.includes("tinnitus_fake01"), true);
+game = fixture({ ev_fake02_handprints_done: true }, [], "carriage_fake_02");
+await game.play("E_FAKE02_RIGHT");
+assert.equal(game.state.sceneId, "carriage_fake_03");
+assert.deepEqual(
+  game.trace.filter(entry => entry.event === "E_FAKE03_INTRO").map(entry => entry.text),
+  [
+    "你匆忙逃回原来的车厢，",
+    "车厢的颜色发生了不可名状的变化。",
+    "乘务员呢？",
+    "你定睛一看，乘务员的头颅已然掉在地上，鲜血流成了湖泊。",
+    "你不敢再仔细观察。"
+  ]
+);
+assert.equal(
+  game.trace.filter(entry => entry.event === "E_FAKE03_INTRO").every(entry => entry.scene === "carriage_fake_03"),
+  true,
+  "假3号入场对白必须在切换背景后播放"
+);
+await game.play("E_FAKE03_LEFT");
+assert.equal(game.state.sceneId, "carriage_fake_02");
+game = fixture({}, [], "carriage_fake_03");
+await game.play("E_510");
+assert.equal(game.trace.some(entry => entry.scene === "flower_sea"), true);
 
 // 窗边插话三档：死亡线（E_516_DEAD）／在世线（E_516_MET）／未交互兜底（正常不可达）。
 for (const [flags, expected] of [
@@ -358,19 +397,26 @@ assert.equal(
   "E_516 同样按死亡线分支"
 );
 assert.equal(events.find(e => e.id === "E_516_DEAD").next, "E_516_VOICE");
-// 伪4进场描写各自只播一次：门禁在描写之前，静默落点不再接任何事件。
+// 伪4进场描写只播一次：门禁在描写之前，静默落点不再接任何事件。
 assert.equal(e506.actions[0].type, "conditionalJump", "E_506 应先判「伪4进场描写是否已播」");
 assert.equal(e506.actions[0].when?.flag, "ev506_intro_seen");
 assert.equal(e506.actions[0].next, "E_506_REVISIT");
 assert.equal(events.find(e => e.id === "E_506_REVISIT").next, undefined, "静默落点不应再接事件");
 const e513 = events.find(e => e.id === "E_513");
 assert.equal(
-  e513.actions.some((action) => action.type === "conditionalJump"
-    && action.when?.flag === "ev513_intro_seen" && action.next === "E_513_REVISIT"),
+  e513.actions.some((action) => action.type === "changeScene" && action.scene === "carriage_fake_03"),
   true,
-  "E_513 花海调头描写也应只播一次"
+  "E_513 花海调头应切到假3号"
 );
-assert.equal(events.find(e => e.id === "E_513_REVISIT").next, undefined);
+assert.equal(e513.next, "E_FAKE03_INTRO");
+assert.equal(events.some(e => e.id === "E_513_REVISIT"), false);
+const fake01 = scenes.find(scene => scene.id === "carriage_fake_01");
+assert.equal(
+  fake01.backgroundVariants.some(variant => variant.image === "assets/carriage-fake-01-crew.png"
+    && variant.visibleWhen?.flag === "ev_fake01_crew_seen"),
+  true,
+  "耳鸣后应切换到带乘务员的假1号背景"
+);
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_constitution_01"), true);

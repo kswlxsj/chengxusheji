@@ -166,7 +166,7 @@ assert.match(door04[door04.length - 1].text, /返回3号车厢/);
 assert.equal(eventById.get("E_022_ITEM").next, undefined);
 assert.equal(eventById.get("E_023_LOOP").next, "E_501");
 
-for (const [id, sceneId] of [["E_505", "carriage_fake_04"], ["E_510", "flower_sea"], ["E_513", "carriage_fake_04"]]) {
+for (const [id, sceneId] of [["E_505", "carriage_fake_04"], ["E_510", "flower_sea"], ["E_513", "carriage_fake_03"]]) {
   const actions = actionsOf(id);
   assert.equal(
     actions.some((action) => action.type === "changeScene" && action.scene === sceneId),
