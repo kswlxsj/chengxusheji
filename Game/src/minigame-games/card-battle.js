@@ -517,8 +517,7 @@
         { type: "setFlag", key: "card_battle_won", value: true },
         { type: "setFlag", key: "carriage_02_passed", value: true },
         { type: "setFlag", key: "clicker_cleared", value: true },
-        { type: "dialogue", text: "你在战斗轮中击倒了无眼者，成功通过 2 号车厢。" },
-        { type: "jump", next: "E_031" }
+        { type: "dialogue", text: "你在战斗轮中击倒了无眼者，抵达通往先头车厢的安全门前。" }
       ] : [
         { type: "setFlag", key: "card_battle_won", value: false },
         { type: "dialogue", text: "无眼者抓住了你的破绽，战斗轮失败。" },

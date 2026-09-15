@@ -228,19 +228,19 @@ assert.equal(
   "5号车厢通往4号车厢的门应先执行普通过门事件"
 );
 assert.deepEqual(
-  registeredEventsById.get("E_013_ENTRY").actions[0],
-  { type: "changeScene", scene: "carriage_04" },
-  "E_013_ENTRY 应负责进入4号车厢"
+  registeredEventsById.get("E_GO_05_04").next,
+  "E_013_ENTRY",
+  "玩家点门进入4号车厢后应承接首次入场描写"
 );
 for (const eventId of ["E_011_S", "E_012_AFTER"]) {
   assert.equal(
     registeredEventsById.get(eventId).next,
-    "E_013_ENTRY",
-    `${eventId} 应通过 E_013_ENTRY 进入4号车厢`
+    undefined,
+    `${eventId} 结束后应停在5号车厢等待玩家点门`
   );
 }
 assert.deepEqual(
-  registeredEventsById.get("E_022_ITEM").actions[0],
+  registeredEventsById.get("E_022_ITEM").actions[1],
   {
     type: "conditionalJump",
     when: { hasItem: "flashlight" },

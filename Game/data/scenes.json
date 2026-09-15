@@ -773,13 +773,7 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_504",
-        "visibleWhen": {
-          "not": {
-            "flag": "ev504_scouting_ok",
-            "equals": true
-          }
-        }
+        "clickEvent": "E_504"
       },
       {
         "id": "bottle_inner",

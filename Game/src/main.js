@@ -315,7 +315,7 @@
       || paused
       || engine.busy
       || state.sceneId !== "carriage_06"
-      || state.flags.visited_carriage_07 !== true
+      || state.flags.ev008_scouting_done !== true
       || state.flags.ev009_seen === true
     ) return;
     void engine.play("E_009");
