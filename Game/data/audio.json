@@ -184,5 +184,26 @@
     "file": "assets/audio/horror_piano_chord4.mp3",
     "volume": 0.7,
     "description": "E-018手机日期后循环音频开头5秒，直到‘你不知道该相信哪一个。’推进后停止。"
+  },
+  {
+    "id": "knocking_wall",
+    "name": "血手印拍击",
+    "file": "assets/audio/knocking-a-wall.mp3",
+    "volume": 0.9,
+    "description": "假里2号车厢每出现一个血手印时播放一次。"
+  },
+  {
+    "id": "maze",
+    "name": "假里1号车厢扭曲氛围",
+    "file": "assets/audio/maze.mp3",
+    "volume": 0.76,
+    "description": "进入假里1号车厢、空间开始扭曲时播放。"
+  },
+  {
+    "id": "tinnitus_fake01",
+    "name": "假里1号车厢耳鸣",
+    "file": "assets/audio/tinnitus3.mp3",
+    "volume": 0.8,
+    "description": "假里1号车厢发现窗外乘务员前播放。"
   }
 ]

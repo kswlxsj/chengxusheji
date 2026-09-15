@@ -82,6 +82,9 @@
     "carriage_inner_01",
     "carriage_inner_02",
     "carriage_fake_04",
+    "carriage_fake_01",
+    "carriage_fake_02",
+    "carriage_fake_03",
     "flower_sea",
     "flower_sea_inside"
   ]);
@@ -93,11 +96,20 @@
     "door_locked",
     "fake",
     "ghost_calling",
+    "knocking_wall",
+    "maze",
+    "tinnitus_fake01",
     "dice_rolling",
     "dice_success",
     "dice_fail"
   ];
   const SCENE_LOOP_TRACKS = [
+    {
+      id: "maze",
+      matches: (sceneId) => sceneId === "carriage_fake_01",
+      options: { loop: true },
+      playInInnerWorld: true
+    },
     {
       id: "fake",
       matches: (sceneId) => sceneId === "carriage_fake_04"

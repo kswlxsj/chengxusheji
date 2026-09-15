@@ -16,10 +16,11 @@ const Game = sandbox.window.TrainGame;
 function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const state = new Game.GameState({ ...meta.initialState, flags, inventory, sceneId }, attributes, skills);
   const trace = [];
+  const sounds = [];
   const ui = {
     dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory] }); } },
     choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
-    audio: { play() { return { finished: Promise.resolve(), stop() {} }; } },
+    audio: { play(sound) { sounds.push(sound); return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
   };
   const scene = {
@@ -31,7 +32,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   // 本文件测试剧情接线；真实覆盖层、5秒计时与暂停另在浏览器验收。
   engine.customActions.entries.set("innerWhisperScare", async () => { trace.push({ scare: true }); });
   Game.Dice = { get: () => async () => flags.scoutingResult || 0 };
-  return { state, engine, scene, ui, trace, async play(id) {
+  return { state, engine, scene, ui, trace, sounds, async play(id) {
     const result = await engine.play(id);
     assert.equal(trace.some(t => t.error), false, JSON.stringify(trace));
     return result;
@@ -175,7 +176,7 @@ for (const dead of [false, true]) {
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
 // 返程链路＝伪4号左门（花海调头后，或窗边谈话结束后）→ 花草车厢 → 空车厢 → 磨损门 → 真实2号车厢
 // → E_025 喘息段（播完停下，等玩家照明后自己点 Clicker；E_524 的喘息描写已并入 E_025）。
-for (const fromSea of [false, true]) for (const bottle of [false, true]) for (const given of [false, true]) {
+for (const fromSea of [false, true]) for (const bottle of [false, true]) for (const given of [true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
     [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], fromSea ? "flower_sea" : "carriage_fake_04");
   await game.play(fromSea ? "E_513" : "E_516");
@@ -212,6 +213,31 @@ for (const fromSea of [false, true]) for (const bottle of [false, true]) for (co
   const snapshot = game.state.snapshot(); game.state.restore(snapshot);
   assert.equal(game.state.flags.ev519_key_ever_given, given);
 }
+
+// 拒绝交钥匙：中央 CG 后进入5秒选择；测试桩立即选首项（往左），落到假2号并完成四次拍击。
+game = fixture({}, ["crew_keys"], "carriage_fake_04");
+await game.play("E_519_KEEP");
+assert.equal(game.state.sceneId, "carriage_fake_02");
+assert.equal(game.state.flags.ev519_escape_left, true);
+assert.equal(game.state.flags.ev_fake02_handprints_done, true);
+assert.equal([1, 2, 3, 4].every(index => game.state.flags[`ev_fake02_blood_${index}`] === true), true);
+assert.equal(game.sounds.filter(sound => sound === "knocking_wall").length, 4, "每个血手印各响一次");
+assert.equal(game.trace.some(entry => entry.text === "这就是你的选择吗，亲爱的"), true);
+
+// 假车厢拓扑：假2左→假1→黑场切真3；假2右→假3，假3左→假2、右→既有花海事件。
+await game.play("E_FAKE02_LEFT");
+assert.equal(game.state.sceneId, "carriage_fake_01");
+assert.equal(game.trace.some(entry => entry.text?.includes("五脏六腑")), true);
+await game.play("E_FAKE01_EXIT");
+assert.equal(game.state.sceneId, "carriage_03");
+game = fixture({ ev_fake02_handprints_done: true }, [], "carriage_fake_02");
+await game.play("E_FAKE02_RIGHT");
+assert.equal(game.state.sceneId, "carriage_fake_03");
+await game.play("E_FAKE03_LEFT");
+assert.equal(game.state.sceneId, "carriage_fake_02");
+game = fixture({}, [], "carriage_fake_03");
+await game.play("E_510");
+assert.equal(game.trace.some(entry => entry.scene === "flower_sea"), true);
 
 // 窗边插话三档：死亡线（E_516_DEAD）／在世线（E_516_MET）／未交互兜底（正常不可达）。
 for (const [flags, expected] of [
