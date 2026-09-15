@@ -7,7 +7,8 @@
     closeup: "assets/Image/Scene/Background/san-zero-closeup.png",
     closeupSmile: "assets/Image/Scene/Background/san-zero-closeup-smile.png",
     doctor: "assets/Image/Portrait/doctor.png",
-    pcScared: "assets/Image/Portrait/player-scared.png"
+    pcScared: "assets/Image/Portrait/player-scared.png",
+    pcCrazy: "assets/Image/Portrait/player-crazy.png"
   };
 
   const SCREAM_TEXT =
@@ -138,10 +139,6 @@
           portraitType: "doctor"
         },
         {
-          text: "（镜头缓缓转向PC）",
-          background: "closeup"
-        },
-        {
           text: "PC蜷缩在角落，浑身剧烈颤抖，瞳孔涣散。他死死盯着镜头后方某个不存在的方向，像在看着什么逼近的东西。",
           background: "closeup"
         },
@@ -171,10 +168,6 @@
         portraitType: "pc"
       });
       await this.showLine({
-        text: "（嘶喊戛然而止）",
-        background: "closeup"
-      });
-      await this.showLine({
         text: "他忽然停止了一切动作，缓缓抬起头，目光精准地穿过镜头——像终于找到了什么。",
         background: "closeup"
       });
@@ -185,7 +178,9 @@
       await this.showLine({
         speaker: "PC",
         text: "……找到了。",
-        background: "closeupSmile"
+        background: "closeupSmile",
+        portrait: "pcCrazy",
+        portraitType: "pc"
       });
 
       await this.showFreezeAndSnow();

@@ -8,7 +8,7 @@
     terminalPlatform: "assets/Image/Scene/Background/true-end-platform.png",
     welcome: "assets/Image/Scene/Background/welcome.PNG",
     conductorSmile: "assets/Image/Portrait/conductor.png",
-    pc: "assets/Image/Portrait/player.png"
+    pcHappy: "assets/Image/Portrait/player-happy.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
 
@@ -156,7 +156,7 @@
         text: "您好，我们已经到终点站了，您好像睡着了。坐过站的话，可以坐另外一班回去。",
         portrait: "conductorSmile"
       });
-      await this.showLine({ speaker: "PC", text: "啊？哦，不用了，我从这里下就好。", portrait: "pc" });
+      await this.showLine({ speaker: "PC", text: "啊？哦，不用了，我从这里下就好。", portrait: "pcHappy" });
       await this.showLine({ text: "你踉踉跄跄地走出了车厢，留下乘务员在背后担忧地望着你。", auto: 3900 });
       await this.showLine({ text: "新鲜空气涌入肺中的感觉前所未有的好。", auto: 3300 });
 
@@ -173,7 +173,7 @@
         this.assets.terminalPlatform,
         this.assets.welcome,
         this.assets.conductorSmile,
-        this.assets.pc
+        this.assets.pcHappy
       ];
       await Promise.all(imageSources.map((source) => {
         const image = new Image();

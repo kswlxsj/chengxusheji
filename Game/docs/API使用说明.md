@@ -205,7 +205,7 @@
 
 | `type` | 必填字段 | 可选字段 | 行为 |
 | --- | --- | --- | --- |
-| `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
+| `dialogue` | `text` | `speaker`, `portrait`, `speed` | 流式显示并等待推进；`portrait` 填相对 `Game/` 的立绘路径（如 `assets/Image/Portrait/player-scared.png`），省略时会按常用说话人自动匹配，旁白不显示立绘；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
 | `inspect` | `title`、`text`，或 `item` | `image` | 调查并等待玩家关闭。给出 `item`（已注册物品 ID）时，引擎自动取名称/说明/图片作默认内容，并使用压暗完整游戏画面的物品全屏展示；`title`/`text`/`image` 可覆盖默认值。未给出 `item` 时仍使用普通场景调查窗口，且必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes`, `checkId` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。每个检定最多实际执行两次；第一次结果为下标 `0`（成功）后锁定，第一次失败才允许第二次。 |

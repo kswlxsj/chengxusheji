@@ -89,6 +89,19 @@ async function assertAudioFilesExist(audio) {
   }
 }
 
+async function assertAssetFileExists(relativePath, label) {
+  let fileStatus = null;
+  try {
+    fileStatus = await stat(resolve(projectRoot, relativePath));
+  } catch (_error) {
+    fileStatus = null;
+  }
+  assert(
+    fileStatus && fileStatus.isFile() && fileStatus.size > 0,
+    `${label}引用的素材不存在或是空文件：${relativePath}`
+  );
+}
+
 function validateAttributeCondition(condition, attributeIds, label) {
   assertPlainObject(condition, `${label}必须是条件对象`);
   const branches = ["all", "any", "not", "attribute", "sum"].filter((key) => key in condition);
@@ -169,7 +182,7 @@ function validateCondition(condition, references, label) {
   assert("equals" in condition.objectState, `${label}的物件状态缺少 equals`);
 }
 
-function validate(meta, scenes, events, items, attributeData, skills, audio, diceIds, minigameIds) {
+async function validate(meta, scenes, events, items, attributeData, skills, audio, diceIds, minigameIds) {
   assert(meta.formatVersion === 3, "当前编译器只支持 formatVersion=3");
   assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
   assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
@@ -308,6 +321,9 @@ function validate(meta, scenes, events, items, attributeData, skills, audio, dic
     if (event.next) assert(eventIds.has(event.next), `事件 ${event.id} 的 next 不存在`);
     for (const action of event.actions) {
       assert(actionTypes.has(action.type), `事件 ${event.id} 使用未知动作：${action.type}`);
+      if (action.type === "dialogue" && action.portrait) {
+        await assertAssetFileExists(action.portrait, `事件 ${event.id} 的对白立绘`);
+      }
       if (action.type === "changeScene") assert(sceneIds.has(action.scene), `事件 ${event.id} 引用了不存在的场景`);
       if (["addItem", "removeItem"].includes(action.type)) assert(itemIds.has(action.item), `事件 ${event.id} 引用了不存在的物品`);
       if (action.type === "conditionalJump") {
@@ -388,7 +404,7 @@ const [meta, scenes, events, items, attributes, skills, audio] = await Promise.a
 
 const diceIds = await loadDiceIds();
 const minigameIds = await loadMinigameIds();
-validate(meta, scenes, events, items, attributes, skills, audio, diceIds, minigameIds);
+await validate(meta, scenes, events, items, attributes, skills, audio, diceIds, minigameIds);
 await assertAudioFilesExist(audio);
 const bundle = JSON.stringify({ meta, scenes, events, items, attributes, skills, audio }, null, 2)
   .replaceAll("\u2028", "\\u2028")

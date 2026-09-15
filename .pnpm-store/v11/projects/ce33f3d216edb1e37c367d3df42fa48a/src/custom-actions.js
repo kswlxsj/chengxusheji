@@ -161,7 +161,11 @@
 
           context.scene.setInteractionEnabled(false);
           for (const line of ["怎么打不开！", "求求你了…快点开门！", "开门啊！"]) {
-            await context.ui.dialog.showLine({ speaker: "Pc（惊恐）", text: line });
+            await context.ui.dialog.showLine({
+              speaker: "Pc",
+              portrait: "assets/Image/Portrait/player-scared.png",
+              text: line
+            });
           }
           context.ui.closeDialog();
           context.scene.setInteractionEnabled(true);

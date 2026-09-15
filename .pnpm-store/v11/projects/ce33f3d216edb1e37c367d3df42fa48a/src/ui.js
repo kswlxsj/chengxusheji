@@ -152,6 +152,16 @@
 
   const AUTO_ADVANCE_DELAY_MS = 1200;
   const FAST_ADVANCE_DELAY_MS = 90;
+  const DEFAULT_DIALOGUE_PORTRAITS = Object.freeze({
+    "乘务员": "assets/Image/Portrait/conductor-crying.png",
+    "列车员": "assets/Image/Portrait/conductor.png",
+    "医生": "assets/Image/Portrait/doctor.png",
+    "你": "assets/Image/Portrait/player.png",
+    "PC": "assets/Image/Portrait/player.png",
+    "Pc": "assets/Image/Portrait/player.png",
+    "主角内心": "assets/Image/Portrait/player.png",
+    "？？？": "assets/Image/Portrait/conductor-crazy.png"
+  });
 
   class DialogWindow extends GameWindow {
     constructor(root) {
@@ -165,6 +175,10 @@
       this.lineToken = 0;
       this.speaker = document.createElement("div");
       this.speaker.className = "dialog-speaker";
+      this.portrait = document.createElement("img");
+      this.portrait.className = "dialog-portrait";
+      this.portrait.alt = "";
+      this.portrait.hidden = true;
       this.text = document.createElement("p");
       this.text.className = "dialog-text";
       this.hint = document.createElement("span");
@@ -184,7 +198,7 @@
         this.handleAdvance();
       });
       controls.append(this.autoButton, this.fastButton, skipButton);
-      this.element.append(this.speaker, this.text, controls, this.hint);
+      this.element.append(this.portrait, this.speaker, this.text, controls, this.hint);
       this.element.addEventListener("click", () => this.handleAdvance());
       // 对白等待期间，点击 HUD、残留遮罩或游戏舞台也应推进；
       // 控件区仍由各自按钮处理，避免自动、快进和跳过被重复触发。
@@ -294,10 +308,25 @@
       resolve();
     }
 
-    async showLine({ speaker = "", text = "", speed = 28, onAdvance = null }) {
+    setPortrait(source, speaker = "") {
+      const resolvedSource = source || DEFAULT_DIALOGUE_PORTRAITS[speaker] || "";
+      this.element.classList.toggle("has-portrait", Boolean(resolvedSource));
+      if (!resolvedSource) {
+        this.portrait.hidden = true;
+        this.portrait.removeAttribute("src");
+        this.portrait.alt = "";
+        return;
+      }
+      this.portrait.src = resolvedSource;
+      this.portrait.alt = speaker ? `${speaker}立绘` : "角色立绘";
+      this.portrait.hidden = false;
+    }
+
+    async showLine({ speaker = "", text = "", speed = 28, portrait = "", onAdvance = null }) {
       const token = ++this.lineToken;
       this.open();
       this.speaker.textContent = speaker;
+      this.setPortrait(portrait, speaker);
       this.advanceHook = typeof onAdvance === "function" ? onAdvance : null;
       await this.player.play(text, this.fast ? 1 : speed);
       if (token !== this.lineToken) return;
@@ -312,6 +341,7 @@
       this.player.cancel();
       this.resolveLine();
       this.advanceHook = null;
+      this.setPortrait("", "");
       super.close();
     }
   }

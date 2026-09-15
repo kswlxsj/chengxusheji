@@ -87,6 +87,7 @@
       "properties": {
         "type": { "const": "dialogue" },
         "speaker": { "type": "string" },
+        "portrait": { "type": "string", "pattern": "^assets/" },
         "text": { "type": "string" },
         "speed": { "type": "number", "minimum": 0 }
       },

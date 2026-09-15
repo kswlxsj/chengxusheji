@@ -1748,7 +1748,8 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（主角表情：惊恐）刚才的人，都去哪了？",
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "刚才的人，都去哪了？",
           "audio": {
             "sound": "bullying_e009",
             "start": 0,
@@ -2216,7 +2217,8 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "（主角表情：惊恐）这……这是什么！"
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "这……这是什么！"
         },
         {
           "type": "setFlag",
@@ -2386,10 +2388,6 @@ window.GAME_DATA = {
           "value": true
         },
         {
-          "type": "dialogue",
-          "text": "（获得：报纸）"
-        },
-        {
           "type": "addItem",
           "item": "newspaper"
         },
@@ -2429,7 +2427,8 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "（主角表情：惊恐）你不可置信地看着。"
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "你不可置信地看着。"
         },
         {
           "type": "dialogue",
@@ -3077,7 +3076,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你想起她的话（或昏迷前的呓语）：黑包，3号前门。"
+          "text": "你想起她的话：黑包，3号前门。"
         },
         {
           "type": "setFlag",
@@ -3145,10 +3144,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_03_phone_collected",
           "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：手机）"
         },
         {
           "type": "addItem",
@@ -3460,10 +3455,6 @@ window.GAME_DATA = {
           "text": "你从4号车厢的员工柜里找到应急割带器和撬杆。"
         },
         {
-          "type": "dialogue",
-          "text": "（获得：应急割带器 ×1、撬杆 ×1）"
-        },
-        {
           "type": "addItem",
           "item": "emergency_cutter"
         },
@@ -3530,10 +3521,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你从员工柜里找到应急割带器和撬杆。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：应急割带器 ×1、撬杆 ×1）"
         },
         {
           "type": "addItem",
@@ -3619,10 +3606,6 @@ window.GAME_DATA = {
           "text": "你从员工柜里找到应急割带器和撬杆，并扶起了她。"
         },
         {
-          "type": "dialogue",
-          "text": "（获得：应急割带器 ×1、撬杆 ×1）"
-        },
-        {
           "type": "addItem",
           "item": "emergency_cutter"
         },
@@ -3676,10 +3659,6 @@ window.GAME_DATA = {
       "id": "E_020_DEAD_NEWSPAPER",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "（报纸变为：共有21名乘客获救。现场未发现幸存乘务人员。）"
-        },
-        {
           "type": "setFlag",
           "key": "newspaper_21_version",
           "value": true
@@ -3693,10 +3672,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你沉默地站了一会儿，从员工柜里找到应急割带器和撬杆。接下来只能独自返回3号车厢。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：应急割带器 ×1、撬杆 ×1）"
         },
         {
           "type": "addItem",
@@ -3791,10 +3766,6 @@ window.GAME_DATA = {
           "text": "拿着吧......我现在这个样子，保管不好。"
         },
         {
-          "type": "dialogue",
-          "text": "（获得：驾驶室钥匙 ×1、操作面板钥匙 ×1）"
-        },
-        {
           "type": "addItem",
           "item": "driver_cab_key"
         },
@@ -3860,10 +3831,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你在包里摸到了两把钥匙。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：驾驶室钥匙 ×1、操作面板钥匙 ×1）"
         },
         {
           "type": "addItem",
@@ -3996,10 +3963,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你试了试，勉强能用。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：手电筒）"
         },
         {
           "type": "addItem",
@@ -4227,6 +4190,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
+          "portrait": "assets/Image/Portrait/monster.png",
           "text": "你看到了，你看到了那个怪物—————那个无眼、头部异形的怪物。"
         },
         {
@@ -4991,10 +4955,6 @@ window.GAME_DATA = {
           "text": "背包里有一支还能发光的手电筒。"
         },
         {
-          "type": "dialogue",
-          "text": "（获得手电筒）"
-        },
-        {
           "type": "addItem",
           "item": "flashlight"
         },
@@ -5285,7 +5245,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你注意到驾驶台上一个不显眼的球形陀螺仪校准装置（WebGL 3D 小游戏演示）。"
+          "text": "你注意到驾驶台上一个不显眼的球形陀螺仪校准装置。"
         },
         {
           "type": "minigame",
@@ -6305,6 +6265,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
+          "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "你找到钥匙了吗？"
         },
         {
@@ -6377,16 +6338,19 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
+          "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "…"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
+          "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "这就是你的选择吗，亲爱的"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
+          "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "愚蠢。"
         },
         {
@@ -6407,11 +6371,6 @@ window.GAME_DATA = {
             "duration": 1600,
             "flash": true
           }
-        },
-        {
-          "type": "dialogue",
-          "speaker": "Pc",
-          "text": "（惊恐）"
         },
         {
           "type": "custom",
@@ -6513,7 +6472,8 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "Pc",
-          "text": "（惊恐）放过我吧…"
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "放过我吧…"
         }
       ]
     },

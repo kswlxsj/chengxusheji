@@ -405,6 +405,7 @@ const dialogueEngine = new Game.EventEngine({
     actions: [{
       type: "dialogue",
       speaker: "测试说话人",
+      portrait: "assets/Image/Portrait/player.png",
       speed: 12,
       text: "第一句。她说：“第二句？”真的吗？！\n\n第三段没有句号"
     }]
@@ -427,6 +428,7 @@ assert.deepEqual(
   "对话动作应按句末标点和空行拆成多个对话框"
 );
 assert.equal(dialogueCalls.every((action) => action.speaker === "测试说话人"), true);
+assert.equal(dialogueCalls.every((action) => action.portrait === "assets/Image/Portrait/player.png"), true);
 assert.equal(dialogueCalls.every((action) => action.speed === 12), true);
 
 const originalRandom = sandbox.Math.random;

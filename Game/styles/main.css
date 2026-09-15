@@ -1360,6 +1360,22 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .dialog-speaker { min-height: 1.5em; color: var(--accent); font-weight: 700; }
+.dialog-portrait {
+  position: absolute;
+  left: 3%;
+  bottom: 98%;
+  z-index: 0;
+  width: min(25vw, 300px);
+  height: min(48vh, 430px);
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .72));
+}
+.dialog-speaker,
+.dialog-text { position: relative; z-index: 1; }
+.dialog-hint,
+.dialog-window .window-controls { z-index: 1; }
 .dialog-text {
   margin: 4px 0 0;
   font-size: clamp(17px, 1.7vw, 25px);
@@ -3315,6 +3331,7 @@ body.home-op-active .home-page .auth-user-status {
   .horizontal-actions { grid-template-columns: 1fr; }
   .auth-page { aspect-ratio: auto; min-height: 100vh; }
   .dialog-window { padding: 24px 28px 64px; }
+  .dialog-portrait { left: 0; bottom: 98%; width: min(38vw, 210px); height: 36vh; }
   .dialog-hint,
   .san-zero-hint { right: 28px; bottom: 20px; }
   .window-controls { left: 28px; bottom: 20px; }
