@@ -285,6 +285,8 @@
   /* ==================== 启动 ==================== */
 
   function start(loadedFrames) {
+    if (finished) return;
+
     availableFrames = loadedFrames;
     if (!availableFrames.length) {
       finish();
@@ -300,7 +302,7 @@
   if (skipButton) skipButton.addEventListener("click", finish);
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !event.repeat) finish();
+    if (!event.repeat) finish();
   });
 
   /* ==================== 预加载并开始 ==================== */
