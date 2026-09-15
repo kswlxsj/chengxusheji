@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常暗之厢 · 登录</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <main class="site-shell content-page auth-page" aria-label="登录">
+    <section class="page-panel compact-panel auth-panel">
+      <p class="page-kicker">常暗之厢</p>
+      <h1>登录</h1>
+      <p class="page-introduction">登录后继续你的旅程。</p>
+      <form id="login-form" class="auth-form" novalidate>
+        <label for="login-username">用户名</label>
+        <input id="login-username" name="username" type="text" autocomplete="username" required autofocus>
+        <label for="login-password">密码</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <p id="auth-error" class="page-error auth-error" role="alert" aria-live="polite"></p>
+        <button type="submit">登录</button>
+      </form>
+      <p class="auth-switch">还没有账号？<a href="register.html">前往注册</a></p>
+      <p class="auth-notice">账号仅保存在当前浏览器中，当前为明文保存，请勿使用真实密码。</p>
+    </section>
+  </main>
+
+  <script src="src/namespace.js"></script>
+  <script src="src/auth.js"></script>
+  <script src="src/login.js"></script>
+</body>
+</html>

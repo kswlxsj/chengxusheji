@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 500">
+  <!-- 占位图：E-008 车厢深处调查点（待美术替换） -->
+  <defs>
+    <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b0e13"/>
+      <stop offset="1" stop-color="#1c232c"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="8" width="200" height="484" rx="16" fill="url(#dark)" stroke="#3a4350" stroke-width="8"/>
+  <rect x="46" y="22" width="128" height="56" rx="10" fill="#04060a" stroke="#2c3540" stroke-width="6"/>
+  <circle cx="110" cy="240" r="52" fill="none" stroke="#49525e" stroke-width="8" opacity=".7"/>
+  <path d="M110 212v48M110 278v6" stroke="#49525e" stroke-width="9" stroke-linecap="round"/>
+  <text x="110" y="436" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#c8d2dc" opacity=".9">车厢深处</text>
+  <text x="110" y="462" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#c8d2dc" opacity=".6">占位贴图</text>
+</svg>

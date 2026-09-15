@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常暗之厢 · 真结局预览</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css?v=true-ending-20260915-1">
+  <style>
+    * { box-sizing: border-box; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; background: #000; }
+    #preview-stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; }
+    #preview-start {
+      position: absolute;
+      z-index: 200;
+      inset: 50% auto auto 50%;
+      translate: -50% -50%;
+      padding: 12px 24px;
+      color: #f4f0e8;
+      border: 1px solid rgba(244, 240, 232, .55);
+      background: rgba(0, 0, 0, .76);
+      font: inherit;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main id="preview-stage" aria-label="真结局预览画布">
+    <button id="preview-start" type="button">播放真结局</button>
+  </main>
+
+  <script src="data/compiled-game-data.js"></script>
+  <script src="src/namespace.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/ending-a-sequence.js?v=true-ending-20260915-1"></script>
+  <script>
+    "use strict";
+    const stage = document.querySelector("#preview-stage");
+    const start = document.querySelector("#preview-start");
+    const audio = new window.TrainGame.AudioManager(stage, window.GAME_DATA.audio);
+    start.addEventListener("click", async () => {
+      start.hidden = true;
+      try {
+        await window.TrainGame.playEndingASequence({
+          root: stage,
+          audio,
+          backgroundAudio: { stopAll() {} }
+        });
+      } catch (error) {
+        console.error("真结局预览失败：", error);
+        start.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

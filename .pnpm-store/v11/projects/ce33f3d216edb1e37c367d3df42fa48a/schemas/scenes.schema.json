@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "场景列表",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "background", "objects"],
+    "properties": {
+      "id": { "$ref": "#/$defs/id" },
+      "name": { "type": "string", "minLength": 1 },
+      "background": { "type": "string", "minLength": 1 },
+      "backgroundSound": { "$ref": "#/$defs/backgroundSound" },
+      "backgroundSoundVariants": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/backgroundSoundVariant" }
+      },
+      "backgroundVariants": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["image", "visibleWhen"],
+          "properties": {
+            "image": { "type": "string", "minLength": 1 },
+            "visibleWhen": { "$ref": "#/$defs/condition" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "objects": { "type": "array", "items": { "$ref": "#/$defs/object" } }
+    },
+    "additionalProperties": false
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "backgroundSound": {
+      "type": "object",
+      "required": ["sound"],
+      "properties": {
+        "sound": { "$ref": "#/$defs/id" },
+        "loopGapMs": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "backgroundSoundVariant": {
+      "type": "object",
+      "required": ["sound", "visibleWhen"],
+      "properties": {
+        "sound": { "$ref": "#/$defs/id" },
+        "loopGapMs": { "type": "number", "minimum": 0 },
+        "visibleWhen": { "$ref": "#/$defs/condition" }
+      },
+      "additionalProperties": false
+    },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 100 },
+        "y": { "type": "number", "minimum": 0, "maximum": 100 },
+        "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
+        "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["all"],
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["any"],
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/condition" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["flag", "equals"],
+          "properties": { "flag": { "$ref": "#/$defs/id" }, "equals": { "type": "boolean" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["hasItem"],
+          "properties": { "hasItem": { "$ref": "#/$defs/id" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["attribute", "operator", "value"],
+          "properties": {
+            "attribute": { "$ref": "#/$defs/id" },
+            "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte"] },
+            "value": { "type": "integer" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["skill", "equals"],
+          "properties": { "skill": { "$ref": "#/$defs/id" }, "equals": { "type": "boolean" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["objectState"],
+          "properties": {
+            "objectState": {
+              "type": "object",
+              "required": ["objectId", "property", "equals"],
+              "properties": {
+                "objectId": { "$ref": "#/$defs/id" },
+                "property": { "type": "string", "minLength": 1 },
+                "equals": {}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "object": {
+      "type": "object",
+      "required": ["id", "name", "image", "position", "clickEvent"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "image": { "type": "string", "minLength": 1 },
+        "position": { "$ref": "#/$defs/position" },
+        "zIndex": { "type": "integer" },
+        "clickEvent": { "$ref": "#/$defs/id" },
+        "visibleWhen": { "$ref": "#/$defs/condition" },
+        "fullCanvas": {
+          "type": "boolean",
+          "default": false,
+          "description": "整幅画布贴图：该图与场景背景同尺寸画布、四周带透明边（透明边含位置信息）。渲染时与背景共用同一画布→屏幕映射整幅叠放；position 固定为 {x:0,y:0,width:100,height:100}，点击与悬停由运行时不透明像素判定。"
+        },
+        "noHighlight": {
+          "type": "boolean",
+          "default": false,
+          "description": "关闭该物件的悬停/聚焦高亮（不减亮、不放大）：用于点击区就落在背景美术上、不需要叠加特效的物件。"
+        },
+        "invisible": {
+          "type": "boolean",
+          "default": false,
+          "description": "隐形命中区：不渲染任何贴图，只用 position 矩形接收点击（鼠标移上去仍是手型）。用于「背景上已经画好的东西」（如车厢门）——热点即那块区域本身，没有具体贴图。通常与 noHighlight 一起用。image 仍需填写以满足 Schema，运行时不加载。"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
