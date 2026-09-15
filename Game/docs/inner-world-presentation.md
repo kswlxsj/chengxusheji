@@ -24,7 +24,7 @@
 
 不再有回程旗标：原 `ev_inner_backtrack` 已删除；`E_513` 现在固定进入假3号，不再使用旧的 `ev513_intro_seen` / `E_513_REVISIT`。
 
-`carriage_06_eaten` 的唯一来源是 E_501 踏入空车厢那一刻（每条进入里世界的路径都必经此处）；返回分支不再参与置位。6号场景的背景变体读这个旗标，指向 `assets/carriage-06-eaten.png`（被啃食·红色），且排在“便签消失版”之前，因此两个条件同时成立时显示被啃食画面。
+`carriage_06_eaten` 的唯一来源是 E_501 踏入空车厢那一刻（每条进入里世界的路径都必经此处）；返回分支不再参与置位。6号场景的背景变体读这个旗标，指向 `assets/Image/Scene/Background/carriage-06-eaten.png`（被啃食·红色），且排在“便签消失版”之前，因此两个条件同时成立时显示被啃食画面。
 
 伪4号背景默认完整雾景，点击窗外后在 `E_517` 的“雾气散开”后设置 `ev517_flower_revealed` 并刷新完整花海背景；重复调查直接独白。该标记与 `ev510_flower_sea` 污染独立。窗户蒙版跟随揭示标记，门的层级高于窗户以避免重叠误触。
 
@@ -44,7 +44,7 @@
 1. TODO：恢复鬼打墙演出；回程现在由「花草车厢 → 空车厢 → 磨损门」逐门承接，仍无鬼打墙旁白（原 `E_521` 占位已随窗边弹窗一并删除）。
 2. 磨损车门缺素材：保留剧情描写，暂用空车厢左门的隐形热点承担（该热点的悬停/无障碍名仍写作「来路的车门」）。
 
-第2项是审阅者明确接受的文本/画面例外。6号被啃食已落地：`Assets/Image/Scene/Background/里6.png` 复制为 `assets/carriage-06-eaten.png` 并接入 `carriage_06.backgroundVariants`。Assets 源素材不修改；已复制完整伪4号雾景到游戏运行资产。
+第2项是审阅者明确接受的文本/画面例外。6号被啃食已落地：整理前的 `Assets/Image/Scene/Background/里6.png` 现统一为 `Assets/Image/Scene/Background/carriage-06-eaten.png`，并以同路径副本接入 `Game/assets/` 下的 `carriage_06.backgroundVariants`。已复制完整伪4号雾景到游戏运行资产。
 
 ## 验证
 

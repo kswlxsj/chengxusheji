@@ -65,7 +65,7 @@
 - 车厢门物件的 ID 与左右位置遵循 scenes.json 一节的「车厢门布局约定」：命名为 `door_<本车厢>_to_<目标>`，左侧门＝后退（车厢号增大）、右侧门＝前进（车厢号减小或 `front`）。
 - 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如 `E_905`，不与剧本编号冲突）。
 - 检定（骰子）编号建议 `ev<事件编号原样，保留零填充>_<语义>_<序号>`（如 `ev005_insight_01`）；该编号对应 `src/dice.js` 中**唯一**一条检定规则，须匹配 ID 格式、全局唯一且长期稳定。Schema 校验格式；编译器通过 vm 加载 `src/dice.js` 校验事件引用确实已注册。
-- 素材路径相对于项目根目录（仓库内为 `Game/`），如 `assets/radio.svg`，不能写本机绝对路径。
+- 素材路径相对于项目根目录（仓库内为 `Game/`），如 `assets/Image/Scene/StillLife/radio-07.png`，不能写本机绝对路径。正式游戏不得跨目录引用仓库根 `Assets/`。
 - 示例代码中的 `//` 注释只用于说明，实际 JSON 文件中不能保留注释。
 - `position` 均为相对于 16:9 游戏区域的百分比：`x/y` 是左上角，`width/height` 是按钮大小；窗口缩放后仍能对齐。
 
@@ -265,7 +265,7 @@
 | --- | --- | --- |
 | `id` | 是 | 全局唯一编号；事件用 `{ "type": "sound", "sound": "<编号>" }` 引用。 |
 | `name` | 是 | 非空名称，供维护者阅读与检索。 |
-| `file` | 是 | 相对 `Game/` 的音频路径（如 `assets/audio/door-close.mp3`）；**编译器会校验文件真实存在且非空**。 |
+| `file` | 是 | 相对 `Game/` 的音频路径（如 `assets/Audio/SoundEffect/iron-door-open.mp3`）；**编译器会校验文件真实存在且非空**。 |
 | `volume` | 否 | 0–1，缺省 `1`；该音效的默认音量，配平写在这里而不是散落到每条剧情动作里。 |
 | `description` | 否 | 字符串，维护者备注（来源、使用场合等）。 |
 
@@ -273,13 +273,13 @@
 {
   "id": "door_close",
   "name": "车门关闭",
-  "file": "assets/audio/door-close.mp3",
+  "file": "assets/Audio/SoundEffect/iron-door-open.mp3",
   "volume": 0.8,
   "description": "进出车厢时使用；素材来源见 Assets/Audio。"
 }
 ```
 
-把素材放进 `Game/assets/audio/`（正式使用前从仓库根 `Assets/` 复制并改名），在 `audio.json` 登记编号，再在事件里播放。`audio.json` 是本项目唯一做**素材存在性校验**的数据文件：路径写错或文件为空时 `npm run compile` 直接失败，不会等到剧情跑到那一声才静默没声音。
+先把规范命名的素材放进仓库根 `Assets/Audio/SoundEffect/`，再以相同相对路径复制到 `Game/assets/Audio/SoundEffect/`，在 `audio.json` 登记编号后由事件播放。`audio.json` 是本项目唯一做**素材存在性校验**的数据文件：路径写错或文件为空时 `npm run compile` 直接失败，不会等到剧情跑到那一声才静默没声音。
 
 ### items.json
 
@@ -289,7 +289,7 @@
 {
   "id": "phone",
   "name": "手机",
-  "image": "assets/phone.png",
+  "image": "assets/Image/Item/phone.png",
   "description": "一部手机。",
   "inspectEvent": "E_ITEM_PHONE_INSPECT"
 }
@@ -637,7 +637,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
 - **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`、`fake`、`ghost_calling` 与检定三音（`dice_rolling`、`dice_success`、`dice_fail`，见 `main.js` 的 `INNER_WORLD_ALLOWED_SOUNDS`）；其他事件音均静默。回到真实车厢后恢复。
 - **场景循环音**：`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 循环播放 `fake`；`carriage_02` 循环播放 `devil_scared`；`carriage_07` 以及 `carriage_06` 且置有 `carriage_06_eaten` 时循环播放 `eating_crisps`，每轮结束等待 1600ms 后再播。普通 6 号车厢不播放。离开场景、暂停、结束或进入其他静音场景时停止，恢复后重新开始。
-- **与 BGM 的区别**：`assets/audio/bgm.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
+- **与 BGM 的区别**：`assets/Audio/Bgm/bgm-v2.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
 
 ### UI：GameWindow / TextPlayer / UIManager
 
@@ -868,16 +868,16 @@ game.saves.listSlots()
 4. **编译校验**：运行 `npm run compile`，确认事件数量正确且没有“小游戏动作引用了未注册的编号”报错（编译器通过 node:vm 加载注册表与模块收集编号）。
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的小游戏段落补充回归（结算执行、无结算继续、未注册报错、非法结算回滚），运行 `npm run check`；按本节开头“变更协议时的联动清单”检查是否需同步文档/README。
 
-> 仓库自带的 `webgl3d_demo`（`src/minigame-games/webgl3d-demo.js`）是原生 WebGL 3D 技术演示：它同时验证“事件动作 → 宿主窗口内自绘独立可交互画面 → 3D canvas → 完成/退出两条结算路径 → 结算动作列表被执行”。演示触发物 `mg3d_demo_spot_06` 默认不可见（`visibleWhen` 检查旗标 `mg3d_demo_visible`），验收时进入游戏后在控制台执行 `game.state.flags.mg3d_demo_visible = true; game.scene.refresh();` 再点击该装置。该物件与事件 `E_MG3D_DEMO`、素材 `assets/mg3d-demo-spot.svg` 构成独立演示块，正式剧情不需要时可整体删除。
+> 仓库自带的 `webgl3d_demo`（`src/minigame-games/webgl3d-demo.js`）是原生 WebGL 3D 技术演示：它同时验证“事件动作 → 宿主窗口内自绘独立可交互画面 → 3D canvas → 完成/退出两条结算路径 → 结算动作列表被执行”。演示触发物 `mg3d_demo_spot_06` 默认不可见（`visibleWhen` 检查旗标 `mg3d_demo_visible`），验收时进入游戏后在控制台执行 `game.state.flags.mg3d_demo_visible = true; game.scene.refresh();` 再点击该装置。该物件与事件 `E_MG3D_DEMO`、素材 `assets/Image/Scene/StillLife/webgl-demo-marker.svg` 构成独立演示块，正式剧情不需要时可整体删除。
 
 ### 示例十：新增一个音效并在剧情里播放
 
 目标：为“车门关闭”加一个音效，在进门事件里播放，并让里世界那次改为“等音效播完再继续”。
 
-1. **放素材**：把音频复制到 `Game/assets/audio/`（例如 `door-close.mp3`），文件名用小写英文、数字与连字符。
+1. **放素材**：把音频放入 `Assets/Audio/SoundEffect/`，再复制到 `Game/assets/Audio/SoundEffect/` 的相同相对路径（例如 `door-close.mp3`）；文件名用小写英文、数字与连字符。
 2. **登记编号**：在 `data/audio.json` 追加：
    ```json
-   { "id": "door_close", "name": "车门关闭", "file": "assets/audio/door-close.mp3", "volume": 0.8 }
+   { "id": "door_close", "name": "车门关闭", "file": "assets/Audio/SoundEffect/door-close.mp3", "volume": 0.8 }
    ```
    编辑器会按 `schemas/audio.schema.json` 提示字段。
 3. **接线**：在 `data/events.json` 的开门事件里写 `{ "type": "sound", "sound": "door_close" }`（不阻塞，与后续对话并行）；需要同步时写 `{ "type": "sound", "sound": "door_close", "await": true }`，需要截取中段时再加 `"start"` 与 `"duration"`。

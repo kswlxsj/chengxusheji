@@ -82,7 +82,7 @@
 
 逐车厢完整通关与各结局的到达仍需要在浏览器里实测；分支是否可达以实际游玩为准。
 
-**里世界支线（E-501~E-525）**：3号通往2号的门是进入2号车厢的唯一入口——剧情在拿完手电筒后停下（`E_022_ITEM` 不再自动接 `E_023`），玩家留在3号车厢自己点门；点是先播**门前认知崩塌** `E_023`（车厢编号变成3、来路门消失、广播「请不要下车」、灯灭了——3号车厢随之淡入黑场），再由 `E_501` 推门（`E_023` 首部用 `inner_world_entered` 守卫，**只在首次播放**：到过伪4后推门直接走主线 `E_DOOR_03`；旧线「光源侦查」`E_024` 已删除，照明统一走现行机制，见[主线接线维护记录](docs/main-route-wiring.md)接线批次）。推门在踏入空车厢的一刻置 `carriage_06_eaten`（6号车厢此后一律显示被啃食的红画面 `assets/carriage-06-eaten.png`）；单次进入门禁以“到过伪4”为准——未到伪4时回3号仍可再进，到过之后推门直接进入主线2号。空车厢左门的“试图回头”只做**一次**静默判定（10%回6号被啃食 / 60%门被关死 / 30%回3号），判定用掉后重复调查一律只报「门被关死，打不开。」并留在空车厢；到过伪4后该门解锁，成为返程出口（磨损门 → 真实2号）。花草车厢左门不设防，任何方向都回空车厢。返程回到真2号后由 `E_025` 播喘息段（乘务员同行时含她的低语），播完停下等玩家照明、点 Clicker。
+**里世界支线（E-501~E-525）**：3号通往2号的门是进入2号车厢的唯一入口——剧情在拿完手电筒后停下（`E_022_ITEM` 不再自动接 `E_023`），玩家留在3号车厢自己点门；点是先播**门前认知崩塌** `E_023`（车厢编号变成3、来路门消失、广播「请不要下车」、灯灭了——3号车厢随之淡入黑场），再由 `E_501` 推门（`E_023` 首部用 `inner_world_entered` 守卫，**只在首次播放**：到过伪4后推门直接走主线 `E_DOOR_03`；旧线「光源侦查」`E_024` 已删除，照明统一走现行机制，见[主线接线维护记录](docs/main-route-wiring.md)接线批次）。推门在踏入空车厢的一刻置 `carriage_06_eaten`（6号车厢此后一律显示被啃食的红画面 `assets/Image/Scene/Background/carriage-06-eaten.png`）；单次进入门禁以“到过伪4”为准——未到伪4时回3号仍可再进，到过之后推门直接进入主线2号。空车厢左门的“试图回头”只做**一次**静默判定（10%回6号被啃食 / 60%门被关死 / 30%回3号），判定用掉后重复调查一律只报「门被关死，打不开。」并留在空车厢；到过伪4后该门解锁，成为返程出口（磨损门 → 真实2号）。花草车厢左门不设防，任何方向都回空车厢。返程回到真2号后由 `E_025` 播喘息段（乘务员同行时含她的低语），播完停下等玩家照明、点 Clicker。
 
 - 两端车门均点击背景上的隐形热点（左退右进，无贴图、无高亮）；窗外、瓶子仍使用整幅蒙版。
 - 花海调头：花海 → 伪4号停下 → 点左门 → 花草车厢停下 → 点左门 → 空车厢停下 → 点左门（磨损门）→ 2号停下（接着播 `E_025` 喘息段）。窗边交谈后同样点左门进入这条返程链；中途再向前探索不受影响。
@@ -205,33 +205,21 @@ Game/
 ├─ .vscode/
 │  └─ settings.json
 ├─ assets/
-│  ├─ carriage-02.png
-│  ├─ carriage-04.png
-│  ├─ carriage-05-03.png
-│  ├─ carriage-06.png
-│  ├─ carriage-07.jpg
-│  ├─ carriage-06.svg
-│  ├─ carriage-07.svg
-│  ├─ cover-placeholder.svg
-│  ├─ door.svg
-│  ├─ note.svg
-│  ├─ radio.svg
-│  ├─ corpse-07.svg
-│  ├─ deep-07.svg
-│  ├─ front-carriage.png
-│  ├─ black-bag-03.png
-│  ├─ clicker-02.png
-│  ├─ control-lever.png
-│  ├─ crew-04.png
-│  ├─ map-06.png
-│  ├─ mg3d-demo-spot.svg
-│  ├─ newspaper-05.png
-│  ├─ newspaper-icon.png
-│  ├─ phone.png
-│  ├─ placeholder-bottle.svg
-│  ├─ placeholder-key.svg
-│  ├─ clutter-05.svg
-│  └─ flashlight.svg
+│  ├─ Audio/
+│  │  ├─ Bgm/
+│  │  └─ SoundEffect/
+│  ├─ Fonts/
+│  ├─ Image/
+│  │  ├─ Item/
+│  │  ├─ Portrait/
+│  │  ├─ Scene/
+│  │  │  ├─ Background/
+│  │  │  └─ StillLife/
+│  │  └─ Ui/
+│  │     ├─ CardBattle/
+│  │     ├─ ConductorTug/
+│  │     └─ Save/
+│  └─ Video/
 ├─ data/
 │  ├─ attributes.json
 │  ├─ audio.json
@@ -244,6 +232,8 @@ Game/
 ├─ docs/
 │  ├─ README.md
 │  ├─ API使用说明.md
+│  ├─ asset-mapping.md
+│  ├─ inner-world-presentation.md
 │  ├─ main-route-wiring.md
 │  ├─ skill-tutorials/
 │  │  └─ script-to-game-data.md
@@ -382,41 +372,11 @@ Game/
 
 ### `assets/`
 
-| 文件 | 用途 |
-| --- | --- |
-| `carriage-02/04/05-03/06/07.png`、`front-carriage.png` | 各车厢成品背景（与仓库根 `Assets/Image/Scene/Background/` 源文件一致，正方形画布、内容居中排版，运行时按 16:9 舞台居中裁切显示）。 |
-| `carriage-06-eaten.png` | 6 号车厢「被啃食·红色」背景变体（复制自 `Assets/Image/Scene/Background/里6.png`）；`carriage_06_eaten` 为真时取代 `carriage-06.png`，优先级高于便签消失版。 |
-| `black-bag-03.png`、`clicker-02.png`、`control-lever.png`、`crew-04.png`、`map-06.png` | 美工按“背景图层蒙版”整幅导出的物件贴图（`fullCanvas: true`，与背景同画布尺寸、透明边含位置信息），运行时整幅叠放并只在不透明像素上响应点击/悬停。 |
-| `newspaper-icon.png` | 报纸物品栏图标（由 `newspaper-05.png` 内容裁紧的小图）；`newspaper-05.png` 为同款整幅蒙版素材，当前场景未直接引用，保留备用。 |
-| `phone.png` | 手机物件/物品栏图标。 |
-| `corpse-07.svg`、`deep-07.svg` | 7 号车厢尸体与深处占位贴图。 |
-| `clutter-05.svg` | 5 号车厢散落杂物（行李/纸堆等）共用的物件贴图。 |
-| `door.svg` | 各车厢门共用的透明物件贴图。 |
-| `flashlight.svg` | 手电筒物品图标。 |
-| `note.svg` | 便签贴图，同时暂作旧车票图片。 |
-| `radio.svg` | 收音机贴图，同时用于调查窗口插图。 |
-| `cover-placeholder.svg` | `meta.coverImage` 使用的主界面占位封面。 |
-| `carriage-06.svg`、`carriage-07.svg` | 早期示例背景，已被对应成品 PNG 取代，暂保留未删。 |
-| `mg3d-demo-spot.svg` | 小游戏演示触发物占位图标（`mg3d_demo_spot_06` 物件使用，即 `webgl3d_demo` 小游戏的演示入口；默认由旗标隐藏）。 |
-| `placeholder-bottle.svg`、`placeholder-key.svg` | 瓶子、钥匙的占位贴图。 |
-| `audio/bgm.mp3` | 标题页和结束页背景音乐，由 `src/bgm.js` 跨页续播。 |
-| `audio/op.mp3` | 主页开场（OP）音乐，由 `src/home-op.js` 播放。 |
-| `audio/train-ambient.mp3` | 正式游戏页循环播放的列车行驶背景音，由 `src/train-bgm.js` 播放。 |
-| `audio/dice-*.mp3` | 检定滚动、成功和失败音效。 |
-| `audio/iron-door-open.mp3`、`audio/iron-door-knock.mp3` | 车门成功打开与无法打开时的事件音效。 |
-| `audio/loud-noise.mp3` | 收音机调频成功后在 7 号车厢播放的巨响。 |
-| `audio/metro-speed-up.mp3`、`audio/metro-speed-down.mp3` | 头车加速成功与减速/争夺失败时的演出音效。 |
-| `audio/devil-scared.mp3` | 玩家位于 2 号车厢时循环播放的环境音。 |
-| `audio/breaking-glass.mp3` | 2 号车厢成功投掷玻璃瓶时播放的破碎声。 |
-| `audio/tearing.mp3` | 6 号车厢查看便签背面时播放。 |
-| `audio/finding-in-papers.mp3` | 翻找背包、行李或杂物时播放。 |
-| `audio/eating-crisps.mp3` | 7 号车厢和被啃食后的里6号车厢循环播放，每轮之间有 1600ms 间隔。 |
-| `audio/opening-cracker-bag.mp3` | 6 号车厢听到远处怪异声音时播放。 |
-| `audio/fake.mp3` | 进入花海、首次进入假4号或从花海返回假4号时播放。 |
+运行素材按类型存放在 `Audio/`、`Fonts/`、`Image/` 与 `Video/`。目录使用英文 PascalCase；媒体文件使用小写英文 kebab-case，扩展名小写。图片继续细分为物品栏图标、人物立绘、场景背景、场景静物和 UI，小游戏专属资源放在对应子目录。
 
-`assets/audio/` 下的文件由 `data/audio.json` 登记后经 `sound` 动作播放；登记前请勿只在剧情里写路径（JSON 只写编号，路径与音量配平集中在注册表）。
+仓库根 `Assets/` 是本目录的字节级超集：每个 `Game/assets/<相对路径>` 都必须存在同路径、同 SHA-256 的 `Assets/<相对路径>`。游戏只能引用本目录，不得使用 `../Assets`；源素材库可以额外保存新版候选和未接入内容。同步、版本及命名细则见 [`Assets/README.md`](../Assets/README.md)，本次迁移记录见 [`docs/asset-mapping.md`](docs/asset-mapping.md)。
 
-背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材见上表并配合 `fullCanvas: true` 使用。文件名宜用小写英文、数字和连字符，路径大小写必须一致。
+背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材配合 `fullCanvas: true` 使用。音频由 `data/audio.json` 集中登记后经 `sound` 动作播放；BGM 与 OP 位于 `assets/Audio/Bgm/`。
 
 ### `data/`
 
