@@ -63,7 +63,7 @@
 - ID 必须匹配 `^[A-Za-z][A-Za-z0-9_-]*$`。
 - 各注册表内不能重名；**物件 ID 在所有场景之间也必须全局唯一**。
 - 车厢门物件的 ID 与左右位置遵循 scenes.json 一节的「车厢门布局约定」：命名为 `door_<本车厢>_to_<目标>`，左侧门＝后退（车厢号增大）、右侧门＝前进（车厢号减小或 `front`）。
-- 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如 `E_901`，不与剧本编号冲突）。
+- 事件 id 推荐使用 `E_` 前缀：剧本事件沿用其编号（`E_005`，派生片段加后缀，见剧本转换 skill 命名约定）；非剧本的系统/演示事件使用保留段 `E_9NN`（如 `E_905`，不与剧本编号冲突）。
 - 检定（骰子）编号建议 `ev<事件编号原样，保留零填充>_<语义>_<序号>`（如 `ev005_insight_01`）；该编号对应 `src/dice.js` 中**唯一**一条检定规则，须匹配 ID 格式、全局唯一且长期稳定。Schema 校验格式；编译器通过 vm 加载 `src/dice.js` 校验事件引用确实已注册。
 - 素材路径相对于项目根目录（仓库内为 `Game/`），如 `assets/radio.svg`，不能写本机绝对路径。
 - 示例代码中的 `//` 注释只用于说明，实际 JSON 文件中不能保留注释。
@@ -287,11 +287,11 @@
 
 ```json
 {
-  "id": "old_ticket",
-  "name": "旧车票",
-  "image": "assets/note.svg",
-  "description": "一张已经褪色的车票。",
-  "inspectEvent": "E_903"
+  "id": "phone",
+  "name": "手机",
+  "image": "assets/phone.png",
+  "description": "一部手机。",
+  "inspectEvent": "E_ITEM_PHONE_INSPECT"
 }
 ```
 
@@ -391,13 +391,13 @@ const state = new TrainGame.GameState(
 ```json
 {
   "sceneId": "carriage_06",
-  "currentEventId": "E_902",
+  "currentEventId": "E_001",
   "attributes": { "insight": 7, "san": 8 },
   "skills": { "keen_insight": false },
   "skillOverrides": {},
   "attributeAllocationComplete": true,
-  "flags": { "gameStarted": true },
-  "inventory": ["old_ticket"],
+  "flags": { "note_back_seen": true },
+  "inventory": ["newspaper"],
   "objectStates": { "note_06": { "hidden": true } },
   "checkResults": {},
   "checkAttempts": {}
@@ -710,7 +710,7 @@ class NoticeWindow extends TrainGame.GameWindow {
 ```javascript
 game.state.snapshot()
 game.engine.getStableSnapshot()
-game.engine.play("E_902")
+game.engine.play("E_001")
 game.scene.refresh()
 game.pauseGame()
 game.resumeGame()
@@ -739,17 +739,17 @@ game.saves.listSlots()
 
 ### 示例二：新增带条件选项的剧情
 
-目标：持有旧车票且灵感至少 7 才能出示车票。
+目标：持有报纸且灵感至少 7 才能出示报纸。
 
 1. 修改 `data/events.json`，加入选项：
 
 ```json
 {
-  "label": "向检票员出示车票",
+  "label": "向检票员出示报纸",
   "next": "E_SHOW_TICKET",
   "when": {
     "all": [
-      { "hasItem": "old_ticket" },
+      { "hasItem": "newspaper" },
       { "attribute": "insight", "operator": "gte", "value": 7 }
     ]
   }

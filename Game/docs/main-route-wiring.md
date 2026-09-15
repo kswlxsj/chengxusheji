@@ -28,6 +28,8 @@
 
 新增内容：事件 `E_GO_05_04`、`E_013_REVISIT`、`E_013_USE`、`E_013_USE_SECOND`、`E_013_CANCEL`、`E_013_F_RETRY`；旗标 `crew_04_entry_seen`、`crew_04_medical_attempted`；共享检定 `checkId: crew_04_medical`；回归脚本 `tools/test-main-route.mjs`。存档版本（3）与数据格式版本（3）不变；新旗标缺省视为未触发。已持有 `crew_04_entry_medical_done` 的旧档会按“已看过首次发现演出”处理。
 
+> 注：本轮表格中的 `E_010_F`／`E_010_JOIN`／`E_011_F` 已在后续「清理批次」中作为不可达事件删除，`E_011_S`／`E_012_AFTER` 仍是主线可达路线；本条记录保留历史原貌。
+
 ## 修复对照（第二轮：2号车厢改由玩家点门进入）
 
 审阅者反馈：3号→2号的剧情链会自动把玩家带进2号车厢并一路推进，玩家点不到那扇门，里世界支线形同虚设。
@@ -57,13 +59,39 @@
 
 浏览器验收路径：5号右门（只过门）→ 4号；另一局读报或直接点击进入4号，只播一次发现描写；点乘务员直接进行教育检定，验证第一次失败后重试、第一次成功或第二次失败后热点消失；左门回3号有折返描写；3号取钥匙与手电筒后剧情停下（停在3号、门可点）→ 点 3号→2号 的门进里世界 → 在花草车厢拾取彩色玻璃瓶 → 逐门返程回真2号 → 播喘息段后自行照明、点 Clicker（**无瓶子时应只出现「屏住呼吸，尝试安静通过」，持瓶时多出「投掷彩色玻璃瓶，制造声响引开它们」**）；安静通过到先头车厢，再回2号点前门直接进先头车厢；点控制把手打开操作面板。另跑一次「已进过里世界后回3号点门」直接进2号（`E_DOOR_03`）。
 
+## 清理批次：删除不可达事件与死检定（2026-09-15）
+
+依据：对 `data/events.json`（当时 245 个事件）做一次完整可达性分析。边类型覆盖 `next`、`choice.options[].next`、`check.outcomes[]`、`conditionalJump.next`、`jump.next`、小游戏结算跳转（`src/minigame-games/*.js`）、`src/main.js` 的硬编码触发（`E_009`／`E_005_GUIDE`）、`custom.params.lockedEvent`、`scenes[].objects[].clickEvent` 与 `items[].inspectEvent`；起点为 `meta.startEvent`（`E_001`）。条件按「旗标无人写 true / 物品无人发放 / 技能未授予 ⇒ 永假」判定（语义同 `src/scene.js` 的 `evaluateCondition`），事件、场景、物品三者做定点迭代。结果：**可达 198 / 不可达 47 / 悬挂引用 0**，15 个场景全部可达。旧死事件清单只统计 `next` 与选项跳转，未覆盖 `check.outcomes`、`clickEvent`、`inspectEvent` 与小游戏结算跳转，因此漏报了一半以上。
+
+删除清单（24 个事件 + 5 条检定注册 + 1 个不可获得物品）：
+
+| 组 | 删除对象 | 删除理由 |
+| --- | --- | --- |
+| B | `E_008_F`、`E_009_S`、`E_009_F`、`E_010_S`、`E_010_F`、`E_010_JOIN`、`E_011_F`、`E_021_ALONE_F`、`E_031_NO_KEY_F` | 旧检定的成败分支：这些检定动作的 `outcomes` 已被移除（现在只做副作用），分支的另一半永久失去入口 |
+| C | `E_025_SINGLE`、`E_025_MULTI`、`E_025_ESCAPE`、`E_026_FRONT_LEGACY`、`E_030_TUG`、`E_033_S`、`E_033_F`、`E_036` | 先头车厢／控制杆旧段：已被 `E_031`、`conductor_tug` 小游戏结算（`E_034`／`E_035`）与 `endGame` 结局系统取代 |
+| D | `E_018_CLEAR_PATH`、`E_05_SEARCH_NEWS_CANCEL`、`E_05_TOOLS_FAIL` | 5 号车厢旧搜索分支，被现行 `E_010`／`E_019`／`E_020` 流程取代 |
+| F | `E_901`、`E_902`、`E_903`、`E_904` + 物品 `old_ticket` | 框架演示／引导残留块（`E_904` 自述“由通用窗口基类派生的调查窗口”）；`old_ticket` 只由 `E_902` 发放、只由 `E_903` 调查，整块一并删除 |
+| 死检定 | `ev010_join_route_01`、`ev021_san_01`、`ev021_extra_san_01`、`ev030_san_01`，以及删除 C 组后失去唯一引用方的 `ev025_constitution_01` | `src/dice.js` 已注册但没有任何 `check.dice` 引用；`ev030_san_01` 的结局 SAN 检定在 `d68228a` 已被 `custom endGame` 取代 |
+
+同步改动：
+
+- `src/dice.js`：删除上述 5 条注册，并删掉因此不再有调用者的 `endingSanCheck` 辅助函数（`conditionalSanCheck` 仍被 `ev026_extra_san_01` 使用，保留）。
+- `tools/test-main-route.mjs`：路线断言列表收缩为 `E_011_S`／`E_012_AFTER`；“剧情路线进 4 号”的场景轨迹用例改走 `E_012_AFTER`。
+- `tools/test-runtime.mjs`：删除 `ev010_join_route_01` 的分流断言与 `ev030_san_01` 的注册／结局断言；物品调查用例改用 `phone`。
+- `data/compiled-game-data.js`：重新生成。
+- 文档：`README.md`（`conductor_tug` 条目、编译结果行）、`docs/inner-world-presentation.md`（`E_030_TUG` 两处）、`docs/API使用说明.md`（`E_901`／`E_902`／`E_903`／`old_ticket` 示例改用现存编号与物品）、`skills/script-to-game-data/conversion-rules.md`（保留段示例改为 `E_905`）。
+
+保留未删（23 个，见「已发现但本轮不改」第 1、4、8 项）：A 组「旧 2 号车厢穿越线／认知崩塌／光源侦查」20 个、E 组里世界旧分支 2 个（`E_504_F`、`E_515`）、G 组开发演示 1 个（`E_MG3D_DEMO`）。
+
+验证：`npm run check` 全绿；`npm run compile` 输出 `15 个场景，221 个事件，8 个物品，4 个属性，1 个技能，6 个小游戏，30 个音效`。
+
 ## 已发现但本轮不改
 
 1. `ev510_flower_sea` 只写不读：`E_510` 置位，`E_029` 的花海→Trauma 分岔已在 `541aad3` 删除并被 `tools/test-inner-world.mjs` 锁定，`E_515`（trauma 结束页）成为死事件；但 `docs/inner-world-presentation.md` 仍写「Trauma 仍由涉足花海后到达原真结局触发」，数据与文档互相矛盾，需要内容侧决定恢复分支还是改文档。
 2. 6号↔7号门可反复往返：`E_905 → E_009` 全段（含 `ev010_san_01` 检定）会重播，可重复扣 SAN；`E_009` 已置 `ev009_seen` 但无人读取，说明原设计是只播一次，建议下一轮加该守卫。
 3. 6号右门 `door_06_to_05` 无门槛，可跳过便签/地图/7号直接进5号（连带跳过 `E_010`／`E_011` 与报纸线索）。
-4. 死事件清单（无引用或只被死事件引用，即不可达）：`E_010_JOIN`、`E_018_CLEAR_PATH`、`E_02_DECIDE`、`E_022_S`、`E_022_F`、`E_023`、`E_023_PHONE`、`E_023_LOOP`、`E_023_CONSTITUTION_SUCCESS`、`E_023_THROW_AFTER_CONSTITUTION_FAIL`、`E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL`、`E_023_CHOICE`、`E_024`、`E_024_S`、`E_024_S_KNOWLEDGE`、`E_024_S_CONTINUE`、`E_024_F`、`E_025_SINGLE`、`E_025_MULTI`、`E_026_FRONT_LEGACY`、`E_030_TUG`、`E_033_S`、`E_033_F`、`E_515`。本轮只修可达路径接线，不做删除，便于审查。（勘误：`E_023_BOTTLE` 曾误列于此，它其实是物品 `bottle` 的 `inspectEvent`，由物品栏点击触发，属可达事件；清单只统计 `next`／选项跳转，没有覆盖这类动态引用。）
-5. `README.md` 的「当前开发进度」关于 `conductor_tug` 的触发点（写 `E_026`、成功接 `E_029`、失败进 `E_030_TUG`）与实际（`E_033` 触发，结算动作跳 `E_034`／`E_035`）不符。
+4. 死事件清单：**清理批次已删除 24 个不可达事件**（B/C/D/F 组，见「清理批次」一节；该节同时说明旧清单为何只有 24 项却漏报另一半）。清理后仍不可达的 23 个事件全部是**有意保留**的内容，分三块：A 组「旧 2 号车厢穿越线／认知崩塌／光源侦查」20 个（`E_02_DECIDE`、`E_022_S`、`E_022_F`、`E_023` 全段、`E_024` 全段，见第 8 项）；E 组里世界旧分支 `E_504_F`、`E_515`（见第 1 项）；G 组开发演示 `E_MG3D_DEMO`（按 `docs/API使用说明.md` 示例九由控制台旗标显式开启，正式剧情不需要时可整体删除）。（勘误保留：`E_023_BOTTLE` 是物品 `bottle` 的 `inspectEvent`，由物品栏点击触发，属可达事件。）
+5. （已在清理批次修复）`README.md` 的「当前开发进度」曾把 `conductor_tug` 的触发点写成 `E_026`／成功接 `E_029`／失败进 `E_030_TUG`；实际为 `E_033` 触发、结算动作跳 `E_034`／`E_035`、退出小游戏不结算。README 与 `docs/inner-world-presentation.md` 的过期说法已改正，死事件 `E_030_TUG` 已随清理批次删除。
 6. 通过后不置 `clicker_cleared`，回2号可重复点 Clicker 触发遭遇；按模组「你还得从它旁边过」视为设计内。
 7. `crew_04_medical_success` 只写不读（未使用的派生旗标）；`crew_04_dead` 已不再是死旗标——里世界 `E_506` 按它走死亡线（`E_507` 疯狂低语与「停下来」惊吓）与在世线 `E_508`，`E_516` 死亡时走 `E_516_DEAD`。
 8. 「认知崩塌」（`E_023`／`E_023_PHONE`／`E_023_LOOP`）与「查看2号车厢·光源侦查」（`E_024` 全段，含 `ev024_light_01`）目前不可达：`845babf` 把 `E_022_ITEM` 断在拿完手电处、又把 `E_023_LOOP` 末尾接去里世界入口 `E_501`，但没有任何热点触发 `E_023`，所以这段演出（车厢编号变成3、灯灭了、广播「请不要下车」）目前一局都不会播。内容侧需要决定是接回某个触发点（并加一次性守卫，避免重复点门重播）还是另写替代演出。若接回，`E_023_CHOICE` 的「投掷瓶子」还需补 `when: { hasItem: "bottle" }`（`E_023_THROW_FIRST` 目前既不校验持有也不 `removeItem`），否则会绕开第三轮的「瓶子只能从里世界获取」规则。
