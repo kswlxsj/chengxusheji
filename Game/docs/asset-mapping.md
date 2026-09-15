@@ -1,6 +1,6 @@
 # 素材映射表
 
-本表记录 2026-09-15 素材整理前后的完整媒体路径。`Game/assets/` 当前共有 143 个运行素材；`Assets/` 共有 166 个媒体素材，并按相同相对路径及 SHA-256 完整覆盖全部运行素材。
+本表记录 2026-09-15 素材整理前后的完整媒体路径。`Game/assets/` 当前共有 143 个运行素材；`Assets/` 共有 167 个媒体素材，并按相同相对路径及 SHA-256 完整覆盖全部运行素材。
 
 判定说明：`SHA-256 相同` 表示整理前两边已有字节级相同内容；`Game 补入 Assets` 表示源素材库原先缺少该运行文件；`Assets 内置化` 表示原本由游戏跨目录引用，现已复制进运行目录；`Assets 独有` 表示尚未进入正式游戏。
 
@@ -145,6 +145,7 @@
 | `Assets/Image/UI/减.png` | — | `Assets/Image/Ui/attribute-minus.png`<br>`Game/assets/Image/Ui/attribute-minus.png` | `99617f41959f3125815f5905e2fb3a6f4502aac39a1ae24cce54f78616c51b50` | Assets 内置化 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/加.png` | — | `Assets/Image/Ui/attribute-plus.png`<br>`Game/assets/Image/Ui/attribute-plus.png` | `56207790ae2813dfb4d11ee12cf9dde6fc5d3f1290e2cf4cacf8eb94a3a2ea77` | Assets 内置化 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/背包框.png` | `Game/assets/ui/beibao.png` | `Assets/Image/Ui/backpack-frame.png`<br>`Game/assets/Image/Ui/backpack-frame.png` | `2d2a5115d7bb6129b1d1c9bbdfc07746dd238127f61688492b9df79459d33a03` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
+| `Assets/Image/UI/聊天气泡.png` | — | `Assets/Image/Ui/chat-bubble.png` | `9f20ec0588d306de51cd2384e60f7b610aa0f2999eb5714f7c8665bd5f6b64f0` | Assets 独有 | 仅源素材库 | 远端新增候选，尚未进入游戏 |
 | `Assets/Image/UI/普攻.png` | `Game/assets/ui/card-battle/attack.png` | `Assets/Image/Ui/CardBattle/attack.png`<br>`Game/assets/Image/Ui/CardBattle/attack.png` | `345d4265a5d40dafcf476c1d5e7099bcfeb8d97cbab62599606f92102793266a` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/卡底.png` | `Game/assets/ui/card-battle/card-base.png` | `Assets/Image/Ui/CardBattle/card-base.png`<br>`Game/assets/Image/Ui/CardBattle/card-base.png` | `41cab9f9ae3c6a14d5f672547b135e3b5758fd126a672c4f6b1b6b1dded84e07` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/防御.png` | `Game/assets/ui/card-battle/defend.png` | `Assets/Image/Ui/CardBattle/defend.png`<br>`Game/assets/Image/Ui/CardBattle/defend.png` | `3f55dffecf0b61e5f2a4d60e86e6873df4bc0668280a1cb7cd82d9da7822927e` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
