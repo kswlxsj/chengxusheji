@@ -556,6 +556,82 @@
     }
   }
 
+  class ItemInspectWindow {
+    constructor(root) {
+      this.root = root;
+      this.backdrop = null;
+      this.resolve = null;
+      this.previousFocus = null;
+      this.handleKeydown = (event) => {
+        if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this.close();
+      };
+    }
+
+    show({ title = "物品", text = "", image = null }) {
+      this.close();
+      this.previousFocus = document.activeElement;
+
+      const backdrop = document.createElement("div");
+      backdrop.className = "item-inspect-backdrop";
+      backdrop.setAttribute("role", "dialog");
+      backdrop.setAttribute("aria-modal", "true");
+      backdrop.setAttribute("aria-label", `调查物品：${title}`);
+
+      const stage = document.createElement("div");
+      stage.className = "item-inspect-stage";
+      if (image) {
+        const img = document.createElement("img");
+        img.className = "item-inspect-image";
+        img.src = image;
+        img.alt = title;
+        stage.append(img);
+      }
+
+      const content = document.createElement("div");
+      content.className = "item-inspect-content";
+      const heading = document.createElement("h2");
+      heading.className = "item-inspect-title";
+      heading.textContent = title;
+      const description = document.createElement("p");
+      description.className = "item-inspect-text";
+      description.textContent = text;
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "item-inspect-close";
+      close.textContent = "点击空白处或按 Enter / Space 关闭";
+      content.append(heading, description, close);
+      stage.append(content);
+      backdrop.append(stage);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+
+      return new Promise((resolve) => {
+        this.resolve = resolve;
+        backdrop.addEventListener("click", (event) => {
+          if (event.target === backdrop || event.target === stage) this.close();
+        });
+        close.addEventListener("click", () => this.close());
+        document.addEventListener("keydown", this.handleKeydown, true);
+        close.focus();
+      });
+    }
+
+    close() {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      document.removeEventListener("keydown", this.handleKeydown, true);
+      const resolve = this.resolve;
+      this.resolve = null;
+      const previousFocus = this.previousFocus;
+      this.previousFocus = null;
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+      if (resolve) resolve();
+    }
+  }
+
   // 检定抖动动画节奏：只影响 roll() 里的抖动阶段（第一段等待）；
   // 算式与成败的停留时长不受倍速影响。实际时长 = 基准时长 / 倍速，
   // CSS 的抖动关键帧周期按同一倍速缩放（见 styles/main.css 的 --check-animation-scale）。
@@ -811,6 +887,7 @@
       this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
+      this.itemInspect = new ItemInspectWindow(root);
       this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
       this.backgroundAudio = Game.BackgroundAudioManager
         ? new Game.BackgroundAudioManager(document.body, audio)
@@ -848,6 +925,7 @@
       this.dialog.close();
       this.choice.close(null);
       this.inspect.close();
+      this.itemInspect.close();
       this.dice.close();
       this.minigame.close();
       // 事件收尾只清理事件音效；场景背景音拥有独立生命周期，不受 cancelPending 影响。

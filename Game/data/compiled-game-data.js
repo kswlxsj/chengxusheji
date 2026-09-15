@@ -1859,6 +1859,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "note_06_item",
           "title": "便签",
           "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
           "image": "assets/Image/Item/note.png",
@@ -4692,6 +4693,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "emergency_cutter",
           "title": "应急割带器",
           "text": "一件可以割断背包背带的应急工具。"
         }
@@ -4702,6 +4704,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "pry_bar",
           "title": "撬杆",
           "text": "一根可以撬开箱体、清理行李的工具。"
         }

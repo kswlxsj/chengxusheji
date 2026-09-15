@@ -216,7 +216,7 @@
       const inCarriage02 = context.state.sceneId === "carriage_02";
       const alreadyLit = context.state.flags.light_used === true;
       if (!inCarriage02 || alreadyLit) {
-        await context.ui.inspect.show({
+        await context.ui.itemInspect.show({
           title: itemName,
           text: alreadyLit
             ? `${itemName}的光芒仍然照得清前方的车厢。`
@@ -232,10 +232,8 @@
       if (!use || use.value !== true) return;
       context.state.flags.light_used = true;
       context.state.flags.light_type = params.item;
-      await context.ui.inspect.show({
-        title: "照亮车厢",
-        text: `${itemName}的光芒照亮了2号车厢，你终于看清了那个没有眼睛的Clicker。`,
-        image: item.image
+      await context.ui.dialog.showLine({
+        text: `${itemName}的光芒照亮了2号车厢，你终于看清了那个没有眼睛的Clicker。`
       });
     });
 

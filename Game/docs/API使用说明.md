@@ -206,7 +206,7 @@
 | `type` | 必填字段 | 可选字段 | 行为 |
 | --- | --- | --- | --- |
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
-| `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
+| `inspect` | `title`、`text`，或 `item` | `image` | 调查并等待玩家关闭。给出 `item`（已注册物品 ID）时，引擎自动取名称/说明/图片作默认内容，并使用压暗完整游戏画面的物品全屏展示；`title`/`text`/`image` 可覆盖默认值。未给出 `item` 时仍使用普通场景调查窗口，且必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes`, `checkId` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。每个检定最多实际执行两次；第一次结果为下标 `0`（成功）后锁定，第一次失败才允许第二次。 |
 | `changeScene` | `scene` | — | 关闭对话，等待背景及可见贴图就绪，检查暂停/取消后提交场景，再执行下一句。 |
@@ -298,7 +298,7 @@
 
 ### items.json
 
-`items.json` 每项必须有 `id`、非空 `name`、非空 `image`、字符串 `description` 和 `inspectEvent`。物品进入物品栏后会显示在底部常驻快捷栏中；点击物品会运行 `inspectEvent` 指向的编号事件，该事件必须在 `events.json` 中存在。
+`items.json` 每项必须有 `id`、非空 `name`、非空 `image`、字符串 `description` 和 `inspectEvent`。物品进入物品栏后会显示在底部常驻快捷栏中；点击物品会运行 `inspectEvent` 指向的编号事件，该事件必须在 `events.json` 中存在。物品事件中的 `inspect` 应填写对应 `item`，从而统一进入全屏物品展示；手机、手电筒等带主动行为的物品也应由自定义动作调用 `ui.itemInspect`，只在当前确实可用时优先进入操作分支。
 
 ```json
 {
@@ -712,7 +712,8 @@ class NoticeWindow extends TrainGame.GameWindow {
 | `handleAdvance()` / `isAwaitingAdvance()` | 补全或结束本句 / 判断能否推进。 |
 | `ui.attributeAllocation.choose(definitions, totalPoints)` | 返回属性对象或 `null`。 |
 | `ui.choice.choose(prompt, options)` | 返回选项对象或 `null`。 |
-| `ui.inspect.show({ title, text, image })` | 显示调查并等待关闭。 |
+| `ui.inspect.show({ title, text, image })` | 显示普通场景调查窗口并等待关闭。 |
+| `ui.itemInspect.show({ title, text, image })` | 压暗完整游戏舞台，全屏展示物品图片、名称和说明并等待关闭。 |
 | `ui.mainMenu/pauseMenu/confirmMenu.choose(config)` | 显示菜单并返回选项值。 |
 | `ui.closeDialog()` / `setPaused(value)` | 关闭对话 / 暂停文字。 |
 | `ui.cancelPending()` / `closePauseMenus()` | 取消剧情窗口（含小游戏宿主）/ 关闭暂停相关菜单。 |

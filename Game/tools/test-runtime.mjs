@@ -221,6 +221,27 @@ const registeredItems = JSON.parse(await readFile("data/items.json", "utf8"));
 const registeredScenes = JSON.parse(await readFile("data/scenes.json", "utf8"));
 const registeredEvents = JSON.parse(await readFile("data/events.json", "utf8"));
 const registeredEventsById = new Map(registeredEvents.map((event) => [event.id, event]));
+const itemInspectEvents = new Map(registeredItems.map((item) => [item.id, registeredEventsById.get(item.inspectEvent)]));
+for (const itemId of [
+  "note_06_item",
+  "bottle",
+  "newspaper",
+  "driver_cab_key",
+  "control_panel_key",
+  "emergency_cutter",
+  "pry_bar"
+]) {
+  assert.equal(
+    itemInspectEvents.get(itemId)?.actions?.[0]?.item,
+    itemId,
+    `物品 ${itemId} 的调查事件应通过物品 ID 进入全屏展示`
+  );
+}
+for (const itemId of ["phone", "flashlight"]) {
+  const action = itemInspectEvents.get(itemId)?.actions?.[0];
+  assert.equal(action?.name, "useLight", `照明物品 ${itemId} 应保留优先使用分支`);
+  assert.equal(action?.params?.item, itemId, `照明物品 ${itemId} 应把自身 ID 传给统一动作`);
+}
 const carriage05 = registeredScenes.find((scene) => scene.id === "carriage_05");
 assert.equal(
   carriage05.objects.find((object) => object.id === "door_05_to_04").clickEvent,
@@ -268,17 +289,33 @@ assert.deepEqual(
 );
 
 let inspectedItem = null;
+let inspectedScene = null;
 const inspectEngine = new Game.EventEngine({
   events: [],
   state: registeredState,
   items: registeredItems,
   scene: {},
-  ui: { inspect: { show: async (payload) => { inspectedItem = payload; } } }
+  ui: {
+    inspect: { show: async (payload) => { inspectedScene = payload; } },
+    itemInspect: { show: async (payload) => { inspectedItem = payload; } }
+  }
 });
 await inspectEngine.actions.get("inspect")({ type: "inspect", item: "phone" });
 assert.equal(inspectedItem.title, "手机", "物品调查应读取注册表中的名称");
 assert.equal(inspectedItem.text, "一部手机。", "物品调查应读取注册表中的说明");
 assert.equal(inspectedItem.image, "assets/Image/Item/phone.png", "物品调查应读取注册表中的图片");
+await inspectEngine.actions.get("inspect")({
+  type: "inspect",
+  item: "phone",
+  title: "手机特写",
+  text: "覆盖说明",
+  image: "assets/Image/Item/flashlight-v1.png"
+});
+assert.equal(inspectedItem.title, "手机特写", "物品调查应允许事件覆盖名称");
+assert.equal(inspectedItem.text, "覆盖说明", "物品调查应允许事件覆盖说明");
+assert.equal(inspectedItem.image, "assets/Image/Item/flashlight-v1.png", "物品调查应允许事件覆盖图片");
+await inspectEngine.actions.get("inspect")({ type: "inspect", title: "场景线索", text: "仍使用普通窗口。" });
+assert.equal(inspectedScene.title, "场景线索", "不带物品 ID 的场景调查应继续使用普通调查窗口");
 
 // ==== 检定（dice.js 可编程检定）====
 assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");
@@ -291,6 +328,7 @@ function createEngineUi() {
   return {
     dialog: { showLine: async () => {}, setFast: () => {} },
     inspect: { show: async () => {} },
+    itemInspect: { show: async () => {} },
     choice: { choose: async () => ({ value: true }) },
     closeDialog: () => {},
     cancelPending: () => {},
@@ -298,6 +336,53 @@ function createEngineUi() {
     toast: () => {}
   };
 }
+
+// 手机与手电筒仅在 2 号车厢尚未照明时优先进入使用选择；其他状态统一展示物品。
+const lightState = createState();
+const lightItemPayloads = [];
+const lightDialogue = [];
+let lightChoice = { value: false };
+const lightUi = {
+  ...createEngineUi(),
+  itemInspect: { show: async (payload) => { lightItemPayloads.push(payload); } },
+  choice: { choose: async () => lightChoice },
+  dialog: {
+    showLine: async (payload) => { lightDialogue.push(payload); },
+    setFast: () => {}
+  }
+};
+const lightEngine = new Game.EventEngine({
+  events: [{
+    id: "E_TEST_USE_LIGHT",
+    actions: [{ type: "custom", name: "useLight", params: { item: "phone" } }]
+  }],
+  state: lightState,
+  items: registeredItems,
+  scene: createEngineScene(),
+  ui: lightUi
+});
+Game.registerProjectActions(lightEngine);
+
+await lightEngine.play("E_TEST_USE_LIGHT");
+assert.equal(lightItemPayloads.at(-1).title, "手机", "非 2 号车厢点击照明物品应进入全屏物品调查");
+
+lightState.sceneId = "carriage_02";
+lightChoice = { value: false };
+const inspectCountBeforeDecline = lightItemPayloads.length;
+await lightEngine.play("E_TEST_USE_LIGHT");
+assert.equal(lightItemPayloads.length, inspectCountBeforeDecline, "可照明时暂不使用不应继续打开调查页");
+assert.equal(lightState.flags.light_used, undefined, "暂不使用不应改变照明状态");
+
+lightChoice = { value: true };
+await lightEngine.play("E_TEST_USE_LIGHT");
+assert.equal(lightState.flags.light_used, true, "使用手机应记录车厢已照明");
+assert.equal(lightState.flags.light_type, "phone", "使用手机应记录照明物品");
+assert.match(lightDialogue.at(-1).text, /照亮了2号车厢/, "使用成功应通过普通剧情文本反馈");
+
+const inspectCountBeforeLit = lightItemPayloads.length;
+await lightEngine.play("E_TEST_USE_LIGHT");
+assert.equal(lightItemPayloads.length, inspectCountBeforeLit + 1, "已经照明后再次点击应进入全屏物品调查");
+assert.match(lightItemPayloads.at(-1).text, /仍然照得清/, "已经照明后的调查应保留状态说明");
 
 function createEngineScene() {
   return {

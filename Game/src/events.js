@@ -187,11 +187,10 @@
         }
         const item = this.items.get(action.item);
         if (!item) throw new Error(`调查物品未注册：${action.item}`);
-        await this.ui.inspect.show({
+        await this.ui.itemInspect.show({
           title: action.title || item.name,
           text: action.text || item.description,
-          image: action.image || item.image,
-          large: action.large === true
+          image: action.image || item.image
         });
       });
 
