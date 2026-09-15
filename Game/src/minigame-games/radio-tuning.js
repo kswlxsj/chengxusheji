@@ -6,12 +6,18 @@
 
   const RESULT_FLAG = "ev0008_radio_tuned";
   const RANGE_SPAN = 64.8;
+  const RANGE_ARC_START = -135;
+  const RANGE_ARC_END = 135;
+  const RANGE_TRAVEL_MIN = RANGE_ARC_START + RANGE_SPAN / 2;
+  const RANGE_TRAVEL_MAX = RANGE_ARC_END - RANGE_SPAN / 2;
   const HOLD_DURATION = 3000;
   const RANGE_SPEED_SCALE = 1.08;
   const POINTER_STEP = 5 * 2.16;
+  const DIAL_PIVOT_X = 0.4927;
+  const DIAL_PIVOT_Y = 0.5705;
 
   const STYLE_TEXT = `
-    .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: Georgia, "Microsoft YaHei", sans-serif; }
+    .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
     .radio-tuning * { box-sizing: border-box; }
     .radio-tuning button { font: inherit; }
     .rt-shell { width: min(860px, 100%); min-height: 100%; margin: auto; padding: clamp(18px, 4vw, 42px); border: 1px solid rgba(255, 226, 184, .18); border-radius: 4px; background: repeating-linear-gradient(0deg, rgba(255, 225, 180, .03) 0 1px, transparent 1px 17px), linear-gradient(145deg, rgba(124, 80, 50, .97), rgba(54, 33, 26, .98) 55%, rgba(27, 19, 19, .99)); box-shadow: 0 24px 72px rgba(0, 0, 0, .58), inset 0 0 90px rgba(0, 0, 0, .34); }
@@ -43,6 +49,28 @@
     .rt-result h2 { margin: 0; color: #9fc786; font-size: clamp(24px, 4vw, 37px); }
     .rt-result p { margin: 12px 0 0; color: #b8aa9b; line-height: 1.7; }
     @media (max-width: 650px) { .rt-radio-top { grid-template-columns: 1fr; } .rt-speaker { display: none; } .rt-tracker { grid-template-columns: 1fr; } .rt-dial { width: min(280px, 78vw); } }
+    .radio-tuning .rt-radio { position: relative; width: min(100%, 980px); aspect-ratio: 2368 / 1760; min-height: 0; margin: 28px auto 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .radio-tuning .rt-shell { position: relative; }
+    .radio-tuning .rt-radio-art { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; image-rendering: auto; }
+    .radio-tuning .rt-radio-top { position: absolute; inset: 0; z-index: 2; display: block; }
+    .radio-tuning .rt-speaker { display: none; }
+    .radio-tuning .rt-screen { position: absolute; top: 25%; right: 9%; width: 39%; height: 15%; min-height: 0; padding: 0; border: 0; background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; line-height: 1; font-family: inherit; }
+    .radio-tuning .rt-tracker { position: absolute; inset: 0; z-index: 3; display: block; margin: 0; pointer-events: none; }
+    .radio-tuning .rt-dial { --pivot-x: 49.27%; --pivot-y: 57.05%; position: absolute; top: 29.5%; left: 8%; width: 40%; aspect-ratio: 1032 / 944; margin: 0; padding: 0; border: 0; outline: 0; background: transparent; box-shadow: none; pointer-events: auto; appearance: none; }
+    .radio-tuning .rt-dial:focus, .radio-tuning .rt-dial:focus-visible { outline: 0; }
+    .radio-tuning .rt-dial-art { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; pointer-events: none; image-rendering: auto; }
+    .radio-tuning .rt-dial::before { inset: auto; top: var(--pivot-y); left: var(--pivot-x); width: 84%; height: 84%; z-index: 2; transform: translate(-50%, -50%); }
+    .radio-tuning .rt-needle { top: var(--pivot-y); left: var(--pivot-x); bottom: auto; z-index: 3; height: 35%; margin-left: -2.5px; background: #ef4b43; box-shadow: 0 0 8px rgba(239, 75, 67, .72); transform-origin: 50% 0; transform: rotate(calc(180deg + var(--needle-angle))); }
+    .radio-tuning .rt-hub { display: none; }
+    .radio-tuning .rt-dashboard-hold { position: absolute; top: 70%; left: 10%; z-index: 5; width: 34%; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; font-family: inherit; pointer-events: none; }
+    .radio-tuning .rt-dashboard-hold .rt-hold-label { justify-content: center; gap: 16px; font-size: 11px; line-height: 1.2; white-space: nowrap; }
+    .radio-tuning .rt-dashboard-hold .rt-hold-track { width: 48%; height: 10px; margin: 5px auto 0; }
+    .radio-tuning .rt-panel { position: absolute; top: 42%; right: 10%; width: 37%; min-width: 0; padding: 0; border: 0; background: transparent; }
+    .radio-tuning .rt-angle { margin-bottom: 10px; font-size: clamp(22px, 4vw, 36px); }
+    .radio-tuning .rt-instruction { margin-top: 12px; font-size: 11px; line-height: 1.45; }
+    .radio-tuning .rt-status { min-height: 0; margin-top: 8px; font-size: 11px; line-height: 1.35; }
+    .radio-tuning .rt-result { position: absolute; inset: 31% 14% auto; z-index: 6; margin: 0; padding: 20px 18px; }
+    @media (max-width: 650px) { .radio-tuning .rt-radio { width: 100%; } .radio-tuning .rt-screen { top: 23%; right: 8%; width: 40%; height: 15%; } .radio-tuning .rt-dial { top: 31%; left: 6%; width: 42%; } .radio-tuning .rt-dashboard-hold { top: 72%; left: 8%; width: 36%; } .radio-tuning .rt-panel { top: 41%; right: 8%; width: 40%; } .radio-tuning .rt-instruction { font-size: 10px; } }
   `;
 
   const TEMPLATE = `
@@ -51,19 +79,23 @@
       <h1 class="rt-title">动态范围调频</h1>
       <p class="rt-subtitle">绿色频段会不断移动。控制指针跟随它，并连续稳定 3 秒，尝试解码这台收音机里的广播。</p>
       <section class="rt-radio" aria-label="动态范围收音机">
+        <img class="rt-radio-art" data-radio-art alt="" draggable="false">
         <div class="rt-radio-top">
           <div class="rt-speaker" aria-hidden="true"></div>
-          <div class="rt-screen"><span class="rt-screen-label">SIGNAL HOLD</span><strong class="rt-screen-value" data-screen>未捕获</strong></div>
+            <div class="rt-screen"><strong class="rt-screen-value" data-screen>未捕获</strong></div>
         </div>
         <div class="rt-tracker">
           <button class="rt-dial" type="button" data-dial aria-label="调频圆盘">
+            <img class="rt-dial-art" data-dial-art alt="" draggable="false">
             <span class="rt-needle" aria-hidden="true"></span><span class="rt-hub" aria-hidden="true">指针</span>
           </button>
+          <div class="rt-dashboard-hold" aria-label="持续时间">
+            <div class="rt-hold-label"><span>持续时间</span><span data-hold-time>0.0 / 3.0 秒</span></div>
+            <div class="rt-hold-track"><div class="rt-hold-fill" data-hold-fill></div></div>
+          </div>
           <div class="rt-panel">
             <p class="rt-angle" data-angle>000°</p>
-            <div class="rt-hold-label"><span>稳定时间</span><span data-hold-time>0.0 / 3.0 秒</span></div>
-            <div class="rt-hold-track"><div class="rt-hold-fill" data-hold-fill></div></div>
-            <p class="rt-instruction"><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd><br>旋转指针追踪绿色频段</p>
+            <p class="rt-instruction">拖动仪表盘指针<br><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd> 微调</p>
             <p class="rt-status" data-status>让指针进入绿色频段。</p>
           </div>
         </div>
@@ -89,6 +121,10 @@
     const root = document.createElement("div");
     root.className = "radio-tuning";
     root.innerHTML = `<style>${STYLE_TEXT}</style>${TEMPLATE}`;
+    const assetPath = (relativePath, filename) => context.assetBase
+      ? `${context.assetBase}/${relativePath}` : `assets/ui/radio-tuning/${filename}`;
+    root.querySelector("[data-radio-art]").src = assetPath("ui/radio-tuning/radio-base.png", "radio-base.png");
+    root.querySelector("[data-dial-art]").src = assetPath("ui/radio-tuning/dashboard.png", "dashboard.png");
     context.stage.append(root);
 
     const dial = root.querySelector("[data-dial]");
@@ -108,6 +144,7 @@
     let lastFrame = 0;
     let animationFrame = 0;
     let resolved = false;
+    let dragging = false;
     let resolveFinish;
     const finished = new Promise((resolve) => { resolveFinish = resolve; });
 
@@ -160,7 +197,14 @@
       const elapsed = Math.min(80, now - lastFrame);
       lastFrame = now;
       if (now >= nextDirectionChange) randomizeRangeMotion(now);
-      rangeCenter = normalize(rangeCenter + rangeSpeed * elapsed / 1000);
+      rangeCenter += rangeSpeed * elapsed / 1000;
+      if (rangeCenter <= RANGE_TRAVEL_MIN) {
+        rangeCenter = RANGE_TRAVEL_MIN;
+        rangeSpeed = Math.abs(rangeSpeed);
+      } else if (rangeCenter >= RANGE_TRAVEL_MAX) {
+        rangeCenter = RANGE_TRAVEL_MAX;
+        rangeSpeed = -Math.abs(rangeSpeed);
+      }
       const inside = isPointerInside();
       heldFor = inside ? heldFor + elapsed : 0;
       render(inside);
@@ -174,11 +218,44 @@
       render(isPointerInside());
     }
 
+    function setPointerFromPosition(clientX, clientY) {
+      if (resolved) return;
+      const bounds = dial.getBoundingClientRect();
+      const centerX = bounds.left + bounds.width * DIAL_PIVOT_X;
+      const centerY = bounds.top + bounds.height * DIAL_PIVOT_Y;
+      const angle = normalize(Math.atan2(clientX - centerX, centerY - clientY) * 180 / Math.PI);
+      const delta = ((angle - pointerAngle + 540) % 360) - 180;
+      pointerAngle = normalize(pointerAngle + delta);
+      pointerDisplayAngle += delta;
+      render(isPointerInside());
+    }
+
     function onKeydown(event) {
       const key = event.key.toLowerCase();
       if (!["arrowleft", "arrowright", "a", "d"].includes(key)) return;
       event.preventDefault();
       rotate(key === "arrowright" || key === "d" ? 1 : -1);
+    }
+
+    function onDialClick() {
+      dial.focus();
+    }
+    function onDialPointerDown(event) {
+      if (resolved) return;
+      event.preventDefault();
+      dragging = true;
+      dial.setPointerCapture?.(event.pointerId);
+      dial.focus();
+      setPointerFromPosition(event.clientX, event.clientY);
+    }
+    function onDialPointerMove(event) {
+      if (!dragging) return;
+      event.preventDefault();
+      setPointerFromPosition(event.clientX, event.clientY);
+    }
+    function onDialPointerUp(event) {
+      dragging = false;
+      if (dial.hasPointerCapture?.(event.pointerId)) dial.releasePointerCapture(event.pointerId);
     }
 
     context.onQuit(() => {
@@ -194,11 +271,20 @@
     context.registerCleanup(() => {
       cancelAnimationFrame(animationFrame);
       root.removeEventListener("keydown", onKeydown);
+      dial.removeEventListener("click", onDialClick);
+      dial.removeEventListener("pointerdown", onDialPointerDown);
+      dial.removeEventListener("pointermove", onDialPointerMove);
+      dial.removeEventListener("pointerup", onDialPointerUp);
+      dial.removeEventListener("pointercancel", onDialPointerUp);
       root.remove();
     });
 
     root.addEventListener("keydown", onKeydown);
-    dial.addEventListener("click", () => dial.focus());
+    dial.addEventListener("click", onDialClick);
+    dial.addEventListener("pointerdown", onDialPointerDown);
+    dial.addEventListener("pointermove", onDialPointerMove);
+    dial.addEventListener("pointerup", onDialPointerUp);
+    dial.addEventListener("pointercancel", onDialPointerUp);
     pointerAngle = 0;
     rangeCenter = 82 + Math.random() * 80;
     randomizeRangeMotion(performance.now());
