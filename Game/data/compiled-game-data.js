@@ -660,6 +660,12 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 30,
+            "y": 31,
+            "width": 12,
+            "height": 44
+          },
           "zIndex": 12,
           "clickEvent": "E_026",
           "visibleWhen": {

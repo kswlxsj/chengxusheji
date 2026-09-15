@@ -7,6 +7,7 @@
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
   const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
+  const GAME_UI_BUILD = "conductor-tug-20260915-10";
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
   const routes = Object.freeze({
@@ -41,6 +42,7 @@
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null) target.searchParams.set(key, String(value));
     }
+    if (route === "game") target.searchParams.set("uiBuild", GAME_UI_BUILD);
     return target.href;
   }
 

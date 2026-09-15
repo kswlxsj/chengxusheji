@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 控制杆争夺 UI 预览</title>
-  <link rel="stylesheet" href="styles/main.css?v=conductor-tug-ui-1">
+  <link rel="stylesheet" href="styles/main.css?v=overlay-minigames-20260915-10">
   <style>
     @font-face {
       font-family: "Ark Pixel 12px";
@@ -21,16 +21,24 @@
     }
     .preview { width: 100%; height: 100vh; }
     #preview-stage { position: relative; width: 100%; height: 100%; overflow: hidden; background: #101318; }
+    #preview-stage.overlay-preview {
+      background: linear-gradient(rgba(0, 0, 0, .70), rgba(0, 0, 0, .70)), url("assets/Image/Scene/Background/front-carriage.png") center / cover;
+    }
+    #preview-stage.overlay-preview .mg-tug,
+    #preview-stage.overlay-preview .mg-tug-fighter {
+      background: transparent;
+      border-color: transparent;
+    }
   </style>
 </head>
 <body>
   <main class="preview" aria-label="控制杆争夺小游戏 UI 预览">
-    <section id="preview-stage" aria-label="控制杆争夺小游戏画布"></section>
+    <section id="preview-stage" class="overlay-preview" aria-label="控制杆争夺小游戏画布"></section>
   </main>
 
   <script src="src/namespace.js"></script>
   <script src="src/minigames.js"></script>
-  <script src="src/minigame-games/conductor-tug.js?v=preview-conductor-tug-ui-1"></script>
+  <script src="src/minigame-games/conductor-tug.js?v=overlay-minigames-20260915-8"></script>
   <script>
     "use strict";
 
