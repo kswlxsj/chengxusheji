@@ -529,7 +529,7 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_501"
+          "clickEvent": "E_023"
         },
         {
           "id": "black_bag_03",
@@ -3739,25 +3739,6 @@ window.GAME_DATA = {
       "next": "E_022"
     },
     {
-      "id": "E_02_DECIDE",
-      "actions": [
-        {
-          "type": "choice",
-          "prompt": "Clicker正挡在车厢中段，你打算怎么处理？",
-          "options": [
-            {
-              "label": "蹑手蹑脚地通过",
-              "next": "E_022"
-            },
-            {
-              "label": "制造声响引开并清掉Clicker",
-              "next": "E_023"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "E_022",
       "actions": [
         {
@@ -3878,40 +3859,16 @@ window.GAME_DATA = {
       "actions": []
     },
     {
-      "id": "E_022_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你谨慎通过，到达先头车厢门前。"
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得手机）"
-        },
-        {
-          "type": "addItem",
-          "item": "phone"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_022_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你踩到尸体发出声响，怪物们注意到了你。"
-        }
-      ],
-      "next": "E_023"
-    },
-    {
       "id": "E_023",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "inner_world_entered",
+            "equals": true
+          },
+          "next": "E_501"
+        },
         {
           "type": "dialogue",
           "text": "你站在3号通往2号的车门前。手电的光在黑暗里只照出几步远。"
@@ -3981,129 +3938,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "灯，灭了。\n\n黑暗中，你摸到了通往2号车厢的门。"
+          "text": "灯，灭了。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_03_blackout",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
+          "type": "dialogue",
+          "text": "黑暗中，你摸到了通往2号车厢的门。"
         }
       ],
       "next": "E_501"
-    },
-    {
-      "id": "E_023_CONSTITUTION_CHECK",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev023_constitution_01",
-          "outcomes": [
-            "E_023_CARD_BATTLE_EASY",
-            "E_023_CARD_BATTLE_HARD"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_023_CONSTITUTION_SUCCESS",
-      "actions": [
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_023_CARD_BATTLE_EASY",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你抓住空隙冲向Clicker。体质检定成功，战斗轮进入简单模式。"
-        },
-        {
-          "type": "setFlag",
-          "key": "card_battle_won",
-          "value": false
-        },
-        {
-          "type": "minigame",
-          "game": "card_battle"
-        }
-      ]
-    },
-    {
-      "id": "E_023_CARD_BATTLE_HARD",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你的动作惊动了Clicker。战斗轮进入困难模式。"
-        },
-        {
-          "type": "setFlag",
-          "key": "card_battle_won",
-          "value": false
-        },
-        {
-          "type": "minigame",
-          "game": "card_battle_hard"
-        }
-      ]
-    },
-    {
-      "id": "E_023_THROW_FIRST",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
-        },
-        {
-          "type": "dialogue",
-          "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "clicker_cleared",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev023_throw_after_fail_luck_01",
-          "outcomes": [
-            "E_023_THROW_AFTER_CONSTITUTION_FAIL_SUCCESS",
-            "E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL_SUCCESS",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "clicker_cleared",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL",
-      "actions": [],
-      "next": "E_024"
     },
     {
       "id": "E_023_BOTTLE",
@@ -4113,79 +3964,6 @@ window.GAME_DATA = {
           "item": "bottle"
         }
       ]
-    },
-    {
-      "id": "E_024",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev024_light_01",
-          "outcomes": [
-            "E_024_S",
-            "E_024_F"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_024_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你感觉黑暗中有人影行走，差不多有两三个。"
-        },
-        {
-          "type": "dialogue",
-          "text": "它们的头偶尔偏转，像在寻找。"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "monster_behavior_known",
-            "equals": true
-          },
-          "next": "E_024_S_KNOWLEDGE"
-        }
-      ],
-      "next": "E_024_S_CONTINUE"
-    },
-    {
-      "id": "E_024_S_KNOWLEDGE",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你想起乘务员的话：它们没有眼睛，只靠声音。"
-        }
-      ],
-      "next": "E_024_S_CONTINUE"
-    },
-    {
-      "id": "E_024_S_CONTINUE",
-      "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_02"
-        },
-        {
-          "type": "dialogue",
-          "text": "你屏住呼吸，压低身形，踏进2号车厢。"
-        }
-      ],
-      "next": "E_025"
-    },
-    {
-      "id": "E_024_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你觉得很黑，什么都看不清。"
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_02"
-        }
-      ],
-      "next": "E_025"
     },
     {
       "id": "E_025",
@@ -5147,27 +4925,13 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_023_CHOICE",
-      "actions": [
-        {
-          "type": "choice",
-          "prompt": "你要怎么通过或引开Clicker？",
-          "options": [
-            {
-              "label": "直接冲过去",
-              "next": "E_023_CONSTITUTION_CHECK"
-            },
-            {
-              "label": "投掷彩色玻璃瓶",
-              "next": "E_023_THROW_FIRST"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "E_501",
       "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_03_blackout",
+          "value": false
+        },
         {
           "type": "sound",
           "sound": "door_open"

@@ -144,27 +144,6 @@
   registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"]));
   registerDice("ev016_constitution_01", attrCheck("constitution"));
 
-  registerDice("ev023_constitution_01", attrCheck("constitution"));
-  registerDice("ev023_throw_after_fail_luck_01", (context) => luckCheck(context, "失败后的投掷幸运检定"));
-
-  // E-024：用 1d100 乘以光源系数判断能否看清 2 号车厢。
-  // 手电筒 +10%，手机闪光 +5%，两项效果叠加；达到 50 视为成功。
-  registerDice("ev024_light_01", async (context) => {
-    const hasFlashlight = context.state.inventory.includes("flashlight");
-    const hasPhone = context.state.inventory.includes("phone");
-    const coefficient = 1 + (hasFlashlight ? 0.1 : 0) + (hasPhone ? 0.05 : 0);
-    const roll = Math.floor(Math.random() * 100) + 1;
-    const adjusted = Math.round(roll * coefficient * 100) / 100;
-    const success = adjusted >= 50;
-    const sources = [
-      hasFlashlight ? "手电筒 +10%" : "",
-      hasPhone ? "手机闪光 +5%" : ""
-    ].filter(Boolean);
-    const detail = `掷出 ${roll} × ${coefficient.toFixed(2)} = ${adjusted}\n${sources.length ? sources.join("，") : "无光源修正"}\n需要达到 50。`;
-    await showDiceRollAnimation(context, roll, success, detail);
-    return success ? 0 : 1;
-  });
-
   registerDice("ev027_constitution_01", attrCheck("constitution", 7));
   registerDice("ev028_constitution_01", attrCheck("constitution"));
   registerDice("ev028_luck_01", (context) => luckCheck(context, "投掷后的幸运检定"));

@@ -5,7 +5,7 @@
 // 覆盖范围（5号车厢 → 4号 → 3号 → 2号 → 先头车厢）：
 // - 5号右门只过门（切景 + 过门句，不触发医学检定）；剧情路线统一经 E_013_ENTRY 进4号。
 // - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后直接进行教育检定。
-// - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_501）才进入。
+// - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_023 门前认知崩塌 → E_501）才进入。
 // - 里世界返程 E_524 回到真2号后接 E_025 喘息段，播完停下，不自动进入 Clicker 遭遇。
 // - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；安静通过也置 carriage_02_passed。
 import assert from "node:assert/strict";
@@ -106,7 +106,7 @@ function assertCutBefore(game, fromSceneId, toSceneId) {
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026", "Clicker 应进入2号车厢怪物遭遇");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
-assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_501", "3号通往2号的门仍归里世界入口");
+assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
 
 // 剧情路线的 next 统一指向 E_013_ENTRY，首次到达只播发现描写，不自动检定。
@@ -162,7 +162,7 @@ assert.equal(door04[door04.length - 1].type, "dialogue");
 assert.match(door04[door04.length - 1].text, /返回3号车厢/);
 
 // 3号→2号不再由剧情自动进车：E_022_ITEM 拿完手电即停，E_023 末段直接接里世界入口；
-// 进车只能由玩家点 door_03_to_02（E_501）。E_024 光源侦查已不在主线上（见 docs/main-route-wiring.md）。
+// 进车只能由玩家点 door_03_to_02（E_023 门前认知崩塌 → E_501）。E_024 光源侦查旧线已删除（见 docs/main-route-wiring.md）。
 assert.equal(eventById.get("E_022_ITEM").next, undefined);
 assert.equal(eventById.get("E_023_LOOP").next, "E_501");
 

@@ -1,4 +1,6 @@
-/* 2号车厢在首次照明前只保留极弱的轮廓，避免玩家提前看清 Clicker 场景。 */
+/* 无光车厢的黑场层（由 src/scene.js 的 isSceneUnlit 决定 class）：
+   - 2号车厢：首次照明前只保留极弱轮廓，避免玩家提前看清 Clicker 场景；
+   - 3号车厢：认知崩塌「灯灭了」之后（`carriage_03_blackout`），离开3号时清除。 */
 #scene-layer.is-unlit::after {
   content: "";
   position: absolute;
@@ -7,4 +9,23 @@
   pointer-events: none;
   background: #010101;
   opacity: .99;
+}
+
+/* 3号车厢的「灯灭了」用淡入呈现过程；2号保持立即生效，不提前泄露 Clicker 画面。 */
+#scene-layer.is-unlit[data-scene-id="carriage_03"]::after {
+  animation: scene-blackout 900ms ease-out;
+}
+
+@keyframes scene-blackout {
+  from { opacity: 0; }
+  to { opacity: .99; }
+}
+
+/* 暂停冻结淡入，与车厢颠簸／顶灯闪烁的暂停语义保持一致。 */
+#game-shell.paused #scene-layer.is-unlit[data-scene-id="carriage_03"]::after {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #scene-layer.is-unlit[data-scene-id="carriage_03"]::after { animation: none; }
 }

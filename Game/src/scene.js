@@ -209,6 +209,14 @@
     return sceneId === "front_carriage" || /^carriage_\d{2}$/.test(sceneId);
   }
 
+  // 场景是否处于「无光」状态：2号车厢首次照明前只留极弱轮廓；
+  // 3号车厢在认知崩塌「灯灭了」之后（`carriage_03_blackout`，离开3号时清除）。
+  function isSceneUnlit(sceneId, flags) {
+    if (sceneId === "carriage_02") return flags.light_used !== true;
+    if (sceneId === "carriage_03") return flags.carriage_03_blackout === true;
+    return false;
+  }
+
   const comparisonOperators = {
     eq: (left, right) => left === right,
     ne: (left, right) => left !== right,
@@ -320,7 +328,7 @@
       return JSON.stringify([
         scene.id,
         backgroundVariant?.image || scene.background,
-        scene.id === "carriage_02" && this.state.flags.light_used !== true,
+        isSceneUnlit(scene.id, this.state.flags),
         visibleObjects
       ]);
     }
@@ -331,15 +339,12 @@
       this.renderSignature = this.buildRenderSignature(scene);
       this.root.replaceChildren();
       const carriageScene = isCarriageScene(scene.id);
-      const carriageLit = carriageScene
-        && !(scene.id === "carriage_02" && this.state.flags.light_used !== true);
+      const unlit = isSceneUnlit(scene.id, this.state.flags);
+      const carriageLit = carriageScene && !unlit;
       this.root.dataset.sceneId = scene.id;
       this.root.classList.toggle("is-carriage", carriageScene);
       this.root.classList.toggle("is-lit", carriageLit);
-      this.root.classList.toggle(
-        "is-unlit",
-        scene.id === "carriage_02" && this.state.flags.light_used !== true
-      );
+      this.root.classList.toggle("is-unlit", unlit);
       const background = document.createElement("img");
       background.className = "scene-background";
       background.decoding = "async";
@@ -580,5 +585,6 @@
   }
 
   Game.evaluateCondition = evaluateCondition;
+  Game.isSceneUnlit = isSceneUnlit;
   Game.SceneManager = SceneManager;
 })(window.TrainGame);

@@ -18,7 +18,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const trace = [];
   const sounds = [];
   const ui = {
-    dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory] }); } },
+    dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory], blackout: state.flags.carriage_03_blackout === true }); } },
     choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
     audio: { play(sound) { sounds.push(sound); return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
@@ -45,6 +45,28 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
 let game = fixture();
 await game.play("E_023");
 assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
+// 「灯灭了」在最后一句之前生效：黑场句在黑场中显示，且离开3号时清除黑场旗标。
+assert.equal(
+  game.trace.find(t => t.text === "灯，灭了。")?.blackout,
+  false,
+  "「灯，灭了。」这句仍在亮灯状态下显示"
+);
+assert.equal(
+  game.trace.find(t => t.text === "黑暗中，你摸到了通往2号车厢的门。")?.blackout,
+  true,
+  "摸门那句应在3号车厢黑场中显示"
+);
+assert.equal(game.state.flags.carriage_03_blackout, false, "离开3号后应清除黑场旗标");
+
+// 已到过伪4（inner_world_entered）后推门不再播放认知崩塌，直接走主线进2号。
+const revisit = fixture({ inner_world_entered: true });
+await revisit.play("E_023");
+assert.equal(revisit.state.sceneId, "carriage_02", "回访推门应直接进入2号车厢");
+assert.equal(
+  revisit.trace.some(t => t.text?.includes("请不要下车") || t.text?.includes("门消失了")),
+  false,
+  "回访不得重播认知崩塌"
+);
 
 game = fixture();
 await game.play("E_501");
@@ -367,14 +389,47 @@ assert.equal(
   "E_026",
   "点击2号车厢的Clicker应进入怪物遭遇"
 );
-// 3号通往2号的门重新接入里世界入口：未到过伪4时进门走里世界，到过之后由 E_501 的守卫落到主线。
+// 3号通往2号的门先播门前认知崩塌 E_023（只在未到过伪4时播一次），再由 E_501 决定进里世界或走主线。
 const carriage03 = scenes.find(s => s.id === "carriage_03");
-assert.equal(carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent, "E_501");
+assert.equal(
+  carriage03.objects.find(o => o.id === "door_03_to_02").clickEvent,
+  "E_023",
+  "3号通往2号的门应先播门前认知崩塌"
+);
 assert.equal(events.find(e => e.id === "E_501").actions
   .some(a => a.type === "conditionalJump" && a.next === "E_DOOR_03" && a.when?.flag === "inner_world_entered"), true);
 const e022Item = events.find(e => e.id === "E_022_ITEM");
 assert.equal(e022Item.next, undefined, "E_022_ITEM 结束后应停在3号车厢，等待玩家点门");
 assert.equal(events.find(e => e.id === "E_023_LOOP").next, "E_501", "E_023 末段应进入里世界");
+// 「认知崩塌只在首次播放」由 inner_world_entered 守卫，与该门门禁同源。
+const e023 = events.find(e => e.id === "E_023");
+assert.deepEqual(
+  e023.actions[0],
+  { type: "conditionalJump", when: { flag: "inner_world_entered", equals: true }, next: "E_501" },
+  "E_023 首部应有「已到过伪4则跳过」守卫"
+);
+// 3号黑场：最后一句之前置位并刷新场景，离开3号（E_501）时清除。
+const loopActions = events.find(e => e.id === "E_023_LOOP").actions;
+const blackoutAt = loopActions.findIndex(a => a.type === "setFlag" && a.key === "carriage_03_blackout" && a.value === true);
+assert.ok(blackoutAt > 0, "E_023_LOOP 应在「灯灭了」之后置位黑场旗标");
+assert.equal(loopActions[blackoutAt - 1].text, "灯，灭了。");
+assert.deepEqual(loopActions[blackoutAt + 1], { type: "custom", name: "refreshScene" }, "置位后必须刷新场景才能立刻变暗");
+assert.equal(loopActions[blackoutAt + 2].text, "黑暗中，你摸到了通往2号车厢的门。");
+assert.deepEqual(
+  events.find(e => e.id === "E_501").actions[0],
+  { type: "setFlag", key: "carriage_03_blackout", value: false },
+  "E_501 应最先清除3号黑场旗标"
+);
+// A1（旧2号车厢穿越线）与 A3（光源侦查旧线）已删除，不得留下死事件或死检定。
+for (const removed of [
+  "E_02_DECIDE", "E_022_S", "E_022_F", "E_023_CHOICE", "E_023_CONSTITUTION_CHECK",
+  "E_023_CONSTITUTION_SUCCESS", "E_023_CARD_BATTLE_EASY", "E_023_CARD_BATTLE_HARD",
+  "E_023_THROW_FIRST", "E_023_THROW_AFTER_CONSTITUTION_FAIL",
+  "E_023_THROW_AFTER_CONSTITUTION_FAIL_SUCCESS", "E_023_THROW_AFTER_CONSTITUTION_FAIL_FAIL",
+  "E_024", "E_024_S", "E_024_S_KNOWLEDGE", "E_024_S_CONTINUE", "E_024_F"
+]) {
+  assert.equal(events.some(e => e.id === removed), false, `${removed} 已删除，不得残留`);
+}
 // 里世界出口接回主剧本：E_524 回到真2号后由 E_025 提供喘息段，播完停下等玩家点 Clicker。
 assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_025");
 assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_025");

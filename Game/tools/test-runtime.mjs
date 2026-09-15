@@ -160,6 +160,13 @@ assert.equal(Game.evaluateCondition({ all: [
   { not: { skill: "manual", equals: true } }
 ] }, state), true);
 
+// 无光车厢判定：2号车厢首次照明前全黑；3号车厢认知崩塌「灯灭了」后全黑，离开时清除。
+assert.equal(Game.isSceneUnlit("carriage_02", {}), true, "2号车厢未照明时应为无光");
+assert.equal(Game.isSceneUnlit("carriage_02", { light_used: true }), false, "2号车厢照明后应恢复");
+assert.equal(Game.isSceneUnlit("carriage_03", {}), false, "3号车厢平时应为亮灯");
+assert.equal(Game.isSceneUnlit("carriage_03", { carriage_03_blackout: true }), true, "3号车厢灯灭后应为无光");
+assert.equal(Game.isSceneUnlit("carriage_04", { carriage_03_blackout: true }), false, "黑场只作用于3号车厢");
+
 const saves = new Game.SaveManager(state, "test-save");
 saves.save(1);
 assert.equal(saves.listSlots().length, 3);
