@@ -456,6 +456,13 @@ window.GAME_DATA = {
             "flag": "carried_crew",
             "equals": true
           }
+        },
+        {
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+          "visibleWhen": {
+            "flag": "crew_04_left_seated",
+            "equals": true
+          }
         }
       ],
       "objects": [
@@ -517,6 +524,84 @@ window.GAME_DATA = {
             "y": 62,
             "width": 22,
             "height": 13
+          },
+          "zIndex": 12,
+          "clickEvent": "E_013"
+        },
+        {
+          "id": "crew_04_seated_left",
+          "name": "坐在左侧座椅上的乘务员",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "fullCanvas": true,
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "crew_04_left_seated",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_03_bag_interacted",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carried_crew",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 28.5,
+            "y": 41,
+            "width": 8.5,
+            "height": 33
+          },
+          "zIndex": 12,
+          "clickEvent": "E_013"
+        },
+        {
+          "id": "crew_04_seated_right",
+          "name": "坐在右侧座椅上的乘务员",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "fullCanvas": true,
+          "visibleWhen": {
+            "all": [
+              {
+                "flag": "crew_04_left_seated",
+                "equals": true
+              },
+              {
+                "flag": "carriage_03_bag_interacted",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carried_crew",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 63,
+            "y": 41,
+            "width": 8.5,
+            "height": 33
           },
           "zIndex": 12,
           "clickEvent": "E_013"
@@ -2875,6 +2960,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_04_left_seated",
+          "value": true
         }
       ]
     },

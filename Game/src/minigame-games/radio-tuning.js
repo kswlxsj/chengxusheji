@@ -13,8 +13,6 @@
   const HOLD_DURATION = 3000;
   const RANGE_SPEED_SCALE = 1.08;
   const POINTER_STEP = 5 * 2.16;
-  const DIAL_PIVOT_X = 0.4927;
-  const DIAL_PIVOT_Y = 0.5705;
 
   const STYLE_TEXT = `
     .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
@@ -31,7 +29,7 @@
     .rt-screen-label { display: block; color: #73916b; font-size: 11px; letter-spacing: .12em; }
     .rt-screen-value { display: block; margin-top: 3px; font-size: clamp(15px, 2vw, 21px); }
     .rt-tracker { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(190px, .7fr); gap: clamp(20px, 5vw, 48px); align-items: center; margin-top: 30px; }
-    .rt-dial { --needle-angle: 0deg; --range-start: 0deg; --range-span: 64.8deg; position: relative; width: min(330px, 68vw); aspect-ratio: 1; margin: auto; border: 12px solid #2c2523; border-radius: 50%; cursor: pointer; background: repeating-conic-gradient(from -1deg, rgba(226, 173, 112, .24) 0deg 1deg, transparent 1deg 10deg), radial-gradient(circle, #342a27 0 52%, #201817 53% 70%, #4b3932 71% 76%, #1a1312 77%); box-shadow: 0 10px 30px rgba(0, 0, 0, .5), inset 0 0 0 3px rgba(226, 173, 112, .22); }
+    .rt-dial { --needle-angle: 0deg; --range-start: 0deg; --range-span: 64.8deg; position: relative; width: min(330px, 68vw); aspect-ratio: 1; margin: auto; border: 12px solid #2c2523; border-radius: 50%; cursor: default; background: repeating-conic-gradient(from -1deg, rgba(226, 173, 112, .24) 0deg 1deg, transparent 1deg 10deg), radial-gradient(circle, #342a27 0 52%, #201817 53% 70%, #4b3932 71% 76%, #1a1312 77%); box-shadow: 0 10px 30px rgba(0, 0, 0, .5), inset 0 0 0 3px rgba(226, 173, 112, .22); }
     .rt-dial::before { content: ""; position: absolute; inset: 12%; border-radius: 50%; background: conic-gradient(from var(--range-start), transparent 0deg, transparent 5deg, rgba(159, 199, 134, .2) 5deg, #9fc786 5deg calc(5deg + var(--range-span)), transparent calc(5deg + var(--range-span)) 360deg); filter: drop-shadow(0 0 8px rgba(159, 199, 134, .7)); transition: filter .15s ease; }
     .rt-dial.in-range::before { filter: drop-shadow(0 0 14px rgba(159, 199, 134, .95)); }
     .rt-needle { position: absolute; left: 50%; bottom: 50%; width: 5px; height: 39%; border-radius: 6px; background: #efb45f; box-shadow: 0 0 8px rgba(239, 180, 95, .75); transform: translateX(-50%) rotate(var(--needle-angle)); transform-origin: 50% 100%; }
@@ -159,7 +157,7 @@
             <div class="rt-screen"><strong class="rt-screen-value" data-screen>未捕获</strong></div>
         </div>
         <div class="rt-tracker">
-          <button class="rt-dial" type="button" data-dial aria-label="调频圆盘">
+          <button class="rt-dial" type="button" data-dial aria-label="调频圆盘，使用方向键或 A、D 键控制">
             <img class="rt-dial-art" data-dial-art alt="" draggable="false">
             <span class="rt-needle" aria-hidden="true"></span><span class="rt-hub" aria-hidden="true">指针</span>
           </button>
@@ -169,7 +167,7 @@
           </div>
           <div class="rt-panel">
             <p class="rt-angle" data-angle>000°</p>
-            <p class="rt-instruction">拖动仪表盘指针<br><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd> 微调</p>
+            <p class="rt-instruction">使用键盘控制指针<br><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd></p>
             <p class="rt-status" data-status>让指针进入绿色频段。</p>
           </div>
         </div>
@@ -218,7 +216,6 @@
     let lastFrame = 0;
     let animationFrame = 0;
     let resolved = false;
-    let dragging = false;
     let resolveFinish;
     const finished = new Promise((resolve) => { resolveFinish = resolve; });
 
@@ -292,18 +289,6 @@
       render(isPointerInside());
     }
 
-    function setPointerFromPosition(clientX, clientY) {
-      if (resolved) return;
-      const bounds = dial.getBoundingClientRect();
-      const centerX = bounds.left + bounds.width * DIAL_PIVOT_X;
-      const centerY = bounds.top + bounds.height * DIAL_PIVOT_Y;
-      const angle = normalize(Math.atan2(clientX - centerX, centerY - clientY) * 180 / Math.PI);
-      const delta = ((angle - pointerAngle + 540) % 360) - 180;
-      pointerAngle = normalize(pointerAngle + delta);
-      pointerDisplayAngle += delta;
-      render(isPointerInside());
-    }
-
     function onKeydown(event) {
       const key = event.key.toLowerCase();
       if (!["arrowleft", "arrowright", "a", "d"].includes(key)) return;
@@ -313,23 +298,6 @@
 
     function onDialClick() {
       dial.focus();
-    }
-    function onDialPointerDown(event) {
-      if (resolved) return;
-      event.preventDefault();
-      dragging = true;
-      dial.setPointerCapture?.(event.pointerId);
-      dial.focus();
-      setPointerFromPosition(event.clientX, event.clientY);
-    }
-    function onDialPointerMove(event) {
-      if (!dragging) return;
-      event.preventDefault();
-      setPointerFromPosition(event.clientX, event.clientY);
-    }
-    function onDialPointerUp(event) {
-      dragging = false;
-      if (dial.hasPointerCapture?.(event.pointerId)) dial.releasePointerCapture(event.pointerId);
     }
 
     context.onQuit(() => {
@@ -346,19 +314,11 @@
       cancelAnimationFrame(animationFrame);
       root.removeEventListener("keydown", onKeydown);
       dial.removeEventListener("click", onDialClick);
-      dial.removeEventListener("pointerdown", onDialPointerDown);
-      dial.removeEventListener("pointermove", onDialPointerMove);
-      dial.removeEventListener("pointerup", onDialPointerUp);
-      dial.removeEventListener("pointercancel", onDialPointerUp);
       root.remove();
     });
 
     root.addEventListener("keydown", onKeydown);
     dial.addEventListener("click", onDialClick);
-    dial.addEventListener("pointerdown", onDialPointerDown);
-    dial.addEventListener("pointermove", onDialPointerMove);
-    dial.addEventListener("pointerup", onDialPointerUp);
-    dial.addEventListener("pointercancel", onDialPointerUp);
     pointerAngle = 0;
     rangeCenter = 82 + Math.random() * 80;
     randomizeRangeMotion(performance.now());

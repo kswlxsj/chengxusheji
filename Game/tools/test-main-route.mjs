@@ -121,6 +121,34 @@ assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
+const seatedCrewLeft = objectOf("carriage_04", "crew_04_seated_left");
+const seatedCrewRight = objectOf("carriage_04", "crew_04_seated_right");
+assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png");
+assert.equal(seatedCrewRight.image, seatedCrewLeft.image, "左右座位应复用同一张坐姿乘务员图层");
+assert.equal(seatedCrewLeft.clickEvent, "E_013", "左侧坐姿应承接原乘务员热点");
+assert.equal(seatedCrewRight.clickEvent, "E_013", "右侧坐姿应承接原乘务员热点");
+assert.deepEqual(seatedCrewLeft.visibleWhen, {
+  all: [
+    { flag: "crew_04_left_seated", equals: true },
+    { not: { flag: "carriage_03_bag_interacted", equals: true } },
+    { not: { flag: "carried_crew", equals: true } }
+  ]
+});
+assert.deepEqual(seatedCrewRight.visibleWhen, {
+  all: [
+    { flag: "crew_04_left_seated", equals: true },
+    { flag: "carriage_03_bag_interacted", equals: true },
+    { not: { flag: "carried_crew", equals: true } }
+  ]
+});
+assert.equal(
+  sceneById.get("carriage_04").backgroundVariants.some((variant) => (
+    variant.image === "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png"
+      && variant.visibleWhen?.flag === "crew_04_left_seated"
+  )),
+  true,
+  "留下已救醒乘务员时应先移除背景里躺卧的人物"
+);
 
 const carriage05Items = actionsOf("E_05_TOOLS_SUCCESS")
   .filter((action) => action.type === "addItem")
@@ -222,6 +250,8 @@ assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && 
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_success" && action.value === true), true);
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
 assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
+assert.equal(actionsOf("E_016_LEAVE").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated" && action.value === true), true);
+assert.equal(actionsOf("E_016_CARRY_FAIL").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated"), false, "尝试背起但失败不应混入明确选择留下的坐姿分支");
 
 // 4号→3号折返有折返描写。
 const door04 = actionsOf("E_DOOR_04");

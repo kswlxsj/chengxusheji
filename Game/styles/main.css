@@ -1065,6 +1065,16 @@ body.home-op-active .home-page .auth-user-status {
   filter: brightness(1.45);
 }
 
+/* “救醒但留下”分支复用同一张坐姿透明图层；返回4号时镜像到对面的右侧座椅。 */
+.scene-object-art[data-object-id="crew_04_seated_right"] {
+  transform: scaleX(-1);
+}
+
+.scene-object-art[data-object-id^="crew_04_seated_"].is-hot,
+.scene-object-art[data-object-id^="crew_04_seated_"].is-focused {
+  filter: brightness(1.45);
+}
+
 .scene-object-art[data-object-id="radio_07"].is-hot,
 .scene-object-art[data-object-id="radio_07"].is-focused {
   filter: brightness(1.18);

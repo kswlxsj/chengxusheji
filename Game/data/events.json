@@ -1620,6 +1620,11 @@
         "type": "setFlag",
         "key": "carried_crew",
         "value": false
+      },
+      {
+        "type": "setFlag",
+        "key": "crew_04_left_seated",
+        "value": true
       }
     ]
   },
