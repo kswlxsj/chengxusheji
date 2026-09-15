@@ -530,8 +530,8 @@
       context.fillStyle = "rgba(1, 1, 1, .985)";
       context.fillRect(0, 0, width, height);
 
-      const origin = { x: width, y: height / 2 };
-      const aim = target || { x: width * .48, y: height / 2 };
+      const origin = { x: 0, y: height / 2 };
+    const aim = target || { x: width * .52, y: height / 2 };
       let dx = aim.x - origin.x;
       let dy = aim.y - origin.y;
       let magnitude = Math.hypot(dx, dy);
