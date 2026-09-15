@@ -559,7 +559,10 @@
 
   sceneRoot.addEventListener("click", () => {
     if (engine.busy) {
-      if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
+      // 场景空白点击只推进已完整显示的对白；流式输出期间不得补全文字。
+      if (!paused && ui.dialog.isAwaitingAdvance() && !ui.dialog.player.running) {
+        ui.dialog.handleAdvance();
+      }
     }
   });
   window.addEventListener("pagehide", () => {
