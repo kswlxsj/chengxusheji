@@ -20,11 +20,10 @@ Assets/
 │     ├─ CardBattle/
 │     ├─ ConductorTug/
 │     └─ Save/
-├─ Text/                     # 剧本文档，不受媒体命名规则约束
 └─ Video/
 ```
 
-新增分类时应沿用上述大方向；只有同一功能拥有一组独立素材时才新建子文件夹。目录使用英文 PascalCase。媒体文件使用小写英文 kebab-case，扩展名小写；`.gitkeep` 和 `Text/` 文档不纳入媒体命名检查。
+新增分类时应沿用上述大方向；只有同一功能拥有一组独立素材时才新建子文件夹。目录使用英文 PascalCase。媒体文件使用小写英文 kebab-case，扩展名小写；`.gitkeep` 不纳入媒体命名检查。
 
 ## 同步与版本规则
 
