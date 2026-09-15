@@ -150,6 +150,9 @@
     }
   }
 
+  const AUTO_ADVANCE_DELAY_MS = 1200;
+  const FAST_ADVANCE_DELAY_MS = 90;
+
   class DialogWindow extends GameWindow {
     constructor(root) {
       super(root, "dialog-window");
@@ -189,6 +192,9 @@
         if (!this.isAwaitingAdvance() || this.paused) return;
         const target = event.target;
         if (target instanceof Element && target.closest(".dialog-window")) return;
+        // 场景/HUD 空白点击只负责推进已完整显示的句子；
+        // 流式输出期间仍须保留逐字效果，不能被框外点击补全。
+        if (this.player.running) return;
         this.handleAdvance();
       }, true);
       setInterval(() => this.ensureActive(), 500);
@@ -274,7 +280,7 @@
       const activeAdvance = this.advance;
       this.autoTimer = setTimeout(() => {
         if (this.advance === activeAdvance && !this.player.running) this.resolveLine();
-      }, this.fast ? 90 : 850);
+      }, this.fast ? FAST_ADVANCE_DELAY_MS : AUTO_ADVANCE_DELAY_MS);
     }
 
     resolveLine() {

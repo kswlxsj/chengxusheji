@@ -104,7 +104,12 @@ const uiSandbox = {
 };
 vm.createContext(uiSandbox);
 vm.runInContext(await readFile("src/namespace.js", "utf8"), uiSandbox);
-vm.runInContext(await readFile("src/ui.js", "utf8"), uiSandbox);
+const uiSource = await readFile("src/ui.js", "utf8");
+const mainStyles = await readFile("styles/main.css", "utf8");
+assert.match(uiSource, /const AUTO_ADVANCE_DELAY_MS = 1200;/, "自动播放句间停顿应为1.2秒");
+assert.match(uiSource, /if \(this\.player\.running\) return;[\s\S]*this\.handleAdvance\(\);/, "框外点击不得补全流式文本");
+assert.match(mainStyles, /\.check-roll-modal,\s*\.check-roll-modal \*[\s\S]*user-select: none;/, "检定弹层应禁止文本选中");
+vm.runInContext(uiSource, uiSandbox);
 const TextPlayer = uiSandbox.window.TrainGame.TextPlayer;
 const player = new TextPlayer({ textContent: "" });
 player.running = true;

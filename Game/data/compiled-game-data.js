@@ -2430,6 +2430,11 @@ window.GAME_DATA = {
           "text": "你的眼前，6号车厢只剩不到半截。"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "而在车厢尽头，是和7号车厢如出一辙的黑暗。"
         },
@@ -4977,15 +4982,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "背包里有一部手机和一支还能发光的手电筒。"
+          "text": "背包里有一支还能发光的手电筒。"
         },
         {
           "type": "dialogue",
-          "text": "（获得手机和手电筒）"
-        },
-        {
-          "type": "addItem",
-          "item": "phone"
+          "text": "（获得手电筒）"
         },
         {
           "type": "addItem",
@@ -5317,11 +5318,6 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_inner_01"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         },
         {
           "type": "conditionalJump",

@@ -1663,6 +1663,13 @@ body.home-op-active .home-page .auth-user-status {
   backdrop-filter: blur(2px);
 }
 
+/* 连续点击检定时不应选中骰子替代文字或结果文案。 */
+.check-roll-modal,
+.check-roll-modal * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .check-roll-content {
   display: grid;
   justify-items: center;

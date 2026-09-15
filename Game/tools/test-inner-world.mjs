@@ -46,8 +46,8 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
 }
 
 // 每句目的地描写必须已处于对应背景；推门文字仍属于出发场景。
-// 门禁与啃食标签分两拍：踏入空车厢当场带上啃食标签（此时门禁未上锁，回3号后还能再进）；
-// 到过伪4才算正式进过里世界，此后推门直接走主线 E_DOOR_03。
+// 门禁在到过伪4后才上锁；6号被啃食标签已提前在5号车厢的残缺揭示中置位，
+// 进入里世界本身不得改写该标签。
 let game = fixture();
 await game.play("E_023");
 assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
@@ -97,7 +97,7 @@ assert.equal(
   true,
   "里世界描写开始后应已处于目的地场景"
 );
-assert.equal(game.state.flags.carriage_06_eaten, true);
+assert.equal(game.state.flags.carriage_06_eaten, undefined, "进入里世界不应设置6号车厢被啃食状态");
 assert.ok(!game.state.flags.inner_world_entered);
 await game.play("E_501");
 assert.equal(game.state.sceneId, "carriage_inner_01", "未到伪4时门禁不应上锁");
@@ -120,7 +120,7 @@ for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_
   assert.equal(calls, 1, "首次调查只掷一次随机");
   assert.equal(game.state.flags.ev502_return_rolled, true);
   assert.equal(game.trace.some(t => t.text === "门被关死，打不开。"), roll === 0.4);
-  assert.equal(game.state.flags.carriage_06_eaten, true, "啃食标签只由入口置位，与返回分支无关");
+  assert.equal(game.state.flags.carriage_06_eaten, true, "返回分支不得改写已在5号置位的啃食标签");
   assert.ok(!game.state.flags.inner_world_entered, "未到伪4时返回仍可再进里世界");
   assert.equal(game.trace.some(t => t.event === "E_002"), false);
 }
@@ -367,7 +367,7 @@ assert.equal(events.some(e => e.actions.some(a => a.next === "E_509_BACK" || a.n
 const fake = scenes.find(s => s.id === "carriage_fake_04");
 assert.match(fake.background, /fog/);
 assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed");
-// 6号被啃食：入口置位的标签驱动背景变体，且优先于便签消失版。
+// 6号被啃食：5号残缺揭示置位的标签驱动背景变体，且优先于便签消失版。
 const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });

@@ -119,6 +119,30 @@ assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控�
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
 
+const carriage05Items = actionsOf("E_05_TOOLS_SUCCESS")
+  .filter((action) => action.type === "addItem")
+  .map((action) => action.item);
+assert.deepEqual(carriage05Items, ["flashlight"], "5号车厢背包只应发放手电筒");
+assert.equal(
+  actionsOf("E_018_PHONE").some((action) => action.type === "addItem" && action.item === "phone"),
+  true,
+  "手机应仍由3号车厢的手机热点发放"
+);
+const eatenRevealActions = actionsOf("E_012_S");
+const eatenRevealIndex = eatenRevealActions.findIndex(
+  (action) => action.type === "dialogue" && action.text === "你的眼前，6号车厢只剩不到半截。"
+);
+assert.deepEqual(
+  eatenRevealActions[eatenRevealIndex + 1],
+  { type: "setFlag", key: "carriage_06_eaten", value: true },
+  "看到6号车厢残缺后应立刻启用被啃食状态"
+);
+assert.equal(
+  actionsOf("E_501").some((action) => action.type === "setFlag" && action.key === "carriage_06_eaten"),
+  false,
+  "进入里世界不应再次设置6号车厢被啃食状态"
+);
+
 // 跨车厢推进必须停在门前，只有明确选择或门热点负责 changeScene。
 assert.deepEqual(actionsOf("E_005_F").find((action) => action.type === "choice").options.map((option) => option.label), [
   "推门进入",
