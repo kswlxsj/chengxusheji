@@ -42,7 +42,7 @@
             backgroundAudio: ui.backgroundAudio
           });
         } catch (error) {
-          console.error("结局 A 演出失败：", error);
+          console.error("真结局演出失败：", error);
         }
       }
       if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
@@ -108,10 +108,9 @@
   function showEndingOverlay(reason) {
     const overlay = document.querySelector("#codex-ending-overlay");
     const video = document.querySelector("#codex-ending-video");
-    const skipButton = document.querySelector("#codex-ending-skip");
     const loadButton = document.querySelector("#codex-ending-load");
     const homeButton = document.querySelector("#codex-ending-home");
-    if (!overlay || !video || !skipButton || !loadButton || !homeButton) {
+    if (!overlay || !video || !loadButton || !homeButton) {
       flow.navigate("ending", { reason }, true);
       return;
     }
@@ -128,7 +127,6 @@
     video.pause();
     video.currentTime = 0;
     overlay.hidden = false;
-    skipButton.hidden = false;
     loadButton.hidden = true;
     homeButton.hidden = true;
 
@@ -137,7 +135,6 @@
       if (completed) return;
       completed = true;
       video.pause();
-      skipButton.hidden = true;
       loadButton.hidden = false;
       homeButton.hidden = false;
       loadButton.focus();
@@ -162,7 +159,6 @@
       video.style.display = "none";
       completeEnding();
     }, { once: true });
-    skipButton.addEventListener("click", completeEnding, { once: true });
     loadButton.addEventListener("click", openSaveManager, { once: true });
     homeButton.addEventListener("click", returnToMainMenu, { once: true });
     overlay.addEventListener("pointerdown", tryPlay, { once: true });

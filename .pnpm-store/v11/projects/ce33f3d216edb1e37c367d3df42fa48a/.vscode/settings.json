@@ -1,0 +1,32 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["/data/meta.json"],
+      "url": "./schemas/meta.schema.json"
+    },
+    {
+      "fileMatch": ["/data/scenes.json"],
+      "url": "./schemas/scenes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/events.json"],
+      "url": "./schemas/events.schema.json"
+    },
+    {
+      "fileMatch": ["/data/items.json"],
+      "url": "./schemas/items.schema.json"
+    },
+    {
+      "fileMatch": ["/data/attributes.json"],
+      "url": "./schemas/attributes.schema.json"
+    },
+    {
+      "fileMatch": ["/data/skills.json"],
+      "url": "./schemas/skills.schema.json"
+    },
+    {
+      "fileMatch": ["/data/audio.json"],
+      "url": "./schemas/audio.schema.json"
+    }
+  ]
+}

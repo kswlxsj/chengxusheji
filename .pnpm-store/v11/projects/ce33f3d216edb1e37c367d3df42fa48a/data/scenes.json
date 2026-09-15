@@ -1,0 +1,1087 @@
+[
+  {
+    "id": "carriage_06",
+    "name": "6 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-06.png",
+    "backgroundSound": { "sound": "train_ambient" },
+    "backgroundSoundVariants": [
+      {
+        "sound": "eating_crisps",
+        "loopGapMs": 1600,
+        "visibleWhen": { "flag": "carriage_06_eaten", "equals": true }
+      }
+    ],
+    "backgroundVariants": [
+      {
+        "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+        "visibleWhen": {
+          "flag": "carriage_06_eaten",
+          "equals": true
+        }
+      },
+      {
+        "image": "assets/Image/Scene/Background/carriage-06-note-removed.png",
+        "visibleWhen": {
+          "flag": "note_collected",
+          "equals": true
+        }
+      }
+    ],
+    "objects": [
+      {
+        "id": "note_06",
+        "name": "门上的便签",
+        "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 49.9298,
+          "y": 40.5,
+          "width": 3.7922,
+          "height": 6.75
+        },
+        "zIndex": 12,
+        "clickEvent": "E_002",
+          "visibleWhen": {
+            "all": [
+              {
+                "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "objectState": {
+                  "objectId": "note_06",
+                  "property": "hidden",
+                  "equals": true
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "door_06_to_07",
+        "name": "通往7号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_005"
+      },
+      {
+        "id": "door_06_to_05",
+        "name": "通往5号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_06_05"
+      },
+      {
+        "id": "note_back_06",
+        "name": "便签背面",
+        "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 49.9298,
+          "y": 40.5,
+          "width": 3.7922,
+          "height": 6.75
+        },
+        "zIndex": 13,
+        "clickEvent": "E_003",
+        "visibleWhen": {
+          "all": [
+            {
+              "not": {
+                "flag": "note_collected",
+                "equals": true
+              }
+            },
+            {
+              "flag": "note_front_seen",
+              "equals": true
+            },
+            {
+              "not": {
+                "objectState": {
+                  "objectId": "note_back_06",
+                  "property": "hidden",
+                  "equals": true
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "map_06",
+        "name": "电车示意图",
+        "image": "assets/Image/Scene/StillLife/carriage-06-map.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 42.5562,
+          "y": 51.75,
+          "width": 5.2669,
+          "height": 7.125
+        },
+        "zIndex": 12,
+        "clickEvent": "E_004",
+        "visibleWhen": {
+          "not": {
+            "flag": "map_seen",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "mg3d_demo_spot_06",
+        "name": "（开发演示）陀螺仪校准装置",
+        "image": "assets/Image/Scene/StillLife/webgl-demo-marker.svg",
+        "position": {
+          "x": 50,
+          "y": 60,
+          "width": 13,
+          "height": 17
+        },
+        "zIndex": 13,
+        "clickEvent": "E_MG3D_DEMO",
+        "visibleWhen": {
+          "flag": "mg3d_demo_visible",
+          "equals": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "carriage_07",
+    "name": "7 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-07.png",
+    "backgroundSound": { "sound": "eating_crisps", "loopGapMs": 1600 },
+    "objects": [
+      {
+        "id": "radio_07",
+        "name": "损坏的收音机",
+        "image": "assets/Image/Scene/StillLife/radio-07.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 62.22,
+          "y": 63.5,
+          "width": 5.51,
+          "height": 9.06
+        },
+        "zIndex": 12,
+        "clickEvent": "E_0008",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "radio_07_ready",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "radio_07_done",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "door_07_to_06",
+        "name": "通往6号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_905"
+      },
+      {
+        "id": "corpse_07",
+        "name": "尸体",
+        "image": "assets/Image/Scene/StillLife/corpse-07.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 75.5,
+          "y": 61.5,
+          "width": 13.5,
+          "height": 13.5
+        },
+        "clickEvent": "E_007"
+      },
+      {
+        "id": "door_07_to_08",
+        "name": "通往8号方向的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_008"
+      }
+    ]
+  },
+  {
+    "id": "carriage_05",
+    "name": "5 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-05.png",
+    "backgroundSound": { "sound": "train_ambient" },
+    "objects": [
+      {
+        "id": "door_05_to_06",
+        "name": "通往6号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_05_06"
+      },
+      {
+        "id": "door_05_to_04",
+        "name": "通往4号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_05_04"
+      },
+      {
+        "id": "clutter_05_a",
+        "name": "散落的行李",
+        "image": "assets/Image/Scene/StillLife/bag-05-a.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_A"
+      },
+      {
+        "id": "clutter_05_b",
+        "name": "遗落的提包",
+        "image": "assets/Image/Scene/StillLife/bag-05-b.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_A"
+      },
+      {
+        "id": "tool_clutter_05",
+        "name": "倒下的背包",
+        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_SEARCH_TOOLS",
+        "visibleWhen": {
+          "not": {
+            "objectState": {
+              "objectId": "tool_clutter_05",
+              "property": "hidden",
+              "equals": true
+            }
+          }
+        }
+      },
+      {
+        "id": "clue_clutter_05",
+        "name": "可疑的纸堆",
+        "image": "assets/Image/Scene/StillLife/newspaper-05.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 74,
+          "y": 42,
+          "width": 18,
+          "height": 24
+        },
+        "zIndex": 13,
+        "clickEvent": "E_05_SEARCH_NEWS",
+        "glow": true,
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "carriage_05_newspaper_available",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_05_newspaper_collected",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "clutter_05_c",
+        "name": "堆叠的杂物",
+        "image": "assets/Image/Scene/StillLife/trash-05-b.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_C"
+      },
+      {
+        "id": "clutter_05_d",
+        "name": "散落的垃圾袋",
+        "image": "assets/Image/Scene/StillLife/trash-05-a.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_05_JUNK_C"
+      }
+    ]
+  },
+  {
+    "id": "carriage_04",
+    "name": "4 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-04.png",
+    "backgroundSound": { "sound": "train_ambient" },
+    "backgroundVariants": [
+      {
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+        "visibleWhen": {
+          "flag": "carried_crew",
+          "equals": true
+        }
+      }
+    ],
+    "objects": [
+      {
+        "id": "door_04_to_05",
+        "name": "通往5号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_04_05"
+      },
+      {
+        "id": "door_04_to_03",
+        "name": "通往3号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_DOOR_04"
+      },
+      {
+        "id": "crew_04",
+        "name": "重伤的乘务员",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
+        "fullCanvas": true,
+        "visibleWhen": {
+          "all": [
+            {
+              "not": {
+                "flag": "crew_04_interacted",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "flag": "carried_crew",
+                "equals": true
+              }
+            }
+          ]
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 35,
+          "y": 62,
+          "width": 22,
+          "height": 13
+        },
+        "zIndex": 12,
+        "clickEvent": "E_013"
+      }
+    ]
+  },
+  {
+    "id": "carriage_03",
+    "name": "3 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-03.png",
+    "backgroundSound": { "sound": "train_ambient" },
+    "objects": [
+      {
+        "id": "door_03_to_04",
+        "name": "通往4号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_03_04"
+      },
+      {
+        "id": "door_03_to_02",
+        "name": "通往2号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_023"
+      },
+      {
+        "id": "black_bag_03",
+        "name": "黑色背包",
+        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 26,
+          "y": 50,
+          "width": 15,
+          "height": 12
+        },
+        "zIndex": 12,
+        "clickEvent": "E_017",
+        "glow": true,
+        "visibleWhen": {
+          "not": {
+            "flag": "carriage_03_bag_interacted",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "phone_03",
+        "name": "发光的手机",
+        "image": "assets/Image/Scene/StillLife/phone.png",
+        "position": {
+          "x": 34,
+          "y": 57,
+          "width": 4,
+          "height": 6.4
+        },
+        "zIndex": 11,
+        "showImage": true,
+        "glow": true,
+        "clickEvent": "E_018_PHONE",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "carriage_03_bag_interacted",
+              "equals": true
+            },
+            {
+              "flag": "carriage_03_phone_available",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_03_phone_collected",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "black_bag_03_foreground",
+        "name": "椅面杂物前景",
+        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+        "height": 100
+        },
+        "zIndex": 13,
+        "clickEvent": "E_018_PHONE",
+        "visibleWhen": {
+          "flag": "carriage_03_bag_interacted",
+          "equals": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "carriage_02",
+    "name": "2 号车厢",
+    "background": "assets/Image/Scene/Background/carriage-02.png",
+    "backgroundSound": { "sound": "devil_scared" },
+    "objects": [
+      {
+        "id": "dark_hint_02",
+        "name": "黑暗中的喘息",
+        "image": "assets/Image/Scene/StillLife/carriage-07-depth.svg",
+        "position": {
+          "x": 36,
+          "y": 24,
+          "width": 28,
+          "height": 48
+        },
+        "zIndex": 12,
+        "clickEvent": "E_02_DARK",
+        "visibleWhen": {
+          "not": {
+            "flag": "light_used",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "door_02_to_front",
+        "name": "通往先头车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 89,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_02_FRONT_DOOR"
+      },
+      {
+        "id": "clicker_02",
+        "name": "Clicker",
+        "image": "assets/Image/Scene/StillLife/clicker-02.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 30,
+          "y": 31,
+          "width": 12,
+          "height": 44
+        },
+        "zIndex": 12,
+        "clickEvent": "E_026",
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "light_used",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "clicker_cleared",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "door_02_to_03",
+        "name": "通往3号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_02_03"
+      }
+    ]
+  },
+  {
+    "id": "front_carriage",
+    "name": "先头车厢",
+    "background": "assets/Image/Scene/Background/front-carriage.png",
+    "backgroundSound": { "sound": "train_ambient" },
+    "objects": [
+      {
+        "id": "door_front_to_02",
+        "name": "通往2号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 0,
+          "y": 21,
+          "width": 12,
+          "height": 63
+        },
+        "zIndex": 11,
+        "clickEvent": "E_GO_FRONT_02"
+      },
+      {
+        "id": "control_27",
+        "name": "前进与停车把手",
+        "image": "assets/Image/Scene/StillLife/control-lever.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_032",
+        "visibleWhen": {
+          "hasItem": "control_panel_key"
+        }
+      }
+    ]
+  },
+  {
+    "id": "carriage_inner_01",
+    "name": "里世界·空车厢",
+    "background": "assets/Image/Scene/Background/carriage-inner-01.png",
+    "objects": [
+      {
+        "id": "door_inner01_to_inner02",
+        "name": "通往花草车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_503",
+        "invisible": true,
+        "noHighlight": true
+      },
+      {
+        "id": "door_inner01_back",
+        "name": "来路的车门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": {
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_502_RETURN"
+      }
+    ]
+  },
+  {
+    "id": "carriage_inner_02",
+    "name": "里世界·花草车厢",
+    "background": "assets/Image/Scene/Background/carriage-inner-02.png",
+    "objects": [
+      {
+        "id": "window_inner",
+        "name": "窗外",
+        "image": "assets/Image/Scene/StillLife/inner-02-window.png",
+        "fullCanvas": true,
+        "hitPosition": {
+          "x": 58,
+          "y": 29,
+          "width": 22,
+          "height": 22
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_504"
+      },
+      {
+        "id": "bottle_inner",
+        "name": "彩色玻璃瓶",
+        "image": "assets/Image/Scene/StillLife/inner-02-bottle.png",
+        "fullCanvas": true,
+        "hitPosition": {
+          "x": 75,
+          "y": 63,
+          "width": 14,
+          "height": 10
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_503_PICK",
+        "visibleWhen": {
+          "not": {
+            "flag": "ev503_bottle_taken",
+            "equals": true
+          }
+        }
+      },
+      {
+        "id": "door_inner02_to_inner01",
+        "name": "来路的车门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": {
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_503_BACK"
+      },
+      {
+        "id": "door_inner02_to_inner03",
+        "name": "通往深处的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_505",
+        "invisible": true,
+        "noHighlight": true
+      }
+    ]
+  },
+  {
+    "id": "carriage_fake_01",
+    "name": "里世界·假1号车厢",
+    "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+    "backgroundSound": { "sound": "maze" },
+    "backgroundVariants": [
+      {
+        "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
+        "visibleWhen": { "flag": "ev_fake01_crew_seen", "equals": true }
+      }
+    ],
+    "objects": [
+      {
+        "id": "door_fake01_left",
+        "name": "扭曲的车门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 1, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_FAKE01_EXIT"
+      },
+      {
+        "id": "door_fake01_right",
+        "name": "扭曲的车门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 90, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_FAKE01_EXIT"
+      }
+    ]
+  },
+  {
+    "id": "carriage_fake_02",
+    "name": "里世界·假2号车厢",
+    "background": "assets/Image/Scene/Background/carriage-fake-02.png",
+    "objects": [
+      {
+        "id": "fake02_blood_1",
+        "name": "血手印",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
+        "zIndex": 12,
+        "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+        "visibleWhen": { "flag": "ev_fake02_blood_1", "equals": true }
+      },
+      {
+        "id": "fake02_blood_2",
+        "name": "血手印",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
+        "zIndex": 12,
+        "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+        "visibleWhen": { "flag": "ev_fake02_blood_2", "equals": true }
+      },
+      {
+        "id": "fake02_blood_3",
+        "name": "血手印",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
+        "zIndex": 12,
+        "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+        "visibleWhen": { "flag": "ev_fake02_blood_3", "equals": true }
+      },
+      {
+        "id": "fake02_blood_4",
+        "name": "血手印",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
+        "zIndex": 12,
+        "clickEvent": "E_FAKE02_HANDPRINT_NOOP",
+        "visibleWhen": { "flag": "ev_fake02_blood_4", "equals": true }
+      },
+      {
+        "id": "door_fake02_left",
+        "name": "通往假1号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 1, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_FAKE02_LEFT"
+      },
+      {
+        "id": "door_fake02_right",
+        "name": "通往假3号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 90, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_FAKE02_RIGHT"
+      }
+    ]
+  },
+  {
+    "id": "carriage_fake_03",
+    "name": "里世界·假3号车厢",
+    "background": "assets/Image/Scene/Background/carriage-fake-03.jpg",
+    "objects": [
+      {
+        "id": "door_fake03_left",
+        "name": "通往假2号车厢的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 1, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_FAKE03_LEFT"
+      },
+      {
+        "id": "door_fake03_right",
+        "name": "通往花海的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": { "x": 90, "y": 24, "width": 9, "height": 49 },
+        "zIndex": 13,
+        "clickEvent": "E_510"
+      }
+    ]
+  },
+  {
+    "id": "carriage_fake_04",
+    "name": "里世界·伪4号车厢",
+    "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+    "backgroundSound": { "sound": "fake" },
+    "objects": [
+      {
+        "id": "door_fake04_back",
+        "name": "原路返回的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "invisible": true,
+        "noHighlight": true,
+        "position": {
+          "x": 1,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_522"
+      },
+      {
+        "id": "door_fake04_to_flower",
+        "name": "车厢尽头的门",
+        "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+        "position": {
+          "x": 90,
+          "y": 24,
+          "width": 9,
+          "height": 49
+        },
+        "zIndex": 13,
+        "clickEvent": "E_510",
+        "invisible": true,
+        "noHighlight": true
+      },
+      {
+        "id": "window_fake04_flower",
+        "name": "车窗",
+        "image": "assets/Image/Scene/StillLife/inner-03-flower-window.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_516",
+        "visibleWhen": {
+          "flag": "ev517_flower_revealed",
+          "equals": true
+        }
+      },
+      {
+        "id": "window_fake04_fog",
+        "name": "车窗",
+        "image": "assets/Image/Scene/StillLife/inner-03-fog-window.png",
+        "fullCanvas": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 12,
+        "clickEvent": "E_516",
+        "visibleWhen": {
+          "not": {
+            "flag": "ev517_flower_revealed",
+            "equals": true
+          }
+        }
+      }
+    ],
+    "backgroundVariants": [
+      {
+        "image": "assets/Image/Scene/Background/carriage-fake-04.png",
+        "visibleWhen": {
+          "flag": "ev517_flower_revealed",
+          "equals": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "flower_sea",
+    "name": "花海·车门外",
+    "background": "assets/Image/Scene/Background/flower-sea.png",
+    "backgroundSound": { "sound": "fake" },
+    "objects": []
+  },
+  {
+    "id": "flower_sea_inside",
+    "name": "花海·室内",
+    "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+    "backgroundSound": { "sound": "fake" },
+    "objects": []
+  }
+]

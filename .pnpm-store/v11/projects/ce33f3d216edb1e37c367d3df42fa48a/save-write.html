@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常暗之厢 · 选择存档槽位</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css?v=confirm-dialog-20260912-1">
+  <script src="src/bgm.js" defer></script>
+  <script src="src/namespace.js"></script>
+  <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
+  <script src="src/auth.js"></script>
+  <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/auth-guard.js"></script>
+  <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
+</head>
+<body>
+  <main class="site-shell content-page">
+    <section class="page-panel save-page-panel">
+      <h1 id="write-title">选择存档槽位</h1>
+      <p id="write-introduction" class="page-introduction"></p>
+      <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
+      <p id="page-error" class="page-error" role="alert"></p>
+      <div class="page-footer"><button id="cancel-write" type="button">取消</button></div>
+    </section>
+    <div id="confirm-layer"></div>
+  </main>
+  <script src="data/compiled-game-data.js"></script>
+  <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
+  <script src="src/page-flow.js?v=conductor-tug-20260915-10"></script>
+  <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
+  <script src="src/state.js"></script>
+  <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
+  <script src="src/save-art.js"></script>
+  <!-- TrainGame.SaveSlotArt，根据存档 sceneId 选择对应的车厢剪影。 -->
+  <script src="src/confirm-dialog.js"></script>
+  <!-- TrainGame.ConfirmDialog，提供存档页共用的页面内确认框（替代浏览器原生 confirm）。 -->
+  <script src="src/save-write.js"></script>
+  <!-- 处理新游戏或继续游戏时的存档槽位选择与写入逻辑。 -->
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常暗之厢</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="src/bgm.js?v=page-music-20260914-1" defer></script>
+  <script src="src/namespace.js"></script>
+  <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
+  <script src="src/auth.js"></script>
+  <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/auth-guard.js"></script>
+  <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
+</head>
+<body>
+  <div id="home-op" class="home-op">
+  <div class="home-op-stage">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+    <img class="home-op-frame" alt="">
+  </div>
+
+  <!-- 底部文字（新增） -->
+  <p class="home-op-caption" id="home-op-caption"></p>
+
+  <!-- 操作区 -->
+  <div class="home-op-actions">
+    <button type="button" id="home-op-skip">按任意键跳过</button>
+  </div>
+  <div class="home-op-blackout" aria-hidden="true"></div>
+</div>
+
+  <!-- CODEX ADD START -->
+  <video
+    id="start-video"
+    src="assets/Video/start.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+  ></video>
+  <!-- CODEX ADD END -->
+  <main class="site-shell home-page" aria-label="主界面">
+    <img id="home-cover" class="page-cover" alt="">
+    <section class="home-content">
+      <h1 id="game-title">常暗之厢</h1>
+      <p class="auth-user-status">当前用户：<strong id="current-user"></strong></p>
+      <nav class="home-actions" aria-label="主菜单">
+        <a class="home-action home-action-new-game" href="save-write.html?intent=new">新的游戏</a>
+        <a class="home-action home-action-save-manager" href="save-manager.html">存档管理</a>
+        <a class="home-action home-action-settings" href="settings.html">设置</a>
+        <a class="home-action home-action-group-intro" href="GroupIntro/index.html">小组介绍</a>
+      </nav>
+    </section>
+  </main>
+
+  <script src="data/compiled-game-data.js"></script>
+  <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
+  <script src="src/page-flow.js?v=conductor-tug-20260915-10"></script>
+  <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
+  <script src="src/home.js"></script>
+  <!-- 初始化主页数据渲染和当前用户展示。 -->
+  <script src="src/home-op.js?v=page-music-20260914-1"></script>
+  <!-- 登录进入主页后先播放四张开场图片，再开放主页交互。 -->
+
+  <!-- CODEX ADD START -->
+  <script>
+    (function () {
+      "use strict";
+
+      const video = document.getElementById("start-video");
+      if (!video) return;
+
+      function tryPlay() {
+        video.muted = true;
+        video.loop = true;
+        video.setAttribute("muted", "");
+        video.setAttribute("loop", "");
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {});
+        }
+      }
+
+      function reveal() {
+        document.body.classList.add("codex-start-video-ready");
+        tryPlay();
+      }
+
+      if (video.readyState >= 2) {
+        reveal();
+      } else {
+        video.addEventListener("canplay", reveal, { once: true });
+        video.addEventListener("loadeddata", reveal, { once: true });
+      }
+
+      video.addEventListener("ended", function () {
+        video.currentTime = 0;
+        tryPlay();
+      });
+
+      document.addEventListener("pointerdown", reveal, { once: true });
+      document.addEventListener("keydown", reveal, { once: true });
+    })();
+  </script>
+  <!-- CODEX ADD END -->
+</body>
+</html>
