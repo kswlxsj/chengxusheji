@@ -163,7 +163,463 @@ a { color: inherit; }
   opacity: 0 !important;
   pointer-events: auto !important;
 }
+/* 终局控制杆：仪表盘指针版，不使用横向进度条。 */
+.mg-tug {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  align-content: center;
+  gap: clamp(6px, 1vh, 12px);
+  padding: clamp(10px, 1.5vw, 20px);
+  background: transparent;
+}
+
+.mg-tug-header {
+  align-items: flex-end;
+  width: min(100%, 1160px);
+  margin-inline: auto;
+}
+
+.mg-tug-subtitle { max-width: 54ch; }
+
+.mg-tug-board {
+  grid-template-columns: minmax(92px, .72fr) minmax(260px, 420px) minmax(92px, .72fr);
+  gap: clamp(8px, 1.5vw, 24px);
+  width: min(100%, 1000px);
+  margin-inline: auto;
+}
+
+.mg-tug-fighter {
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+}
+
+.mg-tug-avatar-frame {
+  width: clamp(72px, 8vw, 116px);
+  height: clamp(100px, 19vh, 164px);
+  margin-bottom: 4px;
+  background: radial-gradient(ellipse at 50% 78%, rgba(110, 85, 58, .3), transparent 70%);
+}
+
+.mg-tug-gauge-wrap {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.mg-tug-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  width: min(100%, 390px);
+  color: rgba(236, 229, 216, .86);
+  font-size: clamp(11px, 1.1vw, 15px);
+  font-weight: 700;
+}
+
+.mg-tug-gauge {
+  position: relative;
+  width: min(100%, min(34vw, 42vh, 420px));
+  aspect-ratio: 1;
+  overflow: visible;
+  cursor: ew-resize;
+  touch-action: none;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .6));
+}
+
+.mg-tug-dashboard-art,
+.mg-tug-pointer-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mg-tug-dashboard-art {
+  z-index: 1;
+  image-rendering: auto;
+  /* dashboard.png 的原始圆心比画布中心偏左上，校正后与指针轴心重合。 */
+  transform: translate(1.8%, 2.2%) scale(1.55);
+}
+
+.mg-tug-pointer-art {
+  inset: 9%;
+  z-index: 2;
+  width: 82%;
+  height: 82%;
+  image-rendering: pixelated;
+  transform-origin: 50% 50%;
+  transition: transform 45ms linear, filter 120ms ease;
+  transform: rotate(var(--mg-tug-pointer-rotation, -45deg)) scale(2.1);
+  filter: drop-shadow(0 0 7px rgba(232, 88, 88, .7));
+}
+
+.mg-tug-gauge-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: clamp(12px, 1.4vw, 20px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border: 2px solid rgba(236, 229, 216, .9);
+  border-radius: 50%;
+  background: #2b1a1a;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .55), 0 0 12px rgba(255, 221, 163, .5);
+  pointer-events: none;
+}
+
+.mg-tug-gauge.is-player .mg-tug-pointer-art {
+  filter: hue-rotate(75deg) saturate(.9) drop-shadow(0 0 10px rgba(122, 255, 150, .9));
+}
+
+.mg-tug-gauge.is-conductor .mg-tug-pointer-art {
+  filter: saturate(1.45) drop-shadow(0 0 10px rgba(255, 100, 100, .9));
+}
+
+.mg-tug-caption {
+  min-height: 34px;
+  text-align: center;
+}
+
+.mg-tug-caption strong {
+  display: block;
+  color: rgba(236, 229, 216, .9);
+  font-size: clamp(13px, 1.25vw, 17px);
+}
+
+.mg-tug-caption strong.is-player { color: #7aff96; }
+.mg-tug-caption strong.is-conductor { color: #ff8585; }
+
+.mg-tug-caption span {
+  display: block;
+  margin-top: 2px;
+  color: rgba(236, 229, 216, .68);
+  font-size: clamp(10px, .95vw, 13px);
+}
+
+.mg-tug-status,
+.mg-tug-control {
+  width: min(100%, 920px);
+  margin-inline: auto;
+}
+
+.mg-tug.is-win .mg-tug-status strong { color: #7aff96; }
+.mg-tug.is-loss .mg-tug-status strong { color: #ff7c7c; }
+
+@media (max-width: 800px), (max-aspect-ratio: 1 / 1) {
+  .mg-tug { overflow: auto; }
+  .mg-tug-header { gap: 8px; }
+  .mg-tug-subtitle { max-width: 52vw; }
+  .mg-tug-board {
+    grid-template-columns: minmax(70px, .72fr) minmax(190px, 300px) minmax(70px, .72fr);
+    gap: 5px;
+  }
+  .mg-tug-avatar-frame { width: clamp(54px, 13vw, 88px); height: clamp(76px, 16vh, 116px); }
+  .mg-tug-fighter p { font-size: 10px; }
+  .mg-tug-gauge { width: min(100%, min(42vw, 36vh, 300px)); }
+}
+
+@media (max-width: 560px) {
+  .mg-tug { padding: 8px; gap: 5px; }
+  .mg-tug-header { align-items: flex-start; }
+  .mg-tug-header h1 { font-size: 22px; }
+  .mg-tug-subtitle { max-width: 58vw; font-size: 11px; }
+  .mg-tug-time { padding: 5px 7px; font-size: 11px; }
+  .mg-tug-board { grid-template-columns: minmax(58px, .7fr) minmax(170px, 1.5fr) minmax(58px, .7fr); }
+  .mg-tug-avatar-frame { width: 58px; height: 82px; }
+  .mg-tug-fighter h2 { font-size: 15px; }
+  .mg-tug-gauge { width: min(100%, 240px); }
+  .mg-tug-control { font-size: 9px; }
+}
+
+/* 终局控制杆回到竖直抓握条；仪表盘只替代横向控制权进度条。 */
+.mg-tug {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  align-content: center;
+  gap: clamp(6px, 1vh, 12px);
+  padding: clamp(10px, 1.5vw, 20px);
+  background: transparent;
+}
+
+.mg-tug-header {
+  align-items: flex-end;
+  width: min(100%, 1160px);
+  margin-inline: auto;
+}
+
+.mg-tug-subtitle { max-width: 54ch; }
+
+.mg-tug-board {
+  grid-template-columns: minmax(92px, .72fr) minmax(300px, 420px) minmax(92px, .72fr);
+  gap: clamp(8px, 1.5vw, 24px);
+  width: min(100%, 1000px);
+  margin-inline: auto;
+}
+
+.mg-tug-fighter {
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+}
+
+.mg-tug-avatar-frame {
+  width: clamp(72px, 8vw, 116px);
+  height: clamp(100px, 19vh, 164px);
+  margin-bottom: 4px;
+  background: radial-gradient(ellipse at 50% 78%, rgba(110, 85, 58, .3), transparent 70%);
+}
+
+.mg-tug-center {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(92px, 126px) minmax(150px, 1fr);
+  align-items: center;
+  gap: clamp(8px, 1vw, 15px);
+}
+
+.mg-tug-track-wrap {
+  min-width: 0;
+  height: min(34vh, 250px);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 5px;
+}
+
+.mg-tug-track {
+  width: clamp(84px, 9vw, 118px);
+  min-height: 180px;
+  margin-inline: auto;
+  overflow: hidden;
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.mg-tug-gauge-wrap {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.mg-tug-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  width: min(100%, 210px);
+  color: rgba(236, 229, 216, .8);
+  font-size: clamp(10px, .9vw, 13px);
+  font-weight: 700;
+}
+
+.mg-tug-gauge {
+  position: relative;
+  width: min(100%, min(21vw, 27vh, 240px));
+  aspect-ratio: 1;
+  overflow: visible;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .58));
+}
+
+.mg-tug-dashboard-art,
+.mg-tug-pointer-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mg-tug-dashboard-art {
+  z-index: 1;
+  image-rendering: auto;
+  transform: translate(1.8%, 2.2%) scale(1.55);
+}
+
+.mg-tug-pointer-art {
+  inset: 9%;
+  z-index: 2;
+  width: 82%;
+  height: 82%;
+  image-rendering: pixelated;
+  transform-origin: 50% 50%;
+  transform: rotate(var(--mg-tug-pointer-rotation, -45deg)) scale(2.1);
+  transition: transform 45ms linear, filter 120ms ease;
+  filter: drop-shadow(0 0 7px rgba(232, 88, 88, .7));
+}
+
+.mg-tug-gauge-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: clamp(10px, 1.1vw, 16px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border: 2px solid rgba(236, 229, 216, .9);
+  border-radius: 50%;
+  background: #2b1a1a;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, .55), 0 0 10px rgba(255, 221, 163, .5);
+  pointer-events: none;
+}
+
+.mg-tug-tilt-text {
+  color: rgba(236, 229, 216, .86);
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.mg-tug-tilt-text.is-player { color: #7aff96; }
+.mg-tug-tilt-text.is-conductor { color: #ff8585; }
+
+.mg-tug-caption { min-height: 34px; text-align: center; }
+.mg-tug-caption strong { display: block; font-size: clamp(11px, 1vw, 14px); }
+.mg-tug-caption span { display: block; margin-top: 2px; font-size: clamp(9px, .85vw, 12px); }
+
+.mg-tug-status,
+.mg-tug-control {
+  width: min(100%, 920px);
+  margin-inline: auto;
+}
+
+.mg-tug.is-win .mg-tug-pointer-art { filter: hue-rotate(75deg) saturate(.9) drop-shadow(0 0 10px rgba(122, 255, 150, .9)); }
+.mg-tug.is-loss .mg-tug-pointer-art { filter: saturate(1.45) drop-shadow(0 0 10px rgba(255, 100, 100, .9)); }
+
+@media (max-width: 800px), (max-aspect-ratio: 1 / 1) {
+  .mg-tug { overflow: auto; }
+  .mg-tug-header { gap: 8px; }
+  .mg-tug-subtitle { max-width: 52vw; }
+  .mg-tug-board {
+    grid-template-columns: minmax(70px, .72fr) minmax(270px, 340px) minmax(70px, .72fr);
+    gap: 5px;
+  }
+  .mg-tug-center { grid-template-columns: minmax(78px, 96px) minmax(150px, 1fr); gap: 5px; }
+  .mg-tug-avatar-frame { width: clamp(54px, 13vw, 88px); height: clamp(76px, 16vh, 116px); }
+  .mg-tug-fighter p { font-size: 10px; }
+  .mg-tug-gauge { width: min(100%, min(24vw, 25vh, 190px)); }
+  .mg-tug-track { width: clamp(70px, 8vw, 96px); min-height: 175px; }
+}
+
+@media (max-width: 560px) {
+  .mg-tug { padding: 8px; gap: 5px; }
+  .mg-tug-header { align-items: flex-start; }
+  .mg-tug-header h1 { font-size: 22px; }
+  .mg-tug-subtitle { max-width: 58vw; font-size: 11px; }
+  .mg-tug-time { padding: 5px 7px; font-size: 11px; }
+  .mg-tug-board { grid-template-columns: minmax(58px, .7fr) minmax(230px, 1.5fr) minmax(58px, .7fr); }
+  .mg-tug-center { grid-template-columns: 82px minmax(135px, 1fr); }
+  .mg-tug-avatar-frame { width: 58px; height: 82px; }
+  .mg-tug-fighter h2 { font-size: 15px; }
+  .mg-tug-gauge { width: min(100%, 155px); }
+  .mg-tug-track { width: 76px; min-height: 160px; }
+  .mg-tug-control { font-size: 9px; }
+}
+
 /* CODEX ADD END */
+
+/* 仪表盘布局修正：竖直控制杆居中，倾向仪表盘放在下方；指针以素材轴心贴合圆心。 */
+.mg-tug-board {
+  grid-template-columns: minmax(92px, .8fr) minmax(240px, 300px) minmax(92px, .8fr);
+  width: min(100%, 900px);
+}
+
+.mg-tug-center {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(7px, 1vh, 12px);
+}
+
+.mg-tug-track-wrap {
+  width: 126px;
+  height: min(27vh, 210px);
+}
+
+.mg-tug-gauge-wrap {
+  width: min(100%, 230px);
+}
+
+.mg-tug-gauge-labels { width: min(100%, 210px); }
+.mg-tug-gauge { width: min(100%, min(21vw, 27vh, 240px)); }
+
+.mg-tug-pointer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform-origin: 50% 50%;
+  transform: rotate(var(--mg-tug-pointer-rotation, 115deg));
+  transition: transform 45ms linear;
+  pointer-events: none;
+}
+
+.mg-tug-pointer-art {
+  inset: auto;
+  left: 27.9%;
+  top: 2.6%;
+  width: 82%;
+  height: 82%;
+  transform-origin: 26.9% 57.8%;
+  transform: scale(2.1);
+}
+
+.mg-tug-gauge-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 25px;
+  height: 25px;
+  translate: -50% -50%;
+  border: 2px solid rgba(241, 234, 220, .92);
+  border-radius: 50%;
+  background: #171c20;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, .72), inset 0 0 0 2px rgba(0, 0, 0, .5);
+  pointer-events: none;
+}
+
+.mg-tug-gauge-center { z-index: 3; }
+
+.mg-tug.is-win .mg-tug-pointer-art { filter: hue-rotate(75deg) saturate(.9) drop-shadow(0 0 10px rgba(122, 255, 150, .9)); }
+.mg-tug.is-loss .mg-tug-pointer-art { filter: saturate(1.45) drop-shadow(0 0 10px rgba(255, 100, 100, .9)); }
+
+@media (max-width: 800px), (max-aspect-ratio: 1 / 1) {
+  .mg-tug-board { grid-template-columns: minmax(70px, .72fr) minmax(220px, 280px) minmax(70px, .72fr); }
+  .mg-tug-track-wrap { width: 100px; height: min(25vh, 190px); }
+  .mg-tug-gauge-wrap { width: min(100%, 200px); }
+  .mg-tug-gauge { width: min(100%, min(24vw, 25vh, 190px)); }
+}
+
+@media (max-width: 560px) {
+  .mg-tug-board { grid-template-columns: minmax(58px, .7fr) minmax(190px, 230px) minmax(58px, .7fr); }
+  .mg-tug-track-wrap { width: 82px; height: 170px; }
+  .mg-tug-gauge-wrap { width: 170px; }
+  .mg-tug-gauge { width: 155px; }
+}
+
+/* 不绘制新的圆心；用与仪表盘盘面一致的无边界遮罩彻底盖住素材自带中心环。 */
+.mg-tug-gauge-center { display: none !important; }
+.mg-tug-gauge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 54px;
+  height: 54px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #242827;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+.mg-tug-pointer { z-index: 3; }
 
 /* ============ 4. 内容页通用面板（设置/结束/存档等页共用的 .content-page、.page-panel 布局） ============ */
 
@@ -1063,6 +1519,42 @@ body.home-op-active .home-page .auth-user-status {
   background: #101318;
 }
 
+/* 摇杆与调频采用检定同款的整幅场景遮罩，不再套一层实色小游戏窗口。 */
+.minigame-backdrop.minigame-overlay-backdrop {
+  padding: 0;
+  background: rgba(0, 0, 0, .70);
+}
+
+.minigame-window.minigame-overlay-window {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.minigame-overlay-window .minigame-titlebar {
+  position: absolute;
+  inset: 10px 12px auto auto;
+  z-index: 20;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.minigame-overlay-window .minigame-title { display: none; }
+.minigame-overlay-window .minigame-stage { background: transparent; }
+.minigame-overlay-window .mg-tug { background: transparent; }
+.minigame-overlay-window .mg-tug-scoreboard,
+.minigame-overlay-window .mg-tug-fighter {
+  background: transparent;
+  border-color: transparent;
+}
+.minigame-overlay-window .radio-tuning { background: transparent; }
+.minigame-overlay-window .radio-tuning .rt-shell {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
 /* ============ 11c. 控制杆争夺小游戏（.mg-tug-*，属于 conductor_tug 模块） ============ */
 
 .mg-tug {
@@ -1117,7 +1609,7 @@ body.home-op-active .home-page .auth-user-status {
 .mg-tug-player .mg-tug-avatar-frame { border-color: rgba(135, 185, 160, .72); }
 .mg-tug-conductor .mg-tug-avatar-frame { border-color: rgba(181, 102, 95, .72); }
 
-.mg-tug-track-wrap { min-height: 0; height: min(38vh, 300px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+.mg-tug-track-wrap { min-height: 0; height: min(34vh, 250px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
 .mg-tug-track { position: relative; width: clamp(100px, 11vw, 150px); height: 100%; min-height: 180px; overflow: hidden; cursor: ns-resize; touch-action: none; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .5)); }
 .mg-tug-track-art { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; image-rendering: pixelated; opacity: .9; }
 .mg-tug-track-line { position: absolute; top: 8%; bottom: 9%; left: 50%; z-index: 1; width: 2px; translate: -50% 0; background: rgba(238, 232, 217, .55); box-shadow: 0 0 8px rgba(255, 255, 255, .22); pointer-events: none; }
@@ -1187,9 +1679,10 @@ body.home-op-active .home-page .auth-user-status {
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
-  gap: clamp(8px, 1.3vh, 16px);
-  padding: clamp(14px, 2.4vw, 32px);
+  grid-template-rows: auto auto auto auto auto;
+  align-content: center;
+  gap: clamp(5px, .8vh, 10px);
+  padding: clamp(10px, 1.5vw, 18px);
   overflow: hidden;
   color: var(--ink);
   background:
@@ -1204,6 +1697,8 @@ body.home-op-active .home-page .auth-user-status {
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
+  width: min(100%, 1200px);
+  margin-inline: auto;
 }
 
 .mg-tug-eyebrow {
@@ -1245,6 +1740,8 @@ body.home-op-active .home-page .auth-user-status {
 .mg-tug-scoreboard {
   display: grid;
   gap: 6px;
+  width: min(100%, 1120px);
+  margin-inline: auto;
 }
 
 .mg-tug-score-labels {
@@ -1297,17 +1794,21 @@ body.home-op-active .home-page .auth-user-status {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(190px, 30%) minmax(0, 1fr);
-  align-items: stretch;
-  gap: clamp(12px, 2.2vw, 34px);
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 20px);
+  width: min(100%, 920px);
+  margin-inline: auto;
 }
 
 .mg-tug-fighter {
   min-width: 0;
+  width: min(100%, 260px);
+  justify-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(10px, 1.6vw, 22px);
+  padding: clamp(8px, 1vw, 14px);
   text-align: center;
   background: rgba(12, 17, 20, .56);
   border: 1px solid rgba(255, 255, 255, .11);
@@ -1315,7 +1816,7 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .mg-tug-fighter h2 {
-  margin: 4px 0 7px;
+  margin: 2px 0 4px;
   color: var(--accent);
   font-size: clamp(16px, 1.7vw, 23px);
 }
@@ -1427,6 +1928,8 @@ body.home-op-active .home-page .auth-user-status {
 .mg-tug-status,
 .mg-tug-control {
   margin: 0;
+  width: min(100%, 920px);
+  margin-inline: auto;
   text-align: center;
 }
 
@@ -1441,6 +1944,73 @@ body.home-op-active .home-page .auth-user-status {
 
 .mg-tug.is-win .mg-tug-status strong { color: #7aff96; }
 .mg-tug.is-loss .mg-tug-status strong { color: #ff7c7c; }
+
+.mg-tug-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 8, 10, .78);
+  backdrop-filter: blur(3px);
+  transition: opacity .35s ease, visibility .35s ease;
+}
+
+.mg-tug-intro.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mg-tug-intro-card {
+  width: min(520px, 100%);
+  padding: clamp(16px, 2.2vw, 26px);
+  text-align: center;
+  background: rgba(13, 19, 22, .95);
+  border: 1px solid rgba(142, 215, 174, .52);
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55);
+}
+
+.mg-tug-intro-kicker {
+  margin: 0 0 6px;
+  color: #8ed7ae;
+  font-size: clamp(10px, .95vw, 13px);
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.mg-tug-intro-card h2 {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(22px, 2.5vw, 34px);
+}
+
+.mg-tug-intro-rules {
+  margin: 12px auto 0;
+  color: rgba(236, 229, 216, .86);
+  font-size: clamp(12px, 1.15vw, 16px);
+  line-height: 1.5;
+}
+
+.mg-tug-countdown {
+  margin-top: 12px;
+  color: #b7f2d0;
+  font-size: clamp(38px, 6vw, 68px);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 18px rgba(142, 215, 174, .34);
+}
+
+.mg-tug-countdown.is-start { color: #7aff96; }
+
+.mg-tug-intro-hint {
+  margin: 10px 0 0;
+  color: rgba(236, 229, 216, .62);
+  font-size: clamp(10px, .95vw, 13px);
+}
 
 /* ============ 11e. 乘务员安抚与交涉小游戏（.mg-negotiation-*，属于 crew_negotiation 模块） ============ */
 
@@ -2723,13 +3293,13 @@ body.home-op-active .home-page .auth-user-status {
   .inventory-slot { min-width: 0; }
   .inspect-content { grid-template-columns: 1fr; }
   .main-menu-window .menu-content { width: 62%; }
-  .mg-tug { padding: 9px; gap: 4px; }
+  .mg-tug { padding: 7px; gap: 3px; }
   .mg-tug-header { gap: 8px; }
   .mg-tug-subtitle { max-width: 56vw; }
   .mg-tug-board { grid-template-columns: minmax(76px, 1fr) minmax(112px, .9fr) minmax(76px, 1fr); gap: 4px; }
-  .mg-tug-avatar-frame { width: clamp(70px, 18vw, 120px); height: clamp(88px, 20vh, 150px); }
+  .mg-tug-avatar-frame { width: clamp(54px, 14vw, 90px); height: clamp(68px, 16vh, 112px); }
   .mg-tug-fighter p { font-size: 10px; }
-  .mg-tug-track-wrap { height: min(51vh, 330px); }
+  .mg-tug-track-wrap { height: min(44vh, 260px); }
   .mg-tug-track { min-height: 190px; }
   .attribute-allocation-row { grid-template-columns: 1fr; }
   .attribute-stepper { justify-content: end; }

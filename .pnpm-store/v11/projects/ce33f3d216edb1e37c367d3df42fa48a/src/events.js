@@ -357,7 +357,7 @@
         if (!Game.Minigames) throw new Error("小游戏系统未加载：缺少 src/minigames.js");
         const spec = Game.Minigames.get(action.game);
         const host = this.ui.minigame || null;
-        const stage = host ? host.openAndStage(spec.title) : null;
+        const stage = host ? host.openAndStage(spec.title, action.game) : null;
         const context = this.context();
         const cleanups = [];
         const gameContext = {

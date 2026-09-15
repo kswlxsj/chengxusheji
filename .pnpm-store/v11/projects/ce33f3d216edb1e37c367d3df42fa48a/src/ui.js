@@ -845,10 +845,13 @@
     }
 
     // 打开宿主并返回玩法内容区；模块把自绘 UI 挂进 stage。标题来自注册表 spec.title。
-    openAndStage(title) {
+    openAndStage(title, gameId = "") {
       this.close();
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop minigame-backdrop";
+      const useOverlayStyle = ["conductor_tug", "radio_tuning"].includes(gameId);
+      backdrop.classList.toggle("minigame-overlay-backdrop", useOverlayStyle);
+      this.element.classList.toggle("minigame-overlay-window", useOverlayStyle);
       const titlebar = document.createElement("header");
       titlebar.className = "minigame-titlebar";
       const heading = document.createElement("h2");

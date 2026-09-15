@@ -520,6 +520,13 @@ assert.doesNotMatch(cardBattleSource, /jump", next: "E_031"/);
 assert.match(cardBattleSource, /jump", next: "E_030"/);
 const conductorTugSource = await read("src/minigame-games/conductor-tug.js");
 assert.match(conductorTugSource, /won \? "E_034" : "E_035"/);
+assert.match(conductorTugSource, /const INTRO_COUNTDOWN_SECONDS = 5/);
+assert.match(conductorTugSource, /class="mg-tug-intro-rules"/);
+assert.match(conductorTugSource, /phase = "countdown"/);
+const minigameUiSource = await read("src/ui.js");
+assert.match(minigameUiSource, /openAndStage\(title, gameId = ""\)/);
+assert.match(minigameUiSource, /minigame-overlay-window/);
+assert.match(await read("src/events.js"), /openAndStage\(spec\.title, action\.game\)/);
 assert.match(await read("game.html"), /src\/minigame-games\/conductor-tug\.js/);
 // 实际渲染后的图片也必须就绪，不能只等待预加载缓存。
 game = fixture(); let decoded;

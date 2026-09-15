@@ -71,6 +71,80 @@
     .radio-tuning .rt-status { min-height: 0; margin-top: 8px; font-size: 11px; line-height: 1.35; }
     .radio-tuning .rt-result { position: absolute; inset: 31% 14% auto; z-index: 6; margin: 0; padding: 20px 18px; }
     @media (max-width: 650px) { .radio-tuning .rt-radio { width: 100%; } .radio-tuning .rt-screen { top: 23%; right: 8%; width: 40%; height: 15%; } .radio-tuning .rt-dial { top: 31%; left: 6%; width: 42%; } .radio-tuning .rt-dashboard-hold { top: 72%; left: 8%; width: 36%; } .radio-tuning .rt-panel { top: 41%; right: 8%; width: 40%; } .radio-tuning .rt-instruction { font-size: 10px; } }
+
+    /* 响应式修正：整机同时受屏幕宽度与可用高度限制，避免横屏小高度设备被舞台裁掉。 */
+    .radio-tuning {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: clamp(8px, 2vw, 20px);
+    }
+    .radio-tuning .rt-shell {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(4px, 1vh, 10px);
+      width: min(860px, 100%);
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      padding: clamp(8px, 2.5vw, 24px);
+    }
+    .radio-tuning .rt-title { font-size: clamp(22px, 4.2vw, 46px); }
+    .radio-tuning .rt-subtitle { margin: 4px 0 0; line-height: 1.35; }
+    .radio-tuning .rt-radio {
+      flex: 0 0 auto;
+      width: min(100%, calc((100vh - 190px) * 1.3454545));
+      max-height: calc(100vh - 190px);
+      margin-top: clamp(8px, 1.5vh, 18px);
+    }
+    @supports (height: 100dvh) {
+      .radio-tuning .rt-radio {
+        width: min(100%, calc((100dvh - 190px) * 1.3454545));
+        max-height: calc(100dvh - 190px);
+      }
+    }
+    @media (max-width: 650px), (max-height: 560px) {
+      .radio-tuning { padding: 6px; }
+      .radio-tuning .rt-shell { padding: 6px; gap: 3px; }
+      .radio-tuning .rt-kicker { margin-bottom: 2px; font-size: 9px; }
+      .radio-tuning .rt-title { font-size: clamp(19px, 7vw, 30px); }
+      .radio-tuning .rt-subtitle { max-width: 62ch; font-size: 11px; line-height: 1.25; }
+      .radio-tuning .rt-radio {
+        width: min(100%, calc((100vh - 160px) * 1.3454545));
+        max-height: calc(100vh - 160px);
+        margin-top: 6px;
+      }
+    }
+    @supports (height: 100dvh) {
+      @media (max-width: 650px), (max-height: 560px) {
+        .radio-tuning .rt-radio {
+          width: min(100%, calc((100dvh - 160px) * 1.3454545));
+          max-height: calc(100dvh - 160px);
+        }
+      }
+    }
+    @supports (width: 1cqw) {
+      .radio-tuning { container-type: size; }
+      .radio-tuning .rt-kicker { font-size: clamp(9px, 1cqw, 12px); }
+      .radio-tuning .rt-title { font-size: clamp(15px, 4cqw, 46px); }
+      .radio-tuning .rt-subtitle { font-size: clamp(8px, 1.35cqw, 16px); }
+      .radio-tuning .rt-radio {
+        width: min(100%, calc((100cqh - 170px) * 1.3454545));
+        max-height: calc(100cqh - 170px);
+      }
+    }
+    @container (max-height: 320px) {
+      .radio-tuning .rt-shell { padding: 3px; gap: 2px; }
+      .radio-tuning .rt-kicker,
+      .radio-tuning .rt-subtitle { display: none; }
+      .radio-tuning .rt-title { font-size: clamp(14px, 5cqw, 24px); }
+      .radio-tuning .rt-radio {
+        width: min(100%, calc((100cqh - 24px) * 1.3454545));
+        max-height: calc(100cqh - 24px);
+        margin-top: 2px;
+      }
+    }
   `;
 
   const TEMPLATE = `
