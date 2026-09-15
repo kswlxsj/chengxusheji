@@ -7,13 +7,6 @@
     "inspectEvent": "E_NOTE_06_ITEM"
   },
   {
-    "id": "old_ticket",
-    "name": "旧车票",
-    "image": "assets/note.svg",
-    "description": "一张已经褪色的车票，背面写着无法辨认的日期。",
-    "inspectEvent": "E_903"
-  },
-  {
     "id": "bottle",
     "name": "彩色玻璃瓶",
     "image": "assets/bottle-inner.png",

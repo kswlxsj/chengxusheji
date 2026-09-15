@@ -124,16 +124,6 @@
     return async (context) => (condition(context) ? check(context) : 0);
   }
 
-  // 已经进入剧本结局的 SAN 扣损：先记录结局原因，再执行剧本规定的 SAN 检定。
-  // 这样即使扣损把 SAN 降到 0，结束页仍显示对应的剧情结局，而不是误跳 SAN 归零页。
-  function endingSanCheck(reason, passLoss, failLoss) {
-    const check = sanCheck("san", passLoss, failLoss);
-    return async (context) => {
-      context.state.flags.ending_reason = reason;
-      return check(context);
-    };
-  }
-
   // 幸运检定：直接掷 1d6，结果大于 3 即成功。
   async function luckCheck(context, label) {
     const roll = rollDie(6);
@@ -179,25 +169,15 @@
   registerDice("ev028_constitution_01", attrCheck("constitution"));
   registerDice("ev028_luck_01", (context) => luckCheck(context, "投掷后的幸运检定"));
   registerDice("ev029_constitution_01", attrCheck("constitution"));
-  registerDice("ev025_constitution_01", attrCheck("constitution"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
-  registerDice("ev010_join_route_01", async (context) => (
-    context.state.flags.ev008_scouting_ok ? 0 : 1
-  ));
   registerDice("ev011_san_01", sanCheck("san", 0, 1));
-  registerDice("ev021_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
-  registerDice(
-    "ev021_extra_san_01",
-    conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => !context.state.flags.visited_carriage_07)
-  );
   registerDice("ev026_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice(
     "ev026_extra_san_01",
     conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => context.state.flags.visited_carriage_07 === true)
   );
-  registerDice("ev030_san_01", endingSanCheck("bad_end", { count: 1, sides: 4 }, { count: 1, sides: 10 }));
 
   // ==== 游戏内检定条目（编号必须全局唯一、长期稳定，被 events.json 的 check.dice 引用）====
 

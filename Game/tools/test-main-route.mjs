@@ -110,7 +110,7 @@ assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_501", "3号
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
 
 // 剧情路线的 next 统一指向 E_013_ENTRY，首次到达只播发现描写，不自动检定。
-for (const id of ["E_010_F", "E_010_JOIN", "E_011_S", "E_011_F", "E_012_AFTER"]) {
+for (const id of ["E_011_S", "E_012_AFTER"]) {
   assert.equal(eventById.get(id).next, "E_013_ENTRY", `${id} 必须经 E_013_ENTRY 进入4号车厢`);
 }
 const entryActions = actionsOf("E_013_ENTRY");
@@ -214,7 +214,6 @@ assert.equal(
 assert.deepEqual(actionsOf("E_028_THROW_FIRST")[0], { type: "sound", sound: "breaking_glass" });
 assert.deepEqual(actionsOf("E_028_THROW_AFTER_SUCCESS")[0], { type: "sound", sound: "breaking_glass" });
 for (const id of [
-  "E_010_F",
   "E_018_SEARCH_PHONE",
   "E_021_CARRIED",
   "E_021_ALONE",
@@ -247,7 +246,7 @@ assert.equal(game.state.flags.crew_met, true);
 
 // 剧情路线（侦查失败/读报后向前跑）进4号：先切景再播一次发现描写，不自动检定。
 game = fixture({ sceneId: "carriage_05" });
-await game.play("E_010_F");
+await game.play("E_012_AFTER");
 assert.equal(game.state.sceneId, "carriage_04");
 assertArrival(game, "carriage_04", /一名重伤昏迷的乘务员倒在地上/);
 assert.deepEqual(game.diceCalls, [], "进入4号车厢不得自动触发医学检定");

@@ -1150,52 +1150,6 @@ window.GAME_DATA = {
   ],
   "events": [
     {
-      "id": "E_901",
-      "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_06"
-        },
-        {
-          "type": "dialogue",
-          "text": "你在规律的铁轨声中醒来。车厢里没有别人。"
-        },
-        {
-          "type": "dialogue",
-          "text": "请先调查门上的便签和门旁的地图；两项调查完成后，通往7号车厢的门才会打开。"
-        },
-        {
-          "type": "setFlag",
-          "key": "gameStarted",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_902",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "便签被潮气浸得发软，背面却粘着一张旧车票。"
-        },
-        {
-          "type": "addItem",
-          "item": "old_ticket"
-        },
-        {
-          "type": "setObjectState",
-          "object": "note_06",
-          "patch": {
-            "hidden": true
-          }
-        },
-        {
-          "type": "dialogue",
-          "text": "你获得了【旧车票】。便签从门上消失了。"
-        }
-      ]
-    },
-    {
       "id": "E_005",
       "actions": [
         {
@@ -1739,15 +1693,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_903",
-      "actions": [
-        {
-          "type": "inspect",
-          "item": "old_ticket"
-        }
-      ]
-    },
-    {
       "id": "E_NOTE_06_ITEM",
       "actions": [
         {
@@ -1756,17 +1701,6 @@ window.GAME_DATA = {
           "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
           "image": "assets/note.png",
           "large": true
-        }
-      ]
-    },
-    {
-      "id": "E_904",
-      "actions": [
-        {
-          "type": "inspect",
-          "title": "损坏的收音机",
-          "text": "旋钮已经脱落，扬声器网罩后却有微弱的红光。这是由通用窗口基类派生的调查窗口。",
-          "image": "assets/radio.svg"
         }
       ]
     },
@@ -2135,73 +2069,6 @@ window.GAME_DATA = {
       "next": "E_009"
     },
     {
-      "id": "E_008_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "不能再在7号车厢呆下去了，先回到6号车厢看看其他人吧。"
-        },
-        {
-          "type": "setFlag",
-          "key": "ev008_scouting_ok",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "ev008_scouting_done",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "visited_carriage_07",
-          "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "你不敢继续停留，打算沿来路退回6号车厢。"
-        }
-      ],
-      "next": "E_009"
-    },
-    {
-      "id": "E_009_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "在杂乱无章的物品中，你找到一份报纸。"
-        },
-        {
-          "type": "dialogue",
-          "text": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。"
-        },
-        {
-          "type": "dialogue",
-          "text": "昨晚1号线末班车...？"
-        },
-        {
-          "type": "addItem",
-          "item": "newspaper"
-        },
-        {
-          "type": "setObjectState",
-          "object": "clue_clutter_05",
-          "patch": {
-            "hidden": true
-          }
-        }
-      ],
-      "next": "E_010"
-    },
-    {
-      "id": "E_009_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
-        }
-      ]
-    },
-    {
       "id": "E_010",
       "actions": [
         {
@@ -2222,60 +2089,6 @@ window.GAME_DATA = {
           "text": "你回头看6号车厢，物品还在，灯也还亮着。"
         }
       ]
-    },
-    {
-      "id": "E_010_S",
-      "actions": [
-        {
-          "type": "setFlag",
-          "key": "carriage_05_newspaper_available",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_010_F",
-      "actions": [
-        {
-          "type": "sound",
-          "sound": "finding_in_papers"
-        },
-        {
-          "type": "dialogue",
-          "text": "你翻找了一番，并没有发现什么看起来有用的东西。"
-        },
-        {
-          "type": "dialogue",
-          "text": "杂乱无章的物品让你本就眩晕的大脑更加昏沉，你决定忽略这些乱七八糟的东西。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你站起身，准备继续向前。身后，6号车厢方向的灯光一盏接一盏地熄灭了。"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev008_scouting_ok",
-            "equals": true
-          },
-          "next": "E_012"
-        }
-      ],
-      "next": "E_013_ENTRY"
-    },
-    {
-      "id": "E_010_JOIN",
-      "actions": [
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev008_scouting_ok",
-            "equals": true
-          },
-          "next": "E_012"
-        }
-      ],
-      "next": "E_013_ENTRY"
     },
     {
       "id": "E_011",
@@ -2368,74 +2181,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "写下这些话的人，看来是同一个。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_05_newspaper_available",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_05_newspaper_collected",
-          "value": true
-        },
-        {
-          "type": "dialogue",
-          "text": "（获得：报纸）"
-        },
-        {
-          "type": "addItem",
-          "item": "newspaper"
-        },
-        {
-          "type": "check",
-          "dice": "ev011_san_01"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev008_scouting_ok",
-            "equals": true
-          },
-          "next": "E_012"
-        }
-      ],
-      "next": "E_013_ENTRY"
-    },
-    {
-      "id": "E_011_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你没发现什么特别的东西，过量的恐惧与紧张已麻痹了你的神经。"
-        },
-        {
-          "type": "dialogue",
-          "text": "装神弄鬼的，到底在说什么？"
-        },
-        {
-          "type": "dialogue",
-          "text": "你正要放下报纸，眼角却扫到底边有一行潦草的小字："
-        },
-        {
-          "type": "sound",
-          "sound": "siren_e011",
-          "loop": true,
-          "segmentDuration": 3000,
-          "stopOnDialogueAdvance": true,
-          "stopAfterDialogueAdvances": 1
-        },
-        {
-          "type": "dialogue",
-          "text": "DON'T STOP."
-        },
-        {
-          "type": "dialogue",
-          "text": "字迹很眼熟——像6号车厢那张便签上的字。"
-        },
-        {
-          "type": "dialogue",
-          "text": "直觉告诉你，还是先留着吧。"
         },
         {
           "type": "setFlag",
@@ -3176,15 +2921,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_03_entry_narrative_v2_done",
           "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_018_CLEAR_PATH",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你一路清开通道，向3号车厢前门移动。越靠近前门，行李堆得越高，几乎齐腰。"
         }
       ]
     },
@@ -4003,30 +3739,6 @@ window.GAME_DATA = {
       "next": "E_022"
     },
     {
-      "id": "E_021_ALONE_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你翻找了半天，最后还是没有找到钥匙，或许它们已经掉到哪个缝隙里去了。"
-        },
-        {
-          "type": "dialogue",
-          "text": "无奈之下，你只能先拿着黑色背包。"
-        },
-        {
-          "type": "setFlag",
-          "key": "keys_player",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "keys_missing",
-          "value": true
-        }
-      ],
-      "next": "E_022"
-    },
-    {
       "id": "E_02_DECIDE",
       "actions": [
         {
@@ -4511,34 +4223,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_025_SINGLE",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev025_constitution_01",
-          "outcomes": [
-            "E_025_ESCAPE",
-            "E_031"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_025_MULTI",
-      "actions": [],
-      "next": "E_031"
-    },
-    {
-      "id": "E_025_ESCAPE",
-      "actions": [
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        }
-      ]
-    },
-    {
       "id": "E_026",
       "actions": [
         {
@@ -4613,24 +4297,6 @@ window.GAME_DATA = {
           ]
         }
       ]
-    },
-    {
-      "id": "E_026_FRONT_LEGACY",
-      "actions": [
-        {
-          "type": "changeScene",
-          "scene": "front_carriage"
-        },
-        {
-          "type": "dialogue",
-          "text": "到达先头车厢，这里昏暗安静，车厢前方能看到操作把手。"
-        },
-        {
-          "type": "minigame",
-          "game": "conductor_tug"
-        }
-      ],
-      "next": "E_027"
     },
     {
       "id": "E_GO_02_FRONT_DOOR",
@@ -4931,16 +4597,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_030_TUG",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "控制权被夺走。列车又一次冲向黑暗。"
-        }
-      ],
-      "next": "E_030"
-    },
-    {
       "id": "E_030",
       "actions": [
         {
@@ -5188,10 +4844,6 @@ window.GAME_DATA = {
       "next": "E_011"
     },
     {
-      "id": "E_05_SEARCH_NEWS_CANCEL",
-      "actions": []
-    },
-    {
       "id": "E_05_SEARCH_TOOLS",
       "actions": [
         {
@@ -5230,15 +4882,6 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
-        }
-      ]
-    },
-    {
-      "id": "E_05_TOOLS_FAIL",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "背包里只有一些旧衣物，没有能用来照明的东西。"
         }
       ]
     },
@@ -5382,20 +5025,6 @@ window.GAME_DATA = {
       "next": "E_032"
     },
     {
-      "id": "E_031_NO_KEY_F",
-      "actions": [
-        {
-          "type": "sound",
-          "sound": "door_locked"
-        },
-        {
-          "type": "dialogue",
-          "text": "你找不到任何能打开门的东西。身后的黑暗越来越近。"
-        }
-      ],
-      "next": "E_036"
-    },
-    {
       "id": "E_032",
       "actions": [
         {
@@ -5477,44 +5106,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_033_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你稳住她，一字一句地说：\n\n“你仔细想想——那些便签、那些反复出现的话……它们全都叫我们前进。停车，才是死路。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "……你确定吗？"
-        },
-        {
-          "type": "dialogue",
-          "text": "你没有回答，只是用力将右杆下拉到底。"
-        }
-      ],
-      "next": "E_034"
-    },
-    {
-      "id": "E_033_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你没能拦住她。她不知哪来的力气，用肩膀将你撞开，把右杆推回减速的位置。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "对不起……对不起……我只是想活……"
-        },
-        {
-          "type": "dialogue",
-          "text": "电车开始减速。"
-        }
-      ],
-      "next": "E_035"
-    },
-    {
       "id": "E_034",
       "actions": [
         {
@@ -5534,30 +5125,6 @@ window.GAME_DATA = {
           "name": "endGame",
           "params": {
             "reason": "bad_end"
-          }
-        }
-      ]
-    },
-    {
-      "id": "E_036",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "在隔离室中醒来，你蜷缩在墙角。"
-        },
-        {
-          "type": "dialogue",
-          "text": "医生对警察摇了摇头：每天都要镇定剂，你因在梦中经历了无法承受的恐怖，醒来后歇斯底里，被送进精神病院。"
-        },
-        {
-          "type": "dialogue",
-          "text": "无人知晓你们在逃避什么。"
-        },
-        {
-          "type": "custom",
-          "name": "endGame",
-          "params": {
-            "reason": "trauma"
           }
         }
       ]
@@ -7183,13 +6750,6 @@ window.GAME_DATA = {
       "image": "assets/note.png",
       "description": "从 6 号车厢门上取下来的便签。",
       "inspectEvent": "E_NOTE_06_ITEM"
-    },
-    {
-      "id": "old_ticket",
-      "name": "旧车票",
-      "image": "assets/note.svg",
-      "description": "一张已经褪色的车票，背面写着无法辨认的日期。",
-      "inspectEvent": "E_903"
     },
     {
       "id": "bottle",

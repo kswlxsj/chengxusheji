@@ -225,7 +225,7 @@ assert.deepEqual(
   { type: "changeScene", scene: "carriage_04" },
   "E_013_ENTRY 应负责进入4号车厢"
 );
-for (const eventId of ["E_010_F", "E_010_JOIN", "E_011_S", "E_011_F", "E_012_AFTER"]) {
+for (const eventId of ["E_011_S", "E_012_AFTER"]) {
   assert.equal(
     registeredEventsById.get(eventId).next,
     "E_013_ENTRY",
@@ -258,16 +258,15 @@ const inspectEngine = new Game.EventEngine({
   scene: {},
   ui: { inspect: { show: async (payload) => { inspectedItem = payload; } } }
 });
-await inspectEngine.actions.get("inspect")({ type: "inspect", item: "old_ticket" });
-assert.equal(inspectedItem.title, "旧车票", "物品调查应读取注册表中的名称");
-assert.equal(inspectedItem.text, "一张已经褪色的车票，背面写着无法辨认的日期。", "物品调查应读取注册表中的说明");
-assert.equal(inspectedItem.image, "assets/note.svg", "物品调查应读取注册表中的图片");
+await inspectEngine.actions.get("inspect")({ type: "inspect", item: "phone" });
+assert.equal(inspectedItem.title, "手机", "物品调查应读取注册表中的名称");
+assert.equal(inspectedItem.text, "一部手机。", "物品调查应读取注册表中的说明");
+assert.equal(inspectedItem.image, "assets/phone.png", "物品调查应读取注册表中的图片");
 
 // ==== 检定（dice.js 可编程检定）====
 assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
-assert.equal(typeof Game.Dice.get("ev030_san_01"), "function", "E_030 SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev013_education_01"), "function", "点击乘务员后的教育检定应已注册");
 assert.equal(typeof Game.Dice.get("ev021_education_insight_01"), "function", "话术剧情的教育+灵感检定应已注册");
 
@@ -370,13 +369,6 @@ assert.equal(
 );
 sandbox.Math.random = originalRandom;
 
-// E-009 失败路线必须根据 E-008 侦察结果分流，不能无条件进入 E-011。
-const routeState = createRegisteredStateWith();
-routeState.flags.ev008_scouting_ok = false;
-assert.equal(await Game.Dice.get("ev010_join_route_01")(firstAidContext(routeState), ["E_011", "E_012"]), 1);
-routeState.flags.ev008_scouting_ok = true;
-assert.equal(await Game.Dice.get("ev010_join_route_01")(firstAidContext(routeState), ["E_011", "E_012"]), 0);
-
 // 正式结局动作应在后续动作执行前触发终止，并保留结局原因。
 const endingState = createState();
 endingState.completeAttributeAllocation({ strength: 4, insight: 1 });
@@ -461,25 +453,6 @@ await assert.rejects(
   /权重无效/,
   "非正权重应报错"
 );
-
-// E-030 的 SAN 1d4/1d10 应真实掷骰，并标记为 Bad End；即使 SAN 归零也不能改跳 SAN 结局。
-const badEndingState = createRegisteredStateWith({ education: 9, insight: 10, san: 5 });
-const badEndingUi = createEngineUi();
-const badEndingEngine = new Game.EventEngine({
-  events: [],
-  state: badEndingState,
-  items: [],
-  scene: {},
-  ui: badEndingUi
-});
-try {
-  sandbox.Math.random = () => 0;
-  await badEndingEngine.actions.get("check")({ type: "check", dice: "ev030_san_01" });
-  assert.equal(badEndingState.flags.ending_reason, "bad_end");
-  assert.equal(badEndingState.getAttribute("san"), 4, "E-030 失败应按 1d10 扣损，骰点为 1 时扣 1");
-} finally {
-  sandbox.Math.random = originalRandom;
-}
 
 // 确定性掷骰：骰点恒为 6（成功线）或恒为 1（失败线），验证真实检定条目。
 const realUi = createEngineUi();
