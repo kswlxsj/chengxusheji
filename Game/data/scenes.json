@@ -176,7 +176,7 @@
   {
     "id": "carriage_07",
     "name": "7 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-07.jpg",
+    "background": "assets/Image/Scene/Background/carriage-07.png",
     "objects": [
       {
         "id": "radio_07",
@@ -708,7 +708,7 @@
         "zIndex": 12,
         "clickEvent": "E_032",
         "visibleWhen": {
-          "hasItem": "crew_keys"
+          "hasItem": "control_panel_key"
         }
       }
     ]

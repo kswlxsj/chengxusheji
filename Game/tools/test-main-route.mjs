@@ -103,6 +103,15 @@ function assertCutBefore(game, fromSceneId, toSceneId) {
 
 // ---------- 结构接线：点击目标与跳转目标 ----------
 
+const itemById = new Map(items.map((item) => [item.id, item]));
+assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.png");
+assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.png");
+assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.png");
+assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.png");
+assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem: "control_panel_key" });
+const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
+assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
+
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026", "Clicker 应进入2号车厢怪物遭遇");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
@@ -335,7 +344,11 @@ assert.equal(game.state.flags.carriage_02_passed, true, "安静通过后要置�
 assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), true, "安静通过成功应到达先头车厢");
 
 // 先头车厢点控制把手：打开操作面板，不再触发2号车厢的体质检定。
-game = fixture({ sceneId: "front_carriage", inventory: ["crew_keys"], choiceLabels: ["右杆下拉——加速，继续前进"] });
+game = fixture({
+  sceneId: "front_carriage",
+  inventory: ["driver_cab_key", "control_panel_key"],
+  choiceLabels: ["右杆下拉——加速，继续前进"]
+});
 await game.play("E_032");
 assert.deepEqual([...new Set(scenesOf(game))], ["front_carriage"]);
 assert.match(game.trace[0].text, /操作面板/);

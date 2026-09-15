@@ -21,11 +21,18 @@
     "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
   },
   {
-    "id": "crew_keys",
-    "name": "驾驶室与操作面板钥匙",
-    "image": "assets/Image/Item/placeholder-key.svg",
-    "description": "驾驶室钥匙和操作面板钥匙。",
-    "inspectEvent": "E_ITEM_KEYS_INSPECT"
+    "id": "driver_cab_key",
+    "name": "驾驶室钥匙",
+    "image": "assets/Image/Item/driver-cab-key.png",
+    "description": "用于打开列车驾驶室门的钥匙。",
+    "inspectEvent": "E_ITEM_DRIVER_CAB_KEY_INSPECT"
+  },
+  {
+    "id": "control_panel_key",
+    "name": "操作面板钥匙",
+    "image": "assets/Image/Item/control-panel-key.png",
+    "description": "用于打开驾驶室操作面板的钥匙。",
+    "inspectEvent": "E_ITEM_CONTROL_PANEL_KEY_INSPECT"
   },
   {
     "id": "phone",
@@ -44,14 +51,14 @@
   {
     "id": "emergency_cutter",
     "name": "应急割带器",
-    "image": "assets/Image/Item/placeholder-key.svg",
+    "image": "assets/Image/Item/emergency-belt-cutter.png",
     "description": "可以割断黑色背包背带的应急工具。",
     "inspectEvent": "E_ITEM_EMERGENCY_CUTTER_INSPECT"
   },
   {
     "id": "pry_bar",
     "name": "撬杆",
-    "image": "assets/Image/Item/placeholder-key.svg",
+    "image": "assets/Image/Item/pry-bar.png",
     "description": "可以撬开被行李压住的箱体。",
     "inspectEvent": "E_ITEM_PRY_BAR_INSPECT"
   }

@@ -192,7 +192,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_07",
       "name": "7 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-07.jpg",
+      "background": "assets/Image/Scene/Background/carriage-07.png",
       "objects": [
         {
           "id": "radio_07",
@@ -724,7 +724,7 @@ window.GAME_DATA = {
           "zIndex": 12,
           "clickEvent": "E_032",
           "visibleWhen": {
-            "hasItem": "crew_keys"
+            "hasItem": "control_panel_key"
           }
         }
       ]
@@ -3656,7 +3656,11 @@ window.GAME_DATA = {
         },
         {
           "type": "addItem",
-          "item": "crew_keys"
+          "item": "driver_cab_key"
+        },
+        {
+          "type": "addItem",
+          "item": "control_panel_key"
         },
         {
           "type": "setFlag",
@@ -3723,7 +3727,11 @@ window.GAME_DATA = {
         },
         {
           "type": "addItem",
-          "item": "crew_keys"
+          "item": "driver_cab_key"
+        },
+        {
+          "type": "addItem",
+          "item": "control_panel_key"
         },
         {
           "type": "setFlag",
@@ -4398,13 +4406,24 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_ITEM_KEYS_INSPECT",
+      "id": "E_ITEM_DRIVER_CAB_KEY_INSPECT",
       "actions": [
         {
           "type": "inspect",
-          "item": "crew_keys",
-          "title": "驾驶室与操作面板钥匙",
-          "text": "驾驶室钥匙和操作面板钥匙。"
+          "item": "driver_cab_key",
+          "title": "驾驶室钥匙",
+          "text": "用于打开列车驾驶室门的钥匙。"
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_CONTROL_PANEL_KEY_INSPECT",
+      "actions": [
+        {
+          "type": "inspect",
+          "item": "control_panel_key",
+          "title": "操作面板钥匙",
+          "text": "用于打开驾驶室操作面板的钥匙。"
         }
       ]
     },
@@ -4717,7 +4736,7 @@ window.GAME_DATA = {
                 "equals": true
               },
               {
-                "hasItem": "crew_keys"
+                "hasItem": "driver_cab_key"
               }
             ]
           },
@@ -4787,7 +4806,11 @@ window.GAME_DATA = {
         },
         {
           "type": "addItem",
-          "item": "crew_keys"
+          "item": "driver_cab_key"
+        },
+        {
+          "type": "addItem",
+          "item": "control_panel_key"
         },
         {
           "type": "setFlag",
@@ -5778,7 +5801,14 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "hasItem": "crew_keys"
+            "all": [
+              {
+                "hasItem": "driver_cab_key"
+              },
+              {
+                "hasItem": "control_panel_key"
+              }
+            ]
           },
           "next": "E_519_HASKEY"
         }
@@ -5834,7 +5864,14 @@ window.GAME_DATA = {
           "type": "conditionalJump",
           "when": {
             "not": {
-              "hasItem": "crew_keys"
+              "all": [
+                {
+                  "hasItem": "driver_cab_key"
+                },
+                {
+                  "hasItem": "control_panel_key"
+                }
+              ]
             }
           },
           "next": "E_519_NOKEY"
@@ -5845,7 +5882,11 @@ window.GAME_DATA = {
         },
         {
           "type": "removeItem",
-          "item": "crew_keys"
+          "item": "driver_cab_key"
+        },
+        {
+          "type": "removeItem",
+          "item": "control_panel_key"
         },
         {
           "type": "setFlag",
@@ -6463,7 +6504,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "addItem",
-          "item": "crew_keys"
+          "item": "driver_cab_key"
+        },
+        {
+          "type": "addItem",
+          "item": "control_panel_key"
         },
         {
           "type": "setFlag",
@@ -6530,11 +6575,18 @@ window.GAME_DATA = {
       "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
     },
     {
-      "id": "crew_keys",
-      "name": "驾驶室与操作面板钥匙",
-      "image": "assets/Image/Item/placeholder-key.svg",
-      "description": "驾驶室钥匙和操作面板钥匙。",
-      "inspectEvent": "E_ITEM_KEYS_INSPECT"
+      "id": "driver_cab_key",
+      "name": "驾驶室钥匙",
+      "image": "assets/Image/Item/driver-cab-key.png",
+      "description": "用于打开列车驾驶室门的钥匙。",
+      "inspectEvent": "E_ITEM_DRIVER_CAB_KEY_INSPECT"
+    },
+    {
+      "id": "control_panel_key",
+      "name": "操作面板钥匙",
+      "image": "assets/Image/Item/control-panel-key.png",
+      "description": "用于打开驾驶室操作面板的钥匙。",
+      "inspectEvent": "E_ITEM_CONTROL_PANEL_KEY_INSPECT"
     },
     {
       "id": "phone",
@@ -6553,14 +6605,14 @@ window.GAME_DATA = {
     {
       "id": "emergency_cutter",
       "name": "应急割带器",
-      "image": "assets/Image/Item/placeholder-key.svg",
+      "image": "assets/Image/Item/emergency-belt-cutter.png",
       "description": "可以割断黑色背包背带的应急工具。",
       "inspectEvent": "E_ITEM_EMERGENCY_CUTTER_INSPECT"
     },
     {
       "id": "pry_bar",
       "name": "撬杆",
-      "image": "assets/Image/Item/placeholder-key.svg",
+      "image": "assets/Image/Item/pry-bar.png",
       "description": "可以撬开被行李压住的箱体。",
       "inspectEvent": "E_ITEM_PRY_BAR_INSPECT"
     }

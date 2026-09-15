@@ -1,6 +1,6 @@
 # 素材映射表
 
-本表记录 2026-09-15 素材整理前后的完整媒体路径。`Game/assets/` 当前共有 143 个运行素材；`Assets/` 共有 167 个媒体素材，并按相同相对路径及 SHA-256 完整覆盖全部运行素材。
+本表记录 2026-09-15 素材整理前后的完整媒体路径。`Game/assets/` 当前共有 147 个运行素材；`Assets/` 共有 161 个媒体素材。除 5 个仅在运行目录保留的 SVG 占位符外，两边同路径素材均保持 SHA-256 一致。
 
 判定说明：`SHA-256 相同` 表示整理前两边已有字节级相同内容；`Game 补入 Assets` 表示源素材库原先缺少该运行文件；`Assets 内置化` 表示原本由游戏跨目录引用，现已复制进运行目录；`Assets 独有` 表示尚未进入正式游戏。
 
@@ -12,6 +12,7 @@
 | `Game/assets/crew-04.png` | 与在用乘务员贴图重复 |
 | `Game/assets/note.svg` | 已由正式 PNG 替代 |
 | `Game/assets/radio.svg` | 已由正式 PNG 替代 |
+| `Game/assets/Image/Scene/Background/carriage-07.jpg`<br>`Assets/Image/Scene/Background/carriage-07.jpg` | 已由同画面的高质量 PNG 替代 |
 
 ## 完整媒体映射
 
@@ -53,16 +54,16 @@
 | `Assets/Audio/音效/on_a_bullet_train3.mp3` | `Game/assets/audio/train-ambient.mp3` | `Assets/Audio/SoundEffect/train-ambient.mp3`<br>`Game/assets/Audio/SoundEffect/train-ambient.mp3` | `b1654edade9744a5a49a12a06ca64a55051968b2126ce56e74ce1060ee7c7b41` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/fonts/ark-pixel-12px-monospaced-zh_cn.otf.woff2` | — | `Assets/Fonts/ark-pixel-12px-monospaced-zh-cn.woff2`<br>`Game/assets/Fonts/ark-pixel-12px-monospaced-zh-cn.woff2` | `0d01614b4ec3f2414eed0d567d2b9090c37344f0f4bd6a9231a20faffc5eb00f` | Assets 内置化 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Item/玻璃瓶.png` | `Game/assets/bottle-inner.png` | `Assets/Image/Item/bottle.png`<br>`Game/assets/Image/Item/bottle.png` | `4ce292f2acc67b84c0d1833dd14fdfd0f223a0044f1963926221c44b387f09cc` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| `Assets/Image/Item/操作面板钥匙.png` | — | `Assets/Image/Item/control-panel-key.png` | `5e18f01a00de5237ba533495544c917c2fa6e6edcacba314236044cab4212e6d` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
-| `Assets/Image/Item/驾驶室钥匙.png` | — | `Assets/Image/Item/driver-cab-key.png` | `6d07aaa03d2d14faf6708106889813763c6d0e68eb1296ec5eed3ef6dd354704` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
-| `Assets/Image/Item/应急割带器.png` | — | `Assets/Image/Item/emergency-belt-cutter.png` | `a7dd682c0c254655282575c6cf65677b25434a0f831da758cb01cac2b32eed18` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
+| `Assets/Image/Item/操作面板钥匙.png` | — | `Assets/Image/Item/control-panel-key.png`<br>`Game/assets/Image/Item/control-panel-key.png` | `5e18f01a00de5237ba533495544c917c2fa6e6edcacba314236044cab4212e6d` | Assets 接入 Game | 正式游戏使用 | 组合钥匙拆分后的操作面板钥匙 |
+| `Assets/Image/Item/驾驶室钥匙.png` | — | `Assets/Image/Item/driver-cab-key.png`<br>`Game/assets/Image/Item/driver-cab-key.png` | `6d07aaa03d2d14faf6708106889813763c6d0e68eb1296ec5eed3ef6dd354704` | Assets 接入 Game | 正式游戏使用 | 组合钥匙拆分后的驾驶室钥匙 |
+| `Assets/Image/Item/应急割带器.png` | — | `Assets/Image/Item/emergency-belt-cutter.png`<br>`Game/assets/Image/Item/emergency-belt-cutter.png` | `a7dd682c0c254655282575c6cf65677b25434a0f831da758cb01cac2b32eed18` | Assets 接入 Game | 正式游戏使用 | 已替换通用钥匙占位符 |
 | — | `Game/assets/flashlight.png` | `Assets/Image/Item/flashlight-v1.png`<br>`Game/assets/Image/Item/flashlight-v1.png` | `aa58824ecf626ba0e2e2615df0188ce35a98d29192fd3504b320f6f83001d22a` | Game 补入 Assets | 正式游戏使用 | 当前运行版本 |
 | `Assets/Image/Item/手电筒.png` | — | `Assets/Image/Item/flashlight-v2.png` | `afe2476acff153f02aaf047735c5c02564c7a67c95e510311394deea36f38136` | Assets 独有 | 仅源素材库 | 新版候选，仅 Assets |
 | — | `Game/assets/newspaper-icon.png` | `Assets/Image/Item/newspaper.png`<br>`Game/assets/Image/Item/newspaper.png` | `d99738285a0bbbd366c27978e58f1a505a919b596e853cf0acc2041cf5f043d6` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/便签.png` | `Game/assets/note.png` | `Assets/Image/Item/note.png`<br>`Game/assets/Image/Item/note.png` | `3352c0ef8c11ad12b9bd0270fd7a0e9a81e525a1a4ad8f665752a6e6a48ccf43` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Item/手机.png` | `Game/assets/phone.png` | `Assets/Image/Item/phone.png`<br>`Game/assets/Image/Item/phone.png` | `a034070fb75ee3350b7d98eae80ff15b9da69f255e3bc8d41a3c0c495a7d6774` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/placeholder-key.svg` | `Assets/Image/Item/placeholder-key.svg`<br>`Game/assets/Image/Item/placeholder-key.svg` | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
-| `Assets/Image/Item/撬棍.png` | — | `Assets/Image/Item/pry-bar.png` | `6f3d9b3a5b8d9e62d8be6cd248f49f2989d6115e80f4c91e4c7705579eaa0bc2` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
+| — | `Game/assets/placeholder-key.svg` | `Game/assets/Image/Item/placeholder-key.svg` | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | 运行目录独有 | 当前未引用 | SVG 占位符按约定仅保留在 Game |
+| `Assets/Image/Item/撬棍.png` | — | `Assets/Image/Item/pry-bar.png`<br>`Game/assets/Image/Item/pry-bar.png` | `6f3d9b3a5b8d9e62d8be6cd248f49f2989d6115e80f4c91e4c7705579eaa0bc2` | Assets 接入 Game | 正式游戏使用 | 已替换通用钥匙占位符 |
 | `Assets/Image/Portrait/乘务员-crazy.png` | — | `Assets/Image/Portrait/conductor-crazy.png` | `c1dfe99d4a06575bf79776b299778394aa643e4b0aa44cdb655fb21161385acc` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
 | `Assets/Image/Portrait/乘务员-cry.png` | — | `Assets/Image/Portrait/conductor-crying.png` | `af4d7fc969fc80e4db5039878ddc2bc383ae690030b454e88e2f3be86038d88d` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
 | `Assets/Image/Portrait/乘务员.png` | `Game/assets/crew-portrait.png`<br>`Game/assets/ui/conductor-tug/crew.png` | `Assets/Image/Portrait/conductor.png`<br>`Game/assets/Image/Portrait/conductor.png` | `d22fb17ed8c99b3a246893ae7cc4644ef5a8a89bffecf1543bb197d9cadc9842` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
@@ -81,8 +82,8 @@
 | `Assets/Image/Scene/Background/里6.png` | `Game/assets/carriage-06-eaten.png` | `Assets/Image/Scene/Background/carriage-06-eaten.png`<br>`Game/assets/Image/Scene/Background/carriage-06-eaten.png` | `9d81d057bcfef99c1cac3d1b45cd3086154e6b8e2b998d0f04fac2627dfdde2b` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | — | `Game/assets/carriage-06-note-removed.png` | `Assets/Image/Scene/Background/carriage-06-note-removed.png`<br>`Game/assets/Image/Scene/Background/carriage-06-note-removed.png` | `ad9a129b6d2e8c056bc4e9e3190e68d0e454bebbe385f61bc22d1498728d023c` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/Background/carriage-06.png` | `Game/assets/carriage-06.png` | `Assets/Image/Scene/Background/carriage-06.png`<br>`Game/assets/Image/Scene/Background/carriage-06.png` | `7f0f872ac67ba72c27a208a4634d7b12dda0b34c5230b51f1e719b83fe003ee2` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/carriage-07.jpg` | `Assets/Image/Scene/Background/carriage-07.jpg`<br>`Game/assets/Image/Scene/Background/carriage-07.jpg` | `8ea2b4a2367999a9845c939c6f0ea8cc6d4d15e57516bdf82930b074aa39af5b` | Game 补入 Assets | 正式游戏使用 | 当前运行 JPG |
-| `Assets/Image/Scene/Background/carriage-07.png` | — | `Assets/Image/Scene/Background/carriage-07.png` | `52ae2a3da98673401ca7db5512ff768705c6b5b6b6ed0b8d81bb6f2e232baa64` | Assets 独有 | 仅源素材库 | Assets 候选 PNG |
+| — | `Game/assets/carriage-07.jpg` | —（已删除） | `8ea2b4a2367999a9845c939c6f0ea8cc6d4d15e57516bdf82930b074aa39af5b` | 已清理 | 不再使用 | 已由 PNG 替代 |
+| `Assets/Image/Scene/Background/carriage-07.png` | — | `Assets/Image/Scene/Background/carriage-07.png`<br>`Game/assets/Image/Scene/Background/carriage-07.png` | `52ae2a3da98673401ca7db5512ff768705c6b5b6b6ed0b8d81bb6f2e232baa64` | Assets 接入 Game | 正式游戏使用 | 当前运行 PNG |
 | `Assets/Image/Scene/Background/里世界/inner01 人.PNG` | `Game/assets/carriage-fake-01-crew.png` | `Assets/Image/Scene/Background/carriage-fake-01-crew.png`<br>`Game/assets/Image/Scene/Background/carriage-fake-01-crew.png` | `55e203ec57e2e4fa8dfc1a44a7cff4586fb09edbdd72a163a82fdf2196c1f538` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/Background/里世界/inner01fake.PNG` | `Game/assets/carriage-fake-01.png` | `Assets/Image/Scene/Background/carriage-fake-01.png`<br>`Game/assets/Image/Scene/Background/carriage-fake-01.png` | `2c577b63e9a8759ad725ae801a42bc9a3b73a46d930834ac49427d6cd9f4881a` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/Background/里世界/inner02fake.PNG` | `Game/assets/carriage-fake-02.png` | `Assets/Image/Scene/Background/carriage-fake-02.png`<br>`Game/assets/Image/Scene/Background/carriage-fake-02.png` | `3e849caaf3f91aee4c18275fb9ebb687ae7ec01c278333281913fb1817631f24` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
@@ -126,8 +127,8 @@
 | `Assets/Image/Scene/StillLife/5号3号车厢_前进纸条.png` | — | `Assets/Image/Scene/StillLife/carriage-05-03-forward-note.png` | `275712ccda1dcf74dfd8e86959c7cf89441de80886828652595f0a8c324b8a38` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
 | `Assets/Image/Scene/StillLife/6号车厢_地图.png` | `Game/assets/map-06.png` | `Assets/Image/Scene/StillLife/carriage-06-map.png`<br>`Game/assets/Image/Scene/StillLife/carriage-06-map.png` | `c6c1a7c7ebafca84b0c3f2da067efbcb24e71eba471d5ecf17bcfae1b8320cab` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/StillLife/6号车厢_便签.png` | `Game/assets/note-06.png` | `Assets/Image/Scene/StillLife/carriage-06-note.png`<br>`Game/assets/Image/Scene/StillLife/carriage-06-note.png` | `43e2d49ab4314b32b7e3f3d1ab34d9d3d15b19fe5e69066e4b48b32bf3f23777` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/deep-07.svg` | `Assets/Image/Scene/StillLife/carriage-07-depth.svg`<br>`Game/assets/Image/Scene/StillLife/carriage-07-depth.svg` | `5fc6ce6d52641a94f376ca21766491495da16c7b0bee73d32c111a8ccdc17bb1` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/door.svg` | `Assets/Image/Scene/StillLife/carriage-door.svg`<br>`Game/assets/Image/Scene/StillLife/carriage-door.svg` | `863692a792d45426dc77ca0d69e2831542d8ed0c408c857269586c117d7e7b74` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
+| — | `Game/assets/deep-07.svg` | `Game/assets/Image/Scene/StillLife/carriage-07-depth.svg` | `5fc6ce6d52641a94f376ca21766491495da16c7b0bee73d32c111a8ccdc17bb1` | 运行目录独有 | 正式游戏使用 | SVG 占位符按约定仅保留在 Game |
+| — | `Game/assets/door.svg` | `Game/assets/Image/Scene/StillLife/carriage-door.svg` | `863692a792d45426dc77ca0d69e2831542d8ed0c408c857269586c117d7e7b74` | 运行目录独有 | 正式游戏使用 | SVG 占位符按约定仅保留在 Game |
 | `Assets/Image/Scene/StillLife/2号车厢_怪物.png` | `Game/assets/clicker-02.png` | `Assets/Image/Scene/StillLife/clicker-02.png`<br>`Game/assets/Image/Scene/StillLife/clicker-02.png` | `061caf72556bd344bd16e5387872dd78e60e74d07ea310a7e9d5ae42c18849a6` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/StillLife/头车_操作杆.png` | `Game/assets/control-lever.png` | `Assets/Image/Scene/StillLife/control-lever.png`<br>`Game/assets/Image/Scene/StillLife/control-lever.png` | `b4bf090acecd498c5026784fbfa963e3393c3157a18d530ffdba21e0ce1ed7cc` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/StillLife/7号车厢_尸体.png` | `Game/assets/corpse-07.png` | `Assets/Image/Scene/StillLife/corpse-07.png`<br>`Game/assets/Image/Scene/StillLife/corpse-07.png` | `d3c37a4fd9556ce9c50d8c578a07a95574e844f771be3af6793e2a4f6a53daa3` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
@@ -141,7 +142,7 @@
 | `Assets/Image/Scene/StillLife/7号车厢_收音机.png` | `Game/assets/radio-07.png` | `Assets/Image/Scene/StillLife/radio-07.png`<br>`Game/assets/Image/Scene/StillLife/radio-07.png` | `ba1d92ae3a30c286d8b6a6b2c4853e481e56a42059436f68eea40cc19c6662e2` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/StillLife/5号3号车厢_垃圾袋1.png` | `Game/assets/trash-05-a.png` | `Assets/Image/Scene/StillLife/trash-05-a.png`<br>`Game/assets/Image/Scene/StillLife/trash-05-a.png` | `56dd39b72effbf845dede508d0bc3f1aea2dc63be792f68123694417ece75296` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Scene/StillLife/5号3号车厢_垃圾袋2.png` | `Game/assets/trash-05-b.png` | `Assets/Image/Scene/StillLife/trash-05-b.png`<br>`Game/assets/Image/Scene/StillLife/trash-05-b.png` | `7977b9b24e7f64722da4a1742c9631ca37292e2fb5ac34f927d510ceaf99d578` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/mg3d-demo-spot.svg` | `Assets/Image/Scene/StillLife/webgl-demo-marker.svg`<br>`Game/assets/Image/Scene/StillLife/webgl-demo-marker.svg` | `168f9d4f252366a1e6cb6954dc60ff15f0d86a2071a2c343e38a8db50d1cc2a6` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
+| — | `Game/assets/mg3d-demo-spot.svg` | `Game/assets/Image/Scene/StillLife/webgl-demo-marker.svg` | `168f9d4f252366a1e6cb6954dc60ff15f0d86a2071a2c343e38a8db50d1cc2a6` | 运行目录独有 | 隐藏开发演示使用 | SVG 占位符按约定仅保留在 Game |
 | `Assets/Image/UI/减.png` | — | `Assets/Image/Ui/attribute-minus.png`<br>`Game/assets/Image/Ui/attribute-minus.png` | `99617f41959f3125815f5905e2fb3a6f4502aac39a1ae24cce54f78616c51b50` | Assets 内置化 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/加.png` | — | `Assets/Image/Ui/attribute-plus.png`<br>`Game/assets/Image/Ui/attribute-plus.png` | `56207790ae2813dfb4d11ee12cf9dde6fc5d3f1290e2cf4cacf8eb94a3a2ea77` | Assets 内置化 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/背包框.png` | `Game/assets/ui/beibao.png` | `Assets/Image/Ui/backpack-frame.png`<br>`Game/assets/Image/Ui/backpack-frame.png` | `2d2a5115d7bb6129b1d1c9bbdfc07746dd238127f61688492b9df79459d33a03` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
@@ -154,7 +155,7 @@
 | `Assets/Image/UI/必杀.png` | `Game/assets/ui/card-battle/ultimate.png` | `Assets/Image/Ui/CardBattle/ultimate.png`<br>`Game/assets/Image/Ui/CardBattle/ultimate.png` | `01208200233cac67c78cccd950f90b9d0ee375b638348a026000f05be667fbe1` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/钓鱼条_浮块.png` | `Game/assets/ui/conductor-tug/target.png` | `Assets/Image/Ui/ConductorTug/target.png`<br>`Game/assets/Image/Ui/ConductorTug/target.png` | `4b55099bb769243eaca8321ff8d52198e80f7cb7147cb7fa608b0b50abd697e2` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/钓鱼条.png` | `Game/assets/ui/conductor-tug/track.png` | `Assets/Image/Ui/ConductorTug/track.png`<br>`Game/assets/Image/Ui/ConductorTug/track.png` | `3af69ed17bc5521a68c7c7f0f1097b8a2ad5af62658a0fa415a9f1ab27ad491a` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/cover-placeholder.svg` | `Assets/Image/Ui/cover-placeholder.svg`<br>`Game/assets/Image/Ui/cover-placeholder.svg` | `e929e6b62e2e06bf4a5837ec556944abe6395c989c26a283ca60b4bb19fe4223` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
+| — | `Game/assets/cover-placeholder.svg` | `Game/assets/Image/Ui/cover-placeholder.svg` | `e929e6b62e2e06bf4a5837ec556944abe6395c989c26a283ca60b4bb19fe4223` | 运行目录独有 | 正式游戏使用 | SVG 占位符按约定仅保留在 Game |
 | `Assets/Image/UI/对话框.png` | `Game/assets/ui/dialog-box.png` | `Assets/Image/Ui/dialog-box.png`<br>`Game/assets/Image/Ui/dialog-box.png` | `f2fb974ba961b6e853577731bc0c5af3278696e264b537a88311df9b511eddea` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/骰子.png` | `Game/assets/ui/dice_00.png` | `Assets/Image/Ui/dice-00.png`<br>`Game/assets/Image/Ui/dice-00.png` | `b5205efef6929f00ce31809de33b343ed3bfc67da51b3cf9f5b8db1fab395a28` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/骰子1.png` | `Game/assets/ui/dice_01.png` | `Assets/Image/Ui/dice-01.png`<br>`Game/assets/Image/Ui/dice-01.png` | `26fd1dac6f3d83c60ca4458e876de2f9871de172b38a35615cc672ef59054f07` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |

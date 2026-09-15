@@ -135,6 +135,14 @@
       this.checkResults = clean.checkResults;
       this.checkAttempts = clean.checkAttempts;
 
+      // 旧存档将驾驶室钥匙和操作面板钥匙合并为 crew_keys；恢复时拆成两个正式物品。
+      if (this.inventory.includes("crew_keys")) {
+        this.inventory = this.inventory.filter((itemId) => itemId !== "crew_keys");
+        for (const itemId of ["driver_cab_key", "control_panel_key"]) {
+          if (!this.inventory.includes(itemId)) this.inventory.push(itemId);
+        }
+      }
+
       // 兼容旧版本已经翻到便签背面的存档：旧版本没有把便签加入物品栏，
       // 恢复后补入同一个物品 ID，避免已完成的进度丢失。
       if (this.flags.note_back_seen === true && !this.inventory.includes("note_06_item")) {

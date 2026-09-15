@@ -12,6 +12,7 @@ for (const name of ["namespace", "state", "scene", "events", "custom-actions"]) 
   vm.runInContext(await read(`src/${name}.js`), sandbox);
 }
 const Game = sandbox.window.TrainGame;
+const crewKeys = ["driver_cab_key", "control_panel_key"];
 
 function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const state = new Game.GameState({ ...meta.initialState, flags, inventory, sceneId }, attributes, skills);
@@ -196,7 +197,7 @@ for (const dead of [false, true]) {
 // → E_025 喘息段（播完停下，等玩家照明后自己点 Clicker；E_524 的喘息描写已并入 E_025）。
 for (const bottle of [false, true]) for (const given of [true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
-    [...(bottle ? ["bottle"] : []), ...(!given ? ["crew_keys"] : [])], "carriage_fake_04");
+    [...(bottle ? ["bottle"] : []), ...(!given ? crewKeys : [])], "carriage_fake_04");
   await game.play("E_516");
   assert.equal(game.state.sceneId, "carriage_fake_04", "交出钥匙后仍停在伪4号等玩家点门");
   assert.equal(game.trace.some(t => t.text?.includes("你穿过来路的车门")), false);
@@ -216,7 +217,7 @@ for (const bottle of [false, true]) for (const given of [true]) {
   await game.play("E_502_RETURN");
   assert.equal(game.state.sceneId, "carriage_02", "空车厢左门经磨损门进真实2号");
   assert.equal(game.trace.some(t => t.text?.includes("高度磨损的车门")), true);
-  assert.equal(game.state.inventory.filter(i => i === "crew_keys").length, 1);
+  assert.equal(crewKeys.every((itemId) => game.state.inventory.filter((id) => id === itemId).length === 1), true);
   assert.equal(game.trace.some(t => t.text?.includes("钥匙不知何时")), given);
   assert.equal(game.trace.some(t => t.event?.startsWith("E_025")), true, "返程回到真2号后接 E_025 喘息段");
   assert.equal(game.trace.some(t => t.scene === "carriage_02" && t.text === "四周毫无光源。"), true);
@@ -233,7 +234,7 @@ const handprintActions = events
   .filter(action => action.type === "custom" && action.name === "fakeCarriageHandprints");
 assert.equal(handprintActions.length, 2);
 assert.equal(handprintActions.every(action => action.params.interval === 1200), true, "血手印拍击间隔为1.2秒");
-game = fixture({}, ["crew_keys"], "carriage_fake_04");
+game = fixture({}, crewKeys, "carriage_fake_04");
 await game.play("E_519_KEEP");
 assert.equal(game.state.sceneId, "carriage_fake_02");
 assert.equal(game.state.flags.ev519_escape_left, true);
@@ -292,16 +293,16 @@ for (const [flags, expected] of [
     assert.equal(game.trace.some(t => t.text === "窗外的雾气散开了。"), false);
   }
 }
-game = fixture({}, ["crew_keys"], "carriage_fake_04");
+game = fixture({}, crewKeys, "carriage_fake_04");
 game.ui.choice.choose = async () => null;
 await game.play("E_519_GIVE");
-assert.equal(game.state.inventory.includes("crew_keys"), false);
+assert.equal(crewKeys.some((itemId) => game.state.inventory.includes(itemId)), false);
 assert.equal(game.state.flags.ev519_key_ever_given, true);
 await game.play("E_519_GIVE");
 assert.equal(game.trace.filter(t => t.text?.startsWith("你把钥匙递出去")).length, 1);
 game.state.removeItem("missing"); assert.equal(game.state.inventory.length, 0);
 await game.play("E_524"); await game.play("E_524");
-assert.equal(game.state.inventory.filter(i => i === "crew_keys").length, 1);
+assert.equal(crewKeys.every((itemId) => game.state.inventory.filter((id) => id === itemId).length === 1), true);
 
 for (const [id, flags, reason] of [["E_511", {}, "lost"]]) {
   game = fixture(flags); await game.play(id); assert.equal(game.state.flags.ending_reason, reason);

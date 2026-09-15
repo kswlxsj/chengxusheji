@@ -2506,7 +2506,11 @@
       },
       {
         "type": "addItem",
-        "item": "crew_keys"
+        "item": "driver_cab_key"
+      },
+      {
+        "type": "addItem",
+        "item": "control_panel_key"
       },
       {
         "type": "setFlag",
@@ -2573,7 +2577,11 @@
       },
       {
         "type": "addItem",
-        "item": "crew_keys"
+        "item": "driver_cab_key"
+      },
+      {
+        "type": "addItem",
+        "item": "control_panel_key"
       },
       {
         "type": "setFlag",
@@ -3164,13 +3172,24 @@
     ]
   },
   {
-    "id": "E_ITEM_KEYS_INSPECT",
+    "id": "E_ITEM_DRIVER_CAB_KEY_INSPECT",
     "actions": [
       {
         "type": "inspect",
-        "item": "crew_keys",
-        "title": "驾驶室与操作面板钥匙",
-        "text": "驾驶室钥匙和操作面板钥匙。"
+        "item": "driver_cab_key",
+        "title": "驾驶室钥匙",
+        "text": "用于打开列车驾驶室门的钥匙。"
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_CONTROL_PANEL_KEY_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "control_panel_key",
+        "title": "操作面板钥匙",
+        "text": "用于打开驾驶室操作面板的钥匙。"
       }
     ]
   },
@@ -3483,7 +3502,7 @@
               "equals": true
             },
             {
-              "hasItem": "crew_keys"
+              "hasItem": "driver_cab_key"
             }
           ]
         },
@@ -3553,7 +3572,11 @@
       },
       {
         "type": "addItem",
-        "item": "crew_keys"
+        "item": "driver_cab_key"
+      },
+      {
+        "type": "addItem",
+        "item": "control_panel_key"
       },
       {
         "type": "setFlag",
@@ -4544,7 +4567,14 @@
       {
         "type": "conditionalJump",
         "when": {
-          "hasItem": "crew_keys"
+          "all": [
+            {
+              "hasItem": "driver_cab_key"
+            },
+            {
+              "hasItem": "control_panel_key"
+            }
+          ]
         },
         "next": "E_519_HASKEY"
       }
@@ -4600,7 +4630,14 @@
         "type": "conditionalJump",
         "when": {
           "not": {
-            "hasItem": "crew_keys"
+            "all": [
+              {
+                "hasItem": "driver_cab_key"
+              },
+              {
+                "hasItem": "control_panel_key"
+              }
+            ]
           }
         },
         "next": "E_519_NOKEY"
@@ -4611,7 +4648,11 @@
       },
       {
         "type": "removeItem",
-        "item": "crew_keys"
+        "item": "driver_cab_key"
+      },
+      {
+        "type": "removeItem",
+        "item": "control_panel_key"
       },
       {
         "type": "setFlag",
@@ -5112,7 +5153,11 @@
     "actions": [
       {
         "type": "addItem",
-        "item": "crew_keys"
+        "item": "driver_cab_key"
+      },
+      {
+        "type": "addItem",
+        "item": "control_panel_key"
       },
       {
         "type": "setFlag",

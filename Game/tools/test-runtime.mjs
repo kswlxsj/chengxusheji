@@ -257,6 +257,16 @@ registeredState.completeAttributeAllocation({
   san: 8
 });
 
+const legacyKeysSnapshot = registeredState.snapshot();
+legacyKeysSnapshot.inventory = ["crew_keys"];
+const migratedKeysState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+migratedKeysState.restore(legacyKeysSnapshot);
+assert.deepEqual(
+  migratedKeysState.inventory,
+  ["driver_cab_key", "control_panel_key"],
+  "旧存档中的组合钥匙应拆分为驾驶室钥匙和操作面板钥匙"
+);
+
 let inspectedItem = null;
 const inspectEngine = new Game.EventEngine({
   events: [],

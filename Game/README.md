@@ -374,7 +374,7 @@ Game/
 
 运行素材按类型存放在 `Audio/`、`Fonts/`、`Image/` 与 `Video/`。目录使用英文 PascalCase；媒体文件使用小写英文 kebab-case，扩展名小写。图片继续细分为物品栏图标、人物立绘、场景背景、场景静物和 UI，小游戏专属资源放在对应子目录。
 
-仓库根 `Assets/` 是本目录的字节级超集：每个 `Game/assets/<相对路径>` 都必须存在同路径、同 SHA-256 的 `Assets/<相对路径>`。游戏只能引用本目录，不得使用 `../Assets`；源素材库可以额外保存新版候选和未接入内容。同步、版本及命名细则见 [`Assets/README.md`](../Assets/README.md)，本次迁移记录见 [`docs/asset-mapping.md`](docs/asset-mapping.md)。
+仓库根 `Assets/` 保存正式美术源素材：除临时 SVG 占位符外，每个 `Game/assets/<相对路径>` 都必须存在同路径、同 SHA-256 的 `Assets/<相对路径>`；SVG 占位符只保留在运行目录。游戏只能引用本目录，不得使用 `../Assets`；源素材库可以额外保存新版候选和未接入内容。同步、版本及命名细则见 [`Assets/README.md`](../Assets/README.md)，本次迁移记录见 [`docs/asset-mapping.md`](docs/asset-mapping.md)。
 
 背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材配合 `fullCanvas: true` 使用。音频由 `data/audio.json` 集中登记后经 `sound` 动作播放；BGM 与 OP 位于 `assets/Audio/Bgm/`。
 
