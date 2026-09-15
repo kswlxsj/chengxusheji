@@ -1578,6 +1578,8 @@ body.home-op-active .home-page .auth-user-status {
   display: grid;
   place-items: center;
   padding: clamp(18px, 4%, 42px);
+  /* 底部额外避让常驻物品栏，避免关闭提示与快捷格视觉重叠。 */
+  padding-bottom: calc(clamp(18px, 4%, 42px) + clamp(64px, 10vh, 90px));
   pointer-events: auto;
   color: var(--ink);
   background: rgba(0, 0, 0, .86);
@@ -1606,9 +1608,10 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .item-inspect-content {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
   width: min(720px, 88%);
   max-height: 34%;
+  padding: 0 4px 4px;
   overflow: auto;
   text-align: center;
 }
