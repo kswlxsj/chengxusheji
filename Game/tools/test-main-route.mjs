@@ -6,8 +6,8 @@
 // - 5号右门只过门（切景 + 过门句，不触发医学检定）；剧情路线统一经 E_013_ENTRY 进4号。
 // - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后直接进行教育检定。
 // - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_023 门前认知崩塌 → E_501）才进入。
-// - 里世界返程 E_524 回到真2号后接 E_025 喘息段，播完停下，不自动进入 Clicker 遭遇。
-// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；安静通过也置 carriage_02_passed。
+// - 里世界返程 E_524 回到真2号后接 E_025 喘息段；玩家点击场景里的 Clicker 后触发遭遇。
+// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行/对抗与背包瓶子接线正确。
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
@@ -114,7 +114,10 @@ const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_03
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
-assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026", "Clicker 应进入2号车厢怪物遭遇");
+assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026_ACTION", "点击 Clicker 后应进入通过方式选择");
+assert.match(mainSource, /canUseBottleOnClicker/, "背包应有 Clicker 场景下的玻璃瓶使用分支");
+assert.match(mainSource, /E_028_THROW_FIRST/, "玻璃瓶在 Clicker 场景下应直通投掷事件");
+assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应自动播放 Clicker 发现对白");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
@@ -407,21 +410,37 @@ assert.equal(game.trace[cut - 1].text, "你推开门——", "推门句仍属于
 assert.match(game.trace[game.trace.length - 1].text, /那不是人类的喘息/);
 assert.equal(game.state.sceneId, "carriage_02");
 assert.equal(game.trace.some((entry) => entry.scene === "carriage_02" && entry.text === "四周毫无光源。"), true);
-assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "返程不得自动进入 Clicker 遭遇");
+assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "进入2号后应等待玩家点击 Clicker");
 
-// 2号车厢点 Clicker：直接进入怪物遭遇，不再出现3号车厢的取工具文案。
-game = fixture({ sceneId: "carriage_02", choiceLabels: ["屏住呼吸，尝试安静通过"] });
+// 进入2号后的发现对白不带选择；点击 Clicker 后才出现安静潜行/正面对抗。
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true } });
 await game.play("E_026");
 assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /那个怪物/);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
+assert.equal(game.trace.some((entry) => entry.event === "E_026_ACTION"), false, "发现对白结束前不应弹通过方式");
+game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["安静潜行"], dice: { ev027_constitution_01: 0 } });
+await game.play("E_026_ACTION");
 assert.equal(game.state.flags.carriage_02_passed, true, "安静通过后要置通过状态");
 assert.equal(game.state.sceneId, "carriage_02", "安静通过成功后应停在安全门前");
 assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), false);
-game.state.addItem("driver_cab_key");
-game.state.addItem("control_panel_key");
-game.trace.length = 0;
+
+// 潜行失败直接进入卡牌小游戏；正面对抗仍按 E_029 的检定结果分流简单/困难模式。
+game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["安静潜行"], dice: { ev027_constitution_01: 1 } });
+await game.play("E_026_ACTION");
+assert.equal(game.state.flags.card_battle_won, false, "潜行失败进入小游戏前应重置战斗结果");
+assert.equal(game.trace.some((entry) => entry.text === "潜行失败，你被迫进入战斗轮。"), true);
+for (const [outcome, mode] of [[0, "简单模式"], [1, "困难模式"]]) {
+  game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["正面对抗"], dice: { ev029_constitution_01: outcome } });
+  await game.play("E_026_ACTION");
+  assert.equal(game.trace.some((entry) => entry.text?.includes(mode)), true, `正面对抗应保留${mode}分流`);
+}
+game = fixture({
+  sceneId: "carriage_02",
+  flags: { carriage_02_passed: true },
+  inventory: ["driver_cab_key", "control_panel_key"]
+});
 await game.play("E_GO_02_FRONT_DOOR");
 assert.equal(game.state.sceneId, "front_carriage", "玩家点安全门后才进入先头车厢");
 

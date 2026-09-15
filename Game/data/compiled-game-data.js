@@ -696,7 +696,7 @@ window.GAME_DATA = {
             "height": 44
           },
           "zIndex": 12,
-          "clickEvent": "E_026",
+          "clickEvent": "E_026_ACTION",
           "visibleWhen": {
             "all": [
               {
@@ -4248,23 +4248,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你没有动。"
-        },
-        {
-          "type": "choice",
-          "prompt": "你打算怎么做？",
-          "options": [
-            {
-              "label": "屏住呼吸，尝试安静通过",
-              "next": "E_027"
-            },
-            {
-              "label": "投掷彩色玻璃瓶，制造声响引开它们",
-              "next": "E_028",
-              "when": {
-                "hasItem": "bottle"
-              }
-            }
-          ]
         }
       ]
     },
@@ -4278,21 +4261,23 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你没有动。"
-        },
+        }
+      ]
+    },
+    {
+      "id": "E_026_ACTION",
+      "actions": [
         {
           "type": "choice",
           "prompt": "你打算怎么做？",
           "options": [
             {
-              "label": "屏住呼吸，尝试安静通过",
+              "label": "安静潜行",
               "next": "E_027"
             },
             {
-              "label": "投掷彩色玻璃瓶，制造声响引开它们",
-              "next": "E_028",
-              "when": {
-                "hasItem": "bottle"
-              }
+              "label": "正面对抗",
+              "next": "E_029"
             }
           ]
         }
@@ -4364,6 +4349,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_02_passed",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
         }
       ]
     },
@@ -4375,21 +4365,17 @@ window.GAME_DATA = {
           "text": "你踩到尸体发出声响，怪物们齐刷刷地转向你。"
         },
         {
-          "type": "choice",
-          "prompt": "你打算怎么做？",
-          "options": [
-            {
-              "label": "与它们正面对抗",
-              "next": "E_029"
-            },
-            {
-              "label": "退回阴影，投掷彩色玻璃瓶制造声响引开它们",
-              "next": "E_028",
-              "when": {
-                "hasItem": "bottle"
-              }
-            }
-          ]
+          "type": "dialogue",
+          "text": "潜行失败，你被迫进入战斗轮。"
+        },
+        {
+          "type": "setFlag",
+          "key": "card_battle_won",
+          "value": false
+        },
+        {
+          "type": "minigame",
+          "game": "card_battle"
         }
       ]
     },
@@ -4640,23 +4626,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "那只无眼的怪物仍在黑暗中侧耳倾听。"
-        },
-        {
-          "type": "choice",
-          "prompt": "你打算怎么做？",
-          "options": [
-            {
-              "label": "屏住呼吸，尝试安静通过",
-              "next": "E_027"
-            },
-            {
-              "label": "投掷彩色玻璃瓶，制造声响引开它们",
-              "next": "E_028",
-              "when": {
-                "hasItem": "bottle"
-              }
-            }
-          ]
         }
       ]
     },

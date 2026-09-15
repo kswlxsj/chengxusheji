@@ -173,9 +173,37 @@
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);
 
+  function visibleClickerInCarriage02() {
+    if (state.sceneId !== "carriage_02") return null;
+    const clicker = sceneDefinitions.get("carriage_02")?.objects
+      ?.find((object) => object.id === "clicker_02");
+    return clicker && !clicker.invisible && Game.evaluateCondition(clicker.visibleWhen, state)
+      ? clicker
+      : null;
+  }
+
+  function canUseBottleOnClicker(item) {
+    return item?.id === "bottle" && Boolean(visibleClickerInCarriage02());
+  }
+
+  function maybeTriggerClickerReveal() {
+    if (
+      startupLocked
+      || paused
+      || engine.busy
+      || state.sceneId !== "carriage_02"
+      || state.flags.light_used !== true
+      || state.flags.clicker_cleared === true
+      || state.flags.clicker_first_encounter_seen === true
+      || !visibleClickerInCarriage02()
+    ) return;
+    void engine.play("E_026");
+  }
+
   function inspectInventoryItem(item) {
     if (!item || startupLocked || paused || engine.busy) return;
-    void engine.play(item.inspectEvent);
+    const eventId = canUseBottleOnClicker(item) ? "E_028_THROW_FIRST" : item.inspectEvent;
+    void engine.play(eventId);
   }
 
   function updateInventoryBar() {
@@ -188,7 +216,10 @@
       slot.type = "button";
       slot.className = `inventory-slot${item ? " occupied" : " empty"}`;
       slot.disabled = !item || startupLocked || paused || engine.busy;
-      slot.title = item ? `${item.name}（点击使用/调查）` : `空物品格 ${index + 1}`;
+      const bottleTargetsClicker = canUseBottleOnClicker(item);
+      slot.title = item
+        ? `${item.name}（${bottleTargetsClicker ? "点击投掷并直接通过" : "点击使用/调查"}）`
+        : `空物品格 ${index + 1}`;
       slot.setAttribute("aria-label", slot.title);
 
       const shortcut = document.createElement("span");
@@ -235,6 +266,7 @@
     maybeTriggerE009();
     maybeTriggerCarriage06Guide();
     autoSaveOnNewCarriage();
+    maybeTriggerClickerReveal();
   }
 
   function syncAutosavedCarriages() {

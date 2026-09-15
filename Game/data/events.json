@@ -2955,23 +2955,6 @@
       {
         "type": "dialogue",
         "text": "你没有动。"
-      },
-      {
-        "type": "choice",
-        "prompt": "你打算怎么做？",
-        "options": [
-          {
-            "label": "屏住呼吸，尝试安静通过",
-            "next": "E_027"
-          },
-          {
-            "label": "投掷彩色玻璃瓶，制造声响引开它们",
-            "next": "E_028",
-            "when": {
-              "hasItem": "bottle"
-            }
-          }
-        ]
       }
     ]
   },
@@ -2985,22 +2968,18 @@
       {
         "type": "dialogue",
         "text": "你没有动。"
-      },
+      }
+    ]
+  },
+  {
+    "id": "E_026_ACTION",
+    "actions": [
       {
         "type": "choice",
         "prompt": "你打算怎么做？",
         "options": [
-          {
-            "label": "屏住呼吸，尝试安静通过",
-            "next": "E_027"
-          },
-          {
-            "label": "投掷彩色玻璃瓶，制造声响引开它们",
-            "next": "E_028",
-            "when": {
-              "hasItem": "bottle"
-            }
-          }
+          { "label": "安静潜行", "next": "E_027" },
+          { "label": "正面对抗", "next": "E_029" }
         ]
       }
     ]
@@ -3061,27 +3040,17 @@
     "id": "E_027_S",
     "actions": [
       {"type": "dialogue", "text": "你谨慎通过，到达先头车厢门前。"},
-      {"type": "setFlag", "key": "carriage_02_passed", "value": true}
+      {"type": "setFlag", "key": "carriage_02_passed", "value": true},
+      {"type": "setFlag", "key": "clicker_cleared", "value": true}
     ]
   },
   {
     "id": "E_027_F",
     "actions": [
       {"type": "dialogue", "text": "你踩到尸体发出声响，怪物们齐刷刷地转向你。"},
-      {
-        "type": "choice",
-        "prompt": "你打算怎么做？",
-        "options": [
-          {"label": "与它们正面对抗", "next": "E_029"},
-          {
-            "label": "退回阴影，投掷彩色玻璃瓶制造声响引开它们",
-            "next": "E_028",
-            "when": {
-              "hasItem": "bottle"
-            }
-          }
-        ]
-      }
+      {"type": "dialogue", "text": "潜行失败，你被迫进入战斗轮。"},
+      {"type": "setFlag", "key": "card_battle_won", "value": false},
+      {"type": "minigame", "game": "card_battle"}
     ]
   },
   {
@@ -3257,19 +3226,7 @@
         "when": { "flag": "monster_behavior_known", "equals": true },
         "next": "E_026_KNOWLEDGE"
       },
-      { "type": "dialogue", "text": "那只无眼的怪物仍在黑暗中侧耳倾听。" },
-      {
-        "type": "choice",
-        "prompt": "你打算怎么做？",
-        "options": [
-          { "label": "屏住呼吸，尝试安静通过", "next": "E_027" },
-          {
-            "label": "投掷彩色玻璃瓶，制造声响引开它们",
-            "next": "E_028",
-            "when": { "hasItem": "bottle" }
-          }
-        ]
-      }
+      { "type": "dialogue", "text": "那只无眼的怪物仍在黑暗中侧耳倾听。" }
     ]
   },
   {
