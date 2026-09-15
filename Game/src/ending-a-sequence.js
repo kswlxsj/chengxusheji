@@ -47,6 +47,7 @@
     constructor(options = {}) {
       this.root = options.root || document.querySelector("#game-shell") || document.body;
       this.audio = options.audio || null;
+      this.backgroundAudio = options.backgroundAudio || null;
       this.assets = { ...DEFAULT_ASSETS, ...(options.assets || {}) };
       this.timers = new Set();
       this.resolveAdvance = null;
@@ -287,7 +288,7 @@
 
     stopAudio() {
       this.audio?.stopAll?.();
-      window.__TRAIN_GAME_TRAIN_AUDIO__?.setEnabled?.(false);
+      this.backgroundAudio?.stopAll?.();
     }
 
     delay(milliseconds) {

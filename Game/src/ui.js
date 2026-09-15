@@ -150,6 +150,9 @@
     }
   }
 
+  const AUTO_ADVANCE_DELAY_MS = 1200;
+  const FAST_ADVANCE_DELAY_MS = 90;
+
   class DialogWindow extends GameWindow {
     constructor(root) {
       super(root, "dialog-window");
@@ -189,6 +192,9 @@
         if (!this.isAwaitingAdvance() || this.paused) return;
         const target = event.target;
         if (target instanceof Element && target.closest(".dialog-window")) return;
+        // 场景/HUD 空白点击只负责推进已完整显示的句子；
+        // 流式输出期间仍须保留逐字效果，不能被框外点击补全。
+        if (this.player.running) return;
         this.handleAdvance();
       }, true);
       setInterval(() => this.ensureActive(), 500);
@@ -274,7 +280,7 @@
       const activeAdvance = this.advance;
       this.autoTimer = setTimeout(() => {
         if (this.advance === activeAdvance && !this.player.running) this.resolveLine();
-      }, this.fast ? 90 : 850);
+      }, this.fast ? FAST_ADVANCE_DELAY_MS : AUTO_ADVANCE_DELAY_MS);
     }
 
     resolveLine() {
@@ -556,6 +562,115 @@
     }
   }
 
+  class ItemInspectWindow {
+    constructor(root) {
+      this.root = root;
+      this.backdrop = null;
+      this.resolve = null;
+      this.previousFocus = null;
+      this.handleKeydown = (event) => {
+        if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this.close();
+      };
+    }
+
+    show({ title = "物品", text = "", image = null }) {
+      this.close();
+      this.previousFocus = document.activeElement;
+
+      const backdrop = document.createElement("div");
+      backdrop.className = "item-inspect-backdrop";
+      backdrop.setAttribute("role", "dialog");
+      backdrop.setAttribute("aria-modal", "true");
+      backdrop.setAttribute("aria-label", `调查物品：${title}`);
+
+      const stage = document.createElement("div");
+      stage.className = "item-inspect-stage";
+      let itemImage = null;
+      if (image) {
+        const img = document.createElement("img");
+        img.className = "item-inspect-image";
+        img.src = image;
+        img.alt = title;
+        itemImage = img;
+        stage.append(img);
+      }
+
+      const content = document.createElement("div");
+      content.className = "item-inspect-content";
+      const heading = document.createElement("h2");
+      heading.className = "item-inspect-title";
+      heading.textContent = title;
+      const description = document.createElement("p");
+      description.className = "item-inspect-text";
+      description.textContent = text;
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "item-inspect-close";
+      close.textContent = "点击空白处或按 Enter / Space 关闭";
+      content.append(heading, description, close);
+      stage.append(content);
+      backdrop.append(stage);
+      this.root.append(backdrop);
+      this.backdrop = backdrop;
+
+      return new Promise((resolve) => {
+        this.resolve = resolve;
+        backdrop.addEventListener("click", (event) => {
+          const clickedEmptyLayer = event.target === backdrop || event.target === stage;
+          const clickedTransparentImage = event.target === itemImage
+            && this.isTransparentImagePoint(itemImage, event);
+          if (clickedEmptyLayer || clickedTransparentImage) this.close();
+        });
+        close.addEventListener("click", () => this.close());
+        document.addEventListener("keydown", this.handleKeydown, true);
+        close.focus();
+      });
+    }
+
+    isTransparentImagePoint(image, event) {
+      if (event.detail === 0 || !image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0) {
+        return false;
+      }
+      const rect = image.getBoundingClientRect();
+      const scale = Math.min(rect.width / image.naturalWidth, rect.height / image.naturalHeight);
+      if (!Number.isFinite(scale) || scale <= 0) return false;
+      const renderedWidth = image.naturalWidth * scale;
+      const renderedHeight = image.naturalHeight * scale;
+      const renderedLeft = rect.left + (rect.width - renderedWidth) / 2;
+      const renderedTop = rect.top + (rect.height - renderedHeight) / 2;
+      const sourceX = Math.floor((event.clientX - renderedLeft) / scale);
+      const sourceY = Math.floor((event.clientY - renderedTop) / scale);
+      if (sourceX < 0 || sourceY < 0 || sourceX >= image.naturalWidth || sourceY >= image.naturalHeight) {
+        return true;
+      }
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1;
+        canvas.height = 1;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.drawImage(image, sourceX, sourceY, 1, 1, 0, 0, 1, 1);
+        return context.getImageData(0, 0, 1, 1).data[3] <= 8;
+      } catch (_error) {
+        return false;
+      }
+    }
+
+    close() {
+      if (this.backdrop) this.backdrop.remove();
+      this.backdrop = null;
+      document.removeEventListener("keydown", this.handleKeydown, true);
+      const resolve = this.resolve;
+      this.resolve = null;
+      const previousFocus = this.previousFocus;
+      this.previousFocus = null;
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+      if (resolve) resolve();
+    }
+  }
+
   // 检定抖动动画节奏：只影响 roll() 里的抖动阶段（第一段等待）；
   // 算式与成败的停留时长不受倍速影响。实际时长 = 基准时长 / 倍速，
   // CSS 的抖动关键帧周期按同一倍速缩放（见 styles/main.css 的 --check-animation-scale）。
@@ -814,7 +929,11 @@
       this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
+      this.itemInspect = new ItemInspectWindow(root);
       this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      this.backgroundAudio = Game.BackgroundAudioManager
+        ? new Game.BackgroundAudioManager(document.body, audio)
+        : null;
       this.dice = new DiceRollWindow(root, this.audio);
       this.mainMenu = new MenuWindow(root, "main-menu-window");
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
@@ -828,6 +947,9 @@
       if (this.audio) {
         this.audio.onAutoplayBlocked = (message) => this.toast(message);
       }
+      if (this.backgroundAudio) {
+        this.backgroundAudio.onAutoplayBlocked = (message) => this.toast(message);
+      }
     }
 
     closeDialog() {
@@ -836,16 +958,19 @@
 
     setPaused(value) {
       this.dialog.setPaused(value);
-      // 暂停即静音：暂停菜单背后不该还在响，恢复后也不补播（本次约定的口径）。
+      // 暂停立即冻结逻辑，声音在后台异步淡出；事件音恢复后不补播，背景音由场景同步恢复。
       if (value && this.audio) this.audio.stopAll();
+      if (value && this.backgroundAudio) this.backgroundAudio.stopAll();
     }
 
     cancelPending() {
       this.dialog.close();
       this.choice.close(null);
       this.inspect.close();
+      this.itemInspect.close();
       this.dice.close();
       this.minigame.close();
+      // 事件收尾只清理事件音效；场景背景音拥有独立生命周期，不受 cancelPending 影响。
       if (this.audio) this.audio.stopAll();
     }
 

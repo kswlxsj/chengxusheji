@@ -97,7 +97,7 @@
 
 ### 剧本转换 skill（内容维护者）
 
-仓库内置“剧本 → 游戏 JSON”转换 skill：把 Markdown 剧本（如 `Assets/Text/剧本.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源，AI 工作流树）与 `Game/skills/script-to-game-data/conversion-rules.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/review-checklist-template.md`，手把手使用教程见 `Game/docs/skill-tutorials/script-to-game-data.md`，较早运行留档见 `Game/docs/conversion-reviews/review-checklist-2026-09-05-1454.md`（E-005~E-008 批，旧版格式）。要点：
+仓库内置“剧本 → 游戏 JSON”转换 skill：把使用者指定的 Markdown 剧本（示例见 `Game/skills/script-to-game-data/samples/sample-input.md`）清洗转换为数据**候选**与**审查清单**。执行规范见 `Game/skills/script-to-game-data/SKILL.md`（入口与唯一事实源，AI 工作流树）与 `Game/skills/script-to-game-data/conversion-rules.md`（规则手册，含命名 §10、白名单 §11、审查清单格式与路径 §13），空白清单模板见 `Game/skills/script-to-game-data/templates/review-checklist-template.md`，手把手使用教程见 `Game/docs/skill-tutorials/script-to-game-data.md`，较早运行留档见 `Game/docs/conversion-reviews/review-checklist-2026-09-05-1454.md`（E-005~E-008 批，旧版格式）。要点：
 
 - **输入由使用者指定**（一个或多个文件）；未指定时执行者会停下询问，不默认任何路径。
 - **执行节奏为强制三段确认闸门**：①候选阶段只产出候选与审查清单，默认不写 `data/`；②审查清单面向使用者呈现**人话提问 + 素材指定区**（agent 内部细节收在文末执行台账）——使用者逐条勾选答复（同意 / 需要调整 / 本次跳过）、逐行指定素材（沿用 / 新建 / 委托占位补位 / 暂缓并注明影响），agent 校验全部完成后才继续；③落地（landing）前须逐文件确认改动方案，写入白名单 JSON 并真实编译通过后，经使用者终审才提交 git。任何闸门未获明确批准，执行者不得跳过或合并。
@@ -140,7 +140,22 @@
 
 ### scenes.json
 
-场景必填 `id`、`name`、`background`、`objects`。物件字段：
+场景必填 `id`、`name`、`background`、`objects`。场景可用 `backgroundSound` 绑定唯一循环背景音：
+
+```json
+{
+  "backgroundSound": { "sound": "train_ambient" },
+  "backgroundSoundVariants": [
+    {
+      "sound": "eating_crisps",
+      "loopGapMs": 1600,
+      "visibleWhen": { "flag": "carriage_06_eaten", "equals": true }
+    }
+  ]
+}
+```
+
+`sound` 必须引用 `audio.json`；`loopGapMs` 是每轮之间的静音毫秒数。运行时按数组顺序采用第一个满足条件的 `backgroundSoundVariants`，没有匹配项时回退 `backgroundSound`，两者都省略则该场景静音。物件字段：
 
 | 字段 | 必填 | 用法 |
 | --- | --- | --- |
@@ -181,7 +196,7 @@
 - **几何统一**：门热点固定 `y: 21`、`width: 12`、`height: 63`，左门 `x: 0`、右门 `x: 89`；两端保持一致，玩家来回穿行时才有稳定的位置感。
 - **里世界例外**：两端门是背景上的隐形热点，坐标为左 x=1 / 右 x=90、y=24、宽9%、高49%，层级13高于窗户蒙版，避免门窗交叠时误触；无贴图、无高亮。
 - **剧情例外**：`door_07_to_08` 对应的 8 号车厢门在剧情中已消失（只存在一片漆黑），它的 `clickEvent`（`E_008`）只播放调查、不切换场景。
-- **点门驱动**：跨车厢只能由玩家点门完成，剧情事件不得用 `changeScene` 替玩家进车（否则玩家没有机会在门前做选择）。例：`door_03_to_02` → `E_023`（门前认知崩塌，仅首次播放）→ `E_501`（里世界入口），3号车厢剧情（`E_022_ITEM`）拿完手电筒后必须停下、等玩家点这扇门。
+- **点门驱动**：跨车厢只能由玩家点门完成，剧情事件不得用 `changeScene` 替玩家进车（否则玩家没有机会在门前做选择）。例：`door_03_to_02` → `E_023`（门前认知崩塌，仅首次播放）→ `E_501`（里世界入口）；正常路线在5号取得手电筒、3号完成黑包流程并取得手机后停下，等待玩家点这扇门。
 - **自检**：新增车厢或改动门接线后，逐门核对「左侧→车厢号更大 / 右侧→车厢号更小或 `front`」，再运行 `npm run compile`。
 
 ### events.json 与内置动作
@@ -191,7 +206,7 @@
 | `type` | 必填字段 | 可选字段 | 行为 |
 | --- | --- | --- | --- |
 | `dialogue` | `text` | `speaker`, `speed` | 流式显示并等待推进；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
-| `inspect` | `title`、`text`，或 `item` | `image` | 打开调查窗口并等待关闭。给出 `item`（已注册物品 ID）时，引擎自动取该物品的名称/说明/图片作默认内容，`title`/`text`/`image` 均可省略；否则必须直接提供 `title` 与 `text`。 |
+| `inspect` | `title`、`text`，或 `item` | `image` | 调查并等待玩家关闭。给出 `item`（已注册物品 ID）时，引擎自动取名称/说明/图片作默认内容，并使用压暗完整游戏画面的物品全屏展示；`title`/`text`/`image` 可覆盖默认值。未给出 `item` 时仍使用普通场景调查窗口，且必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
 | `check` | `dice` | `outcomes`, `checkId` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。每个检定最多实际执行两次；第一次结果为下标 `0`（成功）后锁定，第一次失败才允许第二次。 |
 | `changeScene` | `scene` | — | 关闭对话，等待背景及可见贴图就绪，检查暂停/取消后提交场景，再执行下一句。 |
@@ -204,7 +219,7 @@
 | `addItem` | `item` | — | 加入已注册物品；重复获得不会生成第二份。 |
 | `removeItem` | `item` | — | 移除已注册物品；未持有或重复移除不改变背包。 |
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
-| `sound` | `sound` | `await`, `start`, `duration`, `volume` | 播放 `audio.json` 里注册的音效。默认**不阻塞**（与后续对话并行）；`await: true` 时等它播完再继续。`start` 从第几毫秒开始，`duration` 最多播多少毫秒（截取一段音频），`volume` 是相对注册表音量的倍率（0–1）。暂停会掐断正在播放的音效，事件取消/回滚不追回已播音效。 |
+| `sound` | `sound` | `await`, `start`, `duration`, `volume` | 播放 `audio.json` 里注册的事件音效。默认**不阻塞**（与后续对话并行）；`await: true` 时等它播完再继续。`start` 从第几毫秒开始，`duration` 最多播多少毫秒（含末段淡出），`volume` 是相对注册表音量的倍率（0–1）。暂停会异步淡出正在播放的音效，事件取消/回滚不追回已播音效。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 | `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
 
@@ -283,7 +298,7 @@
 
 ### items.json
 
-`items.json` 每项必须有 `id`、非空 `name`、非空 `image`、字符串 `description` 和 `inspectEvent`。物品进入物品栏后会显示在底部常驻快捷栏中；点击物品会运行 `inspectEvent` 指向的编号事件，该事件必须在 `events.json` 中存在。
+`items.json` 每项必须有 `id`、非空 `name`、非空 `image`、字符串 `description` 和 `inspectEvent`。物品进入物品栏后会显示在底部常驻快捷栏中；点击物品会运行 `inspectEvent` 指向的编号事件，该事件必须在 `events.json` 中存在。物品事件中的 `inspect` 应填写对应 `item`，从而统一进入全屏物品展示；手机、手电筒等带主动行为的物品也应由自定义动作调用 `ui.itemInspect`，只在当前确实可用时优先进入操作分支。
 
 ```json
 {
@@ -604,7 +619,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 ### 音效：`data/audio.json` 与 `sound` 动作
 
-音效索引是纯数据文件 `data/audio.json`（字段表见[数据接口参考](#audiojson)），经编译器并入 `window.GAME_DATA.audio`；播放由 `src/audio.js` 的 `TrainGame.AudioManager` 负责，`UIManager` 构造时创建 `ui.audio`。事件里的写法：
+音效索引是纯数据文件 `data/audio.json`（字段表见[数据接口参考](#audiojson)），经编译器并入 `window.GAME_DATA.audio`。`src/audio.js` 提供共享音源生命周期；`UIManager` 分别创建事件音管理器 `ui.audio` 和场景背景音管理器 `ui.backgroundAudio`。事件里的写法：
 
 ```json
 { "type": "sound", "sound": "door_close" },
@@ -623,21 +638,23 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 | 接口 | 说明 |
 | --- | --- |
-| `new AudioManager(root, registry)` | `root` 为音源挂载宿主（游戏页传 `document.body`）；`registry` 为 `GAME_DATA.audio`。构造不触碰 DOM，无 DOM 环境自动降级。 |
-| `play(soundId, options)` | 播放并返回句柄 `{ finished, duration, stop() }`：`finished` 在播完、出错、停止或到达截断时长时解决；`duration` 是本次播放的有效时长（秒，未知时为 `null`）；`stop()` 幂等。`options.loop: true` 启用循环，`options.loopGapMs` 可在两轮之间留出间隔；循环音只由停止或场景切换结束。同一编号重播会先收掉上一条。 |
-| `stopAll()` | 停止全部活动音源；`UIManager.setPaused(true)` 与 `UIManager.cancelPending()` 都会调用它。 |
-| `setMuted(value, allowedSoundIds)` | 进入或离开静音区；静音时只允许白名单编号播放，其余正在播放的声音立即停止，后续请求静默降级。 |
+| `new AudioManager(root, registry)` | 事件音管理器；`root` 为音源挂载宿主，`registry` 为 `GAME_DATA.audio`。无 DOM 环境自动降级。 |
+| `play(soundId, options)` | 从静音淡入并返回 `{ finished, duration, stop(), setVolume() }`。不同编号独立；同编号重播时旧实例淡出、新实例从头淡入。`duration` 的末段在配置总时长内完成淡出。 |
+| `stopAll(options)` | 让全部事件音异步淡出；调用本身不等待。页面卸载可传 `{ immediate: true }` 立即清理。 |
+| `setMuted(value, allowedSoundIds)` | 进入或离开事件音静音区；非白名单活动音淡出，后续请求静默降级。 |
+| `new BackgroundAudioManager(root, registry)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`。 |
+| `setTrack(soundId, options)` | 选择场景背景音。相同编号保持进度，淡出中再次选择会恢复；新编号与旧编号交叉淡化；`null` 淡出到静音。 |
 
 语义与边界：
 
-- **暂停与取消**：暂停（Esc / 暂停菜单 / 结束页接管）立即静音，恢复后不补播；事件取消、回滚、终止同样掐断。**已经播出的非阻塞音效不回滚**——音效属演出资源，不写入游戏状态，因此不进存档快照。
+- **淡化与暂停**：游戏内音源固定用一秒线性淡入；自然结束不淡出，配置 `duration` 在总时长的末段淡出，外部停止则异步淡出一秒。暂停、取消和终止不等待淡出；事件音恢复后不补播，背景音按当前场景恢复。**已经播出的非阻塞音效不回滚**。
 - **并发上限**：同时可闻音源上限 `TrainGame.AUDIO_MAX_VOICES`（8）；超出时停掉最早开始的一条，避免连点叠音。
 - **等待兜底**：`await: true` 复用引擎的可取消等待（取消立即结束等待），并以 `TrainGame.AUDIO_MAX_VOICE_WAIT_MS`（30 秒）兜底，元数据始终加载不出来时不会把事件链挂死。
 - **自动播放策略**：浏览器拒绝 `play()` 时只告警（控制台 + 一次 toast，文案常量 `TrainGame.AUDIO_AUTOPLAY_HINT`），该音效跳过、事件链继续——音效是可选演出，不因此回滚剧情。
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
-- **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`、`fake`、`ghost_calling` 与检定三音（`dice_rolling`、`dice_success`、`dice_fail`，见 `main.js` 的 `INNER_WORLD_ALLOWED_SOUNDS`）；其他事件音均静默。回到真实车厢后恢复。
-- **场景循环音**：`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 循环播放 `fake`；`carriage_02` 循环播放 `devil_scared`；`carriage_07` 以及 `carriage_06` 且置有 `carriage_06_eaten` 时循环播放 `eating_crisps`，每轮结束等待 1600ms 后再播。普通 6 号车厢不播放。离开场景、暂停、结束或进入其他静音场景时停止，恢复后重新开始。
-- **与 BGM 的区别**：`assets/Audio/Bgm/bgm-v2.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
+- **里世界静音**：里世界只放行车门、剧情提示和检定等白名单事件音；背景音不经过该白名单，而是完全由当前场景绑定决定。
+- **场景背景音**：普通真实车厢绑定 `train_ambient`；2号绑定 `devil_scared`；7号及被啃食6号绑定带1600ms间隔的 `eating_crisps`；假1号绑定 `maze`；伪4号与两处花海绑定 `fake`。专属音替换列车声，不叠加；相邻场景绑定同一编号时持续播放。
+- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 只负责标题/结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理，三者互不接管。
 
 ### UI：GameWindow / TextPlayer / UIManager
 
@@ -695,7 +712,8 @@ class NoticeWindow extends TrainGame.GameWindow {
 | `handleAdvance()` / `isAwaitingAdvance()` | 补全或结束本句 / 判断能否推进。 |
 | `ui.attributeAllocation.choose(definitions, totalPoints)` | 返回属性对象或 `null`。 |
 | `ui.choice.choose(prompt, options)` | 返回选项对象或 `null`。 |
-| `ui.inspect.show({ title, text, image })` | 显示调查并等待关闭。 |
+| `ui.inspect.show({ title, text, image })` | 显示普通场景调查窗口并等待关闭。 |
+| `ui.itemInspect.show({ title, text, image })` | 压暗完整游戏舞台，全屏展示物品图片、名称和说明并等待关闭。 |
 | `ui.mainMenu/pauseMenu/confirmMenu.choose(config)` | 显示菜单并返回选项值。 |
 | `ui.closeDialog()` / `setPaused(value)` | 关闭对话 / 暂停文字。 |
 | `ui.cancelPending()` / `closePauseMenus()` | 取消剧情窗口（含小游戏宿主）/ 关闭暂停相关菜单。 |
@@ -885,7 +903,7 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
 6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
 
-> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景循环环境音共 16 个音效。检定音由检定窗口自动播放，列车背景音由游戏页脚本循环播放，其余音效在对应事件的 `sound` 动作或场景同步中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
+> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景背景音共 30 个音效。检定音由检定窗口自动播放，场景背景音由 `BackgroundAudioManager` 按 `scenes.json` 绑定播放，其余音效在对应事件的 `sound` 动作中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
 
 ## 相关文档
 

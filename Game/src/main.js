@@ -38,7 +38,8 @@
         try {
           await Game.playEndingASequence({
             root: gameShell,
-            audio: ui.audio
+            audio: ui.audio,
+            backgroundAudio: ui.backgroundAudio
           });
         } catch (error) {
           console.error("结局 A 演出失败：", error);
@@ -48,7 +49,8 @@
         try {
           await Game.playParkingEndingSequence({
             root: gameShell,
-            audio: ui.audio
+            audio: ui.audio,
+            backgroundAudio: ui.backgroundAudio
           });
         } catch (error) {
           console.error("停车结局演出失败：", error);
@@ -71,6 +73,7 @@
   const inventorySlots = document.querySelector("#inventory-slots");
   const pauseButton = document.querySelector("#pause-button");
   const itemDefinitions = new Map(data.items.map((item) => [item.id, item]));
+  const sceneDefinitions = new Map(data.scenes.map((definition) => [definition.id, definition]));
   const minimumInventorySlots = 10;
   let startupLocked = true;
   let paused = false;
@@ -94,43 +97,13 @@
   const INNER_WORLD_ALLOWED_SOUNDS = [
     "door_open",
     "door_locked",
-    "fake",
     "ghost_calling",
     "knocking_wall",
-    "maze",
     "tinnitus_fake01",
     "dice_rolling",
     "dice_success",
     "dice_fail"
   ];
-  const SCENE_LOOP_TRACKS = [
-    {
-      id: "maze",
-      matches: (sceneId) => sceneId === "carriage_fake_01",
-      options: { loop: true },
-      playInInnerWorld: true
-    },
-    {
-      id: "fake",
-      matches: (sceneId) => sceneId === "carriage_fake_04"
-        || sceneId === "flower_sea"
-        || sceneId === "flower_sea_inside",
-      options: { loop: true },
-      playInInnerWorld: true
-    },
-    {
-      id: "devil_scared",
-      matches: (sceneId) => sceneId === "carriage_02"
-    },
-    {
-      id: "eating_crisps",
-      matches: (sceneId, flags) => sceneId === "carriage_07"
-        || (sceneId === "carriage_06" && flags?.carriage_06_eaten === true),
-      options: { loop: true, loopGapMs: 1600 }
-    }
-  ];
-  const sceneLoopVoices = new Map();
-
   // CODEX ADD START
   function showEndingOverlay(reason) {
     const overlay = document.querySelector("#codex-ending-overlay");
@@ -240,25 +213,12 @@
   function syncAudioForScene() {
     const innerWorld = INNER_WORLD_SCENES.has(state.sceneId);
     const sceneAudioEnabled = !paused && !startupLocked;
-    const trainAudioEnabled = sceneAudioEnabled && !innerWorld;
     ui.audio?.setMuted?.(innerWorld, INNER_WORLD_ALLOWED_SOUNDS);
-    window.__TRAIN_GAME_TRAIN_AUDIO__?.setEnabled?.(trainAudioEnabled);
-
-    for (const track of SCENE_LOOP_TRACKS) {
-      const active = sceneAudioEnabled
-        && (!innerWorld || track.playInInnerWorld === true)
-        && track.matches(state.sceneId, state.flags);
-      const voice = sceneLoopVoices.get(track.id);
-      const playing = voice && !voice.stopped;
-      if (active && !playing) {
-        const nextVoice = ui.audio?.play?.(track.id, track.options || { loop: true });
-        if (nextVoice) sceneLoopVoices.set(track.id, nextVoice);
-        else sceneLoopVoices.delete(track.id);
-      } else if (!active && voice) {
-        if (playing) voice.stop();
-        sceneLoopVoices.delete(track.id);
-      }
-    }
+    const definition = sceneDefinitions.get(state.sceneId);
+    const variant = (definition?.backgroundSoundVariants || [])
+      .find((entry) => Game.evaluateCondition(entry.visibleWhen, state));
+    const track = sceneAudioEnabled ? (variant || definition?.backgroundSound || null) : null;
+    ui.backgroundAudio?.setTrack?.(track?.sound || null, { loopGapMs: track?.loopGapMs });
   }
 
   function updateHud() {
@@ -315,7 +275,7 @@
       || paused
       || engine.busy
       || state.sceneId !== "carriage_06"
-      || state.flags.visited_carriage_07 !== true
+      || state.flags.ev008_scouting_done !== true
       || state.flags.ev009_seen === true
     ) return;
     void engine.play("E_009");
@@ -599,8 +559,15 @@
 
   sceneRoot.addEventListener("click", () => {
     if (engine.busy) {
-      if (!paused && ui.dialog.isAwaitingAdvance()) ui.dialog.handleAdvance();
+      // 场景空白点击只推进已完整显示的对白；流式输出期间不得补全文字。
+      if (!paused && ui.dialog.isAwaitingAdvance() && !ui.dialog.player.running) {
+        ui.dialog.handleAdvance();
+      }
     }
+  });
+  window.addEventListener("pagehide", () => {
+    ui.audio?.stopAll?.({ immediate: true });
+    ui.backgroundAudio?.stopAll?.({ immediate: true });
   });
   scene.load(data.meta.initialScene);
   scene.setInteractionEnabled(false);

@@ -143,6 +143,7 @@
   registerDice("ev020_education_01", attrCheck("education"));
   registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"]));
   registerDice("ev016_constitution_01", attrCheck("constitution"));
+  registerDice("ev504_insight_01", attrCheck("insight"));
 
   registerDice("ev027_constitution_01", attrCheck("constitution", 7));
   registerDice("ev028_constitution_01", attrCheck("constitution"));

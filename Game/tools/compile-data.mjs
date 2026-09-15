@@ -227,6 +227,30 @@ function validate(meta, scenes, events, items, attributeData, skills, audio, dic
   const objectIds = new Set();
   for (const scene of scenes) {
     assert(typeof scene.background === "string", `场景缺少背景：${scene.id}`);
+    if (scene.backgroundSound != null) {
+      assertPlainObject(scene.backgroundSound, `场景 ${scene.id} 的 backgroundSound 无效`);
+      assertOnlyKeys(scene.backgroundSound, ["sound", "loopGapMs"], `场景 ${scene.id}.backgroundSound`);
+      assert(soundIds.has(scene.backgroundSound.sound),
+        `场景 ${scene.id} 的背景音引用了未注册的编号：${scene.backgroundSound.sound || "空"}`);
+      if (scene.backgroundSound.loopGapMs != null) {
+        assert(typeof scene.backgroundSound.loopGapMs === "number" && scene.backgroundSound.loopGapMs >= 0,
+          `场景 ${scene.id} 的背景音 loopGapMs 必须是非负数字`);
+      }
+    }
+    if (scene.backgroundSoundVariants != null) {
+      assert(Array.isArray(scene.backgroundSoundVariants), `场景 ${scene.id} 的背景音变体必须是数组`);
+      for (const variant of scene.backgroundSoundVariants) {
+        assertPlainObject(variant, `场景 ${scene.id} 存在无效背景音变体`);
+        assertOnlyKeys(variant, ["sound", "loopGapMs", "visibleWhen"], `场景 ${scene.id} 的背景音变体`);
+        assert(soundIds.has(variant.sound),
+          `场景 ${scene.id} 的背景音变体引用了未注册的编号：${variant.sound || "空"}`);
+        assert("visibleWhen" in variant, `场景 ${scene.id} 的背景音变体缺少 visibleWhen`);
+        if (variant.loopGapMs != null) {
+          assert(typeof variant.loopGapMs === "number" && variant.loopGapMs >= 0,
+            `场景 ${scene.id} 的背景音变体 loopGapMs 必须是非负数字`);
+        }
+      }
+    }
     if (scene.backgroundVariants != null) {
       assert(Array.isArray(scene.backgroundVariants), `场景 ${scene.id} 的背景变体必须是数组`);
       for (const variant of scene.backgroundVariants) {
@@ -265,6 +289,9 @@ function validate(meta, scenes, events, items, attributeData, skills, audio, dic
 
   const references = { attributeIds, skillIds, itemIds, objectIds };
   for (const scene of scenes) {
+    for (const variant of scene.backgroundSoundVariants || []) {
+      validateCondition(variant.visibleWhen, references, `场景 ${scene.id} 的背景音变体条件`);
+    }
     for (const variant of scene.backgroundVariants || []) {
       validateCondition(variant.visibleWhen, references, `场景 ${scene.id} 的背景变体条件`);
     }

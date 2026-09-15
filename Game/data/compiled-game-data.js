@@ -19,6 +19,19 @@ window.GAME_DATA = {
       "id": "carriage_06",
       "name": "6 号车厢",
       "background": "assets/Image/Scene/Background/carriage-06.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
+      "backgroundSoundVariants": [
+        {
+          "sound": "eating_crisps",
+          "loopGapMs": 1600,
+          "visibleWhen": {
+            "flag": "carriage_06_eaten",
+            "equals": true
+          }
+        }
+      ],
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
@@ -193,6 +206,10 @@ window.GAME_DATA = {
       "id": "carriage_07",
       "name": "7 号车厢",
       "background": "assets/Image/Scene/Background/carriage-07.png",
+      "backgroundSound": {
+        "sound": "eating_crisps",
+        "loopGapMs": 1600
+      },
       "objects": [
         {
           "id": "radio_07",
@@ -279,6 +296,9 @@ window.GAME_DATA = {
       "id": "carriage_05",
       "name": "5 号车厢",
       "background": "assets/Image/Scene/Background/carriage-05.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_05_to_06",
@@ -426,6 +446,9 @@ window.GAME_DATA = {
       "id": "carriage_04",
       "name": "4 号车厢",
       "background": "assets/Image/Scene/Background/carriage-04.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
@@ -504,6 +527,9 @@ window.GAME_DATA = {
       "id": "carriage_03",
       "name": "3 号车厢",
       "background": "assets/Image/Scene/Background/carriage-03.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_03_to_04",
@@ -616,6 +642,9 @@ window.GAME_DATA = {
       "id": "carriage_02",
       "name": "2 号车厢",
       "background": "assets/Image/Scene/Background/carriage-02.png",
+      "backgroundSound": {
+        "sound": "devil_scared"
+      },
       "objects": [
         {
           "id": "dark_hint_02",
@@ -702,6 +731,9 @@ window.GAME_DATA = {
       "id": "front_carriage",
       "name": "先头车厢",
       "background": "assets/Image/Scene/Background/front-carriage.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_front_to_02",
@@ -795,13 +827,7 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_504",
-          "visibleWhen": {
-            "not": {
-              "flag": "ev504_scouting_ok",
-              "equals": true
-            }
-          }
+          "clickEvent": "E_504"
         },
         {
           "id": "bottle_inner",
@@ -865,6 +891,9 @@ window.GAME_DATA = {
       "id": "carriage_fake_01",
       "name": "里世界·假1号车厢",
       "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+      "backgroundSound": {
+        "sound": "maze"
+      },
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
@@ -1061,6 +1090,9 @@ window.GAME_DATA = {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
       "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": [
         {
           "id": "door_fake04_back",
@@ -1145,12 +1177,18 @@ window.GAME_DATA = {
       "id": "flower_sea",
       "name": "花海·车门外",
       "background": "assets/Image/Scene/Background/flower-sea.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": []
     },
     {
       "id": "flower_sea_inside",
       "name": "花海·室内",
       "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": []
     }
   ],
@@ -1158,6 +1196,14 @@ window.GAME_DATA = {
     {
       "id": "E_005",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_07_entry_seen",
+            "equals": true
+          },
+          "next": "E_005_REVISIT"
+        },
         {
           "type": "conditionalJump",
           "when": {
@@ -1302,10 +1348,40 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味。但在好奇心的驱使下，你仍然决定进入7号车厢。"
+          "text": "你闻到一股浓重的血腥味，却无法判断门后的危险。"
+        },
+        {
+          "type": "choice",
+          "prompt": "",
+          "options": [
+            {
+              "label": "推门进入",
+              "next": "E_005_DEPARTURE_B"
+            },
+            {
+              "label": "暂时留在6号车厢",
+              "next": "E_005_STAY"
+            }
+          ]
         }
-      ],
-      "next": "E_005_DEPARTURE_B"
+      ]
+    },
+    {
+      "id": "E_005_REVISIT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "door_open"
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_07"
+        },
+        {
+          "type": "dialogue",
+          "text": "你再次进入7号车厢。"
+        }
+      ]
     },
     {
       "id": "E_005_DEPARTURE_A",
@@ -1404,6 +1480,11 @@ window.GAME_DATA = {
           "duration": 2000
         },
         {
+          "type": "setFlag",
+          "key": "carriage_07_entry_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "车厢内部，被撕裂的人类肢体散落一地。"
         },
@@ -1424,6 +1505,11 @@ window.GAME_DATA = {
           "type": "sound",
           "sound": "distortion_e006",
           "duration": 2000
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_07_entry_seen",
+          "value": true
         },
         {
           "type": "dialogue",
@@ -1512,8 +1598,21 @@ window.GAME_DATA = {
       "id": "E_007",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "corpse_07_investigated",
+            "equals": true
+          },
+          "next": "E_007_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "尸体被浓浓的血浆覆盖着，四周散落着大大小小的尸块。"
+        },
+        {
+          "type": "setFlag",
+          "key": "corpse_07_investigated",
+          "value": true
         },
         {
           "type": "check",
@@ -1526,8 +1625,25 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_007_REVISIT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你已经检查过这具尸体，没有更多发现。"
+        }
+      ]
+    },
+    {
       "id": "E_008",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev008_scouting_done",
+            "equals": true
+          },
+          "next": "E_008_REVISIT"
+        },
         {
           "type": "sound",
           "sound": "door_locked"
@@ -1559,6 +1675,14 @@ window.GAME_DATA = {
       "id": "E_009",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev009_seen",
+            "equals": true
+          },
+          "next": "E_009_REVISIT"
+        },
+        {
           "type": "setFlag",
           "key": "ev009_seen",
           "value": true
@@ -1572,10 +1696,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_06_entry_route_b",
           "value": false
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_06"
         },
         {
           "type": "sound",
@@ -1651,12 +1771,25 @@ window.GAME_DATA = {
           "type": "check",
           "dice": "ev010_san_01"
         }
-      ],
-      "next": "E_010"
+      ]
+    },
+    {
+      "id": "E_009_REVISIT",
+      "actions": []
     },
     {
       "id": "E_GO_06_05",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "ev009_seen",
+              "equals": true
+            }
+          },
+          "next": "E_GO_06_05_LOCKED"
+        },
         {
           "type": "sound",
           "sound": "door_open"
@@ -1674,11 +1807,30 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你穿过门，来到5号车厢。"
         }
+      ],
+      "next": "E_010"
+    },
+    {
+      "id": "E_GO_06_05_LOCKED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "远处不断传来怪异的断裂声。贸然前进之前，你得先确认7号车厢发生了什么。"
+        }
       ]
     },
     {
       "id": "E_GO_05_04",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "hasItem": "newspaper"
+            }
+          },
+          "next": "E_GO_05_04_LOCKED"
+        },
         {
           "type": "sound",
           "sound": "door_open"
@@ -1696,6 +1848,16 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你穿过门，来到4号车厢。"
         }
+      ],
+      "next": "E_013_ENTRY"
+    },
+    {
+      "id": "E_GO_05_04_LOCKED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "散落的物品中似乎藏着重要线索。你决定先调查清楚再继续前进。"
+        }
       ]
     },
     {
@@ -1703,6 +1865,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "note_06_item",
           "title": "便签",
           "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
           "image": "assets/Image/Item/note.png",
@@ -1724,16 +1887,23 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你回到了6号车厢。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev008_scouting_done",
+            "equals": true
+          },
+          "next": "E_009"
         }
-      ],
-      "next": "E_009"
+      ]
     },
     {
       "id": "E_001",
       "actions": [
         {
           "type": "dialogue",
-          "text": "2013年的某天，你们搭乘本日的1号线末班电车。"
+          "text": "2013年7月15日，你搭乘了本日的1号线末班电车。"
         },
         {
           "type": "dialogue",
@@ -1741,7 +1911,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里除了他们没有其他的乘客。"
+          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里只剩自己和那几名沉睡的乘客。"
         },
         {
           "type": "dialogue",
@@ -2071,15 +2241,32 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你不敢继续停留，打算沿来路退回6号车厢。"
         }
-      ],
-      "next": "E_009"
+      ]
+    },
+    {
+      "id": "E_008_REVISIT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "车厢尽头仍被那片黑暗吞没，你不愿再靠近。"
+        }
+      ]
     },
     {
       "id": "E_010",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_05"
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_05_entry_seen",
+            "equals": true
+          },
+          "next": "E_010_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_entry_seen",
+          "value": true
         },
         {
           "type": "setFlag",
@@ -2105,7 +2292,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "先看看报纸再说吧。"
+          "text": "你压下不安，把注意力重新放回报纸。"
         }
       ],
       "next": "E_011_S"
@@ -2218,8 +2405,7 @@ window.GAME_DATA = {
           },
           "next": "E_012"
         }
-      ],
-      "next": "E_013_ENTRY"
+      ]
     },
     {
       "id": "E_012",
@@ -2248,6 +2434,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你的眼前，6号车厢只剩不到半截。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
         },
         {
           "type": "dialogue",
@@ -2283,18 +2474,13 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "本能驱使着你向前跑去。"
+          "text": "本能催促着你尽快离开这里，继续向前。"
         }
-      ],
-      "next": "E_013_ENTRY"
+      ]
     },
     {
       "id": "E_013_ENTRY",
       "actions": [
-        {
-          "type": "changeScene",
-          "scene": "carriage_04"
-        },
         {
           "type": "conditionalJump",
           "when": {
@@ -2610,17 +2796,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "“黑包里的钥匙，是干什么用的？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "驾驶室钥匙是开门用的，操作面板钥匙是为了打开控制面板。两把都在包里。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "包掉在3号车厢前门附近。逃跑的时候背带被切断了...我没来得及捡。"
+          "text": "“如果3号车厢的通道被行李堵住了，我该怎么办？”"
         },
         {
           "type": "dialogue",
@@ -2634,7 +2810,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "快去拿钥匙。进了驾驶室，把右杆往上拉——车就能停下来。"
+          "text": "快去拿钥匙。进了驾驶室，把右杆持续往上拉——列车会不断减速，直到停下来。"
         },
         {
           "type": "dialogue",
@@ -2700,13 +2876,8 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": false
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_018"
+      ]
     },
     {
       "id": "E_016_CARRY_CHECK",
@@ -2736,13 +2907,8 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": true
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_018"
+      ]
     },
     {
       "id": "E_016_CARRY_FAIL",
@@ -2780,13 +2946,8 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": false
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_018"
+      ]
     },
     {
       "id": "E_017",
@@ -3151,8 +3312,7 @@ window.GAME_DATA = {
           },
           "next": "E_019"
         }
-      ],
-      "next": "E_020"
+      ]
     },
     {
       "id": "E_019",
@@ -3204,8 +3364,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你合上报纸，不知道自己刚才在期待什么。"
         }
-      ],
-      "next": "E_020"
+      ]
     },
     {
       "id": "E_019_ALONE",
@@ -3265,19 +3424,14 @@ window.GAME_DATA = {
           "key": "newspaper_21_version",
           "value": true
         }
-      ],
-      "next": "E_020"
+      ]
     },
     {
       "id": "E_020",
       "actions": [
         {
-          "type": "changeScene",
-          "scene": "carriage_04"
-        },
-        {
           "type": "dialogue",
-          "text": "你必须回到4号车厢：3号前门的行李需要割带器或撬杆才能清开，而那些工具，应该在4号车厢的员工柜里。"
+          "text": "回到4号车厢后，你径直走向员工柜。这里应该有清开3号行李的工具。"
         },
         {
           "type": "conditionalJump",
@@ -3324,21 +3478,16 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你带着她返回3号车厢。"
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
+          "text": "工具已经备齐。你可以带着她返回3号车厢。"
         }
-      ],
-      "next": "E_021"
+      ]
     },
     {
       "id": "E_020_LEFT_AWAKE",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你推开4号车厢的门，脚步顿住。"
+          "text": "你回到4号车厢，脚步忽然顿住。"
         },
         {
           "type": "dialogue",
@@ -3407,20 +3556,15 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": true
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_021"
+      ]
     },
     {
       "id": "E_020_SECOND_MEDICAL",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你推开4号车厢的门。"
+          "text": "你回到4号车厢，立刻去查看乘务员的情况。"
         },
         {
           "type": "dialogue",
@@ -3472,7 +3616,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你从员工柜里找到应急割带器和撬杆，扶起她，返回3号车厢。"
+          "text": "你从员工柜里找到应急割带器和撬杆，并扶起了她。"
         },
         {
           "type": "dialogue",
@@ -3490,13 +3634,8 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "tools_ready",
           "value": true
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_021"
+      ]
     },
     {
       "id": "E_020_SECOND_MEDICAL_F",
@@ -3553,7 +3692,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你沉默地站了一会儿，从员工柜里找到应急割带器和撬杆，独自返回3号车厢。"
+          "text": "你沉默地站了一会儿，从员工柜里找到应急割带器和撬杆。接下来只能独自返回3号车厢。"
         },
         {
           "type": "dialogue",
@@ -3571,13 +3710,8 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "tools_ready",
           "value": true
-        },
-        {
-          "type": "changeScene",
-          "scene": "carriage_03"
         }
-      ],
-      "next": "E_021"
+      ]
     },
     {
       "id": "E_021",
@@ -3840,6 +3974,11 @@ window.GAME_DATA = {
       "id": "E_022_ITEM",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "carriage_03_bag_resolved",
+          "value": true
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "hasItem": "flashlight"
@@ -3878,10 +4017,57 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "inner_world_entered",
-            "equals": true
+            "not": {
+              "any": [
+                {
+                  "flag": "carriage_03_bag_resolved",
+                  "equals": true
+                },
+                {
+                  "flag": "keys_player",
+                  "equals": true
+                },
+                {
+                  "flag": "keys_crew",
+                  "equals": true
+                },
+                {
+                  "flag": "keys_missing",
+                  "equals": true
+                },
+                {
+                  "flag": "inner_world_entered",
+                  "equals": true
+                },
+                {
+                  "flag": "inner_world_left",
+                  "equals": true
+                }
+              ]
+            }
+          },
+          "next": "E_023_LOCKED"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "any": [
+              {
+                "flag": "ev023_intro_seen",
+                "equals": true
+              },
+              {
+                "flag": "inner_world_entered",
+                "equals": true
+              }
+            ]
           },
           "next": "E_501"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev023_intro_seen",
+          "value": true
         },
         {
           "type": "dialogue",
@@ -3908,6 +4094,15 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_023_LOOP"
+    },
+    {
+      "id": "E_023_LOCKED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "通往2号车厢的门后漆黑一片。你还没有准备好，最好先处理前门附近的黑包。"
+        }
+      ]
     },
     {
       "id": "E_023_PHONE",
@@ -4017,6 +4212,19 @@ window.GAME_DATA = {
     {
       "id": "E_026",
       "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "clicker_first_encounter_seen",
+            "equals": true
+          },
+          "next": "E_026_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_first_encounter_seen",
+          "value": true
+        },
         {
           "type": "dialogue",
           "text": "你看到了，你看到了那个怪物—————那个无眼、头部异形的怪物。"
@@ -4157,8 +4365,7 @@ window.GAME_DATA = {
           "key": "carriage_02_passed",
           "value": true
         }
-      ],
-      "next": "E_031"
+      ]
     },
     {
       "id": "E_027_F",
@@ -4244,8 +4451,7 @@ window.GAME_DATA = {
           "key": "carriage_02_passed",
           "value": true
         }
-      ],
-      "next": "E_031"
+      ]
     },
     {
       "id": "E_028_CONSTITUTION_FAIL",
@@ -4283,7 +4489,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "Clicker扑向声响方向，你趁机通过并关上了身后的门。"
+          "text": "Clicker扑向声响方向，你趁机绕过它，抵达通往先头车厢的安全门前。"
         },
         {
           "type": "setFlag",
@@ -4295,8 +4501,7 @@ window.GAME_DATA = {
           "key": "clicker_cleared",
           "value": true
         }
-      ],
-      "next": "E_031"
+      ]
     },
     {
       "id": "E_028_THROW_AFTER_FAIL",
@@ -4336,8 +4541,7 @@ window.GAME_DATA = {
           "key": "clicker_cleared",
           "value": true
         }
-      ],
-      "next": "E_031"
+      ]
     },
     {
       "id": "E_029",
@@ -4423,6 +4627,44 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_026_REVISIT",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "monster_behavior_known",
+            "equals": true
+          },
+          "next": "E_026_KNOWLEDGE"
+        },
+        {
+          "type": "dialogue",
+          "text": "那只无眼的怪物仍在黑暗中侧耳倾听。"
+        },
+        {
+          "type": "choice",
+          "prompt": "你打算怎么做？",
+          "options": [
+            {
+              "label": "屏住呼吸，尝试安静通过",
+              "next": "E_027"
+            },
+            {
+              "label": "投掷彩色玻璃瓶，制造声响引开它们",
+              "next": "E_028",
+              "when": {
+                "hasItem": "bottle"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_010_REVISIT",
+      "actions": []
+    },
+    {
       "id": "E_ITEM_CONTROL_PANEL_KEY_INSPECT",
       "actions": [
         {
@@ -4462,6 +4704,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "emergency_cutter",
           "title": "应急割带器",
           "text": "一件可以割断背包背带的应急工具。"
         }
@@ -4472,6 +4715,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
+          "item": "pry_bar",
           "title": "撬杆",
           "text": "一根可以撬开箱体、清理行李的工具。"
         }
@@ -4481,6 +4725,16 @@ window.GAME_DATA = {
       "id": "E_DOOR_04",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "crew_04_interacted",
+              "equals": true
+            }
+          },
+          "next": "E_DOOR_04_LOCKED"
+        },
+        {
           "type": "sound",
           "sound": "door_open"
         },
@@ -4489,18 +4743,69 @@ window.GAME_DATA = {
           "scene": "carriage_03"
         },
         {
+          "type": "dialogue",
+          "text": "你穿过门，返回3号车厢。"
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "not": {
-              "flag": "carriage_03_bag_interacted",
+              "flag": "carriage_03_first_entry_seen",
               "equals": true
             }
           },
           "next": "E_018"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "tools_ready",
+                "equals": true
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "flag": "carriage_03_bag_resolved",
+                      "equals": true
+                    },
+                    {
+                      "flag": "keys_player",
+                      "equals": true
+                    },
+                    {
+                      "flag": "keys_crew",
+                      "equals": true
+                    },
+                    {
+                      "flag": "keys_missing",
+                      "equals": true
+                    },
+                    {
+                      "flag": "inner_world_entered",
+                      "equals": true
+                    },
+                    {
+                      "flag": "inner_world_left",
+                      "equals": true
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "next": "E_021"
+        }
+      ]
+    },
+    {
+      "id": "E_DOOR_04_LOCKED",
+      "actions": [
+        {
           "type": "dialogue",
-          "text": "你穿过门，返回3号车厢。"
+          "text": "重伤的乘务员仍倒在这里。继续前进之前，你至少得确认一次她的状况。"
         }
       ]
     },
@@ -4584,6 +4889,24 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你穿过门，返回4号车厢。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "carriage_03_bag_interacted",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "tools_ready",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_020"
         }
       ]
     },
@@ -4602,7 +4925,7 @@ window.GAME_DATA = {
           "type": "conditionalJump",
           "when": {
             "not": {
-              "flag": "carriage_03_bag_interacted",
+              "flag": "carriage_03_first_entry_seen",
               "equals": true
             }
           },
@@ -4665,15 +4988,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "背包里有一部手机和一支还能发光的手电筒。"
+          "text": "背包里有一支还能发光的手电筒。"
         },
         {
           "type": "dialogue",
-          "text": "（获得手机和手电筒）"
-        },
-        {
-          "type": "addItem",
-          "item": "phone"
+          "text": "（获得手电筒）"
         },
         {
           "type": "addItem",
@@ -4726,6 +5045,19 @@ window.GAME_DATA = {
           "scene": "front_carriage"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "front_carriage_entry_seen",
+            "equals": true
+          },
+          "next": "E_031_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "front_carriage_entry_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
         },
@@ -4762,6 +5094,10 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_031_NO_KEY_S"
+    },
+    {
+      "id": "E_031_REVISIT",
+      "actions": []
     },
     {
       "id": "E_031_PLAYER_KEY",
@@ -4840,7 +5176,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆下拉加速，上拉减速。"
+          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆下拉加速，持续上拉则不断减速直至停车。"
         },
         {
           "type": "dialogue",
@@ -4916,6 +5252,14 @@ window.GAME_DATA = {
       "id": "E_034",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev510_flower_sea",
+            "equals": true
+          },
+          "next": "E_515"
+        },
+        {
           "type": "custom",
           "name": "endGame",
           "params": {
@@ -4980,11 +5324,6 @@ window.GAME_DATA = {
         {
           "type": "changeScene",
           "scene": "carriage_inner_01"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         },
         {
           "type": "conditionalJump",
@@ -5261,15 +5600,46 @@ window.GAME_DATA = {
       "id": "E_504",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "ev504_scouting_done",
+                "equals": true
+              },
+              {
+                "flag": "ev504_scouting_ok",
+                "equals": true
+              }
+            ]
+          },
+          "next": "E_504_S_REVISIT"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev504_scouting_done",
+            "equals": true
+          },
+          "next": "E_504_F_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "你看向窗外。"
         },
         {
           "type": "dialogue",
           "text": "雾蒙蒙的，远方的一切都看不清。"
+        },
+        {
+          "type": "check",
+          "dice": "ev504_insight_01",
+          "outcomes": [
+            "E_504_S",
+            "E_504_F"
+          ]
         }
-      ],
-      "next": "E_504_S"
+      ]
     },
     {
       "id": "E_504_S",
@@ -5286,6 +5656,11 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev504_scouting_ok",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "ev504_scouting_done",
+          "value": true
         }
       ]
     },
@@ -5300,6 +5675,29 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev504_scouting_ok",
           "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "ev504_scouting_done",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "E_504_S_REVISIT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "雾后仍浮着微弱的光，窸窣声没有消失。"
+        }
+      ]
+    },
+    {
+      "id": "E_504_F_REVISIT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "窗外依旧白茫茫一片，什么也看不清。"
         }
       ]
     },
@@ -5395,7 +5793,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "车厢深处响起低语。那是一个陌生的声音，却又像是从你自己喉咙里漏出来的。"
+          "text": "车厢深处响起低语。那声音你认得，却又无比陌生——既像乘务员，也像是从你自己喉咙里漏出来的。"
         },
         {
           "type": "dialogue",
@@ -5498,6 +5896,14 @@ window.GAME_DATA = {
           "scene": "flower_sea"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev510_flower_sea",
+            "equals": true
+          },
+          "next": "E_510_REVISIT"
+        },
+        {
           "type": "dialogue",
           "text": "车门外就是花海。无边无际的花漫过车轨，铺到天尽头。这里真的还是现实世界吗？"
         },
@@ -5527,6 +5933,25 @@ window.GAME_DATA = {
           "key": "ev510_flower_sea",
           "value": true
         },
+        {
+          "type": "choice",
+          "prompt": "",
+          "options": [
+            {
+              "label": "继续深入",
+              "next": "E_511"
+            },
+            {
+              "label": "调头",
+              "next": "E_513"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_510_REVISIT",
+      "actions": [
         {
           "type": "choice",
           "prompt": "",
@@ -5608,7 +6033,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你退出花海，向来路折返。"
+          "text": "你退出花海，沿来路折返。本应回到原处的车门后，却出现了另一节陌生车厢。"
         },
         {
           "type": "changeScene",
@@ -5645,6 +6070,19 @@ window.GAME_DATA = {
       "id": "E_516",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev516_conversation_seen",
+            "equals": true
+          },
+          "next": "E_516_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev516_conversation_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "你走向车窗。就在指尖将要碰到玻璃的一刻，一个声音在身后响起——"
         },
@@ -5670,6 +6108,32 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_516_VOICE"
+    },
+    {
+      "id": "E_516_REVISIT",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev517_flower_revealed",
+            "equals": true
+          },
+          "next": "E_516_REVISIT_FLOWER"
+        },
+        {
+          "type": "dialogue",
+          "text": "窗外仍是一片浓雾，那个声音没有再次开口。"
+        }
+      ]
+    },
+    {
+      "id": "E_516_REVISIT_FLOWER",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "花海仍在窗外无声起伏，那个声音没有再次开口。"
+        }
+      ]
     },
     {
       "id": "E_517",
@@ -6071,8 +6535,21 @@ window.GAME_DATA = {
       "id": "E_FAKE03_INTRO",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev_fake03_intro_seen",
+            "equals": true
+          },
+          "next": "E_FAKE03_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev_fake03_intro_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
-          "text": "你匆忙逃回原来的车厢，"
+          "text": "你匆忙踏进眼前这节陌生车厢。"
         },
         {
           "type": "dialogue",
@@ -6358,10 +6835,31 @@ window.GAME_DATA = {
       "id": "E_503_BOTTLES",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev503_bottles_seen",
+            "equals": true
+          },
+          "next": "E_503_BOTTLES_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev503_bottles_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
         }
       ]
+    },
+    {
+      "id": "E_FAKE03_REVISIT",
+      "actions": []
+    },
+    {
+      "id": "E_503_BOTTLES_REVISIT",
+      "actions": []
     },
     {
       "id": "E_516_MET",

@@ -15,7 +15,12 @@ const Game = sandbox.window.TrainGame;
 const crewKeys = ["driver_cab_key", "control_panel_key"];
 
 function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
-  const state = new Game.GameState({ ...meta.initialState, flags, inventory, sceneId }, attributes, skills);
+  const state = new Game.GameState({
+    ...meta.initialState,
+    flags: { carriage_03_bag_resolved: true, ...flags },
+    inventory,
+    sceneId
+  }, attributes, skills);
   const trace = [];
   const sounds = [];
   const ui = {
@@ -41,8 +46,8 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
 }
 
 // 每句目的地描写必须已处于对应背景；推门文字仍属于出发场景。
-// 门禁与啃食标签分两拍：踏入空车厢当场带上啃食标签（此时门禁未上锁，回3号后还能再进）；
-// 到过伪4才算正式进过里世界，此后推门直接走主线 E_DOOR_03。
+// 门禁在到过伪4后才上锁；6号被啃食标签已提前在5号车厢的残缺揭示中置位，
+// 进入里世界本身不得改写该标签。
 let game = fixture();
 await game.play("E_023");
 assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
@@ -58,6 +63,15 @@ assert.equal(
   "摸门那句应在3号车厢黑场中显示"
 );
 assert.equal(game.state.flags.carriage_03_blackout, false, "离开3号后应清除黑场旗标");
+game.state.sceneId = "carriage_03";
+game.trace.length = 0;
+await game.play("E_023");
+assert.equal(game.state.sceneId, "carriage_inner_01", "未到伪4时仍可再次进入里世界");
+assert.equal(
+  game.trace.some(t => t.text?.includes("请不要下车") || t.text?.includes("门消失了")),
+  false,
+  "早退回3号后也不得重播认知崩塌"
+);
 
 // 已到过伪4（inner_world_entered）后推门不再播放认知崩塌，直接走主线进2号。
 const revisit = fixture({ inner_world_entered: true });
@@ -83,7 +97,7 @@ assert.equal(
   true,
   "里世界描写开始后应已处于目的地场景"
 );
-assert.equal(game.state.flags.carriage_06_eaten, true);
+assert.equal(game.state.flags.carriage_06_eaten, undefined, "进入里世界不应设置6号车厢被啃食状态");
 assert.ok(!game.state.flags.inner_world_entered);
 await game.play("E_501");
 assert.equal(game.state.sceneId, "carriage_inner_01", "未到伪4时门禁不应上锁");
@@ -106,7 +120,7 @@ for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_
   assert.equal(calls, 1, "首次调查只掷一次随机");
   assert.equal(game.state.flags.ev502_return_rolled, true);
   assert.equal(game.trace.some(t => t.text === "门被关死，打不开。"), roll === 0.4);
-  assert.equal(game.state.flags.carriage_06_eaten, true, "啃食标签只由入口置位，与返回分支无关");
+  assert.equal(game.state.flags.carriage_06_eaten, true, "返回分支不得改写已在5号置位的啃食标签");
   assert.ok(!game.state.flags.inner_world_entered, "未到伪4时返回仍可再进里世界");
   assert.equal(game.trace.some(t => t.event === "E_002"), false);
 }
@@ -130,7 +144,7 @@ for (const roll of [0.1, 0.8]) {
 }
 
 // 同一段描写只播一次：空车厢入口/车厢描写、花草车厢初见/返程描写、伪4进场（花草右门 E_506／花海调头 E_513）、
-// 磨损门描写各播一次；瓶子相关的两段（瓶堆提示、摸瓶描写）按约定不去重。
+// 磨损门与瓶堆首次发现各播一次；返程摸瓶属于短反馈，允许重复。
 game = fixture({}, [], "carriage_03");
 await game.play("E_501");
 assert.equal(game.state.flags.ev502_intro_seen, true);
@@ -151,7 +165,7 @@ assert.equal(game.state.sceneId, "carriage_inner_01");
 await game.play("E_503");
 assert.equal(game.state.sceneId, "carriage_inner_02");
 assert.equal(game.trace.some(t => t.text?.includes("同样是一节空车厢")), false, "初见描写只播一次");
-assert.equal(game.trace.some(t => t.text?.includes("角落里散落着几支彩色的空玻璃瓶")), true, "未拾瓶时瓶堆提示不去重");
+assert.equal(game.trace.some(t => t.text?.includes("角落里散落着几支彩色的空玻璃瓶")), false, "未拾瓶时也不重播首次瓶堆描写");
 game = fixture({ ev503_bottle_taken: true }, ["bottle"], "carriage_fake_04");
 await game.play("E_522");
 assert.equal(game.state.flags.ev522_intro_seen, true);
@@ -178,7 +192,7 @@ assert.equal(game.trace.some(t => t.scare), false, "二次进入不重播「停�
 game = fixture({}, [], "flower_sea");
 await game.play("E_513");
 assert.equal(game.state.sceneId, "carriage_fake_03");
-assert.equal(game.trace.some(t => t.text === "你退出花海，向来路折返。"), true, "调头动作句仍保留");
+assert.equal(game.trace.some(t => t.text?.startsWith("你退出花海，沿来路折返")), true, "调头动作句仍保留");
 assert.equal(game.trace.some(t => t.event === "E_FAKE03_INTRO" && t.text?.includes("头颅已然掉在地上")), true);
 assert.equal(game.trace.filter(t => t.event === "E_FAKE03_INTRO").every(t => t.scene === "carriage_fake_03"), true);
 
@@ -190,6 +204,21 @@ for (const dead of [false, true]) {
   assert.equal(game.trace.some(t => t.scare), dead, "只有乘务员死亡线才播「停下来」惊吓");
   assert.equal(game.trace.some(t => t.event === "E_508"), !dead, "在世线走 E_508");
   assert.equal(game.trace.filter(t => t.event === "E_506").every(t => t.scene === "carriage_fake_04"), true);
+}
+
+// 花草车厢窗外只做一次灵感检定，之后固定结果并返回短反馈。
+for (const outcome of [0, 1]) {
+  game = fixture({ scoutingResult: outcome }, [], "carriage_inner_02");
+  await game.play("E_504");
+  assert.equal(game.state.flags.ev504_scouting_done, true);
+  assert.equal(game.state.flags.ev504_scouting_ok, outcome === 0);
+  const checkKey = "event:E_504:ev504_insight_01";
+  assert.equal(game.state.checkAttempts[checkKey].attempts, 1);
+  game.trace.length = 0;
+  await game.play("E_504");
+  assert.equal(game.state.checkAttempts[checkKey].attempts, 1, "重复调查不得重掷侦察");
+  assert.equal(game.trace.some(t => t.text === "你看向窗外。"), false);
+  assert.equal(game.trace.length, 1, "重复调查只保留一条短反馈");
 }
 
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
@@ -257,7 +286,7 @@ assert.equal(game.state.sceneId, "carriage_fake_03");
 assert.deepEqual(
   game.trace.filter(entry => entry.event === "E_FAKE03_INTRO").map(entry => entry.text),
   [
-    "你匆忙逃回原来的车厢，",
+    "你匆忙踏进眼前这节陌生车厢。",
     "车厢的颜色发生了不可名状的变化。",
     "乘务员呢？",
     "你定睛一看，乘务员的头颅已然掉在地上，鲜血流成了湖泊。",
@@ -338,7 +367,7 @@ assert.equal(events.some(e => e.actions.some(a => a.next === "E_509_BACK" || a.n
 const fake = scenes.find(s => s.id === "carriage_fake_04");
 assert.match(fake.background, /fog/);
 assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed");
-// 6号被啃食：入口置位的标签驱动背景变体，且优先于便签消失版。
+// 6号被啃食：5号残缺揭示置位的标签驱动背景变体，且优先于便签消失版。
 const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
@@ -402,12 +431,21 @@ assert.equal(events.find(e => e.id === "E_501").actions
 const e022Item = events.find(e => e.id === "E_022_ITEM");
 assert.equal(e022Item.next, undefined, "E_022_ITEM 结束后应停在3号车厢，等待玩家点门");
 assert.equal(events.find(e => e.id === "E_023_LOOP").next, "E_501", "E_023 末段应进入里世界");
-// 「认知崩塌只在首次播放」由 inner_world_entered 守卫，与该门门禁同源。
+// 「认知崩塌只在首次播放」使用独立进度旗标，早退回3号也不会重播。
 const e023 = events.find(e => e.id === "E_023");
 assert.deepEqual(
-  e023.actions[0],
-  { type: "conditionalJump", when: { flag: "inner_world_entered", equals: true }, next: "E_501" },
-  "E_023 首部应有「已到过伪4则跳过」守卫"
+  e023.actions[1],
+  {
+    type: "conditionalJump",
+    when: {
+      any: [
+        { flag: "ev023_intro_seen", equals: true },
+        { flag: "inner_world_entered", equals: true }
+      ]
+    },
+    next: "E_501"
+  },
+  "E_023 应使用独立旗标跳过已读认知崩塌，并兼容已进入里世界的旧存档"
 );
 // 3号黑场：最后一句之前置位并刷新场景，离开3号（E_501）时清除。
 const loopActions = events.find(e => e.id === "E_023_LOOP").actions;
@@ -474,11 +512,12 @@ assert.equal(
   "耳鸣后应切换到带乘务员的假1号背景"
 );
 const e029 = events.find(e => e.id === "E_029");
-assert.equal(e029.actions.some(a => a.next === "E_515" || a.when?.flag === "ev510_flower_sea"), false);
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_constitution_01"), true);
+assert.equal(events.find(e => e.id === "E_034").actions[0].next, "E_515", "涉足花海后真结局应替换为 Trauma");
 assert.equal(events.find(e => e.id === "E_033").actions.some(a => a.game === "conductor_tug"), true);
 const cardBattleSource = await read("src/minigame-games/card-battle.js");
-assert.match(cardBattleSource, /won \? \[[\s\S]*?jump", next: "E_031"[\s\S]*?jump", next: "E_030"/);
+assert.doesNotMatch(cardBattleSource, /jump", next: "E_031"/);
+assert.match(cardBattleSource, /jump", next: "E_030"/);
 const conductorTugSource = await read("src/minigame-games/conductor-tug.js");
 assert.match(conductorTugSource, /won \? "E_034" : "E_035"/);
 assert.match(conductorTugSource, /const INTRO_COUNTDOWN_SECONDS = 5/);
