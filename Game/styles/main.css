@@ -191,6 +191,18 @@ a { color: inherit; }
 .page-error { min-height: 1.5em; color: #ffb7a7; }
 .page-footer { display: flex; justify-content: flex-end; margin-top: 24px; }
 .horizontal-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.save-page-panel {
+  width: min(1080px, 100%);
+  padding: clamp(18px, 2.5vw, 32px);
+}
+.save-page-panel h1 {
+  margin-bottom: 18px;
+  font-size: clamp(24px, 2.8vw, 36px);
+}
+.save-page-panel .page-introduction {
+  margin-bottom: 16px;
+  font-size: clamp(12px, 1vw, 15px);
+}
 .ending-actions {
   width: min(480px, 100%);
   margin-inline: auto;
@@ -336,31 +348,65 @@ body.home-op-active .home-page .auth-user-status {
 
 /* ============ 6. 存档页（存档管理 / 选择槽位写入）：save-slot 卡片与可选槽 ============ */
 
-.save-slot-list { display: grid; gap: 12px; }
+.save-slot-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
 .save-slot-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 10px;
   width: 100%;
-  min-height: 90px;
-  padding: 16px 18px;
+  min-height: 0;
+  padding: 10px 12px;
   color: var(--ink);
   border: 1px solid rgba(255,255,255,.18);
   background: rgba(0,0,0,.22);
 }
 .save-slot-card h2 { margin: 0 0 7px; color: var(--accent); }
 .save-slot-card p { margin: 0; opacity: .78; }
-.slot-actions { display: flex; flex: 0 0 auto; gap: 8px; }
-.selectable-slot {
+.save-page-panel .save-slot-card h2 {
+  margin-bottom: 2px;
+  font-size: clamp(15px, 1.4vw, 20px);
+}
+.save-page-panel .save-slot-card p {
+  font-size: clamp(11px, .85vw, 13px);
+  line-height: 1.2;
+}
+.save-slot-info { display: grid; gap: 2px; }
+.save-slot-preview {
   display: grid;
-  justify-items: start;
+  place-items: center;
+  width: calc(100% + 12px);
+  margin-inline: -6px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.28);
+}
+.save-slot-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.save-slot-placeholder { color: rgba(255,255,255,.48); }
+.slot-actions { display: flex; flex: 0 0 auto; gap: 8px; }
+.save-page-panel .slot-actions button { padding: 11px 20px; }
+.selectable-slot {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
   text-align: left;
   font: inherit;
   cursor: pointer;
 }
 .selectable-slot strong { color: var(--accent); font-size: 1.15em; }
-.selectable-slot span { opacity: .78; }
+.selectable-slot .save-slot-info span { opacity: .78; }
 .selectable-slot:hover { border-color: var(--accent); background: rgba(213,173,109,.1); }
 
 /* 存档页页面内确认框（TrainGame.ConfirmDialog）：沿用游戏本体的深色面板外观，
@@ -2313,6 +2359,8 @@ body.home-op-active .home-page .auth-user-status {
   .allocation-total { text-align: left; }
   .allocation-actions { flex-wrap: wrap; }
   .home-content { width: 72%; }
+  .save-page-panel { width: 100%; padding: 18px; }
+  .save-slot-list { grid-template-columns: 1fr; }
   .save-slot-card { align-items: stretch; flex-direction: column; }
   .slot-actions { width: 100%; }
   .slot-actions button { flex: 1; text-align: center; }

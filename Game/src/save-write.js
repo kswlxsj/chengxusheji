@@ -94,13 +94,17 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "save-slot-card selectable-slot";
+      const infoBlock = document.createElement("div");
+      infoBlock.className = "save-slot-info";
       const heading = document.createElement("strong");
       heading.textContent = `槽位 ${info.slot}${transfer?.slot === info.slot ? "（当前）" : ""}`;
       const detail = document.createElement("span");
       if (info.empty) detail.textContent = "暂无存档";
       else if (!info.compatible) detail.textContent = `现有存档无法读取，写入将覆盖：${info.error}`;
       else detail.textContent = `${sceneNames.get(info.sceneId) || info.sceneId || "未知场景"} · SAN ${info.san ?? "未知"} · ${formatTime(info.savedAt)}`;
-      button.append(heading, detail);
+      infoBlock.append(heading, detail);
+      const sceneName = sceneNames.get(info.sceneId) || info.sceneId || "未知场景";
+      button.append(infoBlock, Game.SaveSlotArt.createPreview(info, sceneName));
       button.addEventListener("click", () => {
         void (intent === "new" ? chooseNewSlot(info.slot) : writeSlot(info.slot));
       });

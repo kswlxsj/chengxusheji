@@ -16,7 +16,7 @@
 </head>
 <body>
   <main class="site-shell content-page">
-    <section class="page-panel">
+    <section class="page-panel save-page-panel">
       <h1>存档管理</h1>
       <p class="page-introduction">选择已有存档继续游戏，或删除不再需要的存档。</p>
       <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
@@ -30,6 +30,8 @@
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/state.js"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
+  <script src="src/save-art.js"></script>
+  <!-- TrainGame.SaveSlotArt，根据存档 sceneId 选择对应的车厢剪影。 -->
   <script src="src/confirm-dialog.js"></script>
   <!-- TrainGame.ConfirmDialog，提供存档页共用的页面内确认框（替代浏览器原生 confirm）。 -->
   <script src="src/save-manager.js"></script>

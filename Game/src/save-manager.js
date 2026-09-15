@@ -23,6 +23,7 @@
       const card = document.createElement("article");
       card.className = "save-slot-card";
       const text = document.createElement("div");
+      text.className = "save-slot-info";
       const heading = document.createElement("h2");
       heading.textContent = `槽位 ${info.slot}`;
       const detail = document.createElement("p");
@@ -30,6 +31,9 @@
       else if (!info.compatible) detail.textContent = `无法读取：${info.error}`;
       else detail.textContent = `${sceneNames.get(info.sceneId) || info.sceneId || "未知场景"} · SAN ${info.san ?? "未知"} · ${formatTime(info.savedAt)}`;
       text.append(heading, detail);
+
+      const sceneName = sceneNames.get(info.sceneId) || info.sceneId || "未知场景";
+      const preview = Game.SaveSlotArt.createPreview(info, sceneName);
 
       const actions = document.createElement("div");
       actions.className = "slot-actions";
@@ -52,7 +56,7 @@
         render();
       });
       actions.append(load, remove);
-      card.append(text, actions);
+      card.append(text, preview, actions);
       list.append(card);
     }
   }
