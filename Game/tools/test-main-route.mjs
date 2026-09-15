@@ -225,7 +225,21 @@ for (const [id, sceneId] of [["E_505", "carriage_fake_04"], ["E_510", "flower_se
 const bottleSongLine = actionsOf("E_503_PICK")
   .find((action) => action.type === "dialogue" && action.text.includes("像是歌声"));
 assert.deepEqual(bottleSongLine.audio, { sound: "ghost_calling" });
-assert.match(mainSource, /id: "fake",[\s\S]*sceneId === "carriage_fake_04"[\s\S]*sceneId === "flower_sea"[\s\S]*playInInnerWorld: true/);
+for (const sceneId of ["carriage_fake_04", "flower_sea", "flower_sea_inside"]) {
+  assert.equal(sceneById.get(sceneId).backgroundSound.sound, "fake", `${sceneId} 应绑定同一背景音`);
+}
+for (const sceneId of ["carriage_06", "carriage_05", "carriage_04", "carriage_03", "front_carriage"]) {
+  assert.equal(sceneById.get(sceneId).backgroundSound.sound, "train_ambient", `${sceneId} 应绑定列车背景音`);
+}
+assert.deepEqual(sceneById.get("carriage_06").backgroundSound, { sound: "train_ambient" });
+assert.equal(sceneById.get("carriage_06").backgroundSoundVariants[0].sound, "eating_crisps");
+assert.deepEqual(sceneById.get("carriage_07").backgroundSound, { sound: "eating_crisps", loopGapMs: 1600 });
+assert.deepEqual(sceneById.get("carriage_02").backgroundSound, { sound: "devil_scared" });
+assert.deepEqual(sceneById.get("carriage_fake_01").backgroundSound, { sound: "maze" });
+for (const sceneId of ["carriage_inner_01", "carriage_inner_02", "carriage_fake_02", "carriage_fake_03"]) {
+  assert.equal(sceneById.get(sceneId).backgroundSound, undefined, `${sceneId} 应保持无背景音`);
+}
+assert.match(mainSource, /backgroundSoundVariants[\s\S]*backgroundAudio\?\.setTrack/);
 assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/Audio\/Bgm\/op-v2\.mp3/);
 assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
 assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);

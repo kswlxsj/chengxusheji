@@ -9,6 +9,11 @@
       "id": { "$ref": "#/$defs/id" },
       "name": { "type": "string", "minLength": 1 },
       "background": { "type": "string", "minLength": 1 },
+      "backgroundSound": { "$ref": "#/$defs/backgroundSound" },
+      "backgroundSoundVariants": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/backgroundSoundVariant" }
+      },
       "backgroundVariants": {
         "type": "array",
         "items": {
@@ -27,6 +32,25 @@
   },
   "$defs": {
     "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+    "backgroundSound": {
+      "type": "object",
+      "required": ["sound"],
+      "properties": {
+        "sound": { "$ref": "#/$defs/id" },
+        "loopGapMs": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "backgroundSoundVariant": {
+      "type": "object",
+      "required": ["sound", "visibleWhen"],
+      "properties": {
+        "sound": { "$ref": "#/$defs/id" },
+        "loopGapMs": { "type": "number", "minimum": 0 },
+        "visibleWhen": { "$ref": "#/$defs/condition" }
+      },
+      "additionalProperties": false
+    },
     "position": {
       "type": "object",
       "required": ["x", "y", "width", "height"],

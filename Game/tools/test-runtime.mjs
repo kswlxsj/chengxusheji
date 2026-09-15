@@ -1061,8 +1061,9 @@ class StubAudioElement {
 }
 
 // 每个编号一条 Audio 桩，便于断言各自收到的播放参数与停止情况。
-function createAudioStub(registry = SOUND_TEST_REGISTRY, elementOptions = {}) {
+function createAudioStub(registry = SOUND_TEST_REGISTRY, elementOptions = {}, managerOptions = { fadeMs: 20 }) {
   const elements = new Map();
+  const elementHistory = new Map();
   const root = {
     children: [],
     append(element) {
@@ -1071,12 +1072,37 @@ function createAudioStub(registry = SOUND_TEST_REGISTRY, elementOptions = {}) {
       root.children.push(element);
     }
   };
-  const audio = new Game.AudioManager(root, registry);
+  const audio = new Game.AudioManager(root, registry, managerOptions);
   audio.testElements = elements;
+  audio.testElementHistory = elementHistory;
   audio.createElement = (entry) => {
     const element = new StubAudioElement(elementOptions);
     element.registryFile = entry.file;
     elements.set(entry.id, element);
+    const history = elementHistory.get(entry.id) || [];
+    history.push(element);
+    elementHistory.set(entry.id, history);
+    return element;
+  };
+  return audio;
+}
+
+function createBackgroundAudioStub(registry = SOUND_TEST_REGISTRY, elementOptions = {}) {
+  const elements = [];
+  const root = {
+    children: [],
+    append(element) {
+      element.isConnected = true;
+      element.owner = root;
+      root.children.push(element);
+    }
+  };
+  const audio = new Game.BackgroundAudioManager(root, registry, { fadeMs: 20 });
+  audio.testElements = elements;
+  audio.createElement = (entry) => {
+    const element = new StubAudioElement(elementOptions);
+    element.registryId = entry.id;
+    elements.push(element);
     return element;
   };
   return audio;
@@ -1146,6 +1172,7 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.owner, audio.root, "音源应挂到宿主上");
   assert.equal(element.src, "assets/audio/sfx-test-2.mp3", "应加载注册表里的文件");
   assert.equal(element.currentTime, 500 / 1000, "start 参数应从指定位置开始");
+  await new Promise((resolve) => setTimeout(resolve, 25));
   assert.equal(element.volume, 0.4, "动作级 volume 应作为注册表音量（默认 1）的倍率");
   const positionedVoice = audio.voices.get("sfx_test_positional");
   positionedVoice.setVolume(0.15);
@@ -1184,7 +1211,7 @@ async function settleMicrotasks(count = 8) {
   const element = audio.testElements.get("sfx_test_short");
   assert.equal(element.plays, 1);
   assert.equal(element.pauses, 1, "阻塞音效结束后应停止本条音效");
-  assert.equal(element.volume, 0.5, "未指定动作级音量时应使用注册表音量");
+  assert.equal(element.volume, 0, "duration 应在配置时长内完成淡出");
 }
 
 // 5) 取消：事件运行中取消会中止阻塞中的音效等待，并掐断正在播放的音效。
@@ -1270,7 +1297,7 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.plays, 1, "元数据就绪后应开始播放");
   assert.equal(voice.started, true, "播放已开始");
   assert.equal(voice.duration, 0.3, "有效时长应取自音频自身时长");
-  assert.equal(element.playCalls[0].volume, 1, "未指定动作级音量时使用注册表默认音量");
+  assert.equal(element.playCalls[0].volume, 0, "所有游戏内音源都应从静音开始淡入");
   element.emit("ended");
   await voice.finished;
   assert.equal(audio.voices.size, 0, "ended 后应结束并退出活动表");
@@ -1331,9 +1358,11 @@ async function settleMicrotasks(count = 8) {
   const element = audio.testElements.get("sfx_test_short");
   assert.equal(element.loop, true, "loop 应写入 Audio 元素");
   assert.equal(voice.duration, null, "未知时长的循环音不设结束时长");
-  await new Promise((resolve) => setTimeout(resolve, 10));
+  await new Promise((resolve) => setTimeout(resolve, 25));
   assert.equal(audio.voices.has("sfx_test_short"), true, "循环音应持续播放");
   voice.stop();
+  assert.equal(voice.stopping, true, "显式停止应异步淡出");
+  await new Promise((resolve) => setTimeout(resolve, 25));
   assert.equal(audio.voices.has("sfx_test_short"), false);
 }
 
@@ -1351,6 +1380,60 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.plays, 2, "间隔结束后应重新播放");
   assert.equal(audio.voices.has("sfx_test_short"), true);
   voice.stop();
+  await voice.finished;
+}
+
+// 15) 同编号事件音效重播：旧实例淡出，新实例独立从头淡入。
+{
+  const audio = createAudioStub();
+  const first = audio.play("sfx_test_short");
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  const second = audio.play("sfx_test_short");
+  assert.notEqual(second, first, "事件音效重播应创建新实例");
+  assert.equal(first.stopping, true, "旧实例应在后台淡出");
+  assert.equal(audio.testElementHistory.get("sfx_test_short").length, 2, "同编号淡出与淡入可短暂并存");
+  assert.equal(second.element.volume, 0, "新实例应从静音淡入");
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  assert.equal(first.stopped, true);
+  assert.equal(second.element.volume, 0.5);
+  second.stop({ immediate: true });
+}
+
+// 16) 背景音：同轨保持/恢复，换轨时旧音淡出与新音淡入并行。
+{
+  const audio = createBackgroundAudioStub();
+  const first = audio.setTrack("sfx_test_short");
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  first.element.currentTime = 12;
+  assert.equal(audio.setTrack("sfx_test_short"), first, "相邻场景绑定同轨时不得重建音源");
+  assert.equal(first.element.currentTime, 12, "同轨切景应保留播放位置");
+
+  audio.setTrack(null);
+  assert.equal(first.stopping, true);
+  assert.equal(audio.setTrack("sfx_test_short"), first, "淡出期间恢复同轨应复用原实例");
+  assert.equal(first.stopping, false, "恢复同轨应打断淡出");
+  assert.equal(first.element.currentTime, 12);
+
+  const second = audio.setTrack("sfx_test_positional");
+  assert.equal(first.stopping, true, "换轨时旧背景音应淡出");
+  assert.equal(second.element.volume, 0, "换轨时新背景音应同时从静音淡入");
+  assert.equal(audio.current, second);
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  assert.equal(first.stopped, true);
+  assert.equal(second.element.volume, 1);
+  audio.stopAll({ immediate: true });
+}
+
+// 17) 背景音保留带间隔循环参数。
+{
+  const audio = createBackgroundAudioStub();
+  const voice = audio.setTrack("sfx_test_short", { loopGapMs: 10 });
+  const element = voice.element;
+  assert.equal(element.loop, false);
+  element.emit("ended");
+  await new Promise((resolve) => setTimeout(resolve, 12));
+  assert.equal(element.plays, 2, "背景音每轮结束后应按场景配置间隔重播");
+  audio.stopAll({ immediate: true });
 }
 
 console.log("运行时测试通过：本地认证、属性分配、技能触发、条件读取、三槽存档、终止状态、小游戏结算与音效播放。");

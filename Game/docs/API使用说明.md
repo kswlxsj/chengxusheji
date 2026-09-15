@@ -140,7 +140,22 @@
 
 ### scenes.json
 
-场景必填 `id`、`name`、`background`、`objects`。物件字段：
+场景必填 `id`、`name`、`background`、`objects`。场景可用 `backgroundSound` 绑定唯一循环背景音：
+
+```json
+{
+  "backgroundSound": { "sound": "train_ambient" },
+  "backgroundSoundVariants": [
+    {
+      "sound": "eating_crisps",
+      "loopGapMs": 1600,
+      "visibleWhen": { "flag": "carriage_06_eaten", "equals": true }
+    }
+  ]
+}
+```
+
+`sound` 必须引用 `audio.json`；`loopGapMs` 是每轮之间的静音毫秒数。运行时按数组顺序采用第一个满足条件的 `backgroundSoundVariants`，没有匹配项时回退 `backgroundSound`，两者都省略则该场景静音。物件字段：
 
 | 字段 | 必填 | 用法 |
 | --- | --- | --- |
@@ -204,7 +219,7 @@
 | `addItem` | `item` | — | 加入已注册物品；重复获得不会生成第二份。 |
 | `removeItem` | `item` | — | 移除已注册物品；未持有或重复移除不改变背包。 |
 | `setObjectState` | `object`, `patch` | — | 将 `patch` 浅合并到物件状态。 |
-| `sound` | `sound` | `await`, `start`, `duration`, `volume` | 播放 `audio.json` 里注册的音效。默认**不阻塞**（与后续对话并行）；`await: true` 时等它播完再继续。`start` 从第几毫秒开始，`duration` 最多播多少毫秒（截取一段音频），`volume` 是相对注册表音量的倍率（0–1）。暂停会掐断正在播放的音效，事件取消/回滚不追回已播音效。 |
+| `sound` | `sound` | `await`, `start`, `duration`, `volume` | 播放 `audio.json` 里注册的事件音效。默认**不阻塞**（与后续对话并行）；`await: true` 时等它播完再继续。`start` 从第几毫秒开始，`duration` 最多播多少毫秒（含末段淡出），`volume` 是相对注册表音量的倍率（0–1）。暂停会异步淡出正在播放的音效，事件取消/回滚不追回已播音效。 |
 | `custom` | `name` | `params` | 调用白名单动作；未注册名称在运行时报错。 |
 | `minigame` | `game` | — | 运行 `game` 对应的小游戏模块（只写 `TrainGame.Minigames` 注册表索引，仿 `check`→`dice.js` 的分离架构，不做分支事件假设）；模块结束时可返回一个动作列表，解释器按当前事件内普通动作的语义顺序执行，未返回或返回空则无事发生、事件继续。 |
 
@@ -604,7 +619,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 ### 音效：`data/audio.json` 与 `sound` 动作
 
-音效索引是纯数据文件 `data/audio.json`（字段表见[数据接口参考](#audiojson)），经编译器并入 `window.GAME_DATA.audio`；播放由 `src/audio.js` 的 `TrainGame.AudioManager` 负责，`UIManager` 构造时创建 `ui.audio`。事件里的写法：
+音效索引是纯数据文件 `data/audio.json`（字段表见[数据接口参考](#audiojson)），经编译器并入 `window.GAME_DATA.audio`。`src/audio.js` 提供共享音源生命周期；`UIManager` 分别创建事件音管理器 `ui.audio` 和场景背景音管理器 `ui.backgroundAudio`。事件里的写法：
 
 ```json
 { "type": "sound", "sound": "door_close" },
@@ -623,21 +638,23 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 | 接口 | 说明 |
 | --- | --- |
-| `new AudioManager(root, registry)` | `root` 为音源挂载宿主（游戏页传 `document.body`）；`registry` 为 `GAME_DATA.audio`。构造不触碰 DOM，无 DOM 环境自动降级。 |
-| `play(soundId, options)` | 播放并返回句柄 `{ finished, duration, stop() }`：`finished` 在播完、出错、停止或到达截断时长时解决；`duration` 是本次播放的有效时长（秒，未知时为 `null`）；`stop()` 幂等。`options.loop: true` 启用循环，`options.loopGapMs` 可在两轮之间留出间隔；循环音只由停止或场景切换结束。同一编号重播会先收掉上一条。 |
-| `stopAll()` | 停止全部活动音源；`UIManager.setPaused(true)` 与 `UIManager.cancelPending()` 都会调用它。 |
-| `setMuted(value, allowedSoundIds)` | 进入或离开静音区；静音时只允许白名单编号播放，其余正在播放的声音立即停止，后续请求静默降级。 |
+| `new AudioManager(root, registry)` | 事件音管理器；`root` 为音源挂载宿主，`registry` 为 `GAME_DATA.audio`。无 DOM 环境自动降级。 |
+| `play(soundId, options)` | 从静音淡入并返回 `{ finished, duration, stop(), setVolume() }`。不同编号独立；同编号重播时旧实例淡出、新实例从头淡入。`duration` 的末段在配置总时长内完成淡出。 |
+| `stopAll(options)` | 让全部事件音异步淡出；调用本身不等待。页面卸载可传 `{ immediate: true }` 立即清理。 |
+| `setMuted(value, allowedSoundIds)` | 进入或离开事件音静音区；非白名单活动音淡出，后续请求静默降级。 |
+| `new BackgroundAudioManager(root, registry)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`。 |
+| `setTrack(soundId, options)` | 选择场景背景音。相同编号保持进度，淡出中再次选择会恢复；新编号与旧编号交叉淡化；`null` 淡出到静音。 |
 
 语义与边界：
 
-- **暂停与取消**：暂停（Esc / 暂停菜单 / 结束页接管）立即静音，恢复后不补播；事件取消、回滚、终止同样掐断。**已经播出的非阻塞音效不回滚**——音效属演出资源，不写入游戏状态，因此不进存档快照。
+- **淡化与暂停**：游戏内音源固定用一秒线性淡入；自然结束不淡出，配置 `duration` 在总时长的末段淡出，外部停止则异步淡出一秒。暂停、取消和终止不等待淡出；事件音恢复后不补播，背景音按当前场景恢复。**已经播出的非阻塞音效不回滚**。
 - **并发上限**：同时可闻音源上限 `TrainGame.AUDIO_MAX_VOICES`（8）；超出时停掉最早开始的一条，避免连点叠音。
 - **等待兜底**：`await: true` 复用引擎的可取消等待（取消立即结束等待），并以 `TrainGame.AUDIO_MAX_VOICE_WAIT_MS`（30 秒）兜底，元数据始终加载不出来时不会把事件链挂死。
 - **自动播放策略**：浏览器拒绝 `play()` 时只告警（控制台 + 一次 toast，文案常量 `TrainGame.AUDIO_AUTOPLAY_HINT`），该音效跳过、事件链继续——音效是可选演出，不因此回滚剧情。
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
-- **里世界静音**：进入 `carriage_inner_01`、`carriage_inner_02`、`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 时，游戏页暂停列车背景音，并只放行 `door_open`、`door_locked`、`fake`、`ghost_calling` 与检定三音（`dice_rolling`、`dice_success`、`dice_fail`，见 `main.js` 的 `INNER_WORLD_ALLOWED_SOUNDS`）；其他事件音均静默。回到真实车厢后恢复。
-- **场景循环音**：`carriage_fake_04`、`flower_sea`、`flower_sea_inside` 循环播放 `fake`；`carriage_02` 循环播放 `devil_scared`；`carriage_07` 以及 `carriage_06` 且置有 `carriage_06_eaten` 时循环播放 `eating_crisps`，每轮结束等待 1600ms 后再播。普通 6 号车厢不播放。离开场景、暂停、结束或进入其他静音场景时停止，恢复后重新开始。
-- **与 BGM 的区别**：`assets/Audio/Bgm/bgm-v2.mp3` 只由 `src/bgm.js` 在标题页和结束页播放；正式游戏页改用 `src/train-bgm.js` 循环播放 `train_ambient`。两者都与 `sound` 动作各管一套。
+- **里世界静音**：里世界只放行车门、剧情提示和检定等白名单事件音；背景音不经过该白名单，而是完全由当前场景绑定决定。
+- **场景背景音**：普通真实车厢绑定 `train_ambient`；2号绑定 `devil_scared`；7号及被啃食6号绑定带1600ms间隔的 `eating_crisps`；假1号绑定 `maze`；伪4号与两处花海绑定 `fake`。专属音替换列车声，不叠加；相邻场景绑定同一编号时持续播放。
+- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 只负责标题/结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理，三者互不接管。
 
 ### UI：GameWindow / TextPlayer / UIManager
 
@@ -885,7 +902,7 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
 6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
 
-> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景循环环境音共 16 个音效。检定音由检定窗口自动播放，列车背景音由游戏页脚本循环播放，其余音效在对应事件的 `sound` 动作或场景同步中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
+> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景背景音共 30 个音效。检定音由检定窗口自动播放，场景背景音由 `BackgroundAudioManager` 按 `scenes.json` 绑定播放，其余音效在对应事件的 `sound` 动作中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
 
 ## 相关文档
 

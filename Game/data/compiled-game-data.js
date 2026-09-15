@@ -19,6 +19,19 @@ window.GAME_DATA = {
       "id": "carriage_06",
       "name": "6 号车厢",
       "background": "assets/Image/Scene/Background/carriage-06.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
+      "backgroundSoundVariants": [
+        {
+          "sound": "eating_crisps",
+          "loopGapMs": 1600,
+          "visibleWhen": {
+            "flag": "carriage_06_eaten",
+            "equals": true
+          }
+        }
+      ],
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
@@ -193,6 +206,10 @@ window.GAME_DATA = {
       "id": "carriage_07",
       "name": "7 号车厢",
       "background": "assets/Image/Scene/Background/carriage-07.png",
+      "backgroundSound": {
+        "sound": "eating_crisps",
+        "loopGapMs": 1600
+      },
       "objects": [
         {
           "id": "radio_07",
@@ -279,6 +296,9 @@ window.GAME_DATA = {
       "id": "carriage_05",
       "name": "5 号车厢",
       "background": "assets/Image/Scene/Background/carriage-05.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_05_to_06",
@@ -426,6 +446,9 @@ window.GAME_DATA = {
       "id": "carriage_04",
       "name": "4 号车厢",
       "background": "assets/Image/Scene/Background/carriage-04.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
@@ -504,6 +527,9 @@ window.GAME_DATA = {
       "id": "carriage_03",
       "name": "3 号车厢",
       "background": "assets/Image/Scene/Background/carriage-03.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_03_to_04",
@@ -616,6 +642,9 @@ window.GAME_DATA = {
       "id": "carriage_02",
       "name": "2 号车厢",
       "background": "assets/Image/Scene/Background/carriage-02.png",
+      "backgroundSound": {
+        "sound": "devil_scared"
+      },
       "objects": [
         {
           "id": "dark_hint_02",
@@ -696,6 +725,9 @@ window.GAME_DATA = {
       "id": "front_carriage",
       "name": "先头车厢",
       "background": "assets/Image/Scene/Background/front-carriage.png",
+      "backgroundSound": {
+        "sound": "train_ambient"
+      },
       "objects": [
         {
           "id": "door_front_to_02",
@@ -853,6 +885,9 @@ window.GAME_DATA = {
       "id": "carriage_fake_01",
       "name": "里世界·假1号车厢",
       "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+      "backgroundSound": {
+        "sound": "maze"
+      },
       "backgroundVariants": [
         {
           "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
@@ -1049,6 +1084,9 @@ window.GAME_DATA = {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
       "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": [
         {
           "id": "door_fake04_back",
@@ -1133,12 +1171,18 @@ window.GAME_DATA = {
       "id": "flower_sea",
       "name": "花海·车门外",
       "background": "assets/Image/Scene/Background/flower-sea.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": []
     },
     {
       "id": "flower_sea_inside",
       "name": "花海·室内",
       "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+      "backgroundSound": {
+        "sound": "fake"
+      },
       "objects": []
     }
   ],

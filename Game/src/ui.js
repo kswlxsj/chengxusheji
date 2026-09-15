@@ -812,6 +812,9 @@
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
       this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      this.backgroundAudio = Game.BackgroundAudioManager
+        ? new Game.BackgroundAudioManager(document.body, audio)
+        : null;
       this.dice = new DiceRollWindow(root, this.audio);
       this.mainMenu = new MenuWindow(root, "main-menu-window");
       this.pauseMenu = new MenuWindow(root, "pause-menu-window");
@@ -825,6 +828,9 @@
       if (this.audio) {
         this.audio.onAutoplayBlocked = (message) => this.toast(message);
       }
+      if (this.backgroundAudio) {
+        this.backgroundAudio.onAutoplayBlocked = (message) => this.toast(message);
+      }
     }
 
     closeDialog() {
@@ -833,8 +839,9 @@
 
     setPaused(value) {
       this.dialog.setPaused(value);
-      // 暂停即静音：暂停菜单背后不该还在响，恢复后也不补播（本次约定的口径）。
+      // 暂停立即冻结逻辑，声音在后台异步淡出；事件音恢复后不补播，背景音由场景同步恢复。
       if (value && this.audio) this.audio.stopAll();
+      if (value && this.backgroundAudio) this.backgroundAudio.stopAll();
     }
 
     cancelPending() {
@@ -843,6 +850,7 @@
       this.inspect.close();
       this.dice.close();
       this.minigame.close();
+      // 事件收尾只清理事件音效；场景背景音拥有独立生命周期，不受 cancelPending 影响。
       if (this.audio) this.audio.stopAll();
     }
 
