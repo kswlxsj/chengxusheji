@@ -582,11 +582,13 @@
 
       const stage = document.createElement("div");
       stage.className = "item-inspect-stage";
+      let itemImage = null;
       if (image) {
         const img = document.createElement("img");
         img.className = "item-inspect-image";
         img.src = image;
         img.alt = title;
+        itemImage = img;
         stage.append(img);
       }
 
@@ -611,12 +613,43 @@
       return new Promise((resolve) => {
         this.resolve = resolve;
         backdrop.addEventListener("click", (event) => {
-          if (event.target === backdrop || event.target === stage) this.close();
+          const clickedEmptyLayer = event.target === backdrop || event.target === stage;
+          const clickedTransparentImage = event.target === itemImage
+            && this.isTransparentImagePoint(itemImage, event);
+          if (clickedEmptyLayer || clickedTransparentImage) this.close();
         });
         close.addEventListener("click", () => this.close());
         document.addEventListener("keydown", this.handleKeydown, true);
         close.focus();
       });
+    }
+
+    isTransparentImagePoint(image, event) {
+      if (event.detail === 0 || !image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0) {
+        return false;
+      }
+      const rect = image.getBoundingClientRect();
+      const scale = Math.min(rect.width / image.naturalWidth, rect.height / image.naturalHeight);
+      if (!Number.isFinite(scale) || scale <= 0) return false;
+      const renderedWidth = image.naturalWidth * scale;
+      const renderedHeight = image.naturalHeight * scale;
+      const renderedLeft = rect.left + (rect.width - renderedWidth) / 2;
+      const renderedTop = rect.top + (rect.height - renderedHeight) / 2;
+      const sourceX = Math.floor((event.clientX - renderedLeft) / scale);
+      const sourceY = Math.floor((event.clientY - renderedTop) / scale);
+      if (sourceX < 0 || sourceY < 0 || sourceX >= image.naturalWidth || sourceY >= image.naturalHeight) {
+        return true;
+      }
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1;
+        canvas.height = 1;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.drawImage(image, sourceX, sourceY, 1, 1, 0, 0, 1, 1);
+        return context.getImageData(0, 0, 1, 1).data[3] <= 8;
+      } catch (_error) {
+        return false;
+      }
     }
 
     close() {
