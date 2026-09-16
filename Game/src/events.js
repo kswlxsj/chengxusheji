@@ -181,6 +181,9 @@
       });
 
       this.registerAction("inspect", async (action) => {
+        // 调查窗口会覆盖场景，但对白窗口仍可能留在 window-layer 中；
+        // 先关闭它，避免地图/物品图层下残留上一句对白。
+        this.ui.closeDialog?.();
         if (!action.item) {
           await this.ui.inspect.show(action);
           return;
@@ -357,6 +360,8 @@
         if (!Game.Minigames) throw new Error("小游戏系统未加载：缺少 src/minigames.js");
         const spec = Game.Minigames.get(action.game);
         const host = this.ui.minigame || null;
+        // 小游戏使用独立覆盖层；清掉对白窗口，避免上一句文字穿透到卡牌等玩法界面。
+        this.ui.closeDialog?.();
         const stage = host ? host.openAndStage(spec.title, action.game) : null;
         const context = this.context();
         const cleanups = [];
