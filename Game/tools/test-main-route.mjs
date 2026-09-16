@@ -116,6 +116,29 @@ const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_03
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
+const carriage05CenterDoor = objectOf("carriage_05", "door_05_center");
+assert.equal(carriage05CenterDoor.clickEvent, "E_005_CENTER_DOOR", "5号中央车门应只触发普通门对话");
+assert.equal(carriage05CenterDoor.noHighlight, true, "5号中央车门只能点击，不应出现悬停高亮");
+assert.equal(carriage05CenterDoor.zIndex, 11, "5号中央车门不得抬高层级遮挡既有物件");
+assert.equal(carriage05CenterDoor.visibleWhen, undefined, "5号中央车门在7号流程结束后仍应可调查");
+assert.deepEqual(carriage05CenterDoor.position, { x: 43, y: 28, width: 14, height: 48 }, "5号中央车门热点应收窄到双开门内部");
+for (const id of ["window_05_left", "window_05_right"]) {
+  const windowObject = objectOf("carriage_05", id);
+  assert.equal(windowObject.clickEvent, "E_005_WINDOW", `${id} 应触发窗户普通对话`);
+  assert.equal(windowObject.invisible, true, `${id} 不应叠加新的窗户贴图`);
+  assert.equal(windowObject.zIndex, 10, `${id} 不得抬高层级遮挡既有物件`);
+  assert.equal(windowObject.visibleWhen, undefined, `${id} 在7号流程结束后仍应可调查`);
+}
+assert.deepEqual(objectOf("carriage_05", "window_05_left").position, { x: 19, y: 33, width: 18, height: 15 }, "5号左窗热点应收在玻璃内部，不得延伸到窗框或座椅");
+assert.deepEqual(objectOf("carriage_05", "window_05_right").position, { x: 61, y: 33, width: 18, height: 15 }, "5号右窗热点应收在玻璃内部，不得延伸到窗框或座椅");
+const carriage05LeftJunk = objectOf("carriage_05", "clutter_05_c");
+assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.png", "5号左侧杂物应对应左边的白色袋堆");
+assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物应使用独立随机对白");
+assert.deepEqual(carriage05LeftJunk.hitPosition, { x: 32, y: 65, width: 6, height: 7 }, "5号左侧杂物热点应只覆盖袋子主体");
+const carriage05RightJunk = objectOf("carriage_05", "clutter_05_d");
+assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.png", "5号右侧杂物应对应右边的白色袋堆");
+assert.equal(carriage05RightJunk.clickEvent, "E_05_JUNK_RIGHT", "5号右侧杂物应使用独立随机对白");
+assert.deepEqual(carriage05RightJunk.hitPosition, { x: 62, y: 65, width: 6, height: 7 }, "5号右侧杂物热点应只覆盖袋子主体");
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
 assert.equal(carriage06CenterDoor.clickEvent, "E_006_CENTER_DOOR", "6号中央车门应只触发普通门对话");
 assert.equal(carriage06CenterDoor.noHighlight, true, "6号中央车门只能点击，不应出现悬停高亮");
@@ -133,6 +156,26 @@ for (const id of ["window_06_left", "window_06_right"]) {
   assert.deepEqual(windowObject.visibleWhen, carriage06CenterDoor.visibleWhen, `${id} 应与中央车门共用进入7号前的显示条件`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_005_WINDOW", [
+    "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+    "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+    "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+  ]],
+  ["E_005_CENTER_DOOR", [
+    "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+    "车门紧闭着，你试着怎么用力都没有反应。",
+    "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+  ]],
+  ["E_05_JUNK_LEFT", [
+    "你蹲下翻了翻这堆袋子，里面只有废纸和空包装。",
+    "塑料袋被碰得窸窣作响，却没有露出任何有用的东西。",
+    "你把最上面的袋子挪开，下面只有落满灰尘的地板。"
+  ]],
+  ["E_05_JUNK_RIGHT", [
+    "你拨开右侧堆叠的袋子，只找到几个压扁的空盒。",
+    "袋子里装着揉皱的包装纸，没有任何可用的东西。",
+    "你试着提起其中一袋，里面的东西轻轻晃动，没有特别之处。"
+  ]],
   ["E_006_WINDOW", [
     "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
     "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
@@ -150,6 +193,10 @@ for (const [eventId, expectedTexts] of [
   assert.deepEqual(action.params.texts, expectedTexts, `${eventId} 应使用指定的随机句子`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_005_WINDOW", actionsOf("E_005_WINDOW")[0].params.texts],
+  ["E_005_CENTER_DOOR", actionsOf("E_005_CENTER_DOOR")[0].params.texts],
+  ["E_05_JUNK_LEFT", actionsOf("E_05_JUNK_LEFT")[0].params.texts],
+  ["E_05_JUNK_RIGHT", actionsOf("E_05_JUNK_RIGHT")[0].params.texts],
   ["E_006_WINDOW", actionsOf("E_006_WINDOW")[0].params.texts],
   ["E_006_CENTER_DOOR", actionsOf("E_006_CENTER_DOOR")[0].params.texts]
 ]) {
