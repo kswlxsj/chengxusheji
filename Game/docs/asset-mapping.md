@@ -1,6 +1,6 @@
 # 素材映射表
 
-本表记录截至 2026-09-16 的完整媒体路径。`Game/assets/` 当前共有 167 个运行素材；`Assets/` 共有 168 个媒体素材。除 5 个仅在运行目录保留的 SVG 占位符外，两边同路径素材均保持 SHA-256 一致。
+本表记录截至 2026-09-16 的完整媒体路径。`Game/assets/` 当前共有 175 个运行素材；`Assets/` 共有 174 个媒体素材。除 5 个仅在运行目录保留的 SVG 占位符外，两边同路径素材均保持 SHA-256 一致。
 
 判定说明：`SHA-256 相同` 表示整理前两边已有字节级相同内容；`Game 补入 Assets` 表示源素材库原先缺少该运行文件；`Assets 内置化` 表示原本由游戏跨目录引用，现已复制进运行目录；`Assets 独有` 表示尚未进入正式游戏。
 
@@ -57,9 +57,10 @@
 | `Assets/Image/Item/操作面板钥匙.png` | — | `Assets/Image/Item/control-panel-key.png`<br>`Game/assets/Image/Item/control-panel-key.png` | `5e18f01a00de5237ba533495544c917c2fa6e6edcacba314236044cab4212e6d` | Assets 接入 Game | 正式游戏使用 | 组合钥匙拆分后的操作面板钥匙 |
 | `Assets/Image/Item/驾驶室钥匙.png` | — | `Assets/Image/Item/driver-cab-key.png`<br>`Game/assets/Image/Item/driver-cab-key.png` | `6d07aaa03d2d14faf6708106889813763c6d0e68eb1296ec5eed3ef6dd354704` | Assets 接入 Game | 正式游戏使用 | 组合钥匙拆分后的驾驶室钥匙 |
 | `Assets/Image/Item/应急割带器.png` | — | `Assets/Image/Item/emergency-belt-cutter.png`<br>`Game/assets/Image/Item/emergency-belt-cutter.png` | `a7dd682c0c254655282575c6cf65677b25434a0f831da758cb01cac2b32eed18` | Assets 接入 Game | 正式游戏使用 | 已替换通用钥匙占位符 |
-| — | `Game/assets/flashlight.png` | `Assets/Image/Item/flashlight-v1.png`<br>`Game/assets/Image/Item/flashlight-v1.png` | `aa58824ecf626ba0e2e2615df0188ce35a98d29192fd3504b320f6f83001d22a` | Game 补入 Assets | 正式游戏使用 | 当前运行版本 |
-| `Assets/Image/Item/手电筒.png` | — | `Assets/Image/Item/flashlight-v2.png` | `afe2476acff153f02aaf047735c5c02564c7a67c95e510311394deea36f38136` | Assets 独有 | 仅源素材库 | 新版候选，仅 Assets |
-| — | `Game/assets/newspaper-icon.png` | `Assets/Image/Item/newspaper.png`<br>`Game/assets/Image/Item/newspaper.png` | `f33b386246f29d6dc14af25709bf06fa66a5912437f5a36d1a697e7a23718f30` | Assets 接入 Game | 正式游戏使用 | 当前运行内容 |
+| `Assets/Image/Item/flashlight-v2.png` | — | `Assets/Image/Item/flashlight-v2.png`<br>`Game/assets/Image/Item/flashlight.png` | `afe2476acff153f02aaf047735c5c02564c7a67c95e510311394deea36f38136` | Assets 接入 Game | 正式游戏使用 | 新版手电筒，正式文件去除版本后缀 |
+| `Assets/Image/Item/newspaper.png` | — | `Assets/Image/Item/newspaper.png`<br>`Game/assets/Image/Item/newspaper.png` | `d53f1e36273c4fdd0d62e6ba7e80e4905bf8d2166d9db235431c38ae04a1c635` | Assets 接入 Game | 正式游戏使用 | 新版报纸贴图 |
+| `Assets/Image/Item/drink.png` | — | `Assets/Image/Item/drink.png`<br>`Game/assets/Image/Item/drink.png` | `dee53393da6432a68f9d1bbe65e015f4bfb84fdf7180dbb0207624400a41d1b4` | Assets 接入 Game | 正式游戏使用 | 饮料物品 |
+| `Assets/Image/Item/drink_empty.png` | — | `Assets/Image/Item/drink_empty.png`<br>`Game/assets/Image/Item/drink_empty.png` | `08c8b3bc9eadd631ba848b6cd624a97af10c5116bfe12e278ef974e18a1a2b67` | Assets 接入 Game | 正式游戏使用 | 饮用后获得的空易拉罐 |
 | `Assets/Image/UI/便签.png` | `Game/assets/note.png` | `Assets/Image/Item/note.png`<br>`Game/assets/Image/Item/note.png` | `3352c0ef8c11ad12b9bd0270fd7a0e9a81e525a1a4ad8f665752a6e6a48ccf43` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Item/手机.png` | `Game/assets/phone.png` | `Assets/Image/Item/phone.png`<br>`Game/assets/Image/Item/phone.png` | `a034070fb75ee3350b7d98eae80ff15b9da69f255e3bc8d41a3c0c495a7d6774` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | — | `Game/assets/placeholder-key.svg` | `Game/assets/Image/Item/placeholder-key.svg` | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | 运行目录独有 | 当前未引用 | SVG 占位符按约定仅保留在 Game |

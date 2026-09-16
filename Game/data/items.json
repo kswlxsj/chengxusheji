@@ -44,9 +44,23 @@
   {
     "id": "flashlight",
     "name": "手电筒",
-    "image": "assets/Image/Item/flashlight-v1.png",
+    "image": "assets/Image/Item/flashlight.png",
     "description": "一支还能发光的手电筒。",
     "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
+  },
+  {
+    "id": "drink",
+    "name": "饮料",
+    "image": "assets/Image/Item/drink.png",
+    "description": "一罐还未开封的饮料。",
+    "inspectEvent": "E_ITEM_DRINK_INSPECT"
+  },
+  {
+    "id": "drink_empty",
+    "name": "空易拉罐",
+    "image": "assets/Image/Item/drink_empty.png",
+    "description": "喝完饮料后留下的空易拉罐。制造声响时，也许能派上用场。",
+    "inspectEvent": "E_ITEM_DRINK_EMPTY_INSPECT"
   },
   {
     "id": "emergency_cutter",

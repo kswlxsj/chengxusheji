@@ -5330,6 +5330,27 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_028_THROW_CAN_FIRST",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你捏住空易拉罐，瞄准远处的车厢壁。只要声响足够远，或许能把 Clicker 引开。"
+        },
+        {
+          "type": "removeItem",
+          "item": "drink_empty"
+        },
+        {
+          "type": "check",
+          "dice": "ev028_throw_01",
+          "outcomes": [
+            "E_028_THROW_CAN_SUCCESS",
+            "E_028_THROW_CAN_FAIL"
+          ]
+        }
+      ]
+    },
+    {
       "id": "E_028_THROW_SUCCESS",
       "actions": [
         {
@@ -5497,6 +5518,167 @@ window.GAME_DATA = {
           "params": {
             "item": "flashlight"
           }
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_DRINK_INSPECT",
+      "actions": [
+        {
+          "type": "inspect",
+          "item": "drink"
+        }
+      ],
+      "next": "E_ITEM_DRINK_CONFIRM"
+    },
+    {
+      "id": "E_ITEM_DRINK_CONFIRM",
+      "actions": [
+        {
+          "type": "choice",
+          "prompt": "要饮用这罐饮料吗？",
+          "options": [
+            {
+              "label": "饮用",
+              "next": "E_ITEM_DRINK_USE"
+            },
+            {
+              "label": "暂时保留",
+              "next": "E_ITEM_DRINK_KEEP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_DRINK_USE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "冰凉的饮料让你稍微冷静下来。"
+        },
+        {
+          "type": "removeItem",
+          "item": "drink"
+        },
+        {
+          "type": "addItem",
+          "item": "drink_empty"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_DRINK_KEEP",
+      "actions": []
+    },
+    {
+      "id": "E_ITEM_DRINK_CLICKER_INSPECT",
+      "actions": [
+        {
+          "type": "inspect",
+          "item": "drink"
+        }
+      ],
+      "next": "E_ITEM_DRINK_CLICKER_CONFIRM"
+    },
+    {
+      "id": "E_ITEM_DRINK_CLICKER_CONFIRM",
+      "actions": [
+        {
+          "type": "choice",
+          "prompt": "Clicker 就在前方。要饮用这罐饮料吗？",
+          "options": [
+            {
+              "label": "饮用",
+              "next": "E_ITEM_DRINK_CLICKER_USE"
+            },
+            {
+              "label": "暂时保留",
+              "next": "E_ITEM_DRINK_KEEP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_ITEM_DRINK_CLICKER_USE",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "拉环弹开的清脆声在死寂的车厢里格外刺耳。Clicker 猛地转向你。"
+        },
+        {
+          "type": "removeItem",
+          "item": "drink"
+        },
+        {
+          "type": "addItem",
+          "item": "drink_empty"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 2
+        }
+      ],
+      "next": "E_029_CARD_HARD"
+    },
+    {
+      "id": "E_028_THROW_CAN_SUCCESS",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "breaking_glass"
+        },
+        {
+          "type": "dialogue",
+          "text": "空易拉罐越过座椅，在远处的车厢壁上撞得变形。Clicker 立刻扑向声响传来的方向。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你趁机绕过它，抵达通往先头车厢的安全门前。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_02_passed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "clicker_cleared",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "E_028_THROW_CAN_FAIL",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "breaking_glass"
+        },
+        {
+          "type": "dialogue",
+          "text": "空易拉罐从汗湿的指间滑脱，在你脚边发出刺耳的撞击声。Clicker 猛地转向你。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你彻底暴露了，只能在它占尽先手时迎战。"
+        }
+      ],
+      "next": "E_029_CARD_HARD"
+    },
+    {
+      "id": "E_ITEM_DRINK_EMPTY_INSPECT",
+      "actions": [
+        {
+          "type": "inspect",
+          "item": "drink_empty"
         }
       ]
     },
@@ -5862,6 +6044,38 @@ window.GAME_DATA = {
     },
     {
       "id": "E_05_JUNK_RIGHT",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_05_drink_collected",
+            "equals": true
+          },
+          "next": "E_05_JUNK_RIGHT_REPEAT"
+        },
+        {
+          "type": "dialogue",
+          "text": "你拨开右侧堆叠的塑料袋，发现里面还塞着一罐饮料。"
+        },
+        {
+          "type": "addItem",
+          "item": "drink"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_drink_collected",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_clutter_d",
+          "value": true
+        }
+      ],
+      "next": "E_05_CHECK_ALL"
+    },
+    {
+      "id": "E_05_JUNK_RIGHT_REPEAT",
       "actions": [
         {
           "type": "custom",
@@ -8132,9 +8346,23 @@ window.GAME_DATA = {
     {
       "id": "flashlight",
       "name": "手电筒",
-      "image": "assets/Image/Item/flashlight-v1.png",
+      "image": "assets/Image/Item/flashlight.png",
       "description": "一支还能发光的手电筒。",
       "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
+    },
+    {
+      "id": "drink",
+      "name": "饮料",
+      "image": "assets/Image/Item/drink.png",
+      "description": "一罐还未开封的饮料。",
+      "inspectEvent": "E_ITEM_DRINK_INSPECT"
+    },
+    {
+      "id": "drink_empty",
+      "name": "空易拉罐",
+      "image": "assets/Image/Item/drink_empty.png",
+      "description": "喝完饮料后留下的空易拉罐。制造声响时，也许能派上用场。",
+      "inspectEvent": "E_ITEM_DRINK_EMPTY_INSPECT"
     },
     {
       "id": "emergency_cutter",

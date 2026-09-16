@@ -7,7 +7,7 @@
 // - 进4号车厢的首次发现描写每次存档只发生一次；点击乘务员后直接进行教育检定。
 // - 4号→3号折返有折返描写；3号→2号不再由剧情自动进车，玩家点门（door_03_to_02 → E_023 门前认知崩塌 → E_501）才进入。
 // - 里世界返程 E_524 回到真2号后接 E_025 喘息段；玩家点击场景里的 Clicker 后触发遭遇。
-// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行/对抗与背包瓶子接线正确。
+// - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行/对抗、玻璃瓶与空易拉罐接线正确。
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import vm from "node:vm";
@@ -118,6 +118,9 @@ assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab
 assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.png");
 assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.png");
 assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.png");
+assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.png", "手电筒应使用无版本后缀的正式贴图");
+assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.png", "饮料应使用正式贴图");
+assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.png", "空易拉罐应使用正式贴图");
 assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem: "control_panel_key" });
 const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
@@ -163,7 +166,7 @@ assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物�
 assert.deepEqual(carriage05LeftJunk.hitPosition, { x: 32, y: 65, width: 6, height: 7 }, "5号左侧杂物热点应只覆盖袋子主体");
 const carriage05RightJunk = objectOf("carriage_05", "clutter_05_d");
 assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.png", "5号右侧杂物应对应右边的白色袋堆");
-assert.equal(carriage05RightJunk.clickEvent, "E_05_JUNK_RIGHT", "5号右侧杂物应使用独立随机对白");
+assert.equal(carriage05RightJunk.clickEvent, "E_05_JUNK_RIGHT", "5号右侧杂物应提供饮料获取事件");
 assert.deepEqual(carriage05RightJunk.hitPosition, { x: 62, y: 65, width: 6, height: 7 }, "5号右侧杂物热点应只覆盖袋子主体");
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
 assert.equal(carriage06CenterDoor.clickEvent, "E_006_CENTER_DOOR", "6号中央车门应只触发普通门对话");
@@ -210,7 +213,7 @@ for (const [eventId, expectedTexts] of [
     "塑料袋被碰得窸窣作响，却没有露出任何有用的东西。",
     "你把最上面的袋子挪开，下面只有落满灰尘的地板。"
   ]],
-  ["E_05_JUNK_RIGHT", [
+  ["E_05_JUNK_RIGHT_REPEAT", [
     "你拨开右侧堆叠的袋子，只找到几个压扁的空盒。",
     "袋子里装着揉皱的包装纸，没有任何可用的东西。",
     "你试着提起其中一袋，里面的东西轻轻晃动，没有特别之处。"
@@ -237,7 +240,7 @@ for (const [eventId, expectedTexts] of [
   ["E_005_WINDOW", actionsOf("E_005_WINDOW")[0].params.texts],
   ["E_005_CENTER_DOOR", actionsOf("E_005_CENTER_DOOR")[0].params.texts],
   ["E_05_JUNK_LEFT", actionsOf("E_05_JUNK_LEFT")[0].params.texts],
-  ["E_05_JUNK_RIGHT", actionsOf("E_05_JUNK_RIGHT")[0].params.texts],
+  ["E_05_JUNK_RIGHT_REPEAT", actionsOf("E_05_JUNK_RIGHT_REPEAT")[0].params.texts],
   ["E_006_WINDOW", actionsOf("E_006_WINDOW")[0].params.texts],
   ["E_006_CENTER_DOOR", actionsOf("E_006_CENTER_DOOR")[0].params.texts]
 ]) {
@@ -246,8 +249,10 @@ for (const [eventId, expectedTexts] of [
   assert.equal(expectedTexts.includes(game.trace[0].text), true, `${eventId} 应实际显示句子库中的一条文案`);
 }
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026_ACTION", "点击 Clicker 后应进入通过方式选择");
-assert.match(mainSource, /canUseBottleOnClicker/, "背包应有 Clicker 场景下的玻璃瓶使用分支");
+assert.match(mainSource, /getClickerItemEvent/, "背包应有 Clicker 场景下的投掷物与饮料使用分支");
 assert.match(mainSource, /E_028_THROW_FIRST/, "玻璃瓶在 Clicker 场景下应直通投掷事件");
+assert.match(mainSource, /E_028_THROW_CAN_FIRST/, "空易拉罐在 Clicker 场景下应直通投掷事件");
+assert.match(mainSource, /E_ITEM_DRINK_CLICKER_INSPECT/, "Clicker 面前使用饮料应进入专属确认流程");
 assert.doesNotMatch(mainSource, /点击投掷并直接通过/, "物品栏不得明示隐藏的投瓶捷径");
 assert.match(crewNegotiationSource, /return 15 \* correctCount;/, "交涉小游戏每个正确回应应提供15%加成");
 assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应自动播放 Clicker 发现对白");
@@ -639,6 +644,22 @@ const allCarriage05Inspected = {
   carriage_05_inspected_clutter_c: true,
   carriage_05_inspected_clutter_d: true
 };
+const drinkPickupGame = fixture({
+  sceneId: "carriage_05",
+  flags: { carriage_05_inspected_clutter_d: true }
+});
+await drinkPickupGame.play("E_05_JUNK_RIGHT");
+assert.equal(drinkPickupGame.state.inventory.includes("drink"), true, "旧存档再次调查右侧塑料袋时应获得饮料");
+assert.equal(drinkPickupGame.state.flags.carriage_05_drink_collected, true);
+const drinkUseGame = fixture({ sceneId: "carriage_05", inventory: ["drink"] });
+await drinkUseGame.play("E_ITEM_DRINK_USE");
+assert.equal(drinkUseGame.state.inventory.includes("drink_empty"), true, "饮用后应留下空易拉罐");
+assert.equal(drinkUseGame.state.inventory.includes("drink"), false, "饮用后不应保留饮料");
+assert.equal(drinkUseGame.state.getAttribute("san"), 3, "饮用后应回复 SAN +2");
+assert.equal(actionsOf("E_ITEM_DRINK_CLICKER_USE").at(-1).amount, 2, "Clicker 面前饮用同样应回复 SAN +2");
+assert.equal(eventById.get("E_ITEM_DRINK_CLICKER_USE").next, "E_029_CARD_HARD", "Clicker 面前饮用后应直接进入困难战斗");
+assert.equal(actionsOf("E_028_THROW_CAN_FIRST").find((action) => action.type === "check")?.dice, "ev028_throw_01", "空易拉罐应复用玻璃瓶投掷检定");
+assert.equal(actionsOf("E_028_THROW_CAN_SUCCESS").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true, "空易拉罐投掷应暂时复用玻璃瓶音效");
 let rewardGame = fixture({ sceneId: "carriage_05", flags: allCarriage05Inspected });
 await rewardGame.play("E_05_CHECK_ALL");
 assert.equal(rewardGame.state.flags.carriage_05_all_inspected_rewarded, true);

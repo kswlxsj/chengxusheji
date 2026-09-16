@@ -424,11 +424,11 @@ await inspectEngine.actions.get("inspect")({
   item: "phone",
   title: "手机特写",
   text: "覆盖说明",
-  image: "assets/Image/Item/flashlight-v1.png"
+  image: "assets/Image/Item/flashlight.png"
 });
 assert.equal(inspectedItem.title, "手机特写", "物品调查应允许事件覆盖名称");
 assert.equal(inspectedItem.text, "覆盖说明", "物品调查应允许事件覆盖说明");
-assert.equal(inspectedItem.image, "assets/Image/Item/flashlight-v1.png", "物品调查应允许事件覆盖图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/flashlight.png", "物品调查应允许事件覆盖图片");
 await inspectEngine.actions.get("inspect")({ type: "inspect", title: "场景线索", text: "仍使用普通窗口。" });
 assert.equal(inspectedScene.title, "场景线索", "不带物品 ID 的场景调查应继续使用普通调查窗口");
 

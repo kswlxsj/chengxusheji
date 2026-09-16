@@ -190,8 +190,12 @@
       : null;
   }
 
-  function canUseBottleOnClicker(item) {
-    return item?.id === "bottle" && Boolean(visibleClickerInCarriage02());
+  function getClickerItemEvent(item) {
+    if (!visibleClickerInCarriage02()) return null;
+    if (item?.id === "bottle") return "E_028_THROW_FIRST";
+    if (item?.id === "drink_empty") return "E_028_THROW_CAN_FIRST";
+    if (item?.id === "drink") return "E_ITEM_DRINK_CLICKER_INSPECT";
+    return null;
   }
 
   function maybeTriggerClickerReveal() {
@@ -210,7 +214,7 @@
 
   function inspectInventoryItem(item) {
     if (!item || startupLocked || paused || engine.busy) return;
-    const eventId = canUseBottleOnClicker(item) ? "E_028_THROW_FIRST" : item.inspectEvent;
+    const eventId = getClickerItemEvent(item) || item.inspectEvent;
     void engine.play(eventId);
   }
 
