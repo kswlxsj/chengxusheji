@@ -11,6 +11,9 @@
     front_carriage: "assets/Image/Ui/Save/save-silhouette-front-carriage.png",
     carriage_inner_01: "assets/Image/Ui/Save/save-silhouette-carriage-inner-01.png",
     carriage_inner_02: "assets/Image/Ui/Save/save-silhouette-carriage-inner-02.png",
+    carriage_fake_01: "assets/Image/Ui/Save/save-silhouette-carriage-fake-01.png",
+    carriage_fake_02: "assets/Image/Ui/Save/save-silhouette-carriage-fake-02.png",
+    carriage_fake_03: "assets/Image/Ui/Save/save-silhouette-carriage-fake-03.png",
     carriage_fake_04: "assets/Image/Ui/Save/save-silhouette-carriage-fake-04.png",
     flower_sea: "assets/Image/Ui/Save/save-silhouette-flower-sea.png",
     flower_sea_inside: "assets/Image/Ui/Save/save-silhouette-flower-sea-inside.png"
