@@ -13,6 +13,8 @@
   const HOLD_DURATION = 3000;
   const RANGE_SPEED_SCALE = 1.08;
   const POINTER_STEP = 5 * 2.16;
+  const FM_FREQUENCY_MIN_MHZ = 87.5;
+  const FM_FREQUENCY_MAX_MHZ = 108.0;
 
   const STYLE_TEXT = `
     .radio-tuning { box-sizing: border-box; width: 100%; height: 100%; min-height: 0; overflow: auto; padding: clamp(14px, 3vw, 28px); color: #f2e9dc; background: radial-gradient(circle at 20% 8%, rgba(213, 159, 101, .16), transparent 30%), repeating-linear-gradient(10deg, rgba(255, 225, 180, .035) 0 2px, transparent 2px 25px), linear-gradient(135deg, #17100f, #40271d 50%, #100c0c); font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
@@ -35,7 +37,7 @@
     .rt-needle { position: absolute; left: 50%; bottom: 50%; width: 5px; height: 39%; border-radius: 6px; background: #efb45f; box-shadow: 0 0 8px rgba(239, 180, 95, .75); transform: translateX(-50%) rotate(var(--needle-angle)); transform-origin: 50% 100%; }
     .rt-hub { position: absolute; inset: 43%; display: grid; place-items: center; border: 3px solid #a4876c; border-radius: 50%; color: #f2e9dc; background: #2c2523; font-size: 11px; }
     .rt-panel { min-width: 0; padding: 18px; border: 1px solid rgba(255, 226, 184, .17); background: rgba(20, 14, 13, .62); }
-    .rt-angle { margin: 0 0 20px; color: #efb45f; font-size: clamp(27px, 5vw, 44px); letter-spacing: .12em; text-align: center; }
+    .rt-frequency { margin: 0 0 20px; color: #efb45f; font-size: clamp(27px, 5vw, 44px); letter-spacing: .12em; text-align: center; }
     .rt-hold-label { display: flex; justify-content: space-between; gap: 8px; color: #d5c6ae; font-size: 12px; }
     .rt-hold-track { height: 12px; margin-top: 8px; overflow: hidden; border: 1px solid #66564d; background: #120d0a; }
     .rt-hold-fill { width: 0; height: 100%; background: linear-gradient(90deg, #9fc786, #55d0d4); transition: width .08s linear; }
@@ -64,7 +66,7 @@
     .radio-tuning .rt-dashboard-hold .rt-hold-label { justify-content: center; gap: 16px; font-size: 11px; line-height: 1.2; white-space: nowrap; }
     .radio-tuning .rt-dashboard-hold .rt-hold-track { width: 48%; height: 10px; margin: 5px auto 0; }
     .radio-tuning .rt-panel { position: absolute; top: 42%; right: 10%; width: 37%; min-width: 0; padding: 0; border: 0; background: transparent; }
-    .radio-tuning .rt-angle { margin-bottom: 10px; font-size: clamp(22px, 4vw, 36px); }
+    .radio-tuning .rt-frequency { margin-bottom: 10px; font-size: clamp(22px, 4vw, 36px); }
     .radio-tuning .rt-instruction { margin-top: 12px; font-size: 11px; line-height: 1.45; }
     .radio-tuning .rt-status { min-height: 0; margin-top: 8px; font-size: 11px; line-height: 1.35; }
     .radio-tuning .rt-result { position: absolute; inset: 31% 14% auto; z-index: 6; margin: 0; padding: 20px 18px; }
@@ -166,8 +168,8 @@
             <div class="rt-hold-track"><div class="rt-hold-fill" data-hold-fill></div></div>
           </div>
           <div class="rt-panel">
-            <p class="rt-angle" data-angle>000°</p>
-            <p class="rt-instruction">使用键盘控制指针<br><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd></p>
+            <p class="rt-frequency" data-frequency>87.5 MHz</p>
+            <p class="rt-instruction">使用键盘调节频率<br><kbd>←</kbd><kbd>→</kbd> 或 <kbd>A</kbd><kbd>D</kbd></p>
             <p class="rt-status" data-status>让指针进入绿色频段。</p>
           </div>
         </div>
@@ -201,7 +203,7 @@
 
     const dial = root.querySelector("[data-dial]");
     const screen = root.querySelector("[data-screen]");
-    const angleReadout = root.querySelector("[data-angle]");
+    const frequencyReadout = root.querySelector("[data-frequency]");
     const holdTime = root.querySelector("[data-hold-time]");
     const holdFill = root.querySelector("[data-hold-fill]");
     const status = root.querySelector("[data-status]");
@@ -223,13 +225,20 @@
       return angleDistance(pointerAngle, rangeCenter) <= RANGE_SPAN / 2;
     }
 
+    function formatFrequency(angle) {
+      const ratio = normalize(angle) / 360;
+      const frequency = FM_FREQUENCY_MIN_MHZ
+        + ratio * (FM_FREQUENCY_MAX_MHZ - FM_FREQUENCY_MIN_MHZ);
+      return `${frequency.toFixed(1)} MHz`;
+    }
+
     function render(inside) {
       const rangeStart = normalize(rangeCenter - RANGE_SPAN / 2);
       dial.style.setProperty("--needle-angle", `${pointerDisplayAngle}deg`);
       dial.style.setProperty("--range-start", `${rangeStart}deg`);
       dial.style.setProperty("--range-span", `${RANGE_SPAN}deg`);
       dial.classList.toggle("in-range", inside);
-      angleReadout.textContent = `${String(Math.round(pointerAngle)).padStart(3, "0")}°`;
+      frequencyReadout.textContent = formatFrequency(pointerAngle);
       const progress = Math.min(1, heldFor / HOLD_DURATION);
       holdFill.style.width = `${progress * 100}%`;
       holdTime.textContent = `${(heldFor / 1000).toFixed(1)} / 3.0 秒`;
