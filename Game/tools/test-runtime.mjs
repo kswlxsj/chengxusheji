@@ -206,6 +206,46 @@ assert.equal(Game.isSceneUnlit("carriage_03", {}), false, "3号车厢平时应�
 assert.equal(Game.isSceneUnlit("carriage_03", { carriage_03_blackout: true }), true, "3号车厢灯灭后应为无光");
 assert.equal(Game.isSceneUnlit("carriage_04", { carriage_03_blackout: true }), false, "黑场只作用于3号车厢");
 
+// fullCanvas 物件的透明包围盒不得吞掉下层矩形热点；实际不透明像素仍应优先。
+const sceneRoot = {
+  addEventListener() {},
+  getBoundingClientRect() { return { left: 0, top: 0, width: 100, height: 100 }; },
+  querySelectorAll() { return []; }
+};
+const sceneManager = new Game.SceneManager(sceneRoot, [], {});
+const canvasButton = { disabled: false };
+const rectButton = { disabled: false };
+const alphaMask = new Uint8Array(Math.ceil(100 * 100 / 8));
+const canvasEntry = {
+  object: { id: "foreground", zIndex: 12, clickEvent: "E_FOREGROUND" },
+  button: canvasButton,
+  meta: { width: 100, height: 100, bbox: { x0: 0, y0: 0, x1: 99, y1: 99 }, mask: alphaMask }
+};
+sceneManager.canvasObjects = [canvasEntry];
+sceneManager.rectObjects = [{
+  object: {
+    id: "ambient_window",
+    zIndex: 10,
+    clickEvent: "E_AMBIENT",
+    position: { x: 10, y: 10, width: 80, height: 80 }
+  },
+  button: rectButton
+}];
+const clickedSceneEvents = [];
+sceneManager.onObjectClick = (eventId) => clickedSceneEvents.push(eventId);
+const interceptedClick = {
+  target: { closest: (selector) => selector === ".scene-object-hit" ? canvasButton : null },
+  detail: 1,
+  clientX: 50,
+  clientY: 50
+};
+sceneManager.handleCanvasClick(interceptedClick);
+assert.deepEqual(clickedSceneEvents, ["E_AMBIENT"], "透明前景像素应继续命中下层门窗热点");
+const pixelIndex = 50 * 100 + 50;
+alphaMask[pixelIndex >> 3] |= 1 << (pixelIndex & 7);
+sceneManager.handleCanvasClick(interceptedClick);
+assert.deepEqual(clickedSceneEvents, ["E_AMBIENT", "E_FOREGROUND"], "不透明前景像素仍应优先触发原物件");
+
 const saves = new Game.SaveManager(state, "test-save");
 saves.save(1);
 assert.equal(saves.listSlots().length, 3);
