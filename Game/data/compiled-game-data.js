@@ -3037,7 +3037,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "灯突然亮了。"
+          "text": "电力又恢复了，但是灯只亮了一半。"
+        },
+        {
+          "type": "dialogue",
+          "text": "给后排的车厢增添了一层令人不安的阴影。"
         },
         {
           "type": "custom",
@@ -6137,7 +6141,29 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你身边的乘务员不见了，奇怪，刚刚还在这里的。"
+          "text": "你突然发现身边的乘务员不见了。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "（刚刚还在这里的……怎么就？）"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "喂喂？你还在吗？"
+        },
+        {
+          "type": "dialogue",
+          "text": "没有回应。3号车厢还在那里，被你撬开的行李静悄悄地躺在地上。"
+        },
+        {
+          "type": "dialogue",
+          "text": "或许她先一步进入了这个陌生的车厢？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你只好继续前进。"
         }
       ],
       "next": "E_501_INTRO_BODY"
@@ -6336,7 +6362,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她依然在你身边，对刚刚的一切似乎并不知情。"
+          "text": "你身旁的乘务员似乎并不知道这一切。"
+        },
+        {
+          "type": "dialogue",
+          "text": "如果这样的话，那你刚刚遇到的是……？"
         }
       ]
     },
@@ -7906,7 +7936,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她依然在你身边，对刚刚的一切似乎并不知情。"
+          "text": "你身旁的乘务员似乎并不知道这一切。"
+        },
+        {
+          "type": "dialogue",
+          "text": "如果这样的话，那你刚刚遇到的是……？"
         }
       ],
       "next": "E_025"
