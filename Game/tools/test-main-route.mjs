@@ -500,6 +500,9 @@ assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && 
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_success"), false);
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
 assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
+for (const id of ["E_013_S", "E_020_SECOND_MEDICAL_S"]) {
+  assert.equal(actionsOf(id).some((action) => action.type === "modifyAttribute" && action.attribute === "san" && action.amount === 2), true, `${id} 救活乘务员后应奖励 2 点 SAN`);
+}
 assert.equal(actionsOf("E_016_LEAVE").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated" && action.value === true), true);
 assert.equal(actionsOf("E_016_CARRY_FAIL").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated"), false, "尝试背起但失败不应混入明确选择留下的坐姿分支");
 

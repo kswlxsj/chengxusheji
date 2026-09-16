@@ -3140,6 +3140,11 @@ window.GAME_DATA = {
           "type": "modifyAttribute",
           "attribute": "insight",
           "amount": 1
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 1
         }
       ],
       "next": "E_011_AFTER_CONTINUE"
@@ -3355,6 +3360,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你收紧最后一道固定结，确认渗血速度慢了下来。乘务员皱起眉，终于恢复了意识。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 2
         },
         {
           "type": "setFlag",
@@ -4361,6 +4371,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "乘务员咳了一声，终于睁开眼。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 2
         },
         {
           "type": "dialogue",
