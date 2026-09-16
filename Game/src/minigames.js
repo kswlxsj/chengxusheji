@@ -2,7 +2,7 @@
   "use strict";
 
   // 小游戏注册表：游戏内所有小游戏的唯一索引，仿 dice.js 的“编号注册、JSON 只引用索引”分离架构。
-  // - 每个小游戏是一份注册表条目 spec：{ title, run(context) }。
+  // - 每个小游戏是一份注册表条目 spec：{ title, allowQuit?, run(context) }。
   // - run 的契约：把玩法内容挂进 context.stage（无 DOM 的测试环境下可能为 null），
   //   当小游戏自然结束时 resolve；返回值可以是“结算动作列表”（由事件引擎按普通动作
   //   语义顺序执行）或 undefined（不结算，事件继续）。模块可经 context.onQuit 注册退出
@@ -16,6 +16,9 @@
   function assertSpec(spec) {
     if (!spec || typeof spec !== "object") throw new TypeError("小游戏注册内容必须是对象");
     if (typeof spec.title !== "string" || !spec.title) throw new TypeError("小游戏缺少标题 title");
+    if (spec.allowQuit !== undefined && typeof spec.allowQuit !== "boolean") {
+      throw new TypeError("小游戏 allowQuit 必须是布尔值");
+    }
     if (typeof spec.run !== "function") throw new TypeError("小游戏缺少运行入口 run(context)");
   }
 

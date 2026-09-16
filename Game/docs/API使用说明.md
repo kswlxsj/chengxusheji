@@ -617,6 +617,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 | 字段 | 说明 |
 | --- | --- |
 | `title` | 宿主窗口标题栏文案。 |
+| `allowQuit` | 可选，默认为 `true`；设为 `false` 时不显示“退出小游戏”按钮，玩家必须完成该小游戏。 |
 | `run(context)` | 把玩法画面挂进 `context.stage` 并开始运行；小游戏自然结束时 resolve，返回值可为结算动作列表（数组）或 `undefined`。 |
 
 `run` 收到的 `context` 在[动作上下文](#自定义动作上下文)基础上追加：
@@ -631,7 +632,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 - **结算动作列表与普通动作同语义**：由引擎逐个执行，同样经过暂停等待、取消/终止检查（SAN 归零仍会触发终止流程）、`onStateChanged` 与稳定快照回滚；列表内动作支持 `{ next, stop }` 跳转分支。项目内置的 `jump` 结算动作可直接跳转到指定事件（例如 `{ type: "jump", next: "E_029" }`）。列表上限 **100 条**，且不允许再包含 `minigame` 动作（宿主为单实例）。
 - 过程状态一律经 `context.state` 接口读写；异步等待用 `context.wait()`、等待后写状态前调用 `throwIfCancelled()`（与自定义动作同一套安全边界）。**推荐写法规约**：玩法过程不改游戏状态（内部计时/尝试次数等留在模块闭包），结果一律以结算动作列表表达，可被引擎整体回滚与存档稳定点保护。
-- 宿主窗口为 `ui.minigame`（`MinigameWindow`）：模态居中、接近占满 16:9 舞台、四边留白，打开时游戏本体画面变暗；小游戏进行中系统暂停与 Esc 被屏蔽（`pauseButton.disabled` 与键位守卫都检查 `ui.minigame.isOpen()`），标题栏“退出小游戏”按钮保证玩家随时可离开。
+- 宿主窗口为 `ui.minigame`（`MinigameWindow`）：模态居中、接近占满 16:9 舞台、四边留白，打开时游戏本体画面变暗；小游戏进行中系统暂停与 Esc 被屏蔽（`pauseButton.disabled` 与键位守卫都检查 `ui.minigame.isOpen()`）。标题栏默认提供“退出小游戏”按钮；注册项设 `allowQuit: false` 时不提供该入口。
 - 编译器通过 node:vm 加载 `src/minigames.js` 与全部 `src/minigame-games/*.js` 收集注册编号，校验 `minigame` 动作的 `game` 引用；**模块文件必须顶层只做注册、运行期再触碰 DOM**，否则编译期加载会失败。
 - 取消/报错路径：`UIManager.cancelPending()` 会关闭小游戏宿主（`ui.minigame.close()`），等待中的引擎竞态随即解除，状态回滚到稳定点，不会留下残留窗口。
 

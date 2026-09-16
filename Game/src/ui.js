@@ -877,7 +877,7 @@
 
   // 小游戏宿主窗口：通用模态外壳（深色变暗遮罩 + 居中近满屏内容区 + 标题栏“退出小游戏”）。
   // 只提供外壳与生命周期，具体玩法由小游戏模块在 stage 里自绘；
-  // 引擎通过 openAndStage/quitPromise/close 与宿主协作，退出按钮保证玩家随时可离开。
+  // 引擎通过 openAndStage/quitPromise/close 与宿主协作；小游戏可按规格禁用退出。
   class MinigameWindow extends GameWindow {
     constructor(root) {
       super(root, "minigame-window");
@@ -886,6 +886,7 @@
       this.quitProvider = null;
       this.pendingQuit = null;
       this.stage = null;
+      this.allowQuit = true;
     }
 
     isOpen() {
@@ -922,6 +923,11 @@
       return this.stage;
     }
 
+    setQuitAllowed(allowQuit) {
+      this.allowQuit = allowQuit !== false;
+      if (!this.allowQuit) this.element.querySelector(".minigame-exit")?.remove();
+    }
+
     // 模块经 context.onQuit 注册退出结算提供者：返回值（可为 Promise）作为退出时的结算。
     setQuitProvider(provider) {
       this.quitProvider = provider;
@@ -938,7 +944,7 @@
     }
 
     async requestQuit() {
-      if (!this.running) return;
+      if (!this.running || !this.allowQuit) return;
       let settlement;
       try {
         settlement = this.quitProvider ? await this.quitProvider() : undefined;
@@ -966,6 +972,7 @@
       this.quitProvider = null;
       this.pendingQuit = null;
       this.stage = null;
+      this.allowQuit = true;
       super.close();
     }
   }

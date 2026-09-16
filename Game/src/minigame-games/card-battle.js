@@ -619,11 +619,13 @@
 
   Game.Minigames.register("card_battle", {
     title: "战斗轮 · 双牌试作（简单模式）",
+    allowQuit: false,
     run: createRun(3)
   });
 
   Game.Minigames.register("card_battle_hard", {
     title: "战斗轮 · 双牌试作（困难模式）",
+    allowQuit: false,
     run: createRun(5)
   });
 })(window.TrainGame);

@@ -380,6 +380,7 @@
         // 小游戏使用独立覆盖层；清掉对白窗口，避免上一句文字穿透到卡牌等玩法界面。
         this.ui.closeDialog?.();
         const stage = host ? host.openAndStage(spec.title, action.game) : null;
+        if (host) host.setQuitAllowed?.(spec.allowQuit !== false);
         const context = this.context();
         const cleanups = [];
         const gameContext = {
