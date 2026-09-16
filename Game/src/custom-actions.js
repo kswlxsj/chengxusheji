@@ -322,6 +322,16 @@
       context.state.flags.ending_reason = reason;
     });
 
+    // 找到钥匙后依据当前 SAN 给出希望奖励；钥匙可能由玩家或乘务员保管。
+    engine.registerCustomAction("keyHopeSanReward", async (params, context) => {
+      const holder = params.holder === "crew" ? "乘务员" : "你";
+      await context.ui.dialog.showLine({
+        text: `看着${holder}手中的钥匙，你觉得又有了活下去的希望。`
+      });
+      const amount = context.state.getAttribute("san") <= 3 ? 3 : 2;
+      context.modifyAttribute("san", amount);
+    });
+
     // 按权重随机分岔（静默判定）：掷一次权重表，把选中结果的旗标置 true、其余置 false，
     // 由事件里的 conditionalJump 读取分支。不弹任何窗口，玩家只看到剧情结果。
     // params.outcomes = [{ weight: 10, flag: "ev502_return_eaten" }, ...]，权重为正数、顺序即掷点区间顺序。

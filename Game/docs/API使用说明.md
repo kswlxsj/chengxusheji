@@ -568,7 +568,7 @@ engine.registerCustomAction("shakeWindow", async (params, context) => {
 
 新增项目白名单：`refreshScene` 在物件显隐或背景旗标变化后等待素材并刷新当前场景，不重播入场、不关闭对话；`innerWhisperScare` 执行5秒红底黑字低语覆盖层，参数集中在 `INNER_SCARE`（600字/秒、20ms更新、舞台宽度1%震动），所有等待走可暂停、取消的事件计时器。两者不接受剧情自定义参数。
 
-当前项目白名单（`custom-actions.js`）：`flashScreen` 全屏闪白；`useLight` 2 号车厢照明（兼作手机 / 手电筒的调查事件）；`endGame` 写入 `flags.ending_reason`（接受 `true_end` / `bad_end` / `lost` / `fake_end`，由游戏页入口进入对应结束流程）；`weightedBranch` 按权重**静默**随机分岔——`params.outcomes` 是 `[{ weight, flag }, ...]`（权重为正数、顺序即掷点区间顺序），掷一次后把选中项的 `flag` 置 `true`、其余置 `false`，事件再用 `conditionalJump` 读取旗标分支（例见 `E_502_RETURN` 的 10% / 60% / 30% 三条出口）。
+当前项目白名单（`custom-actions.js`）：`flashScreen` 全屏闪白；`useLight` 2 号车厢照明（兼作手机 / 手电筒的调查事件）；`endGame` 写入 `flags.ending_reason`（接受 `true_end` / `bad_end` / `lost` / `fake_end`，由游戏页入口进入对应结束流程）；`keyHopeSanReward` 在找到钥匙时显示与保管者相符的希望描写，并按当前 SAN（≤3 时 +3，否则 +2）结算；`weightedBranch` 按权重**静默**随机分岔——`params.outcomes` 是 `[{ weight, flag }, ...]`（权重为正数、顺序即掷点区间顺序），掷一次后把选中项的 `flag` 置 `true`、其余置 `false`，事件再用 `conditionalJump` 读取旗标分支（例见 `E_502_RETURN` 的 10% / 60% / 30% 三条出口）。
 
 规则与安全边界：
 

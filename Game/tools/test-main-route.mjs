@@ -595,6 +595,19 @@ assert.equal(
 );
 assert.equal(actionsOf("E_028_THROW_SUCCESS").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true);
 assert.equal(actionsOf("E_028_THROW_FAIL").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true);
+for (const [id, holder] of [
+  ["E_021_CARRIED_S", "player"],
+  ["E_021_CARRIED_F", "crew"],
+  ["E_021_ALONE_S", "player"],
+  ["E_031_NO_KEY_S", "player"],
+  ["E_524_KEY", "player"]
+]) {
+  assert.equal(
+    actionsOf(id).some((action) => action.type === "custom" && action.name === "keyHopeSanReward" && action.params?.holder === holder),
+    true,
+    `${id} 找到钥匙后应按${holder === "crew" ? "乘务员" : "玩家"}持有者结算希望奖励`
+  );
+}
 for (const id of [
   "E_018_SEARCH_PHONE",
   "E_021_CARRIED",
@@ -730,6 +743,20 @@ assert.match(game.trace[game.trace.length - 1].text, /那不是人类的喘息/)
 assert.equal(game.state.sceneId, "carriage_02");
 assert.equal(game.trace.some((entry) => entry.scene === "carriage_02" && entry.text === "四周毫无光源。"), true);
 assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "进入2号后应等待玩家点击 Clicker");
+
+// 找到钥匙时，低 SAN 额外获得一点恢复；文案随钥匙保管者变化。
+game = fixture();
+game.state.setAttribute("san", 3);
+game.engine.events.set("TEST_KEY_HOPE_LOW", { id: "TEST_KEY_HOPE_LOW", actions: [{ type: "custom", name: "keyHopeSanReward", params: { holder: "player" } }] });
+await game.play("TEST_KEY_HOPE_LOW");
+assert.equal(game.state.getAttribute("san"), 6);
+assert.equal(game.trace.some((entry) => entry.text === "看着你手中的钥匙，你觉得又有了活下去的希望。"), true);
+game = fixture();
+game.state.setAttribute("san", 4);
+game.engine.events.set("TEST_KEY_HOPE_NORMAL", { id: "TEST_KEY_HOPE_NORMAL", actions: [{ type: "custom", name: "keyHopeSanReward", params: { holder: "crew" } }] });
+await game.play("TEST_KEY_HOPE_NORMAL");
+assert.equal(game.state.getAttribute("san"), 6);
+assert.equal(game.trace.some((entry) => entry.text === "看着乘务员手中的钥匙，你觉得又有了活下去的希望。"), true);
 
 // 初见只做演出；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
 game = fixture({ sceneId: "carriage_02", flags: { light_used: true } });

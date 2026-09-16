@@ -4577,6 +4577,13 @@ window.GAME_DATA = {
           "item": "control_panel_key"
         },
         {
+          "type": "custom",
+          "name": "keyHopeSanReward",
+          "params": {
+            "holder": "player"
+          }
+        },
+        {
           "type": "setFlag",
           "key": "keys_player",
           "value": true
@@ -4600,6 +4607,13 @@ window.GAME_DATA = {
           "type": "dialogue",
           "speaker": "乘务员",
           "text": "……我来拿着吧。到了车头，我比你熟悉。"
+        },
+        {
+          "type": "custom",
+          "name": "keyHopeSanReward",
+          "params": {
+            "holder": "crew"
+          }
         },
         {
           "type": "setFlag",
@@ -4642,6 +4656,13 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "control_panel_key"
+        },
+        {
+          "type": "custom",
+          "name": "keyHopeSanReward",
+          "params": {
+            "holder": "player"
+          }
         },
         {
           "type": "setFlag",
@@ -6034,6 +6055,13 @@ window.GAME_DATA = {
         {
           "type": "addItem",
           "item": "control_panel_key"
+        },
+        {
+          "type": "custom",
+          "name": "keyHopeSanReward",
+          "params": {
+            "holder": "player"
+          }
         },
         {
           "type": "setFlag",
@@ -7994,6 +8022,13 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你低头看去——那把钥匙不知何时回到了自己身上。"
+        },
+        {
+          "type": "custom",
+          "name": "keyHopeSanReward",
+          "params": {
+            "holder": "player"
+          }
         }
       ],
       "next": "E_524_DONE"
