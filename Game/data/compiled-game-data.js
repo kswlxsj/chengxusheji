@@ -6383,22 +6383,10 @@ window.GAME_DATA = {
       "id": "E_515",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "细节已经淡忘，或者不愿回忆。"
-        },
-        {
-          "type": "dialogue",
-          "text": "唯一确定的是，你无法再像一个正常人那样看待世界了。"
-        },
-        {
-          "type": "dialogue",
-          "text": "在你平凡的余生中，你常常想起它们的低语，或许那确实是你想要的。"
-        },
-        {
           "type": "custom",
           "name": "endGame",
           "params": {
-            "reason": "trauma"
+            "reason": "fake_end"
           }
         }
       ]

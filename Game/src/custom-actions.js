@@ -251,13 +251,13 @@
       context.state.flags.light_used = true;
       context.state.flags.light_type = params.item;
       await context.ui.dialog.showLine({
-        text: `${itemName}的光束照亮了2号车厢的一角，你终于看清了那个没有眼睛的Clicker。`
+        text: `${itemName}的光束足以照亮2号车厢的一角。`
       });
     });
 
     engine.registerCustomAction("endGame", async (params, context) => {
       const reason = params.reason;
-      if (!["true_end", "bad_end", "lost", "trauma"].includes(reason)) {
+      if (!["true_end", "bad_end", "lost", "fake_end"].includes(reason)) {
         throw new Error(`未知结局类型：${reason || "空"}`);
       }
       context.state.flags.ending_reason = reason;

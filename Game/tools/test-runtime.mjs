@@ -483,9 +483,9 @@ endingState.completeAttributeAllocation({ strength: 4, insight: 1 });
 let endingCalls = 0;
 const endingEngine = new Game.EventEngine({
   events: [{
-    id: "E_TRUE_END",
+    id: "E_FAKE_END",
     actions: [
-      { type: "custom", name: "endGame", params: { reason: "true_end" } },
+      { type: "custom", name: "endGame", params: { reason: "fake_end" } },
       { type: "setFlag", key: "continued", value: true }
     ]
   }],
@@ -498,8 +498,8 @@ const endingEngine = new Game.EventEngine({
   onTerminate: () => { endingCalls += 1; }
 });
 Game.registerProjectActions(endingEngine);
-await endingEngine.play("E_TRUE_END");
-assert.equal(endingState.flags.ending_reason, "true_end");
+await endingEngine.play("E_FAKE_END");
+assert.equal(endingState.flags.ending_reason, "fake_end");
 assert.equal(endingState.flags.continued, undefined, "结局后的动作不应继续执行");
 assert.equal(endingCalls, 1);
 

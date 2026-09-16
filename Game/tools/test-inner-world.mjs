@@ -497,7 +497,10 @@ assert.equal(
 );
 const e029 = events.find(e => e.id === "E_029");
 assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_constitution_01"), true);
-assert.equal(events.find(e => e.id === "E_034").actions[0].next, "E_515", "涉足花海后真结局应替换为 Trauma");
+assert.equal(events.find(e => e.id === "E_034").actions[0].next, "E_515", "涉足花海后真结局应替换为伪结局");
+assert.deepEqual(events.find(e => e.id === "E_515").actions, [
+  { type: "custom", name: "endGame", params: { reason: "fake_end" } }
+]);
 assert.equal(events.find(e => e.id === "E_033").actions.some(a => a.game === "conductor_tug"), true);
 const cardBattleSource = await read("src/minigame-games/card-battle.js");
 assert.doesNotMatch(cardBattleSource, /jump", next: "E_031"/);

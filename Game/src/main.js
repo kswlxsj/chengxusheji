@@ -29,7 +29,7 @@
       ending = true;
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
-      if (reason === "lost" || reason === "trauma") {
+      if (reason === "lost") {
         flow.navigate("ending", { reason }, true);
         return;
       }
@@ -43,6 +43,17 @@
           });
         } catch (error) {
           console.error("真结局演出失败：", error);
+        }
+      }
+      if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
+        try {
+          await Game.playFakeEndingSequence({
+            root: gameShell,
+            audio: ui.audio,
+            backgroundAudio: ui.backgroundAudio
+          });
+        } catch (error) {
+          console.error("伪结局演出失败：", error);
         }
       }
       if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {

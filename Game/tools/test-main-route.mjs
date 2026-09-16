@@ -437,6 +437,10 @@ assert.deepEqual(actionsOf("E_034")[0], {
   next: "E_515"
 });
 assert.deepEqual(actionsOf("E_034")[1], { type: "custom", name: "endGame", params: { reason: "true_end" } });
+assert.deepEqual(actionsOf("E_515"), [
+  { type: "custom", name: "endGame", params: { reason: "fake_end" } }
+]);
+assert.match(mainSource, /reason === "fake_end"[\s\S]*playFakeEndingSequence/);
 assert.deepEqual(actionsOf("E_030"), [
   { type: "custom", name: "endGame", params: { reason: "bad_end" } }
 ]);
