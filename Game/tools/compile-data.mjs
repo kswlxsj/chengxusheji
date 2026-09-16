@@ -183,7 +183,7 @@ function validateCondition(condition, references, label) {
 }
 
 async function validate(meta, scenes, events, items, attributeData, skills, audio, diceIds, minigameIds) {
-  assert(meta.formatVersion === 3, "当前编译器只支持 formatVersion=3");
+  assert(meta.formatVersion === 4, "当前编译器只支持 formatVersion=4");
   assert(typeof meta.title === "string" && meta.title, "游戏标题不能为空");
   assert(typeof meta.coverImage === "string" && meta.coverImage, "游戏封面路径不能为空");
   const sceneIds = assertUnique(scenes, "场景");
@@ -223,9 +223,13 @@ async function validate(meta, scenes, events, items, attributeData, skills, audi
     assertOnlyKeys(attribute, ["id", "name", "description", "initial", "min", "max"], `属性 ${attribute.id}`);
     assert(typeof attribute.name === "string" && attribute.name, `属性名称不能为空：${attribute.id}`);
     assert(attribute.description == null || typeof attribute.description === "string", `属性 ${attribute.id} 的 description 必须是字符串`);
-    assert([attribute.initial, attribute.min, attribute.max].every(Number.isInteger), `属性 ${attribute.id} 的 initial/min/max 必须是整数`);
-    assert(attribute.min <= attribute.initial && attribute.initial <= attribute.max, `属性 ${attribute.id} 必须满足 min <= initial <= max`);
-    allocationCapacity += attribute.max - attribute.initial;
+    assert(Number.isInteger(attribute.initial) && Number.isInteger(attribute.min), `属性 ${attribute.id} 的 initial/min 必须是整数`);
+    assert(attribute.max === null || Number.isInteger(attribute.max), `属性 ${attribute.id} 的 max 必须是整数或 null`);
+    assert(attribute.min <= attribute.initial, `属性 ${attribute.id} 必须满足 min <= initial`);
+    assert(attribute.max === null || attribute.initial <= attribute.max, `属性 ${attribute.id} 的 initial 不能大于 max`);
+    allocationCapacity += attribute.max === null
+      ? attributeData.totalPoints
+      : attribute.max - attribute.initial;
   }
   assert(allocationCapacity >= attributeData.totalPoints, "所有属性的可分配容量小于 totalPoints");
 
@@ -352,6 +356,11 @@ async function validate(meta, scenes, events, items, attributeData, skills, audi
           assert(Array.isArray(action.outcomes), `事件 ${event.id} 的检定 outcomes 必须是数组`);
           for (const outcome of action.outcomes) {
             assert(eventIds.has(outcome), `事件 ${event.id} 的检定结果分支不存在：${outcome}`);
+          }
+        }
+        for (const key of ["criticalSuccess", "criticalFailure"]) {
+          if (action[key] != null) {
+            assert(eventIds.has(action[key]), `事件 ${event.id} 的检定极端结果分支不存在：${action[key]}`);
           }
         }
       }

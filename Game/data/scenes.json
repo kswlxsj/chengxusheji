@@ -478,7 +478,7 @@
           "height": 100
         },
         "zIndex": 12,
-        "clickEvent": "E_05_JUNK_A"
+        "clickEvent": "E_05_JUNK_B"
       },
       {
         "id": "tool_clutter_05",

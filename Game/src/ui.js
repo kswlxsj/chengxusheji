@@ -368,17 +368,16 @@
       const initialTotal = definitions.reduce((sum, definition) => sum + definition.initial, 0);
       const targetTotal = initialTotal + totalPoints;
       let remaining = totalPoints;
-      // 新游戏默认均衡填满全部可分配点数，方便直接开始测试；玩家仍可在确认前手动调整。
+      // 每次给当前最低的一项加点，使不同初始下限也能得到真正均衡的默认分配。
       while (remaining > 0) {
-        let changed = false;
-        for (const definition of definitions) {
-          if (remaining <= 0) break;
-          if (values[definition.id] >= definition.max) continue;
-          values[definition.id] += 1;
-          remaining -= 1;
-          changed = true;
-        }
-        if (!changed) throw new Error("属性上限不足以分配全部初始属性点");
+        const available = definitions.filter((definition) => (
+          definition.max === null || values[definition.id] < definition.max
+        ));
+        if (!available.length) throw new Error("属性上限不足以分配全部初始属性点");
+        const lowest = Math.min(...available.map((definition) => values[definition.id]));
+        const definition = available.find((entry) => values[entry.id] === lowest);
+        values[definition.id] += 1;
+        remaining -= 1;
       }
       const backdrop = document.createElement("div");
       backdrop.className = "modal-backdrop attribute-allocation-backdrop";
@@ -386,7 +385,7 @@
       heading.textContent = "分配属性点";
       const introduction = document.createElement("p");
       introduction.className = "allocation-introduction";
-      introduction.textContent = `已自动均衡分配 ${totalPoints} 点，可直接确认；也可以继续调整。普通属性最高为 10，SAN 初始为 5。`;
+      introduction.textContent = `四项最终总值固定为 ${targetTotal}，已自动均衡分配；普通属性最高为 10，SAN 不设上限。`;
       const summary = document.createElement("div");
       summary.className = "allocation-summary";
       const remainingText = document.createElement("p");
@@ -428,7 +427,8 @@
           const row = rows.get(definition.id);
           row.value.textContent = String(values[definition.id]);
           row.minus.disabled = values[definition.id] <= definition.initial;
-          row.plus.disabled = remaining <= 0 || values[definition.id] >= definition.max;
+          row.plus.disabled = remaining <= 0
+            || (definition.max !== null && values[definition.id] >= definition.max);
         }
       };
 
@@ -442,7 +442,7 @@
         description.textContent = definition.description || definition.id;
         const limits = document.createElement("small");
         limits.className = "attribute-allocation-limits";
-        limits.textContent = `初始 ${definition.initial} · 创建上限 ${definition.max}`;
+        limits.textContent = `创建下限 ${definition.initial} · 创建上限 ${definition.max === null ? "无上限" : definition.max}`;
         details.append(name, description, limits);
         const controls = document.createElement("div");
         controls.className = "attribute-stepper";
@@ -471,7 +471,7 @@
           refresh();
         });
         plus.addEventListener("click", () => {
-          if (remaining <= 0 || values[definition.id] >= definition.max) return;
+          if (remaining <= 0 || (definition.max !== null && values[definition.id] >= definition.max)) return;
           values[definition.id] += 1;
           remaining -= 1;
           refresh();
@@ -726,13 +726,13 @@
       this.root = root;
       this.audio = audio;
       this.backdrop = null;
-      this.diceBox = null;
-      this.image = null;
+      this.diceBoxes = [];
+      this.images = [];
       this.status = null;
       this.result = null;
     }
 
-    async roll({ value = null, success = true, text = "", outcomeText = "", wait = Game.delay }) {
+    async roll({ value = null, values = null, success = true, grade = null, text = "", outcomeText = "", wait = Game.delay }) {
       this.close();
       const backdrop = document.createElement("div");
       backdrop.className = "check-roll-modal";
@@ -740,24 +740,34 @@
       backdrop.style.setProperty("--check-animation-scale", String(1 / CHECK_ANIMATION_SPEED));
       const content = document.createElement("div");
       content.className = "check-roll-content";
-      const diceBox = document.createElement("div");
-      diceBox.className = "dice-box dice-rolling";
-      const image = document.createElement("img");
-      image.src = "assets/Image/Ui/dice-00.png";
-      image.alt = "骰子";
-      diceBox.append(image);
+      const diceRow = document.createElement("div");
+      diceRow.className = "dice-row";
+      const rollValues = Array.isArray(values) && values.length ? values : [value];
+      const diceBoxes = [];
+      const images = [];
+      for (let index = 0; index < rollValues.length; index += 1) {
+        const diceBox = document.createElement("div");
+        diceBox.className = "dice-box dice-rolling";
+        const image = document.createElement("img");
+        image.src = "assets/Image/Ui/dice-00.png";
+        image.alt = `骰子 ${index + 1}`;
+        diceBox.append(image);
+        diceRow.append(diceBox);
+        diceBoxes.push(diceBox);
+        images.push(image);
+      }
       const status = document.createElement("p");
       status.className = "check-roll-status";
       status.textContent = "检定中……";
       const result = document.createElement("p");
       result.className = "check-result-panel";
       result.setAttribute("aria-live", "polite");
-      content.append(diceBox, status, result);
+      content.append(diceRow, status, result);
       backdrop.append(content);
       this.root.append(backdrop);
       this.backdrop = backdrop;
-      this.diceBox = diceBox;
-      this.image = image;
+      this.diceBoxes = diceBoxes;
+      this.images = images;
       this.status = status;
       this.result = result;
       const rollingVoice = this.audio?.play(DICE_SOUNDS.rolling);
@@ -766,15 +776,17 @@
         await wait(CHECK_ROLL_BASE_MS / CHECK_ANIMATION_SPEED);
         if (this.backdrop !== backdrop) return;
         rollingVoice?.stop();
-        const face = Number.isInteger(value) && value >= 1 && value <= 6
-          ? `assets/Image/Ui/dice-0${value}.png`
-          : "assets/Image/Ui/dice-00.png";
-        this.image.src = face;
-        this.diceBox.classList.remove("dice-rolling");
-        this.diceBox.classList.add("dice-result-static");
+        rollValues.forEach((rollValue, index) => {
+          const face = Number.isInteger(rollValue) && rollValue >= 1 && rollValue <= 6
+            ? `assets/Image/Ui/dice-0${rollValue}.png`
+            : "assets/Image/Ui/dice-00.png";
+          this.images[index].src = face;
+          this.diceBoxes[index].classList.remove("dice-rolling");
+          this.diceBoxes[index].classList.add("dice-result-static");
+        });
         this.status.hidden = true;
         this.result.textContent = text;
-        this.result.classList.add(success ? "success" : "fail", "is-visible");
+        this.result.classList.add(success ? "success" : "fail", grade || "normal", "is-visible");
         await wait(1200);
         if (this.backdrop !== backdrop) return;
         if (outcomeText) {
@@ -797,8 +809,8 @@
     close() {
       if (this.backdrop) this.backdrop.remove();
       this.backdrop = null;
-      this.diceBox = null;
-      this.image = null;
+      this.diceBoxes = [];
+      this.images = [];
       this.status = null;
       this.result = null;
     }
@@ -1044,6 +1056,21 @@
       });
     }
 
+    showAttributeChange({ name, requested, before, after, min, max }) {
+      const delta = after - before;
+      let title = delta > 0 ? "属性提升" : "属性下降";
+      let label = `${name} ${delta > 0 ? "+" : ""}${delta}`;
+      let detail = `${before} → ${after}`;
+      if (delta === 0) {
+        title = "属性未变化";
+        label = name;
+        detail = requested > 0 && max !== null && before >= max
+          ? `已达上限 ${max}`
+          : `已达下限 ${min}`;
+      }
+      this.showCue({ kind: "attribute", title, label, detail });
+    }
+
     showCue({ kind = "item", title = "获得物品", label = "", image = null, detail = "" } = {}) {
       if (!this.cueLayer) return;
       const card = document.createElement("div");
@@ -1058,7 +1085,7 @@
         img.alt = "";
         icon.append(img);
       } else {
-        icon.textContent = "ITEM";
+        icon.textContent = kind === "attribute" ? "STAT" : "ITEM";
       }
 
       const content = document.createElement("div");

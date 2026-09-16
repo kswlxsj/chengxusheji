@@ -17,7 +17,7 @@
           "description": { "type": "string" },
           "initial": { "type": "integer" },
           "min": { "type": "integer" },
-          "max": { "type": "integer" }
+          "max": { "type": ["integer", "null"] }
         },
         "additionalProperties": false
       }

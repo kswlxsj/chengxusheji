@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.3.0**，数据格式版本 **3**（`meta.json.formatVersion`），存档版本 **3**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.4.0**，数据格式版本 **4**（`meta.json.formatVersion`），存档版本 **4**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -124,7 +124,7 @@
 
 | 字段 | 类型 | 用法 |
 | --- | --- | --- |
-| `formatVersion` | `3` | 当前数据协议版本，只能为 `3`。 |
+| `formatVersion` | `4` | 当前数据协议版本，只能为 `4`。 |
 | `title` | 非空字符串 | 主界面标题。 |
 | `coverImage` | 非空字符串 | 封面路径，建议 16:9；界面以 `object-fit: cover` 填满游戏区域。 |
 | `startEvent` | 事件 ID | 完成属性分配后自动播放。 |
@@ -209,7 +209,7 @@
 | `dialogue` | `text` | `speaker`, `portrait`, `speed` | 流式显示并等待推进；`portrait` 填相对 `Game/` 的立绘路径（如 `assets/Image/Portrait/player-scared.png`），省略时会按常用说话人自动匹配，旁白不显示立绘；`speed` 为每字符毫秒数，默认 `28`。`text` 会按 `。！？!?` 和空行自动拆分，每句占一个对话框、各等待一次推进。 |
 | `inspect` | `title`、`text`，或 `item` | `image` | 调查并等待玩家关闭。给出 `item`（已注册物品 ID）时，引擎自动取名称/说明/图片作默认内容，并使用压暗完整游戏画面的物品全屏展示；`title`/`text`/`image` 可覆盖默认值。未给出 `item` 时仍使用普通场景调查窗口，且必须直接提供 `title` 与 `text`。 |
 | `choice` | `prompt`, `options` | 每项可有 `when` | 每项含 `label`、`next`；过滤后无选项会报错回滚。 |
-| `check` | `dice` | `outcomes`, `checkId` | 委托 `src/dice.js` 注册的检定函数执行（函数只返回结果下标）；有 `outcomes` 时跳 `outcomes[下标]`，省略/为空 = 纯副作用、事件继续。每个检定最多实际执行两次；第一次结果为下标 `0`（成功）后锁定，第一次失败才允许第二次。 |
+| `check` | `dice` | `outcomes`, `checkId`, `criticalSuccess`, `criticalFailure` | 委托 `src/dice.js` 注册函数执行；普通结果按 `outcomes` 跳转，大成功/大失败优先进入可选极端分支，未配置则回落普通成败。每个检定最多实际执行两次；首次成功后锁定。 |
 | `changeScene` | `scene` | — | 关闭对话，等待背景及可见贴图就绪，检查暂停/取消后提交场景，再执行下一句。 |
 | `setFlag` | `key`, `value` | — | 写入任意 JSON 值；条件会将其转成布尔值。 |
 | `conditionalJump` | `when`, `next` | — | 条件成立时立即结束当前事件并进入 `next`，不成立则继续执行本事件后续动作（常用于按旗标/物品选择剧情变体，替代把分支拆成一整棵事件树）。 |
@@ -313,7 +313,7 @@
 
 ### attributes.json
 
-`attributes.json` 根对象包含非负整数 `totalPoints` 和非空 `attributes`。属性必填 `id/name/initial/min/max`，可选 `description`；数值必须是整数且 `min <= initial <= max`。全部 `max - initial` 的总和必须不小于 `totalPoints`。
+`attributes.json` 根对象包含非负整数 `totalPoints` 和非空 `attributes`。属性必填 `id/name/initial/min/max`，可选 `description`；`initial/min` 为整数且 `min <= initial`，`max` 为整数或 `null`（无上限）。创建分配以下限 `initial` 起步，运行期钳制使用 `min/max`。
 
 ```json
 {
@@ -366,7 +366,7 @@
 
 | 接口 | 用法 |
 | --- | --- |
-| `TrainGame.version` | 当前运行时版本 `0.3.0`。 |
+| `TrainGame.version` | 当前运行时版本 `0.4.0`。 |
 | `deepClone(value)` | JSON 深拷贝；不适用函数、DOM 或循环引用。 |
 | `delay(ms)` | 普通延迟；事件演出应改用 `context.wait()`。 |
 | `evaluateCondition(condition, state)` | 计算通用条件；未知条件警告并返回 `false`。 |
@@ -461,11 +461,11 @@ const saves = new TrainGame.SaveManager(state);
 | --- | --- |
 | `listSlots()` | 返回固定三个槽位的占用、兼容性、保存时间、场景和 SAN 摘要。 |
 | `hasSave(slot)` | 判断指定的 `1..3` 槽位是否存在数据。 |
-| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 3, savedAt, state }`；属性未分配完时拒绝。 |
+| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 4, savedAt, state }`；属性未分配完时拒绝。 |
 | `load(slot)` | 空槽返回 `false`；不兼容时抛错；成功恢复并返回 `true`。 |
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
-默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽 `train-game-save-slot-1` 至 `slot-3` 与旧单槽键 `train-game-save-v1` 均不迁移也不删除；兼容判断仍以数据内的 `saveVersion: 3` 为准。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
+默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽与旧单槽键均不迁移也不删除；兼容判断以数据内的 `saveVersion: 4` 为准，v3存档明确提示不兼容。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
 
 `SaveManager` 本身不做任何交互确认：覆盖已占用槽位与删除存档的二次确认属于页面职责，由存档页在调用前经 `TrainGame.ConfirmDialog` 询问（见下一节）。
 
@@ -583,22 +583,24 @@ engine.registerCustomAction("shakeWindow", async (params, context) => {
 ```javascript
 // dice.js 内新增/修改检定的形态；编号必须全局唯一、长期稳定
 registerDice("my_custom_roll_01", async (context, outcomes) => {
-  const score = context.state.getAttribute("insight") + 1 + Math.floor(Math.random() * 6);
-  context.ui.toast(`检定骰点：${score}`);
-  return score >= 11 ? 0 : 1; // 对应 outcomes[0] / outcomes[1]
+  const rolls = [1, 1].map(() => 1 + Math.floor(Math.random() * 6));
+  const success = rolls[0] + rolls[1] + context.state.getAttribute("insight") >= 14;
+  if (rolls.every((value) => value === 6)) return { index: 0, grade: "criticalSuccess" };
+  if (rolls.every((value) => value === 1)) return { index: 1, grade: "criticalFailure" };
+  return success ? 0 : 1;
 });
 ```
 
 | 约定 | 说明 |
 | --- | --- |
-| 签名 | `async (context, outcomes) => 非负整数下标` |
-| context | 与[自定义动作上下文](#自定义动作上下文)一致（`state`/`scene`/`ui`/`engine`/`items`/`attributes`/`skills`/`wait`/`throwIfCancelled`） |
-| 返回值 | 引擎校验 `0 <= 下标 < outcomes.length` 后跳 `outcomes[下标]`；越界或非整数报错并回滚本事件链；`outcomes` 省略/为空时返回值被忽略（纯副作用，事件继续） |
-| 记录 | 引擎每次执行后自动合并写入 `state.checkResults[dice] = { dice, outcome }`（无分支时 `outcome: null`）；函数可先写补充字段（如 `checkResults[dice] = { 成功: true }`）供排查/复用 |
+| 签名 | 异步函数，返回非负整数下标，或返回 `{ index, grade }` |
+| context | 与[自定义动作上下文](#自定义动作上下文)一致，并额外提供会触发顶部提示的 `modifyAttribute(attribute, amount)` |
+| 返回值 | 普通结果返回下标；极端结果返回 `{ index, grade: "criticalSuccess" | "criticalFailure" }`。极端分支未配置时自动回落到 `outcomes[index]`。 |
+| 记录 | 引擎写入 `state.checkResults[dice] = { dice, outcome, grade }`；无极端等级时 `grade: null`。 |
 | 次数 | 每个检定最多实际执行两次；有 `outcomes` 时下标 `0` 视为成功，第一次成功后锁定，第一次失败才允许第二次，第二次后无论成败都不再掷。 |
-| 规则内状态 | 一律经 `context.state` 接口修改（含扣损）；等待用 `context.wait()`、写状态前用 `context.throwIfCancelled()`，与自定义动作同一套安全边界 |
+| 规则内状态 | 属性增减一律经 `context.modifyAttribute()`，以保证边界钳制和顶部提示；等待用 `context.wait()`。 |
 
-建议：需要重复使用的低层能力（标准 1d6 属性检定、SAN 扣损掷骰等）做成 dice.js 内部的工厂函数，具体检定条目一行引用，保持条目独立可读。新增检定 = 改 `src/dice.js`（追加条目）+ 在 `events.json` 引用其编号与 `outcomes`；编译器通过 node:vm 加载 `src/dice.js` 校验引用与注册唯一性，运行时对未注册编号同样报错回滚。
+建议：标准2d6属性检定、固定单颗d6 SAN检定等低层能力做成工厂函数。标准检定为2d6＋属性 ≥ 14，双6/双1为大成功/大失败；SAN检定固定4—6成功，不读取当前SAN。
 
 项目内置的 `sanCheck(attribute, passLoss, failLoss)` 同样遵守分层约定：它只显示骰子、结算 SAN 损失并返回 `0=成功 / 1=失败`，不得调用对白 UI。成功/失败后的身体反应、线索理解等叙事必须注册为事件，再通过 `check.outcomes` 路由；若扣损使 SAN 归零，引擎会在 check 动作结束时优先进入终止流程，不会继续跳转结果事件。
 
@@ -730,6 +732,7 @@ class NoticeWindow extends TrainGame.GameWindow {
 | `ui.dialog.showLine(action)` | 显示一句对话并等待推进；事件引擎会先把 `dialogue.text` 拆成单句再逐次调用。 |
 | `handleAdvance()` / `isAwaitingAdvance()` | 补全或结束本句 / 判断能否推进。 |
 | `ui.attributeAllocation.choose(definitions, totalPoints)` | 返回属性对象或 `null`。 |
+| `ui.showAttributeChange(payload)` | 在顶部显示属性实际增减与变化前后值；达到边界时说明未变化原因。 |
 | `ui.choice.choose(prompt, options)` | 返回选项对象或 `null`。 |
 | `ui.inspect.show({ title, text, image })` | 显示普通场景调查窗口并等待关闭。 |
 | `ui.itemInspect.show({ title, text, image })` | 压暗完整游戏舞台，全屏展示物品图片、名称和说明并等待关闭。 |
@@ -922,7 +925,7 @@ game.saves.listSlots()
 5. **测试与文档**：按 `tools/test-runtime.mjs` 的音效段落补充回归（播放参数、不阻塞、`await` 等待、暂停停止、取消中止、未注册编号），运行 `npm run check`，并按“变更协议时的联动清单”同步本文档与 `Game/README.md`。
 6. **浏览器验收**：进门时音效应与对话同时可闻；暂停立刻静音且恢复不补播；事件中途返回主界面无残留声音与控制台报错。
 
-> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景背景音共 30 个音效。检定音由检定窗口自动播放，场景背景音由 `BackgroundAudioManager` 按 `scenes.json` 绑定播放，其余音效在对应事件的 `sound` 动作中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
+> `data/audio.json` 当前登记检定、列车背景、车门、搜索、剧情演出和场景背景音共 33 个音效。检定音由检定窗口自动播放，场景背景音由 `BackgroundAudioManager` 按 `scenes.json` 绑定播放，其余音效在对应事件的 `sound` 动作中触发。剧情里的「（音效：…）」占位仍按转换规则登记为待办。
 
 ## 相关文档
 

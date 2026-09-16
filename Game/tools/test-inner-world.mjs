@@ -109,6 +109,28 @@ await game.play("E_501");
 assert.equal(game.state.sceneId, "carriage_02", "正式进过里世界后推门直接走主线");
 assert.equal(game.trace.some(t => t.scene === "carriage_inner_01"), false);
 
+// 现实乘务员进入里世界时临时消失；早退与最终出口都会恢复，只有最终出口经过专用 SAN 检定。
+game = fixture({ carried_crew: true });
+await game.play("E_501");
+assert.equal(game.state.flags.carried_crew, false);
+assert.equal(game.state.flags.crew_waiting_outside_inner_world, true);
+assert.equal(game.trace.some(t => t.text === "你身边的乘务员不见了，奇怪，刚刚还在这里的。"), true);
+game.trace.length = 0;
+await game.play("E_502_CARRIAGE03");
+assert.equal(game.state.flags.carried_crew, true);
+assert.equal(game.state.flags.crew_waiting_outside_inner_world, false);
+assert.equal(game.trace.some(t => t.text === "她依然在你身边，对刚刚的一切似乎并不知情。"), true);
+game.trace.length = 0;
+await game.play("E_501");
+assert.equal(game.state.flags.carried_crew, false, "重新进入里世界时现实乘务员应再次消失");
+assert.equal(game.state.flags.crew_waiting_outside_inner_world, true);
+
+game = fixture({ crew_waiting_outside_inner_world: true }, [], "carriage_02");
+await game.play("E_524_DONE");
+assert.equal(game.state.flags.carried_crew, true);
+assert.equal(game.state.flags.crew_waiting_outside_inner_world, false);
+assert.equal(game.trace.some(t => t.text === "她依然在你身边，对刚刚的一切似乎并不知情。"), true);
+
 // 空车厢左门：首次点击做一次 10%/60%/30% 静默判定，此后重复调查一律被锁上并留在空车厢；
 // 到过伪4（inner_world_entered）后该门解锁，改为磨损门描写 → 真实2号车厢。
 for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_01"], [0.9, "carriage_03"]]) {
@@ -454,8 +476,12 @@ for (const removed of [
   assert.equal(events.some(e => e.id === removed), false, `${removed} 已删除，不得残留`);
 }
 // 里世界出口接回主剧本：E_524 回到真2号后由 E_025 提供喘息段，播完停下等玩家点 Clicker。
-assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_025");
-assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_025");
+assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_524_SAN_CHECK");
+assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_524_SAN_CHECK");
+assert.deepEqual(events.find(e => e.id === "E_524_SAN_CHECK").actions, [
+  { type: "check", dice: "ev524_exit_san_01" }
+]);
+assert.equal(events.find(e => e.id === "E_524_SAN_CHECK").next, "E_025");
 assert.equal(events.find(e => e.id === "E_025").next, undefined);
 assert.equal(events.find(e => e.id === "E_025_CARRIED").next, undefined);
 // 里世界的乘务员分支读死亡状态：crew_met 在必经路径上恒为 true，只有 crew_04_dead 能区分剧本两条线。

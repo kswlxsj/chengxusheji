@@ -2427,6 +2427,8 @@ body.home-op-active .home-page .auth-user-status {
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .72));
 }
 
+.dice-row { display: flex; justify-content: center; gap: clamp(18px, 4vw, 48px); }
+
 .dice-box img {
   display: block;
   width: 100%;
@@ -2478,6 +2480,8 @@ body.home-op-active .home-page .auth-user-status {
 
 .check-result-panel.success { color: #7aff96; }
 .check-result-panel.fail { color: #ff7c7c; }
+.check-result-panel.criticalSuccess { color: #ffe77a; text-shadow: 0 0 14px rgba(255, 231, 122, .7); }
+.check-result-panel.criticalFailure { color: #c94b4b; text-shadow: 0 0 14px rgba(128, 22, 22, .72); }
 
 .attribute-allocation-backdrop { padding: 4%; }
 .attribute-allocation-window {

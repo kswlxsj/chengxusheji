@@ -1,8 +1,8 @@
 (function (Game) {
   "use strict";
 
-  // v3：检定协议改为 dice.js 编号 + outcomes，事件 id 全面重命名，旧 v2 存档不兼容。
-  const SAVE_VERSION = 3;
+  // v4：属性点数、无上限 SAN 与检定结果协议改变，旧 v3 存档不兼容。
+  const SAVE_VERSION = 4;
   const operators = {
     eq: (left, right) => left === right,
     ne: (left, right) => left !== right,
@@ -111,7 +111,8 @@
       this.validateRegisteredKeys(clean.attributes, this.attributeDefinitions, "属性");
       for (const [id, value] of Object.entries(clean.attributes)) {
         const definition = this.attributeDefinitions.get(id);
-        if (!Number.isInteger(value) || value < definition.min || value > definition.max) {
+        if (!Number.isInteger(value) || value < definition.min
+          || (definition.max !== null && value > definition.max)) {
           throw new TypeError(`存档属性 ${id} 超出注册范围`);
         }
       }
@@ -176,7 +177,8 @@
     setAttribute(attributeId, value) {
       const definition = this.requireDefinition(this.attributeDefinitions, attributeId, "属性");
       if (!Number.isInteger(value)) throw new TypeError(`属性 ${attributeId} 只能设置为整数`);
-      const next = Math.max(definition.min, Math.min(definition.max, value));
+      const upperBound = definition.max === null ? value : Math.min(definition.max, value);
+      const next = Math.max(definition.min, upperBound);
       if (this.attributes[attributeId] === next) return next;
       this.attributes[attributeId] = next;
       this.reevaluateSkillsFor(attributeId);
@@ -195,7 +197,8 @@
       let spent = 0;
       for (const [id, definition] of this.attributeDefinitions) {
         const value = values[id];
-        if (!Number.isInteger(value) || value < definition.initial || value > definition.max) {
+        if (!Number.isInteger(value) || value < definition.initial
+          || (definition.max !== null && value > definition.max)) {
           throw new RangeError(`属性 ${id} 的分配结果无效`);
         }
         spent += value - definition.initial;

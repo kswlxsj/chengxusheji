@@ -1,6 +1,6 @@
 window.GAME_DATA = {
   "meta": {
-    "formatVersion": 3,
+    "formatVersion": 4,
     "title": "常暗之厢",
     "coverImage": "assets/Image/Ui/cover-placeholder.svg",
     "startEvent": "E_001",
@@ -504,7 +504,7 @@ window.GAME_DATA = {
             "height": 100
           },
           "zIndex": 12,
-          "clickEvent": "E_05_JUNK_A"
+          "clickEvent": "E_05_JUNK_B"
         },
         {
           "id": "tool_clutter_05",
@@ -1954,6 +1954,11 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你踉跄着扶住门框，终于还是呕吐了出来。接连的痉挛让你几乎无法呼吸，过了好一会儿才重新抬起头。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "constitution",
+          "amount": -1
         }
       ]
     },
@@ -2998,6 +3003,11 @@ window.GAME_DATA = {
           "item": "newspaper"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_newspaper",
+          "value": true
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "flag": "carriage_05_newspaper_flashlight",
@@ -3072,6 +3082,70 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
+            "all": [
+              {
+                "flag": "carriage_05_inspected_clutter_a",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_b",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_tools",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_newspaper",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_c",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_d",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_05_all_inspected_rewarded",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_05_ALL_INSPECTED_REWARD_NEWSPAPER"
+        }
+      ],
+      "next": "E_011_AFTER_CONTINUE"
+    },
+    {
+      "id": "E_05_ALL_INSPECTED_REWARD_NEWSPAPER",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_05_all_inspected_rewarded",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "你把车厢里散落的物品逐一检查完毕，混乱的细节终于在脑中连成了线索。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "insight",
+          "amount": 1
+        }
+      ],
+      "next": "E_011_AFTER_CONTINUE"
+    },
+    {
+      "id": "E_011_AFTER_CONTINUE",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
             "flag": "ev008_scouting_ok",
             "equals": true
           },
@@ -3112,7 +3186,7 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev011_san_01",
+          "dice": "ev012_san_01",
           "outcomes": [
             "E_012_SAN_S",
             "E_012_SAN_F"
@@ -5587,8 +5661,14 @@ window.GAME_DATA = {
           "patch": {
             "hidden": true
           }
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_tools",
+          "value": true
         }
-      ]
+      ],
+      "next": "E_05_CHECK_ALL"
     },
     {
       "id": "E_05_JUNK_A",
@@ -5600,8 +5680,33 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你仔细翻过，仍然只是一堆普通杂物。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_clutter_a",
+          "value": true
         }
-      ]
+      ],
+      "next": "E_05_CHECK_ALL"
+    },
+    {
+      "id": "E_05_JUNK_B",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你伸手翻动另一边散落的提包和衣物。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你逐层检查过，里面同样没有值得带走的东西。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_clutter_b",
+          "value": true
+        }
+      ],
+      "next": "E_05_CHECK_ALL"
     },
     {
       "id": "E_05_JUNK_LEFT",
@@ -5616,8 +5721,14 @@ window.GAME_DATA = {
               "你把最上面的袋子挪开，下面只有落满灰尘的地板。"
             ]
           }
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_clutter_c",
+          "value": true
         }
-      ]
+      ],
+      "next": "E_05_CHECK_ALL"
     },
     {
       "id": "E_05_JUNK_RIGHT",
@@ -5632,6 +5743,74 @@ window.GAME_DATA = {
               "你试着提起其中一袋，里面的东西轻轻晃动，没有特别之处。"
             ]
           }
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_05_inspected_clutter_d",
+          "value": true
+        }
+      ],
+      "next": "E_05_CHECK_ALL"
+    },
+    {
+      "id": "E_05_CHECK_ALL",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
+            "all": [
+              {
+                "flag": "carriage_05_inspected_clutter_a",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_b",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_tools",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_newspaper",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_c",
+                "equals": true
+              },
+              {
+                "flag": "carriage_05_inspected_clutter_d",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_05_all_inspected_rewarded",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "next": "E_05_ALL_INSPECTED_REWARD"
+        }
+      ]
+    },
+    {
+      "id": "E_05_ALL_INSPECTED_REWARD",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_05_all_inspected_rewarded",
+          "value": true
+        },
+        {
+          "type": "dialogue",
+          "text": "你把车厢里散落的物品逐一检查完毕，混乱的细节终于在脑中连成了线索。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "insight",
+          "amount": 1
         }
       ]
     },
@@ -5935,6 +6114,40 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
+            "flag": "carried_crew",
+            "equals": true
+          },
+          "next": "E_501_CREW_ENTRY"
+        }
+      ],
+      "next": "E_501_INTRO_BODY"
+    },
+    {
+      "id": "E_501_CREW_ENTRY",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "crew_waiting_outside_inner_world",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "carried_crew",
+          "value": false
+        },
+        {
+          "type": "dialogue",
+          "text": "你身边的乘务员不见了，奇怪，刚刚还在这里的。"
+        }
+      ],
+      "next": "E_501_INTRO_BODY"
+    },
+    {
+      "id": "E_501_INTRO_BODY",
+      "actions": [
+        {
+          "type": "conditionalJump",
+          "when": {
             "flag": "ev502_intro_seen",
             "equals": true
           },
@@ -6097,6 +6310,33 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "门外是3号车厢，灯光昏黄，一切如常。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_waiting_outside_inner_world",
+            "equals": true
+          },
+          "next": "E_502_CARRIAGE03_CREW"
+        }
+      ]
+    },
+    {
+      "id": "E_502_CARRIAGE03_CREW",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carried_crew",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_waiting_outside_inner_world",
+          "value": false
+        },
+        {
+          "type": "dialogue",
+          "text": "她依然在你身边，对刚刚的一切似乎并不知情。"
         }
       ]
     },
@@ -7639,20 +7879,40 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "flag": "carried_crew",
+            "flag": "crew_waiting_outside_inner_world",
             "equals": true
           },
           "next": "E_524_CREW"
         }
       ],
-      "next": "E_025"
+      "next": "E_524_SAN_CHECK"
     },
     {
       "id": "E_524_CREW",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "carried_crew",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_waiting_outside_inner_world",
+          "value": false
+        },
+        {
           "type": "dialogue",
-          "text": "乘务员似乎并不知道这一切。"
+          "text": "她依然在你身边，对刚刚的一切似乎并不知情。"
+        }
+      ],
+      "next": "E_524_SAN_CHECK"
+    },
+    {
+      "id": "E_524_SAN_CHECK",
+      "actions": [
+        {
+          "type": "check",
+          "dice": "ev524_exit_san_01"
         }
       ],
       "next": "E_025"
@@ -7724,14 +7984,14 @@ window.GAME_DATA = {
     }
   ],
   "attributes": {
-    "totalPoints": 20,
+    "totalPoints": 22,
     "attributes": [
       {
         "id": "constitution",
         "name": "体质",
         "description": "衡量身体力量、耐力、行动和负重能力。",
         "initial": 3,
-        "min": 3,
+        "min": 1,
         "max": 10
       },
       {
@@ -7739,7 +7999,7 @@ window.GAME_DATA = {
         "name": "教育",
         "description": "衡量知识储备、专业训练和学习能力。",
         "initial": 3,
-        "min": 3,
+        "min": 1,
         "max": 10
       },
       {
@@ -7747,16 +8007,16 @@ window.GAME_DATA = {
         "name": "灵感",
         "description": "衡量观察异常、联想线索和理解现象的能力。",
         "initial": 3,
-        "min": 3,
+        "min": 1,
         "max": 10
       },
       {
         "id": "san",
         "name": "SAN",
         "description": "衡量角色承受精神冲击的能力，游戏过程中可降低至0。",
-        "initial": 5,
+        "initial": 1,
         "min": 0,
-        "max": 10
+        "max": null
       }
     ]
   },

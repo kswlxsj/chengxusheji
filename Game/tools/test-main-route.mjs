@@ -106,6 +106,12 @@ function assertCutBefore(game, fromSceneId, toSceneId) {
 
 // ---------- 结构接线：点击目标与跳转目标 ----------
 
+assert.equal(
+  actionsOf("E_012_S").find((action) => action.type === "check")?.dice,
+  "ev012_san_01",
+  "初见被啃食的6号车厢必须使用按骰点分布损失的专用 SAN 检定"
+);
+
 const itemById = new Map(items.map((item) => [item.id, item]));
 assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.png");
 assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.png");
@@ -148,6 +154,8 @@ for (const id of ["window_05_left", "window_05_right"]) {
 }
 assert.deepEqual(objectOf("carriage_05", "window_05_left").position, { x: 19, y: 33, width: 18, height: 15 }, "5号左窗热点应收在玻璃内部，不得延伸到窗框或座椅");
 assert.deepEqual(objectOf("carriage_05", "window_05_right").position, { x: 61, y: 33, width: 18, height: 15 }, "5号右窗热点应收在玻璃内部，不得延伸到窗框或座椅");
+assert.equal(objectOf("carriage_05", "clutter_05_a").clickEvent, "E_05_JUNK_A");
+assert.equal(objectOf("carriage_05", "clutter_05_b").clickEvent, "E_05_JUNK_B");
 const carriage05LeftJunk = objectOf("carriage_05", "clutter_05_c");
 assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.png", "5号左侧杂物应对应左边的白色袋堆");
 assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物应使用独立随机对白");
@@ -535,8 +543,9 @@ assert.match(mainSource, /unlockEnding\?\.\(reason\)[\s\S]*reason === "lost"/, "
 assert.match(settingsSource, /if \(unlocked\)[\s\S]*createElement\("img"\)[\s\S]*else/, "锁定卡片不得创建真实图片元素");
 
 // 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
-assert.equal(eventById.get("E_524_DONE").next, "E_025");
-assert.equal(eventById.get("E_524_CREW").next, "E_025");
+assert.equal(eventById.get("E_524_DONE").next, "E_524_SAN_CHECK");
+assert.equal(eventById.get("E_524_CREW").next, "E_524_SAN_CHECK");
+assert.equal(eventById.get("E_524_SAN_CHECK").next, "E_025");
 assert.equal(eventById.get("E_025").next, undefined);
 assert.equal(eventById.get("E_025_CARRIED").next, undefined);
 
@@ -587,6 +596,27 @@ assert.equal(frontDoorOption.next, "E_031");
 assert.deepEqual(frontDoorOption.when, { flag: "carriage_02_passed", equals: true });
 
 // ---------- 逐句场景轨迹 ----------
+
+const allCarriage05Inspected = {
+  carriage_05_inspected_clutter_a: true,
+  carriage_05_inspected_clutter_b: true,
+  carriage_05_inspected_tools: true,
+  carriage_05_inspected_newspaper: true,
+  carriage_05_inspected_clutter_c: true,
+  carriage_05_inspected_clutter_d: true
+};
+let rewardGame = fixture({ sceneId: "carriage_05", flags: allCarriage05Inspected });
+await rewardGame.play("E_05_CHECK_ALL");
+assert.equal(rewardGame.state.flags.carriage_05_all_inspected_rewarded, true);
+assert.equal(rewardGame.state.getAttribute("insight"), 4, "六个物件齐全后应奖励灵感+1");
+await rewardGame.play("E_05_CHECK_ALL");
+assert.equal(rewardGame.state.getAttribute("insight"), 4, "完整调查奖励只能获得一次");
+rewardGame = fixture({
+  sceneId: "carriage_05",
+  flags: { ...allCarriage05Inspected, carriage_05_inspected_clutter_d: false }
+});
+await rewardGame.play("E_05_CHECK_ALL");
+assert.equal(rewardGame.state.flags.carriage_05_all_inspected_rewarded, undefined, "六个物件缺一不得奖励");
 
 // 5号右门：只切景、只说一句过门话，绝不触发医学检定。
 let game = fixture({ sceneId: "carriage_05", inventory: ["newspaper"] });

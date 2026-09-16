@@ -1,7 +1,7 @@
 {
   "name": "train-narrative-webgame",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "scripts": {
     "compile": "node tools/compile-data.mjs",
     "test": "node tools/test-runtime.mjs && node tools/test-inner-world.mjs && node tools/test-main-route.mjs && node tools/test-resource-timeout.mjs",

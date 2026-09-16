@@ -2,7 +2,7 @@
   "use strict";
 
   // 检定注册表：游戏内所有检定的唯一索引。
-  // - 每个检定是一个独立的可编程函数，签名：async (context, outcomes) => 非负整数下标。
+  // - 每个检定返回非负整数下标，或 { index, grade }；grade 用于可选大成功/大失败分支。
   // - context 与自定义动作一致（state/ui/items/attributes/skills/wait/throwIfCancelled 等）。
   // - outcomes 为事件里传来的结果事件列表；函数只返回列表下标（0..outcomes.length-1），
   //   由事件引擎校验后跳转；outcomes 为空时函数只做副作用、返回值被忽略。
@@ -13,7 +13,7 @@
   }
   Game.Dice = dice;
 
-  const DEFAULT_THRESHOLD = 11;
+  const DEFAULT_THRESHOLD = 14;
 
   function rollDie(sides) {
     return Math.floor(Math.random() * Math.max(1, sides)) + 1;
@@ -36,55 +36,63 @@
 
   // 先显示算式，过一会再显示“成功/失败”。
   // 由 DiceRollWindow.roll 在同一窗口内完成，动画只播一遍。
-  async function showDiceRollAnimation(context, rollValue, success, detailText) {
+  async function showDiceRollAnimation(context, rollValues, success, detailText, grade = null, outcomeText = null) {
     const diceWindow = context.ui?.dice;
     if (diceWindow && typeof diceWindow.roll === "function") {
       const wait = typeof context.wait === "function" ? context.wait : (milliseconds) => Game.delay(milliseconds);
       await diceWindow.roll({
-        value: rollValue,
+        values: Array.isArray(rollValues) ? rollValues : null,
+        value: Number.isInteger(rollValues) ? rollValues : null,
         success,
+        grade,
         text: detailText,
-        outcomeText: success ? "成功" : "失败",
+        outcomeText: outcomeText || (grade === "criticalSuccess"
+          ? "大成功"
+          : grade === "criticalFailure" ? "大失败" : success ? "成功" : "失败"),
         wait
       });
       return;
     }
     await context.ui.inspect.show({
-      title: success ? "检定成功" : "检定失败",
+      title: grade === "criticalSuccess" ? "检定大成功"
+        : grade === "criticalFailure" ? "检定大失败" : success ? "检定成功" : "检定失败",
       text: detailText
     });
   }
 
 
-  // 标准 d6 属性检定：掷出 + 属性值 >= 阈值（默认 11）即成功。
-  // 展示掷骰算式窗口（沿用旧内置 check 的玩家体验），返回 0=成功 / 1=失败。
+  // 标准 2d6 属性检定：骰点和 + 属性值 >= 14。双6必定大成功，双1必定大失败。
   function attrCheck(attribute, threshold = DEFAULT_THRESHOLD) {
     return async (context) => {
       const base = context.state.getAttribute(attribute);
-      const roll = rollDie(6);
-      const total = roll + base;
-      const success = total >= threshold;
-      const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${threshold}。`;
-      await showDiceRollAnimation(context, roll, success, detail);
-      return success ? 0 : 1;
+      const { rolls, total: rollTotal } = rollDice(2, 6);
+      const criticalSuccess = rolls.every((roll) => roll === 6);
+      const criticalFailure = rolls.every((roll) => roll === 1);
+      const success = criticalSuccess || (!criticalFailure && rollTotal + base >= threshold);
+      const grade = criticalSuccess ? "criticalSuccess" : criticalFailure ? "criticalFailure" : null;
+      const detail = `${attributeName(context, attribute)}：掷出 ${rolls.join(" + ")} + 属性 ${base} = ${rollTotal + base}\n需要达到 ${threshold}。`;
+      await showDiceRollAnimation(context, rolls, success, detail, grade);
+      return grade ? { index: success ? 0 : 1, grade } : success ? 0 : 1;
     };
   }
 
-  function sumAttrCheck(attributes, threshold = DEFAULT_THRESHOLD) {
+  function averageAttrCheck(attributes, threshold = 15) {
     return async (context) => {
       const values = attributes.map((attribute) => context.state.getAttribute(attribute));
-      const roll = rollDie(6);
-      const total = roll + values.reduce((sum, value) => sum + value, 0);
-      const success = total >= threshold;
+      const average = Math.floor(values.reduce((sum, value) => sum + value, 0) / values.length);
+      const { rolls, total: rollTotal } = rollDice(2, 6);
+      const criticalSuccess = rolls.every((roll) => roll === 6);
+      const criticalFailure = rolls.every((roll) => roll === 1);
+      const success = criticalSuccess || (!criticalFailure && rollTotal + average >= threshold);
+      const grade = criticalSuccess ? "criticalSuccess" : criticalFailure ? "criticalFailure" : null;
       const names = attributes.map((attribute) => attributeName(context, attribute)).join(" + ");
-      const detail = names + "：掷出 " + roll + " + 属性 " + values.join(" + ")
-        + " = " + total + "\n需要达到 " + threshold + "。";
-      await showDiceRollAnimation(context, roll, success, detail);
-      return success ? 0 : 1;
+      const detail = `${names}：平均值 ${average}（${values.join("、")}），掷出 ${rolls.join(" + ")}，合计 ${rollTotal + average}\n需要达到 ${threshold}。`;
+      await showDiceRollAnimation(context, rolls, success, detail, grade);
+      return grade ? { index: success ? 0 : 1, grade } : success ? 0 : 1;
     };
   }
 
-  // SAN 类检定：先按 d6 属性检定判成败，再按“成功扣 passLoss / 失败扣 failLoss”扣减。
+  // SAN 类检定固定按单颗 d6 判定：4~6 成功、1~3 失败，完全不读取当前 SAN。
   // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣，弹提示）。返回 0=成功 / 1=失败。
   function sanCheck(attribute, passLoss, failLoss) {
     const apply = (context, loss) => {
@@ -101,21 +109,41 @@
         expression = `${loss.count}d${loss.sides}${loss.bonus ? `+${loss.bonus}` : ""}`;
       }
       if (amount <= 0) return;
-      const before = context.state.getAttribute(attribute);
-      const after = context.state.modifyAttribute(attribute, -amount);
-      if (before === after) return;
-      if (Number.isInteger(loss)) return;
-      context.ui.toast(`${attributeName(context, attribute)} -${Math.abs(after - before)}（${expression}：${rolls.join("+")}）`);
+      context.modifyAttribute(attribute, -amount);
+      if (!Number.isInteger(loss) && expression) {
+        context.ui.toast(`${expression}：${rolls.join("+")}`);
+      }
     };
     return async (context) => {
-      const base = context.state.getAttribute(attribute);
       const roll = rollDie(6);
-      const total = roll + base;
-      const success = total >= DEFAULT_THRESHOLD;
-      const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
+      const success = roll >= 4;
+      const detail = `${attributeName(context, attribute)}检定：掷出 ${roll}\n需要达到 4。`;
       await showDiceRollAnimation(context, roll, success, detail);
       apply(context, success ? passLoss : failLoss);
       return success ? 0 : 1;
+    };
+  }
+
+  function sanLossByRoll(attribute) {
+    return async (context) => {
+      const roll = rollDie(6);
+      const loss = roll >= 4 ? 0 : 4 - roll;
+      const success = loss === 0;
+      const detail = `${attributeName(context, attribute)}检定：掷出 ${roll}\n${loss ? `损失 ${loss} 点` : "没有损失"}。`;
+      await showDiceRollAnimation(context, roll, success, detail);
+      if (loss) context.modifyAttribute(attribute, -loss);
+      return success ? 0 : 1;
+    };
+  }
+
+  function innerExitSanLoss(attribute) {
+    return async (context) => {
+      const roll = rollDie(6);
+      const loss = roll === 1 ? 2 : roll <= 4 ? 1 : 0;
+      const detail = `离开里世界：掷出 ${roll}\n${loss ? `${attributeName(context, attribute)} 损失 ${loss} 点` : `${attributeName(context, attribute)}没有损失`}。`;
+      await showDiceRollAnimation(context, roll, loss === 0, detail, null, loss ? `SAN -${loss}` : "SAN 未减少");
+      if (loss) context.modifyAttribute(attribute, -loss);
+      return loss === 0 ? 0 : 1;
     };
   }
 
@@ -128,7 +156,7 @@
   registerDice("ev011_insight_01", attrCheck("insight"));
   registerDice("ev013_education_01", attrCheck("education"));
   registerDice("ev020_education_01", attrCheck("education"));
-  registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"], 20));
+  registerDice("ev021_education_insight_01", averageAttrCheck(["education", "insight"], 15));
   registerDice("ev016_constitution_01", attrCheck("constitution"));
   registerDice("ev504_insight_01", attrCheck("insight"));
 
@@ -148,6 +176,8 @@
   // E_006A/B：只负责 SAN 判定与损失；结果叙事由 events.json 的 outcomes 路由。
   registerDice("ev006a_san_01", sanCheck("san", 0, 1));
   registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
+  registerDice("ev012_san_01", sanLossByRoll("san"));
+  registerDice("ev524_exit_san_01", innerExitSanLoss("san"));
 
   // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
   registerDice("ev014_negotiation_final_01", async (context) => {

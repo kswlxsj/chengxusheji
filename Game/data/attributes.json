@@ -1,12 +1,12 @@
 {
-  "totalPoints": 20,
+  "totalPoints": 22,
   "attributes": [
     {
       "id": "constitution",
       "name": "体质",
       "description": "衡量身体力量、耐力、行动和负重能力。",
       "initial": 3,
-      "min": 3,
+      "min": 1,
       "max": 10
     },
     {
@@ -14,7 +14,7 @@
       "name": "教育",
       "description": "衡量知识储备、专业训练和学习能力。",
       "initial": 3,
-      "min": 3,
+      "min": 1,
       "max": 10
     },
     {
@@ -22,16 +22,16 @@
       "name": "灵感",
       "description": "衡量观察异常、联想线索和理解现象的能力。",
       "initial": 3,
-      "min": 3,
+      "min": 1,
       "max": 10
     },
     {
       "id": "san",
       "name": "SAN",
       "description": "衡量角色承受精神冲击的能力，游戏过程中可降低至0。",
-      "initial": 5,
+      "initial": 1,
       "min": 0,
-      "max": 10
+      "max": null
     }
   ]
 }

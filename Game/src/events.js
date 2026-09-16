@@ -217,21 +217,35 @@
           : 0;
         const canRun = previousAttempts < MAX_CHECK_ATTEMPTS && previous?.success !== true;
         let index;
+        let grade = null;
 
         if (canRun) {
           const resolver = Game.Dice.get(action.dice);
-          index = await resolver(this.context(), outcomes);
+          const resolved = await resolver(this.context(), outcomes);
+          if (Number.isInteger(resolved)) {
+            index = resolved;
+          } else if (resolved && Number.isInteger(resolved.index)) {
+            index = resolved.index;
+            grade = resolved.grade || null;
+          } else {
+            index = resolved;
+          }
           if (hasBranch && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)) {
             throw new Error(`检定 ${action.dice} 返回了无效的结果编号：${index}`);
+          }
+          if (grade !== null && !["criticalSuccess", "criticalFailure"].includes(grade)) {
+            throw new Error(`检定 ${action.dice} 返回了无效的结果等级：${grade}`);
           }
           this.state.checkAttempts[checkKey] = {
             dice: action.dice,
             attempts: previousAttempts + 1,
             outcome: hasBranch ? index : null,
-            success: hasBranch && index === 0
+            success: hasBranch && index === 0,
+            grade
           };
         } else {
           index = previous?.outcome;
+          grade = previous?.grade || null;
           if (
             hasBranch
             && (!Number.isInteger(index) || index < 0 || index >= outcomes.length)
@@ -245,12 +259,15 @@
           this.state.checkResults[action.dice] = Object.assign(
             {},
             this.state.checkResults[action.dice],
-            { dice: action.dice, outcome: hasBranch ? index : null }
+            { dice: action.dice, outcome: hasBranch ? index : null, grade }
           );
           await this.onCheckCompleted(action, hasBranch ? index : null);
         }
         if (!hasBranch) return null;
-        return { next: outcomes[index], stop: true };
+        const criticalTarget = grade === "criticalSuccess"
+          ? action.criticalSuccess
+          : grade === "criticalFailure" ? action.criticalFailure : null;
+        return { next: criticalTarget || outcomes[index], stop: true };
       });
 
       this.registerAction("changeScene", async (action) => {
@@ -263,7 +280,7 @@
       });
 
       this.registerAction("modifyAttribute", async (action) => {
-        this.state.modifyAttribute(action.attribute, action.amount);
+        this.applyAttributeChange(action.attribute, action.amount);
       });
 
       this.registerAction("setSkill", async (action) => {
@@ -427,9 +444,25 @@
         items: this.items,
         attributes: this.state.attributeDefinitions,
         skills: this.state.skillDefinitions,
+        modifyAttribute: (attribute, amount) => this.applyAttributeChange(attribute, amount),
         wait: (milliseconds) => this.wait(milliseconds, run),
         throwIfCancelled: () => this.assertActive(run)
       };
+    }
+
+    applyAttributeChange(attribute, amount) {
+      const definition = this.state.attributeDefinitions.get(attribute);
+      const before = this.state.getAttribute(attribute);
+      const after = this.state.modifyAttribute(attribute, amount);
+      this.ui.showAttributeChange?.({
+        name: definition?.name || attribute,
+        requested: amount,
+        before,
+        after,
+        min: definition?.min,
+        max: definition?.max ?? null
+      });
+      return after;
     }
 
     // 执行单个动作的公共步骤：暂停等待 → 调处理器 → 校验运行仍有效 → 刷新状态 → 终止检查。
