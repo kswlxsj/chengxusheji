@@ -1,7 +1,7 @@
 window.GAME_DATA = {
   "meta": {
     "formatVersion": 3,
-    "title": "常暗之厢（框架演示）",
+    "title": "常暗之厢",
     "coverImage": "assets/Image/Ui/cover-placeholder.svg",
     "startEvent": "E_001",
     "initialScene": "carriage_06",
@@ -357,13 +357,19 @@ window.GAME_DATA = {
         {
           "id": "tool_clutter_05",
           "name": "倒下的背包",
-          "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
           "fullCanvas": true,
           "position": {
             "x": 0,
             "y": 0,
             "width": 100,
             "height": 100
+          },
+          "hitPosition": {
+            "x": 26.9,
+            "y": 49.1,
+            "width": 11.7,
+            "height": 12.5
           },
           "zIndex": 12,
           "clickEvent": "E_05_SEARCH_TOOLS",
@@ -611,10 +617,33 @@ window.GAME_DATA = {
     {
       "id": "carriage_03",
       "name": "3 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-03.png",
+      "background": "assets/Image/Scene/Background/carriage-03-full.png",
       "backgroundSound": {
         "sound": "train_ambient"
       },
+      "backgroundVariants": [
+        {
+          "image": "assets/Image/Scene/Background/carriage-03.png",
+          "visibleWhen": {
+            "flag": "carriage_03_bag_resolved",
+            "equals": true
+          }
+        },
+        {
+          "image": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+          "visibleWhen": {
+            "flag": "carriage_03_bag_exposed",
+            "equals": true
+          }
+        },
+        {
+          "image": "assets/Image/Scene/Background/carriage-03-halffull.png",
+          "visibleWhen": {
+            "flag": "carriage_03_bag_interacted",
+            "equals": true
+          }
+        }
+      ],
       "objects": [
         {
           "id": "door_03_to_04",
@@ -654,10 +683,10 @@ window.GAME_DATA = {
             "height": 100
           },
           "hitPosition": {
-            "x": 26,
-            "y": 50,
-            "width": 15,
-            "height": 12
+            "x": 63,
+            "y": 50.8,
+            "width": 7.7,
+            "height": 10.3
           },
           "zIndex": 12,
           "clickEvent": "E_017",
@@ -717,7 +746,42 @@ window.GAME_DATA = {
           "zIndex": 13,
           "clickEvent": "E_018_PHONE",
           "visibleWhen": {
-            "flag": "carriage_03_bag_interacted",
+            "all": [
+              {
+                "flag": "carriage_03_bag_interacted",
+                "equals": true
+              },
+              {
+                "not": {
+                  "flag": "carriage_03_bag_exposed",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_03_bag_resolved",
+                  "equals": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "forward_note_03",
+          "name": "写着前进提示的便签",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+          "fullCanvas": true,
+          "visualOnly": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "zIndex": 14,
+          "clickEvent": "E_022_ITEM_END",
+          "visibleWhen": {
+            "flag": "carriage_03_forward_note_visible",
             "equals": true
           }
         }
@@ -3061,6 +3125,10 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "all": [
@@ -3098,7 +3166,20 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你用应急割带器和撬杆清开行李，黑色背包终于露了出来。"
+          "text": "你用应急割带器和撬杆清开行李。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_03_bag_exposed",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
+          "type": "dialogue",
+          "text": "黑色背包终于露了出来。"
         }
       ],
       "next": "E_018_SEARCH_PHONE"
@@ -3798,6 +3879,15 @@ window.GAME_DATA = {
           "text": "你割断缠在行李上的带子，撬开压住通道的箱体。行李向两边塌落。"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_03_bag_exposed",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "dialogue",
           "text": "前门附近，黑色背包完整地露了出来——背带被整整齐齐地切断，切口平整。"
         }
@@ -3815,6 +3905,15 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你割断缠在行李上的带子，撬开压住通道的箱体。行李向两边塌落。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_03_bag_exposed",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
         },
         {
           "type": "dialogue",
@@ -3986,6 +4085,15 @@ window.GAME_DATA = {
           "text": "只有这四个字。"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_03_forward_note_visible",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "dialogue",
           "text": "随后，她的手指又碰到一张叠得整齐的便签。展开——\n\n「MOVE FORWARD」\n\n“这个字......”"
         },
@@ -3997,6 +4105,15 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n两张便签，字迹几乎一模一样。\n\n她看了很久，没有说话。"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_03_forward_note_visible",
+          "value": false
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
         }
       ],
       "next": "E_022_ITEM"
@@ -4021,8 +4138,26 @@ window.GAME_DATA = {
           "text": "你把它和记忆里她胸前那张对照：一样的照片，一样的编号。\n\n没有人为你解释。"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_03_forward_note_visible",
+          "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "dialogue",
           "text": "包里还有一张叠得整齐的便签：\n\n「MOVE FORWARD」\n\n你翻出6号车厢的便签，两张字迹几乎一模一样。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_03_forward_note_visible",
+          "value": false
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
         }
       ],
       "next": "E_022_ITEM"
@@ -4034,6 +4169,10 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carriage_03_bag_resolved",
           "value": true
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
         },
         {
           "type": "conditionalJump",
@@ -4200,7 +4339,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "灯，灭了。"
+          "text": "灯灭了。"
         },
         {
           "type": "setFlag",
@@ -6323,7 +6462,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "speaker": "乘务员",
+          "speaker": "？？？",
           "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "你找到钥匙了吗？"
         },

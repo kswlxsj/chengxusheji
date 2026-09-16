@@ -53,9 +53,9 @@ await game.play("E_023");
 assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
 // 「灯灭了」在最后一句之前生效：黑场句在黑场中显示，且离开3号时清除黑场旗标。
 assert.equal(
-  game.trace.find(t => t.text === "灯，灭了。")?.blackout,
+  game.trace.find(t => t.text === "灯灭了。")?.blackout,
   false,
-  "「灯，灭了。」这句仍在亮灯状态下显示"
+  "「灯灭了。」这句仍在亮灯状态下显示"
 );
 assert.equal(
   game.trace.find(t => t.text === "黑暗中，你摸到了通往2号车厢的门。")?.blackout,
@@ -446,7 +446,7 @@ assert.deepEqual(
 const loopActions = events.find(e => e.id === "E_023_LOOP").actions;
 const blackoutAt = loopActions.findIndex(a => a.type === "setFlag" && a.key === "carriage_03_blackout" && a.value === true);
 assert.ok(blackoutAt > 0, "E_023_LOOP 应在「灯灭了」之后置位黑场旗标");
-assert.equal(loopActions[blackoutAt - 1].text, "灯，灭了。");
+assert.equal(loopActions[blackoutAt - 1].text, "灯灭了。");
 assert.deepEqual(loopActions[blackoutAt + 1], { type: "custom", name: "refreshScene" }, "置位后必须刷新场景才能立刻变暗");
 assert.equal(loopActions[blackoutAt + 2].text, "黑暗中，你摸到了通往2号车厢的门。");
 assert.deepEqual(

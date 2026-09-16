@@ -9,7 +9,7 @@
 // - 里世界返程 E_524 回到真2号后接 E_025 喘息段；玩家点击场景里的 Clicker 后触发遭遇。
 // - 2号车厢 Clicker 指向怪物遭遇；先头车厢控制杆指向操作面板；潜行/对抗与背包瓶子接线正确。
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import vm from "node:vm";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -121,6 +121,73 @@ assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
+const carriage03 = sceneById.get("carriage_03");
+assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.png");
+assert.deepEqual(carriage03.backgroundVariants, [
+  {
+    image: "assets/Image/Scene/Background/carriage-03.png",
+    visibleWhen: { flag: "carriage_03_bag_resolved", equals: true }
+  },
+  {
+    image: "assets/Image/Scene/Background/carriage-03-onlybag.png",
+    visibleWhen: { flag: "carriage_03_bag_exposed", equals: true }
+  },
+  {
+    image: "assets/Image/Scene/Background/carriage-03-halffull.png",
+    visibleWhen: { flag: "carriage_03_bag_interacted", equals: true }
+  }
+], "3号背景应按清空、黑包露出、半清理的优先级覆盖满载底图");
+const blackBag03 = objectOf("carriage_03", "black_bag_03");
+assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.png");
+assert.deepEqual(blackBag03.hitPosition, { x: 63, y: 50.8, width: 7.7, height: 10.3 });
+assert.equal(
+  objectOf("carriage_03", "forward_note_03").image,
+  "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png"
+);
+assert.equal(
+  objectOf("carriage_05", "tool_clutter_05").image,
+  "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+  "5号倒下的背包不得继续复用3号黑包"
+);
+assert.equal(objectOf("carriage_07", "corpse_07").image, "assets/Image/Scene/StillLife/corpse-07.png");
+assert.equal(objectOf("carriage_07", "radio_07").image, "assets/Image/Scene/StillLife/radio-07.png");
+
+for (const asset of [
+  "carriage-03-full.png",
+  "carriage-03-halffull.png",
+  "carriage-03-onlybag.png",
+  "carriage-03.png"
+]) {
+  assert.ok((await stat(new URL(`../assets/Image/Scene/Background/${asset}`, import.meta.url))).size > 0);
+}
+for (const asset of [
+  "black-bag-03.png",
+  "carriage-05-03-clutter.png",
+  "carriage-05-03-forward-note.png",
+  "corpse-07.png",
+  "radio-07.png"
+]) {
+  assert.ok((await stat(new URL(`../assets/Image/Scene/StillLife/${asset}`, import.meta.url))).size > 0);
+}
+
+const refreshScene = { type: "custom", name: "refreshScene" };
+function assertFlagImmediatelyRefreshes(eventId, key, value = true) {
+  const actions = actionsOf(eventId);
+  const index = actions.findIndex((action) => (
+    action.type === "setFlag" && action.key === key && action.value === value
+  ));
+  assert.ok(index >= 0, `${eventId} 缺少 ${key}=${value} 旗标`);
+  assert.deepEqual(actions[index + 1], refreshScene, `${eventId} 的 ${key} 变更后应立即刷新场景`);
+}
+assertFlagImmediatelyRefreshes("E_017", "carriage_03_bag_interacted");
+assertFlagImmediatelyRefreshes("E_018_TOOLS_READY", "carriage_03_bag_exposed");
+assertFlagImmediatelyRefreshes("E_021", "carriage_03_bag_exposed");
+assertFlagImmediatelyRefreshes("E_021_CARRIED", "carriage_03_bag_exposed");
+assertFlagImmediatelyRefreshes("E_022_CARRIED", "carriage_03_forward_note_visible");
+assertFlagImmediatelyRefreshes("E_022_CARRIED", "carriage_03_forward_note_visible", false);
+assertFlagImmediatelyRefreshes("E_022_ALONE", "carriage_03_forward_note_visible");
+assertFlagImmediatelyRefreshes("E_022_ALONE", "carriage_03_forward_note_visible", false);
+assertFlagImmediatelyRefreshes("E_022_ITEM", "carriage_03_bag_resolved");
 const seatedCrewLeft = objectOf("carriage_04", "crew_04_seated_left");
 const seatedCrewRight = objectOf("carriage_04", "crew_04_seated_right");
 assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png");
