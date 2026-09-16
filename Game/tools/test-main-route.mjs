@@ -415,7 +415,15 @@ assert.equal(
 assert.equal(eventById.get("E_005_F").next, "E_005_DEPARTURE_B", "6号失败分支应直接进入7号流程");
 assert.equal(actionsOf("E_005_F").some((action) => action.type === "choice"), false, "6号失败分支不应再弹出选择");
 assert.equal(actionsOf("E_005")[1].next, "E_005_LOCKED", "6号调查未完成时应锁住7号门");
-assert.equal(actionsOf("E_GO_06_05")[0].next, "E_GO_06_05_LOCKED", "未看完7号深处时应锁住5号门");
+assert.deepEqual(
+  actionsOf("E_GO_06_05")[0],
+  {
+    type: "conditionalJump",
+    when: { not: { flag: "ev008_scouting_done", equals: true } },
+    next: "E_GO_06_05_LOCKED"
+  },
+  "6号调查未完成时应锁住5号门"
+);
 assert.equal(actionsOf("E_GO_05_04")[0].next, "E_GO_05_04_LOCKED", "未取得报纸时应锁住4号门");
 assert.equal(actionsOf("E_DOOR_04")[0].next, "E_DOOR_04_LOCKED", "未处理乘务员时应锁住3号门");
 assert.equal(actionsOf("E_023")[0].next, "E_023_LOCKED", "黑包流程未完成时应锁住3号到2号的门");
@@ -499,7 +507,7 @@ assert.equal(firstAidCheck.checkId, "crew_04_medical");
 assert.equal(secondFirstAidCheck.checkId, firstAidCheck.checkId, "两次医学检定必须共享同一个检定身份");
 assert.equal(actionsOf("E_013_F_RETRY").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted"), false);
 assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_failed" && action.value === true), true);
-assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_success"), false);
+assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_medical_success" && action.value === true), true);
 assert.equal(actionsOf("E_013_S").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
 assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && action.key === "crew_04_interacted" && action.value === true), true);
 for (const id of ["E_013_S", "E_020_SECOND_MEDICAL_S"]) {
@@ -709,7 +717,7 @@ assert.equal(
   "第一次失败后应允许第二次医学检定"
 );
 assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定成功后应结束调查");
-assert.equal(game.state.flags.crew_04_medical_success, undefined);
+assert.equal(game.state.flags.crew_04_medical_success, true);
 assert.equal(game.state.flags.crew_04_medical_failed, false);
 
 game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: 0 } });

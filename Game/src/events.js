@@ -43,6 +43,12 @@
   const SCENE_RESOURCE_TIMEOUT_MS = 20000;
   const MAX_CHECK_ATTEMPTS = 2;
   const DIALOGUE_TERMINATORS = new Set(["。", "！", "？", "!", "?"]);
+  const INNER_WORLD_LIVING_CONDUCTOR_EVENTS = new Set([
+    "E_516_VOICE",
+    "E_517_TALK",
+    "E_518",
+    "E_519_HASKEY"
+  ]);
   const DIALOGUE_TRAILING_MARKS = new Set([
     "\"", "'", "”", "’", "」", "』", "】", "）", ")", "》", "〉", "›", "»"
   ]);
@@ -172,9 +178,17 @@
               segmentDuration: action.audio.segmentDuration
             });
           }
+          const portrait = action.portrait
+            || (action.speaker === "？？？"
+              && INNER_WORLD_LIVING_CONDUCTOR_EVENTS.has(this.state.currentEventId)
+              && this.state.flags.crew_met === true
+              && this.state.flags.crew_04_medical_success === true
+              ? "assets/Image/Portrait/conductor.png"
+              : "");
           await this.ui.dialog.showLine({
             ...action,
             text,
+            portrait,
             onAdvance: () => this.stopAdvanceBoundVoices()
           });
         }
@@ -271,6 +285,16 @@
       });
 
       this.registerAction("changeScene", async (action) => {
+        // 6号车厢到5号车厢必须先完成7号车厢深处调查；保留运行时兜底，
+        // 防止旧存档、旧编译数据或其它事件直接绕过门禁切景。
+        if (
+          this.state.sceneId === "carriage_06"
+          && action.scene === "carriage_05"
+          && this.state.flags.ev008_scouting_done !== true
+        ) {
+          this.ui.toast("远处不断传来怪异的断裂声。贸然前进之前，你得先确认7号车厢发生了什么。");
+          return { stop: true };
+        }
         this.ui.closeDialog();
         await this.loadScene(action.scene);
       });

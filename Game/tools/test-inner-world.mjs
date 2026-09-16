@@ -24,7 +24,7 @@ function fixture(flags = {}, inventory = [], sceneId = "carriage_03") {
   const trace = [];
   const sounds = [];
   const ui = {
-    dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, inventory: [...state.inventory], blackout: state.flags.carriage_03_blackout === true }); } },
+    dialog: { setFast() {}, async showLine(a) { trace.push({ event: state.currentEventId, scene: state.sceneId, text: a.text, portrait: a.portrait, inventory: [...state.inventory], blackout: state.flags.carriage_03_blackout === true }); } },
     choice: { async choose(prompt, options) { return options.find(o => ["留着", "调头"].includes(o.label)) || options[0]; } },
     audio: { play(sound) { sounds.push(sound); return { finished: Promise.resolve(), stop() {} }; } },
     closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }

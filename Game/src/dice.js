@@ -164,6 +164,7 @@
   // ==== 本批剧本候选检定 ====
 
   registerDice("ev001_insight_01", attrCheck("insight"));
+  registerDice("ev002_insight_01", attrCheck("insight"));
   registerDice("ev004_insight_01", attrCheck("insight"));
   registerDice("ev008_insight_01", attrCheck("insight"));
   registerDice("ev007_education_01", attrCheck("education"));

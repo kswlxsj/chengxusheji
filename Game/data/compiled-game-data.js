@@ -824,6 +824,33 @@ window.GAME_DATA = {
           },
           "zIndex": 12,
           "clickEvent": "E_013"
+        },
+        {
+          "id": "employee_locker_04",
+          "name": "员工柜",
+          "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.png",
+          "fullCanvas": true,
+          "visibleWhen": {
+            "not": {
+              "flag": "tools_ready",
+              "equals": true
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 100
+          },
+          "hitPosition": {
+            "x": 75.5,
+            "y": 37,
+            "width": 14,
+            "height": 35
+          },
+          "zIndex": 12,
+          "clickEvent": "E_020",
+          "glow": true
         }
       ]
     },
@@ -2290,7 +2317,7 @@ window.GAME_DATA = {
           "type": "conditionalJump",
           "when": {
             "not": {
-              "flag": "ev009_seen",
+              "flag": "ev008_scouting_done",
               "equals": true
             }
           },
@@ -2491,6 +2518,14 @@ window.GAME_DATA = {
       "id": "E_002",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "note_front_seen",
+            "equals": true
+          },
+          "next": "E_002_REVISIT"
+        },
+        {
           "type": "inspect",
           "title": "便签正面",
           "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
@@ -2498,9 +2533,52 @@ window.GAME_DATA = {
           "large": true
         },
         {
+          "type": "check",
+          "dice": "ev002_insight_01",
+          "outcomes": [
+            "E_002_S",
+            "E_002_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_002_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你莫名觉得有些眼熟，思索片刻，你想起来，这是凯撒密码，解谜方式就是往前推三个字母。"
+        },
+        {
           "type": "setFlag",
           "key": "note_front_seen",
           "value": true
+        }
+      ]
+    },
+    {
+      "id": "E_002_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你盯着便签看了半天，没有丝毫头绪。"
+        },
+        {
+          "type": "setFlag",
+          "key": "note_front_seen",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "E_002_REVISIT",
+      "actions": [
+        {
+          "type": "inspect",
+          "title": "便签正面",
+          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+          "image": "assets/Image/Ui/label-front.png",
+          "large": true
         }
       ]
     },
@@ -3407,6 +3485,11 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "setFlag",
+          "key": "crew_04_medical_success",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "你收紧最后一道固定结，确认渗血速度慢了下来。乘务员皱起眉，终于恢复了意识。"
         },
@@ -3928,6 +4011,22 @@ window.GAME_DATA = {
       "id": "E_018_ALONE_ENTRY",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_medical_failed",
+            "equals": true
+          },
+          "next": "E_018_ALONE_ENTRY_NO_CREW"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_dead",
+            "equals": true
+          },
+          "next": "E_018_ALONE_ENTRY_NO_CREW"
+        },
+        {
           "type": "dialogue",
           "text": "你想起她的话：黑包，3号前门。"
         },
@@ -4163,15 +4262,6 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "not": {
-              "hasItem": "newspaper"
-            }
-          },
-          "next": "E_020"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
             "flag": "carried_crew",
             "equals": true
           },
@@ -4268,8 +4358,30 @@ window.GAME_DATA = {
       "id": "E_020",
       "actions": [
         {
+          "type": "sound",
+          "sound": "locker_open"
+        },
+        {
           "type": "dialogue",
-          "text": "回到4号车厢后，你径直走向员工柜。这里应该有清开3号行李的工具。"
+          "text": "你打开了员工柜。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_dead",
+            "equals": true
+          },
+          "next": "E_020_LOCKED"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "carriage_03_bag_interacted",
+              "equals": true
+            }
+          },
+          "next": "E_020_NOT_INVESTIGATED"
         },
         {
           "type": "conditionalJump",
@@ -4286,9 +4398,55 @@ window.GAME_DATA = {
             "equals": true
           },
           "next": "E_020_SECOND_MEDICAL"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "crew_04_interacted",
+              "equals": true
+            }
+          },
+          "next": "E_020_LOCKED"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_medical_failed",
+            "equals": true
+          },
+          "next": "E_020_LOCKED"
         }
       ],
       "next": "E_020_LEFT_AWAKE"
+    },
+    {
+      "id": "E_020_LOCKED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "柜门虽然打开了，但里面的工具被锁在内层，你暂时拿不到它们。"
+        }
+      ]
+    },
+    {
+      "id": "E_018_ALONE_ENTRY_NO_CREW",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_03_entry_narrative_v2_done",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "E_020_NOT_INVESTIGATED",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你翻了翻，没有找到有用的东西。"
+        }
+      ]
     },
     {
       "id": "E_020_CARRIED",
@@ -4321,7 +4479,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你回到4号车厢，脚步忽然顿住。"
+          "text": "你正要取出工具，忽然注意到座椅方向传来动静。"
         },
         {
           "type": "dialogue",
@@ -4394,7 +4552,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你回到4号车厢，立刻去查看乘务员的情况。"
+          "text": "你正要取出工具，忽然想起乘务员的情况。"
         },
         {
           "type": "dialogue",
@@ -4425,6 +4583,11 @@ window.GAME_DATA = {
           "type": "modifyAttribute",
           "attribute": "san",
           "amount": 2
+        },
+        {
+          "type": "setFlag",
+          "key": "crew_04_medical_success",
+          "value": true
         },
         {
           "type": "dialogue",
@@ -4501,20 +4664,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你沉默地站了一会儿，从员工柜里找到应急割带器和撬杆。接下来只能独自返回3号车厢。"
-        },
-        {
-          "type": "addItem",
-          "item": "emergency_cutter"
-        },
-        {
-          "type": "addItem",
-          "item": "pry_bar"
-        },
-        {
-          "type": "setFlag",
-          "key": "tools_ready",
-          "value": true
+          "text": "你沉默地站了一会儿。乘务员已经死了，柜里的工具也无法取出。"
         }
       ]
     },
@@ -5901,24 +6051,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你穿过门，返回4号车厢。"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "all": [
-              {
-                "flag": "carriage_03_bag_interacted",
-                "equals": true
-              },
-              {
-                "not": {
-                  "flag": "tools_ready",
-                  "equals": true
-                }
-              }
-            ]
-          },
-          "next": "E_020"
         }
       ]
     },
@@ -7553,7 +7685,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "？？？",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
           "text": "你找到钥匙了吗？"
         },
         {
@@ -8595,6 +8726,13 @@ window.GAME_DATA = {
       "description": "翻找背包、行李或杂物时播放。"
     },
     {
+      "id": "locker_open",
+      "name": "员工柜开门",
+      "file": "assets/Audio/SoundEffect/locker_O.mp3",
+      "volume": 0.8,
+      "description": "点击4号车厢员工柜时播放。"
+    },
+    {
       "id": "eating_crisps",
       "name": "啃食循环音",
       "file": "assets/Audio/SoundEffect/eating-crisps.mp3",
@@ -8635,6 +8773,13 @@ window.GAME_DATA = {
       "file": "assets/Audio/Bgm/he2.mp3",
       "volume": 0.8,
       "description": "真结局醒来后播放。"
+    },
+    {
+      "id": "ending_lost",
+      "name": "失落结局音乐",
+      "file": "assets/Audio/Bgm/lost.mp3",
+      "volume": 0.8,
+      "description": "失落结局三段画面演出期间循环播放。"
     },
     {
       "id": "opening_cracker_bag",

@@ -116,6 +116,13 @@
     "description": "翻找背包、行李或杂物时播放。"
   },
   {
+    "id": "locker_open",
+    "name": "员工柜开门",
+    "file": "assets/Audio/SoundEffect/locker_O.mp3",
+    "volume": 0.8,
+    "description": "点击4号车厢员工柜时播放。"
+  },
+  {
     "id": "eating_crisps",
     "name": "啃食循环音",
     "file": "assets/Audio/SoundEffect/eating-crisps.mp3",
@@ -156,6 +163,13 @@
     "file": "assets/Audio/Bgm/he2.mp3",
     "volume": 0.8,
     "description": "真结局醒来后播放。"
+  },
+  {
+    "id": "ending_lost",
+    "name": "失落结局音乐",
+    "file": "assets/Audio/Bgm/lost.mp3",
+    "volume": 0.8,
+    "description": "失落结局三段画面演出期间循环播放。"
   },
   {
     "id": "opening_cracker_bag",

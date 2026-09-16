@@ -665,6 +665,134 @@ a { color: inherit; }
 }
 .ending-actions a { text-align: center; }
 
+.ending-page {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  overflow: hidden;
+  display: block;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ending-page-copy {
+  position: absolute;
+  top: 7%;
+  left: 8%;
+  width: min(52vw, 920px);
+  color: #fff;
+  text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, .85);
+}
+
+.ending-page-copy h1 {
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: clamp(42px, 7vw, 112px);
+  line-height: 1.12;
+  letter-spacing: .12em;
+}
+
+.ending-page-copy .page-introduction {
+  max-width: 45ch;
+  margin: 0;
+  font-size: clamp(18px, 2vw, 32px);
+  line-height: 1.65;
+  opacity: 1;
+}
+
+.ending-page .ending-actions {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.ending-page .ending-actions a {
+  position: absolute;
+  left: 50%;
+  width: min(560px, 34vw);
+  min-width: 280px;
+  padding: clamp(10px, 2vh, 18px) 24px;
+  color: transparent !important;
+  font-size: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none !important;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none !important;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.ending-page .ending-actions a:first-child { top: 72%; }
+.ending-page .ending-actions a:last-child { top: 84%; }
+.ending-page .ending-actions a:hover,
+.ending-page .ending-actions a:focus,
+.ending-page .ending-actions a:focus-visible,
+.ending-page .ending-actions a:active {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+.ending-page .ending-actions a::before,
+.ending-page .ending-actions a::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .ending-page-copy {
+    top: 8%;
+    left: 7%;
+    width: 86%;
+  }
+  .ending-page .ending-actions a {
+    width: 86%;
+    min-width: 0;
+  }
+  .ending-page .ending-actions a:first-child { top: 72%; }
+  .ending-page .ending-actions a:last-child { top: 84%; }
+}
+
+.ending-page-video,
+.ending-page-scrim {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ending-page-video {
+  z-index: 0;
+  object-fit: cover;
+  background: #050607;
+}
+
+.ending-page-scrim {
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5, 7, 10, .76), rgba(5, 7, 10, .38)),
+    linear-gradient(0deg, rgba(5, 7, 10, .58), transparent 48%);
+}
+
 /* 设置页：音频与结局收藏共用同一内容面板，通过页内标签切换。 */
 .settings-panel {
   width: min(1080px, 100%);
@@ -1492,14 +1620,16 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .dialog-window {
+  --dialog-frame-y: 20px;
   position: absolute;
   left: 4%;
   right: 4%;
   bottom: 2%;
   min-height: 26%;
-  padding: 24px 58px 70px;
-  border: 0;
-  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
+  padding: 4px 28px 50px;
+  border: 20px solid transparent;
+  border-width: 20px 30px;
+  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   cursor: pointer;
 }
@@ -1508,7 +1638,7 @@ body.home-op-active .home-page .auth-user-status {
 .dialog-portrait {
   position: absolute;
   left: 3%;
-  bottom: 98%;
+  bottom: calc(100% + var(--dialog-frame-y));
   z-index: 0;
   width: min(25vw, 300px);
   height: min(48vh, 430px);
@@ -1516,6 +1646,11 @@ body.home-op-active .home-page .auth-user-status {
   object-position: center bottom;
   pointer-events: none;
   filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .72));
+}
+.dialog-portrait.is-player {
+  right: 3%;
+  left: auto;
+  object-position: right bottom;
 }
 .dialog-speaker,
 .dialog-text { position: relative; z-index: 1; }
@@ -1529,7 +1664,7 @@ body.home-op-active .home-page .auth-user-status {
 }
 .dialog-character { visibility: hidden; }
 .dialog-character.is-visible { visibility: visible; }
-.dialog-hint { position: absolute; right: 58px; bottom: 28px; opacity: .65; font-size: 13px; }
+.dialog-hint { position: absolute; right: 28px; bottom: 8px; opacity: .65; font-size: 13px; }
 
 /* 玩家快速连点推进对白时，浏览器会把连点识别成双击/三击而选中
    对话框文本与说话人标题，观感很差；此处统一禁止对话框内的文本选中。 */
@@ -1541,8 +1676,8 @@ body.home-op-active .home-page .auth-user-status {
 
 .window-controls {
   position: absolute;
-  left: 58px;
-  bottom: 28px;
+  left: 28px;
+  bottom: 8px;
   display: flex;
   gap: 6px;
 }
@@ -2718,9 +2853,11 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 .san-zero-portrait.is-pc {
-  left: 0;
+  right: 0;
+  left: auto;
   height: 52%;
   max-width: 38%;
+  transform-origin: right bottom;
 }
 
 .san-zero-dialogue {
@@ -2730,10 +2867,11 @@ body.home-op-active .home-page .auth-user-status {
   right: 4%;
   bottom: 2%;
   min-height: 26%;
-  padding: 24px 58px 70px;
+  padding: 4px 28px 50px;
   opacity: 0;
-  border: 0;
-  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
+  border: 20px solid transparent;
+  border-width: 20px 30px;
+  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -2757,8 +2895,8 @@ body.home-op-active .home-page .auth-user-status {
 
 .san-zero-hint {
   position: absolute;
-  right: 58px;
-  bottom: 28px;
+  right: 28px;
+  bottom: 8px;
   opacity: .62;
   font-size: clamp(11px, 1vw, 13px);
 }
@@ -2843,6 +2981,135 @@ body.home-op-active .home-page .auth-user-status {
 @keyframes san-zero-white-flash {
   0%, 100% { opacity: 0; }
   45%, 55% { opacity: .92; }
+}
+
+/* 真结局：加速、记忆、影片与终点站苏醒的专用过场。 */
+.lost-ending-sequence {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  background: #f5f2df;
+  color: #594f3c;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.lost-ending-sequence.is-visible { opacity: 1; }
+.lost-ending-cinema,
+.lost-ending-background,
+.lost-ending-blackout {
+  position: absolute;
+  inset: 0;
+}
+.lost-ending-cinema { overflow: hidden; }
+.lost-ending-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: saturate(.9) brightness(1.03);
+  transform: scale(1.025);
+  transition: opacity 1800ms ease, filter 2200ms ease, transform 6200ms ease;
+}
+.lost-ending-background.is-active { opacity: 1; transform: scale(1); }
+.lost-ending-sequence.is-holy .lost-ending-background.is-active {
+  filter: saturate(.72) brightness(1.08) contrast(.92);
+}
+.lost-ending-sequence.is-fracturing .lost-ending-background.is-active {
+  filter: saturate(.48) brightness(.94) contrast(1.15);
+  animation: lost-ending-tremble 130ms steps(2, end) infinite;
+}
+.lost-ending-text {
+  position: absolute;
+  z-index: 2;
+  inset: 11% 8% 11%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: rgba(255, 35, 35, .96);
+  font-size: clamp(21px, 3vw, 44px);
+  font-weight: 600;
+  line-height: 1.85;
+  letter-spacing: .08em;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(20, 0, 0, .8), 0 0 26px rgba(255, 30, 30, .38);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1100ms ease, transform 1100ms ease, filter 500ms ease;
+}
+.lost-ending-text.is-visible { opacity: 1; transform: translateY(0); }
+.lost-ending-word-wall {
+  position: absolute;
+  z-index: 2;
+  inset: -18% -8%;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: minmax(38px, 1fr);
+  gap: clamp(7px, 1vw, 18px);
+  align-items: center;
+  overflow: hidden;
+  color: rgba(255, 22, 22, .9);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.8,.2,1);
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .82), 0 0 18px rgba(255, 0, 0, .3);
+}
+.lost-ending-word-wall.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.lost-ending-word {
+  display: block;
+  overflow: hidden;
+  font-size: clamp(18px, 2.55vw, 38px);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  transform: rotate(var(--lost-word-rotate, 0deg));
+  animation: lost-ending-word-scroll 7.2s linear var(--lost-word-delay) infinite;
+}
+.lost-ending-word:nth-child(3n) { --lost-word-rotate: -4deg; color: rgba(255, 74, 52, .88); }
+.lost-ending-word:nth-child(4n) { --lost-word-rotate: 5deg; font-size: clamp(25px, 3.2vw, 52px); }
+.lost-ending-word:nth-child(5n) { opacity: .62; }
+.lost-ending-sequence.is-fracturing .lost-ending-text {
+  color: rgba(255, 8, 8, .98);
+  font-size: clamp(18px, 2.55vw, 36px);
+  line-height: 1.62;
+  letter-spacing: .03em;
+  filter: blur(.35px);
+  animation: lost-ending-text-glitch 420ms steps(2, end) infinite alternate;
+}
+.lost-ending-sequence.is-fracturing .lost-ending-word-wall {
+  color: rgba(255, 5, 5, .98);
+  animation: lost-ending-wall-glitch 160ms steps(2, end) infinite alternate;
+}
+.lost-ending-blackout {
+  z-index: 3;
+  background: #050505;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1800ms ease;
+}
+.lost-ending-blackout.is-visible { opacity: 1; }
+@keyframes lost-ending-tremble {
+  0% { transform: translate(-1px, 1px) scale(1.005); }
+  50% { transform: translate(1px, -1px) scale(1.01); }
+  100% { transform: translate(0, 0) scale(1.005); }
+}
+@keyframes lost-ending-text-glitch {
+  from { opacity: .62; transform: translate(-1px, 1px); }
+  to { opacity: 1; transform: translate(1px, -1px); }
+}
+@keyframes lost-ending-word-scroll {
+  0% { transform: translateY(34vh) rotate(var(--lost-word-rotate, 0deg)); }
+  100% { transform: translateY(-34vh) rotate(var(--lost-word-rotate, 0deg)); }
+}
+@keyframes lost-ending-wall-glitch {
+  from { filter: blur(.2px); transform: translate(0); }
+  to { filter: blur(1px); transform: translate(2px, -1px); }
 }
 
 /* 真结局：加速、记忆、影片与终点站苏醒的专用过场。 */
@@ -3359,10 +3626,11 @@ body.home-op-active .home-page .auth-user-status {
   right: 4%;
   bottom: 2%;
   min-height: 26%;
-  padding: 24px 58px 70px;
+  padding: 4px 28px 50px;
   opacity: 0;
-  border: 0;
-  background: url("../assets/Image/Ui/dialog-box.png") center / 100% 100% no-repeat;
+  border: 20px solid transparent;
+  border-width: 20px 30px;
+  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -3378,8 +3646,8 @@ body.home-op-active .home-page .auth-user-status {
 
 .parking-ending-hint {
   position: absolute;
-  right: 58px;
-  bottom: 28px;
+  right: 28px;
+  bottom: 8px;
   opacity: .62;
   font-size: clamp(11px, 1vw, 13px);
 }
@@ -3497,15 +3765,16 @@ body.home-op-active .home-page .auth-user-status {
   .slot-actions button { flex: 1; text-align: center; }
   .horizontal-actions { grid-template-columns: 1fr; }
   .auth-page { aspect-ratio: auto; min-height: 100vh; }
-  .dialog-window { padding: 24px 28px 64px; }
-  .dialog-portrait { left: 0; bottom: 98%; width: min(38vw, 210px); height: 36vh; }
+  .dialog-window { --dialog-frame-y: 16px; border-width: 16px 20px; padding: 8px 8px 48px; }
+  .dialog-portrait { left: 0; width: min(38vw, 210px); height: 36vh; }
+  .dialog-portrait.is-player { right: 0; left: auto; }
   .dialog-hint,
-  .san-zero-hint { right: 28px; bottom: 20px; }
-  .window-controls { left: 28px; bottom: 20px; }
-  .san-zero-dialogue { min-height: 0; padding: 24px 28px 64px; }
+  .san-zero-hint { right: 8px; bottom: 4px; }
+  .window-controls { left: 8px; bottom: 4px; }
+  .san-zero-dialogue { min-height: 0; border-width: 16px 20px; padding: 8px 8px 48px; }
   .san-zero-line { font-size: clamp(15px, 4vw, 19px); }
   .san-zero-portrait.is-doctor { left: 0; height: 58%; }
-  .san-zero-portrait.is-pc { left: 0; height: 45%; }
+  .san-zero-portrait.is-pc { right: 0; left: auto; height: 45%; }
   .ending-a-dialogue { bottom: 3%; width: 94%; padding: 13px 18px 31px; }
   .ending-a-speaker { font-size: clamp(13px, 3.5vw, 16px); }
   .ending-a-line { font-size: clamp(15px, 4vw, 19px); }
@@ -3514,9 +3783,9 @@ body.home-op-active .home-page .auth-user-status {
   .ending-a-portrait.is-conductor,
   .ending-a-portrait.is-pc { left: 1%; height: 47%; max-width: 42%; }
   .ending-a-portrait.is-scared { left: 0; height: 50%; max-width: 42%; }
-  .parking-ending-dialogue { min-height: 0; padding: 24px 28px 64px; }
+  .parking-ending-dialogue { min-height: 0; border-width: 16px 20px; padding: 8px 8px 48px; }
   .parking-ending-line { font-size: clamp(15px, 4vw, 19px); }
-  .parking-ending-hint { right: 28px; bottom: 20px; }
+  .parking-ending-hint { right: 8px; bottom: 4px; }
   .parking-ending-caption { inset: auto 4% 6%; min-height: 30%; }
   .parking-ending-caption-line { padding: 10px 14px; font-size: clamp(17px, 4.5vw, 22px); }
   .parking-ending-desperation-wall { grid-template-columns: repeat(4, 1fr); }
@@ -3641,7 +3910,7 @@ body.codex-start-video-ready #home-cover {
   width: min(560px, 28vw);
   min-width: 280px;
   padding: clamp(10px, 2vh, 18px) 24px;
-  color: #f1eeee;
+  color: transparent !important;
   border: 0;
   background: transparent !important;
   background-color: transparent !important;
@@ -3651,7 +3920,9 @@ body.codex-start-video-ready #home-cover {
   font-size: clamp(16px, 1.4vw, 24px);
   line-height: 1.2;
   text-align: center;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, .8);
+  -webkit-text-fill-color: transparent;
+  text-shadow: none !important;
+  text-decoration: none !important;
   cursor: pointer;
   pointer-events: auto;
   transform: translate(-50%, -50%);
@@ -3659,7 +3930,13 @@ body.codex-start-video-ready #home-cover {
 
 .codex-ending-button:hover,
 .codex-ending-button:focus,
-.codex-ending-button:active { background: transparent !important; }
+.codex-ending-button:active {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none !important;
+  text-decoration: none !important;
+  background: transparent !important;
+}
 
 #codex-ending-load { top: 75.5%; }
 #codex-ending-home { top: 87.8%; }

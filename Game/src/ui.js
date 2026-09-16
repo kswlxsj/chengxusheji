@@ -317,6 +317,9 @@
     setPortrait(source, speaker = "") {
       const resolvedSource = source || DEFAULT_DIALOGUE_PORTRAITS[speaker] || "";
       this.element.classList.toggle("has-portrait", Boolean(resolvedSource));
+      const isPlayerPortrait = ["你", "PC", "玩家"].includes(speaker.trim())
+        || /\/portrait\/player(?:-[^/]+)?\.png(?:[?#]|$)/i.test(resolvedSource);
+      this.portrait.classList.toggle("is-player", isPlayerPortrait);
       if (!resolvedSource) {
         this.portrait.hidden = true;
         this.portrait.removeAttribute("src");

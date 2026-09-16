@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏结束</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=lost-ending-video-20260917-2">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
@@ -18,23 +18,26 @@
   <script src="src/page-button-sound.js?v=button04b-20260916-1"></script>
 </head>
 <body>
+  <video id="ending-video" class="ending-page-video" src="assets/video/end.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <div class="ending-page-scrim" aria-hidden="true"></div>
   <main class="site-shell content-page ending-page">
-    <section class="page-panel compact-panel">
-      <p class="page-kicker">旅程终止</p>
+    <section class="ending-page-copy">
       <h1 id="ending-title">患者</h1>
       <p id="ending-description" class="page-introduction">SAN 已降至 0。本次游戏已经结束。你可以返回主页或读取上一次保存的稳定状态。</p>
-      <nav class="page-actions ending-actions" aria-label="结束页操作">
-        <a href="save-manager.html">读取存档</a>
-        <a href="home.html">返回主页</a>
-      </nav>
     </section>
+    <nav class="ending-actions" aria-label="结束页操作">
+      <a href="save-manager.html">读取存档</a>
+      <a href="home.html">返回主页</a>
+    </nav>
   </main>
   <script>
     const reason = new URLSearchParams(window.location.search).get("reason") || "san";
     const ending = TrainGame.ENDING_CATALOG.find((entry) => entry.id === reason)
       || TrainGame.ENDING_CATALOG.find((entry) => entry.id === "san");
     document.querySelector("#ending-title").textContent = ending.title;
-    document.querySelector("#ending-description").textContent = `${ending.description}本次游戏已经结束。你可以返回主页或读取上一次保存的稳定状态。`;
+    document.querySelector("#ending-description").textContent = ending.description;
+    const video = document.querySelector("#ending-video");
+    video?.play().catch(() => {});
   </script>
 </body>
 </html>

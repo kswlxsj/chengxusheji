@@ -34,7 +34,29 @@
       ui.audio?.stopAll?.({ immediate: true });
       ui.backgroundAudio?.stopAll?.({ immediate: true });
       if (reason === "lost") {
-        flow.navigate("ending", { reason }, true);
+        // 终止是在最后一句对白执行时抛出的；先关闭事件对白层，避免它盖在专属演出上。
+        ui.cancelPending?.();
+        if (hud) hud.hidden = true;
+        if (inventoryBar) inventoryBar.hidden = true;
+        document.querySelector("#toast")?.setAttribute("hidden", "");
+        try {
+          if (typeof Game.playLostEndingSequence === "function") {
+            await Game.playLostEndingSequence({
+              root: gameShell,
+              backgroundAudio: ui.backgroundAudio
+            });
+          }
+        } catch (error) {
+          console.error("失落结局演出失败：", error);
+        } finally {
+          // 无论演出资源或音频是否失败，都必须落到统一的旅程终止页。
+          try {
+            flow.navigate("ending", { reason }, true);
+          } catch (error) {
+            console.error("失落结局页面跳转失败：", error);
+            window.location.replace(flow.url("ending", { reason }));
+          }
+        }
         return;
       }
       // CODEX ADD START
