@@ -93,26 +93,19 @@
   }
 
   // SAN 类检定固定按单颗 d6 判定：4~6 成功、1~3 失败，完全不读取当前 SAN。
-  // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣，弹提示）。返回 0=成功 / 1=失败。
+  // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣）；实际变化由统一属性提示显示。
   function sanCheck(attribute, passLoss, failLoss) {
     const apply = (context, loss) => {
       if (!loss) return;
       let amount = 0;
-      let rolls = [];
-      let expression = "";
       if (Number.isInteger(loss)) {
         amount = loss;
       } else {
         const result = rollDice(loss.count, loss.sides, loss.bonus);
         amount = result.total;
-        rolls = result.rolls;
-        expression = `${loss.count}d${loss.sides}${loss.bonus ? `+${loss.bonus}` : ""}`;
       }
       if (amount <= 0) return;
       context.modifyAttribute(attribute, -amount);
-      if (!Number.isInteger(loss) && expression) {
-        context.ui.toast(`${expression}：${rolls.join("+")}`);
-      }
     };
     return async (context) => {
       const roll = rollDie(6);

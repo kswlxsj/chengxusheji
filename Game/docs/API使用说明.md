@@ -732,7 +732,7 @@ class NoticeWindow extends TrainGame.GameWindow {
 | `ui.dialog.showLine(action)` | 显示一句对话并等待推进；事件引擎会先把 `dialogue.text` 拆成单句再逐次调用。 |
 | `handleAdvance()` / `isAwaitingAdvance()` | 补全或结束本句 / 判断能否推进。 |
 | `ui.attributeAllocation.choose(definitions, totalPoints)` | 返回属性对象或 `null`。 |
-| `ui.showAttributeChange(payload)` | 在顶部显示属性实际增减与变化前后值；达到边界时说明未变化原因。 |
+| `ui.showAttributeChange(payload)` | 使用顶部居中的黑色 Toast 显示属性实际增减与变化前后值；达到边界时说明未变化原因，不复用右上角物品获得卡片。 |
 | `ui.choice.choose(prompt, options)` | 返回选项对象或 `null`。 |
 | `ui.inspect.show({ title, text, image })` | 显示普通场景调查窗口并等待关闭。 |
 | `ui.itemInspect.show({ title, text, image })` | 压暗完整游戏舞台，全屏展示物品图片、名称和说明并等待关闭。 |

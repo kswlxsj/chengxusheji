@@ -1048,7 +1048,6 @@
 
     showAcquisition({ name = "未命名物品", image = null, detail = "已加入物品栏" } = {}) {
       this.showCue({
-        kind: "item",
         title: "获得物品",
         label: name,
         image,
@@ -1058,20 +1057,17 @@
 
     showAttributeChange({ name, requested, before, after, min, max }) {
       const delta = after - before;
-      let title = delta > 0 ? "属性提升" : "属性下降";
-      let label = `${name} ${delta > 0 ? "+" : ""}${delta}`;
-      let detail = `${before} → ${after}`;
+      let message = `${delta > 0 ? "属性提升" : "属性下降"}：${name} ${delta > 0 ? "+" : ""}${delta}（${before} → ${after}）`;
       if (delta === 0) {
-        title = "属性未变化";
-        label = name;
-        detail = requested > 0 && max !== null && before >= max
+        const reason = requested > 0 && max !== null && before >= max
           ? `已达上限 ${max}`
           : `已达下限 ${min}`;
+        message = `属性未变化：${name}（${reason}）`;
       }
-      this.showCue({ kind: "attribute", title, label, detail });
+      this.toast(message);
     }
 
-    showCue({ kind = "item", title = "获得物品", label = "", image = null, detail = "" } = {}) {
+    showCue({ title = "获得物品", label = "", image = null, detail = "" } = {}) {
       if (!this.cueLayer) return;
       const card = document.createElement("div");
       card.className = "acquisition-card";
@@ -1085,7 +1081,7 @@
         img.alt = "";
         icon.append(img);
       } else {
-        icon.textContent = kind === "attribute" ? "STAT" : "ITEM";
+        icon.textContent = "ITEM";
       }
 
       const content = document.createElement("div");
