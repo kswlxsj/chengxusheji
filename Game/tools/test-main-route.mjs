@@ -417,6 +417,12 @@ assert.equal(actionsOf("E_023")[0].next, "E_023_LOCKED", "黑包流程未完成�
 
 assert.deepEqual(actionsOf("E_006A").find((action) => action.dice === "ev006a_san_01").outcomes, ["E_006A_SAN_S", "E_006A_SAN_F"]);
 assert.deepEqual(actionsOf("E_006B").find((action) => action.dice === "ev006b_san_01").outcomes, ["E_006B_SAN_S", "E_006B_SAN_F"]);
+assert.equal(actionsOf("E_006B_SAN_S").some((action) => action.type === "modifyAttribute"), false, "忍住呕吐不应修改体质");
+assert.deepEqual(
+  actionsOf("E_006B_SAN_F").filter((action) => action.type === "modifyAttribute"),
+  [{ type: "modifyAttribute", attribute: "constitution", amount: -1 }],
+  "实际呕吐才应扣除 1 点体质"
+);
 assert.deepEqual(actionsOf("E_008").find((action) => action.dice === "ev008_insight_01").outcomes, ["E_008_S", "E_008_F"]);
 assert.equal(actionsOf("E_026").some((action) => action.type === "check"), false, "Clicker 初见不应再进行 SAN 检定");
 assert.equal(actionsOf("E_026_BOTTLE_HINT")[0].text, "你摸了摸口袋里的瓶子。");

@@ -761,6 +761,7 @@ sanState.completeAttributeAllocation({
   san: 3
 });
 const sanDialogue = [];
+const sanAttributeChanges = [];
 const sanDiceEngine = new Game.EventEngine({
   events: [],
   state: sanState,
@@ -768,6 +769,7 @@ const sanDiceEngine = new Game.EventEngine({
   scene: {},
   ui: {
     ...createEngineUi(),
+    showAttributeChange: (payload) => { sanAttributeChanges.push(payload); },
     dialog: { showLine: async (payload) => { sanDialogue.push(payload); }, setFast: () => {} }
   }
 });
@@ -791,14 +793,19 @@ try {
   assert.equal(sanSuccess.next, "SAN_SUCCESS", "SAN 成功应返回成功事件");
   assert.equal(sanSuccess.stop, true);
   assert.equal(sanState.getAttribute("san"), 2, "SAN 1/1d4 成功应扣 1");
+  assert.deepEqual(
+    (({ name, requested, before, after }) => ({ name, requested, before, after }))(sanAttributeChanges.at(-1)),
+    { name: "SAN", requested: -1, before: 3, after: 2 },
+    "忍住呕吐的成功分支只能提示 SAN 损失"
+  );
 
   // ev006b：失败掷 1d4（骰点 1，损失 1），只走统一属性变化提示。
   const failedSanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
   failedSanState.completeAttributeAllocation({ constitution: 10, education: 9, insight: 10, san: 3 });
-  const sanAttributeChanges = [];
+  const failedSanAttributeChanges = [];
   const failedSanEngine = new Game.EventEngine({
     events: [], state: failedSanState, items: [], scene: {},
-    ui: { ...createEngineUi(), showAttributeChange: (payload) => { sanAttributeChanges.push(payload); } }
+    ui: { ...createEngineUi(), showAttributeChange: (payload) => { failedSanAttributeChanges.push(payload); } }
   });
   sandbox.Math.random = () => 0;
   const sanFailure = await failedSanEngine.actions.get("check")({
@@ -807,9 +814,9 @@ try {
   assert.equal(sanFailure.next, "SAN_FAIL");
   assert.equal(sanFailure.stop, true);
   assert.equal(failedSanState.getAttribute("san"), 2, "SAN 1/1d4 失败应按 1d4 扣损");
-  assert.equal(sanAttributeChanges.length, 1, "骰子损失应只触发一次统一属性提示");
+  assert.equal(failedSanAttributeChanges.length, 1, "骰子损失应只触发一次统一属性提示");
   assert.deepEqual(
-    (({ name, requested, before, after }) => ({ name, requested, before, after }))(sanAttributeChanges[0]),
+    (({ name, requested, before, after }) => ({ name, requested, before, after }))(failedSanAttributeChanges[0]),
     { name: "SAN", requested: -1, before: 3, after: 2 },
     "统一属性提示应包含实际 SAN 损失和变化前后值"
   );
