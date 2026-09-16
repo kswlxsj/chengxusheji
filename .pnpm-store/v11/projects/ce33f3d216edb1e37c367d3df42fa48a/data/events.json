@@ -4317,7 +4317,7 @@
   {
     "id": "E_504_F_REVISIT",
     "actions": [
-      { "type": "dialogue", "text": "窗外依旧白茫茫一片，什么也看不清。" }
+      { "type": "dialogue", "text": "窗外依旧茫茫一片，什么也看不清。" }
     ]
   },
   {
@@ -5514,7 +5514,11 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "乘务员似乎并不知道这一切。"
+        "text": "你身旁的乘务员似乎并不知道这一切。"
+      },
+      {
+        "type": "dialogue",
+        "text": "如果这样的话，那你刚刚遇到的是……？"
       }
     ],
     "next": "E_025"

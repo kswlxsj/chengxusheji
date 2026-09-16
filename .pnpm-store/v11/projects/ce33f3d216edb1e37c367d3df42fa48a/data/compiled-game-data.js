@@ -5941,7 +5941,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "窗外依旧白茫茫一片，什么也看不清。"
+          "text": "窗外依旧茫茫一片，什么也看不清。"
         }
       ]
     },
