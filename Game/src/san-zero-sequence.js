@@ -46,6 +46,7 @@
     constructor(options = {}) {
       this.root = options.root || document.querySelector("#game-shell") || document.body;
       this.assets = { ...DEFAULT_ASSETS, ...(options.assets || {}) };
+      this.backgroundAudio = options.backgroundAudio || null;
       this.timers = new Set();
       this.snowFrame = null;
       this.resolveAdvance = null;
@@ -112,6 +113,7 @@
       this.overlay.classList.add("is-visible", "is-loading");
       await this.preload();
       this.overlay.classList.remove("is-loading");
+      this.playEndingMusic("ending_san0", 4200);
       this.dialogue.classList.remove("is-visible");
       this.setBackground("broadcast", true);
       await this.delay(500);
@@ -172,6 +174,7 @@
         text: "他忽然停止了一切动作，缓缓抬起头，目光精准地穿过镜头——像终于找到了什么。",
         background: "closeup"
       });
+      this.stopEndingMusic(1600);
       await this.showLine({
         text: "嘴角一点点咧开，露出一个过于正常的笑容。",
         background: "closeupSmile"
@@ -309,6 +312,14 @@
       await this.delay(180);
     }
 
+    playEndingMusic(sound, fadeMs = 1000) {
+      this.backgroundAudio?.setTrack?.(sound, { fadeMs });
+    }
+
+    stopEndingMusic(duration = 1000) {
+      this.backgroundAudio?.stopAll?.({ duration });
+    }
+
     delay(milliseconds) {
       return new Promise((resolve) => {
         const timer = {
@@ -328,6 +339,7 @@
       this.timers.clear();
       if (this.snowFrame !== null) cancelAnimationFrame(this.snowFrame);
       this.snowFrame = null;
+      this.stopEndingMusic(900);
       this.overlay.removeEventListener("click", this.handleAdvance);
       document.removeEventListener("keydown", this.handleAdvance);
       window.removeEventListener("resize", this.handleResize);

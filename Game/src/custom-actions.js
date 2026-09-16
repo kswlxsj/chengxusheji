@@ -217,13 +217,14 @@
     });
     engine.registerCustomAction("flashScreen", async (params, context) => {
       const shell = document.querySelector("#game-shell");
-      shell.classList.remove("flash");
+      const className = params.mode === "blackWhite" ? "flash-black-white" : "flash";
+      shell.classList.remove("flash", "flash-black-white");
       void shell.offsetWidth;
-      shell.classList.add("flash");
+      shell.classList.add(className);
       try {
         await context.wait(Number(params.duration || 450));
       } finally {
-        shell.classList.remove("flash");
+        shell.classList.remove(className);
       }
     });
 

@@ -168,7 +168,10 @@
     function finish() {
       if (resolved) return;
       resolved = true;
-      resolveFinish([{ type: "setFlag", key: "ev014_negotiation_bonus", value: computeBonus() }]);
+      resolveFinish([
+        { type: "setFlag", key: "ev014_negotiation_bonus", value: computeBonus() },
+        { type: "setFlag", key: "crew_04_left_seated", value: true }
+      ]);
     }
 
     async function choose(option) {
@@ -194,7 +197,10 @@
       if (resolved) return null;
       resolved = true;
       const bonus = currentRound >= ROUNDS.length ? computeBonus() : 0;
-      return [{ type: "setFlag", key: "ev014_negotiation_bonus", value: bonus }];
+      return [
+        { type: "setFlag", key: "ev014_negotiation_bonus", value: bonus },
+        { type: "setFlag", key: "crew_04_left_seated", value: true }
+      ];
     });
 
     // 收尾：本模块不挂全局监听，只需移除自绘根节点（宿主关闭时整个窗口元素也会被移除）。

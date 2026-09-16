@@ -393,7 +393,7 @@ assert.equal(
 );
 assert.deepEqual(actionsOf("E_011").slice(0, 2), [
   { type: "custom", name: "newspaperBlackout" },
-  { type: "sound", sound: "switch1" }
+  { type: "sound", sound: "switch1", startWithoutMetadata: true, fadeMs: 0 }
 ], "读报熄灯后必须通过标准音效动作播放开关声");
 assert.equal(
   actionsOf("E_011_S").some((action) => action.name === "restoreNewspaperLighting" && action.params?.halfDark === true),
@@ -445,7 +445,7 @@ for (const id of ["E_008_S", "E_009", "E_011_S", "E_012_AFTER", "E_016_LEAVE", "
   assert.equal(actionsOf(id).some((action) => action.type === "changeScene"), false, `${id} 不得替玩家切景`);
 }
 assert.doesNotMatch(cardBattleSource, /next:\s*["']E_031["']/, "卡牌胜利不得自动进入先头车厢");
-assert.match(mainSource, /flags\.ev008_scouting_done/, "7号深处演出完成后才允许自动触发一次返程演出");
+assert.doesNotMatch(mainSource, /maybeTriggerE009|flags\.ev008_scouting_done/, "7号返回6号不得再由主流程自动触发空车厢演出");
 
 // 首次长演出各有独立守卫，重访只落到短反馈事件。
 for (const [id, revisit] of [
@@ -469,10 +469,7 @@ const entryActions = actionsOf("E_013_ENTRY");
 assert.equal(entryActions[0].type, "conditionalJump");
 assert.equal(entryActions.filter((action) => action.type === "dialogue").length, 1);
 assert.equal(eventById.get("E_013_ENTRY").next, undefined);
-assert.deepEqual(entryActions[0].when.any, [
-  { flag: "crew_04_entry_seen", equals: true },
-  { flag: "crew_04_entry_medical_done", equals: true }
-]);
+assert.deepEqual(entryActions[0].when, { flag: "crew_04_entry_seen", equals: true });
 assert.equal(entryActions[0].next, "E_013_REVISIT");
 assert.equal(entryActions.some((action) => action.type === "setFlag" && action.key === "crew_04_entry_seen"), true);
 assert.equal(entryActions.some((action) => action.type === "check"), false, "到达演出不得自动触发医学检定");
@@ -694,7 +691,8 @@ assertArrival(game, "carriage_04", /一名重伤昏迷的乘务员倒在地上/)
 game.trace.length = 0;
 await game.play("E_013_ENTRY");
 assert.equal(game.trace.some((entry) => entry.text?.includes("一名重伤昏迷")), false, "重复到达不得重播首次发现描写");
-assert.equal(game.trace.some((entry) => entry.text?.includes("已经处理过")), true, "重复到达应提供当前状态反馈");
+assert.equal(game.trace.some((entry) => entry.text?.includes("还没有处理她的伤口")), true, "未交互时重复到达不得误报已处理伤口");
+assert.notEqual(game.state.flags.crew_04_interacted, true, "重复进入车厢不得把乘务员标记为已交互");
 assert.deepEqual(game.diceCalls, []);
 
 // 点击乘务员：直接教育检定；失败后允许再试一次，成功或第二次失败后结束。

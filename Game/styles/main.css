@@ -2813,6 +2813,19 @@ body.home-op-active .home-page .auth-user-status {
   background: #fff;
 }
 
+#game-shell.flash-black-white::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 140;
+  animation: black-white-flash 90ms steps(1, end) infinite;
+}
+
+@keyframes black-white-flash {
+  0%, 49% { background: #fff; }
+  50%, 100% { background: #000; }
+}
+
 .san-zero-sequence.is-flashing::after {
   animation: san-zero-white-flash 180ms steps(2, end);
 }
@@ -3625,31 +3638,35 @@ body.codex-start-video-ready #home-cover {
 .codex-ending-button {
   position: absolute;
   left: 50%;
-  width: clamp(280px, 30vw, 480px);
+  width: min(560px, 28vw);
+  min-width: 280px;
   padding: clamp(10px, 2vh, 18px) 24px;
   color: #f1eeee;
   border: 0;
-  background: rgba(112, 108, 110, .68);
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  appearance: none;
+  outline: none;
   font-size: clamp(16px, 1.4vw, 24px);
   line-height: 1.2;
   text-align: center;
   text-shadow: 0 2px 5px rgba(0, 0, 0, .8);
-  backdrop-filter: blur(1px);
   cursor: pointer;
   pointer-events: auto;
-  translate: -50% -50%;
+  transform: translate(-50%, -50%);
 }
 
-.codex-ending-button:hover {
-  background: rgba(138, 132, 134, .82);
-}
+.codex-ending-button:hover,
+.codex-ending-button:focus,
+.codex-ending-button:active { background: transparent !important; }
 
-#codex-ending-load { top: 73%; }
-#codex-ending-home { top: 86%; }
+#codex-ending-load { top: 75.5%; }
+#codex-ending-home { top: 87.8%; }
 
 @media (max-height: 600px) {
-  #codex-ending-load { top: 70%; }
-  #codex-ending-home { top: 85%; }
+  #codex-ending-load { top: 74%; }
+  #codex-ending-home { top: 87%; }
 }
 
 .home-op-frame {

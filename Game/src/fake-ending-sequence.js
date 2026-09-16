@@ -12,6 +12,9 @@
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "fake_end")?.title || "伪结局";
+  const FAKE_ENDING_MUSIC = "ending_he2";
+  const FAKE_ENDING_MUSIC_FADE_IN_MS = 4200;
+  const MOVE_MUSIC_PLAYBACK_RATE = 0.68;
 
   function waitForImage(image) {
     if (image.complete && image.naturalWidth > 0) return Promise.resolve();
@@ -52,6 +55,7 @@
       await this.preload();
       this.overlay.classList.remove("is-loading");
       this.stopAudio();
+      this.playEndingMusic(FAKE_ENDING_MUSIC, FAKE_ENDING_MUSIC_FADE_IN_MS);
       await this.setBackground("frontCarriage", true);
 
       this.speedVoice = this.playSound("metro_speed_up", { volume: 0.92 });
@@ -62,7 +66,7 @@
       });
 
       await this.fadeToWhite(1900);
-      this.stopAudio();
+      this.audio?.stopAll?.();
       await this.setBackground("carriage06", true);
       this.playSound("metro_arriving", { volume: 0.9 });
       await this.revealFromWhite(620);
@@ -75,7 +79,7 @@
       await this.showLine({ text: "你翻看背包：便签、报纸、手机、手电筒——全都不在了。" });
       await this.showLine({ text: "那是一场共同的噩梦。恐怖的记忆慢慢淡忘。" });
 
-      this.stopAudio();
+      this.audio?.stopAll?.();
       this.playSound("airport_gate1", { volume: 0.88 });
       await this.showLine({ text: "你跟在人群后面走出站台。" });
       await this.showLine({ text: "身后，末班电车的车门缓缓关闭。" });
@@ -85,13 +89,15 @@
 
       await this.setBackground("moveBlur");
       await this.showLine({ text: "“欸，那是什么？”" });
-      this.stopAudio();
+      // 只切掉站台环境音，伪结局 BGM 要持续到 MOVE FORWARD，并在画面出现时变调。
+      this.audio?.stopAll?.();
       this.overlay.classList.add("is-silent-cut");
       await this.delay(100);
       this.overlay.classList.remove("is-silent-cut");
       await this.showLine({ text: "“！”", portrait: "pcScared" });
 
       await this.setBackground("move", true);
+      this.backgroundAudio?.setPlaybackRate?.(MOVE_MUSIC_PLAYBACK_RATE);
       await this.showLine({ text: "", hold: 2400, stageClass: "is-final" });
       await this.fadeToBlack(900);
     }

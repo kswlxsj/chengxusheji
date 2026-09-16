@@ -8,7 +8,9 @@ window.GAME_DATA = {
     "initialState": {
       "sceneId": "carriage_06",
       "currentEventId": null,
-      "flags": {},
+      "flags": {
+        "carriage_06_people_reveal": true
+      },
       "inventory": [],
       "objectStates": {},
       "checkResults": {}
@@ -33,6 +35,13 @@ window.GAME_DATA = {
         }
       ],
       "backgroundVariants": [
+        {
+          "image": "assets/Image/Scene/Background/carriage-06-people.png",
+          "visibleWhen": {
+            "flag": "carriage_06_people_reveal",
+            "equals": true
+          }
+        },
         {
           "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
           "visibleWhen": {
@@ -2145,6 +2154,23 @@ window.GAME_DATA = {
           "next": "E_009_REVISIT"
         },
         {
+          "type": "custom",
+          "name": "flashScreen",
+          "params": {
+            "duration": 650,
+            "mode": "blackWhite"
+          }
+        },
+        {
+          "type": "setFlag",
+          "key": "carriage_06_people_reveal",
+          "value": false
+        },
+        {
+          "type": "custom",
+          "name": "refreshScene"
+        },
+        {
           "type": "setFlag",
           "key": "ev009_seen",
           "value": true
@@ -2366,20 +2392,22 @@ window.GAME_DATA = {
           "sound": "door_open"
         },
         {
+          "type": "setFlag",
+          "key": "carriage_06_people_reveal",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "ev009_seen",
+          "value": true
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_06"
         },
         {
           "type": "dialogue",
-          "text": "你回到了6号车厢。"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "ev008_scouting_done",
-            "equals": true
-          },
-          "next": "E_009"
+          "text": "你从7号车厢回到6号车厢。"
         }
       ]
     },
@@ -2408,10 +2436,6 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你发现所在车厢的门扉上贴着一张便签。"
-        },
-        {
-          "type": "dialogue",
           "text": "你总感觉哪里不太对，或许……"
         },
         {
@@ -2435,7 +2459,8 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "不祥的预感在你心头笼罩。"
         }
-      ]
+      ],
+      "next": "E_OPENING_RETURN_06"
     },
     {
       "id": "E_001_F",
@@ -2444,7 +2469,23 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "或许只是白天太累了吧。还有几站到站？"
         }
-      ]
+      ],
+      "next": "E_OPENING_RETURN_06"
+    },
+    {
+      "id": "E_OPENING_RETURN_06",
+      "actions": [
+        {
+          "type": "setFlag",
+          "key": "carriage_06_people_reveal",
+          "value": true
+        },
+        {
+          "type": "changeScene",
+          "scene": "carriage_06"
+        }
+      ],
+      "next": "E_009"
     },
     {
       "id": "E_002",
@@ -2863,7 +2904,9 @@ window.GAME_DATA = {
         },
         {
           "type": "sound",
-          "sound": "switch1"
+          "sound": "switch1",
+          "startWithoutMetadata": true,
+          "fadeMs": 0
         },
         {
           "type": "dialogue",
@@ -3258,16 +3301,8 @@ window.GAME_DATA = {
         {
           "type": "conditionalJump",
           "when": {
-            "any": [
-              {
-                "flag": "crew_04_entry_seen",
-                "equals": true
-              },
-              {
-                "flag": "crew_04_entry_medical_done",
-                "equals": true
-              }
-            ]
+            "flag": "crew_04_entry_seen",
+            "equals": true
           },
           "next": "E_013_REVISIT"
         },
@@ -3292,7 +3327,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员的呼吸依旧急促。你已经处理过她的伤口，现在更需要找到让列车停下来的办法。"
+          "text": "乘务员仍然倒在这里，呼吸急促。你还没有处理她的伤口。"
         }
       ]
     },
@@ -4744,16 +4779,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "随后，她的手指又碰到一张叠得整齐的便签。展开——\n\n「MOVE FORWARD」\n\n“这个字......”"
+          "text": "随后，她的手指又碰到一张叠得整齐的便签。展开——\n\n一个前进的箭头"
         },
         {
           "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "像我的字。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n两张便签，字迹几乎一模一样。\n\n她看了很久，没有说话。"
+          "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n她看了很久，没有说话。"
         },
         {
           "type": "setFlag",
@@ -4797,7 +4827,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "包里还有一张叠得整齐的便签：\n\n「MOVE FORWARD」\n\n你翻出6号车厢的便签，两张字迹几乎一模一样。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
+          "text": "包里还有一张叠得整齐的便签：\n\n一个前进的箭头\n\n你翻出6号车厢的便签。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
         },
         {
           "type": "setFlag",
@@ -5297,6 +5327,10 @@ window.GAME_DATA = {
     {
       "id": "E_027_F",
       "actions": [
+        {
+          "type": "sound",
+          "sound": "can_striking"
+        },
         {
           "type": "dialogue",
           "text": "跨过一具尸体时，你绷紧太久的腿突然发软，鞋底擦过散落的金属罐。清脆的滚动声传遍车厢，怪物们齐刷刷地转向你。"
@@ -8079,8 +8113,27 @@ window.GAME_DATA = {
       "id": "E_503_BOTTLES_REVISIT",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "ev503_bottle_taken",
+              "equals": true
+            }
+          },
+          "next": "E_503_BOTTLES_REVISIT_EMPTY"
+        },
+        {
           "type": "dialogue",
           "text": "剩下的玻璃瓶仍挤在角落里。你没有再碰它们，只确认先前拿走的那一支还在身上。"
+        }
+      ]
+    },
+    {
+      "id": "E_503_BOTTLES_REVISIT_EMPTY",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "玻璃瓶仍挤在角落里。你没有碰它们。"
         }
       ]
     },
@@ -8514,6 +8567,20 @@ window.GAME_DATA = {
       "description": "在2号车厢成功投掷并击碎玻璃瓶时播放。"
     },
     {
+      "id": "drinking",
+      "name": "饮用饮料",
+      "file": "assets/Audio/SoundEffect/drinking1.mp3",
+      "volume": 0.8,
+      "description": "玩家饮用饮料时播放。"
+    },
+    {
+      "id": "can_striking",
+      "name": "易拉罐碰撞",
+      "file": "assets/Audio/SoundEffect/striking.mp3",
+      "volume": 0.8,
+      "description": "易拉罐被碰撞或丢出并发出声响时播放。"
+    },
+    {
       "id": "tearing",
       "name": "撕裂声",
       "file": "assets/Audio/SoundEffect/tearing.mp3",
@@ -8540,6 +8607,34 @@ window.GAME_DATA = {
       "file": "assets/Audio/SoundEffect/pouring-sake.mp3",
       "volume": 0.72,
       "description": "停车结局中血水流过脚下的声音。"
+    },
+    {
+      "id": "ending_san0",
+      "name": "SAN 归零结局音乐",
+      "file": "assets/Audio/Bgm/san0.mp3",
+      "volume": 0.8,
+      "description": "SAN 归零结局开场播放，抬头露出笑容前停止。"
+    },
+    {
+      "id": "ending_bad",
+      "name": "停车结局音乐",
+      "file": "assets/Audio/Bgm/be.mp3",
+      "volume": 0.8,
+      "description": "停车结局血水出现时播放。"
+    },
+    {
+      "id": "ending_he",
+      "name": "真结局前段音乐",
+      "file": "assets/Audio/Bgm/he.mp3",
+      "volume": 0.8,
+      "description": "真结局开场播放至醒来。"
+    },
+    {
+      "id": "ending_he2",
+      "name": "真结局醒来音乐",
+      "file": "assets/Audio/Bgm/he2.mp3",
+      "volume": 0.8,
+      "description": "真结局醒来后播放。"
     },
     {
       "id": "opening_cracker_bag",

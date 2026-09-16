@@ -56,6 +56,7 @@
       this.loopGapMs = this.loop ? Math.max(0, Number(options.loopGapMs) || 0) : 0;
       this.segmentedLoop = this.loop && this.segmentDuration > 0;
       this.gappedLoop = this.loop && this.loopGapMs > 0;
+      this.playbackRate = clamp(Number(options.playbackRate) || 1, 0.25, 4);
       this.multiplier = options.volume == null ? 1 : clamp(Number(options.volume) || 0, 0, 1);
       this.baseVolume = entry.volume == null ? 1 : clamp(Number(entry.volume) || 0, 0, 1);
       this.masterVolume = clamp(Number(masterVolume) || 0, 0, MAX_MASTER_VOLUME);
@@ -85,6 +86,15 @@
       element.src = this.entry.file;
       element.preload = "auto";
       element.loop = this.loop && !this.gappedLoop && !this.segmentedLoop;
+      // 降低播放速度时同时降低音高；不支持 preservesPitch 的浏览器会自然跟随变调。
+      try {
+        element.preservesPitch = false;
+        element.mozPreservesPitch = false;
+        element.webkitPreservesPitch = false;
+      } catch (_error) {
+        // 部分浏览器不允许设置这些兼容属性，仍使用 playbackRate。
+      }
+      element.playbackRate = this.playbackRate;
       element.hidden = true;
       element.setAttribute("aria-hidden", "true");
       element.addEventListener("ended", this.handleEnded);
@@ -223,6 +233,11 @@
       this.applyTargetVolume();
     }
 
+    setPlaybackRate(value) {
+      this.playbackRate = clamp(Number(value) || 1, 0.25, 4);
+      if (this.element) this.element.playbackRate = this.playbackRate;
+    }
+
     applyTargetVolume() {
       this.targetVolume = clamp(this.baseVolume * this.multiplier * this.masterVolume, 0, 1);
       if (this.element && !this.stopped && !this.stopping) {
@@ -355,7 +370,7 @@
         root: this.root,
         options,
         masterVolume: this.masterVolume,
-        fadeMs: this.fadeMs,
+        fadeMs: Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : this.fadeMs,
         onSettled: (settledVoice) => {
           this.activeVoices.delete(settledVoice);
           if (this.voices.get(soundId) === settledVoice) this.voices.delete(soundId);
@@ -439,7 +454,7 @@
         root: this.root,
         options: { ...options, loop: true },
         masterVolume: this.masterVolume,
-        fadeMs: this.fadeMs,
+        fadeMs: Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : this.fadeMs,
         onSettled: (settledVoice) => {
           if (this.current === settledVoice) this.current = null;
         },
@@ -461,6 +476,10 @@
     setMasterVolume(value) {
       this.masterVolume = clamp(Number(value) || 0, 0, MAX_MASTER_VOLUME);
       this.current?.setMasterVolume(this.masterVolume);
+    }
+
+    setPlaybackRate(value) {
+      this.current?.setPlaybackRate(value);
     }
 
     createElement(_entry) {

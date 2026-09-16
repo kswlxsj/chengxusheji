@@ -30,6 +30,9 @@
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
       Game.PlayerProfile?.unlockEnding?.(reason);
+      // 预加载结局素材期间也不能继续播放旧场景音频。
+      ui.audio?.stopAll?.({ immediate: true });
+      ui.backgroundAudio?.stopAll?.({ immediate: true });
       if (reason === "lost") {
         flow.navigate("ending", { reason }, true);
         return;
@@ -70,7 +73,11 @@
       }
       if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
         try {
-          await Game.playSanZeroSequence();
+          await Game.playSanZeroSequence({
+            root: gameShell,
+            audio: ui.audio,
+            backgroundAudio: ui.backgroundAudio
+          });
         } catch (error) {
           console.error("SAN 归零演出失败：", error);
         }
@@ -139,18 +146,9 @@
     video.pause();
     video.currentTime = 0;
     overlay.hidden = false;
-    loadButton.hidden = true;
-    homeButton.hidden = true;
-
-    let completed = false;
-    const completeEnding = () => {
-      if (completed) return;
-      completed = true;
-      video.pause();
-      loadButton.hidden = false;
-      homeButton.hidden = false;
-      loadButton.focus();
-    };
+    // 结局按钮从覆盖层出现时就可用，不需要等待视频播放完毕。
+    loadButton.hidden = false;
+    homeButton.hidden = false;
     const openSaveManager = () => {
       flow.clearTransfer();
       flow.navigate("saveManager");
@@ -166,10 +164,8 @@
       }
     };
 
-    video.addEventListener("ended", completeEnding, { once: true });
     video.addEventListener("error", () => {
       video.style.display = "none";
-      completeEnding();
     }, { once: true });
     loadButton.addEventListener("click", openSaveManager, { once: true });
     homeButton.addEventListener("click", returnToMainMenu, { once: true });
@@ -272,7 +268,6 @@
     // 小游戏期间屏蔽系统暂停：暂停按钮与 Esc 均由玩法窗口接管（见 pauseGame / keydown）。
     pauseButton.disabled = startupLocked || ui.minigame.isOpen();
     updateInventoryBar();
-    maybeTriggerE009();
     maybeTriggerCarriage06Guide();
     autoSaveOnNewCarriage();
     maybeTriggerClickerReveal();
@@ -309,18 +304,6 @@
       console.error("切换车厢时自动保存失败：", error);
       ui.toast(`自动保存失败：${errorMessage(error)}`);
     }
-  }
-
-  function maybeTriggerE009() {
-    if (
-      startupLocked
-      || paused
-      || engine.busy
-      || state.sceneId !== "carriage_06"
-      || state.flags.ev008_scouting_done !== true
-      || state.flags.ev009_seen === true
-    ) return;
-    void engine.play("E_009");
   }
 
   function hasInvestigatedAllCarriage06Items() {

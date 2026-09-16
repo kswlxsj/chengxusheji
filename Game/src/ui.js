@@ -727,6 +727,11 @@
       this.images = [];
       this.status = null;
       this.result = null;
+      this.phase = "idle";
+      this.keyHandler = null;
+      this.pointerHandler = null;
+      this.interruptWaitResolve = null;
+      this.pendingWaitResolvers = new Set();
     }
 
     async roll({ value = null, values = null, success = true, grade = null, text = "", outcomeText = "", wait = Game.delay }) {
@@ -767,10 +772,30 @@
       this.images = images;
       this.status = status;
       this.result = result;
+      this.phase = "rolling";
+      this.keyHandler = (event) => {
+        if (this.backdrop !== backdrop) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.phase === "rolling") {
+          // 第一次按键只打断抖动，确保玩家能看清最终骰面。
+          this.interruptWaitResolve?.("interrupted");
+        } else if (this.phase === "formula") {
+          // 算式阶段单独处理：按键/点击跳到成功或失败结果。
+          this.interruptWaitResolve?.("interrupted");
+        } else {
+          // 成功/失败阶段不再自动关闭，按键/点击才关闭窗口。
+          this.close();
+        }
+      };
+      document.addEventListener("keydown", this.keyHandler, true);
+      this.pointerHandler = (event) => this.keyHandler?.(event);
+      document.addEventListener("pointerdown", this.pointerHandler, true);
       const rollingVoice = this.audio?.play(DICE_SOUNDS.rolling);
 
       try {
-        await wait(CHECK_ROLL_BASE_MS / CHECK_ANIMATION_SPEED);
+        const animationState = await this.waitFor(CHECK_ROLL_BASE_MS / CHECK_ANIMATION_SPEED, wait, true);
+        if (animationState === "closed") return;
         if (this.backdrop !== backdrop) return;
         rollingVoice?.stop();
         rollValues.forEach((rollValue, index) => {
@@ -784,32 +809,60 @@
         this.status.hidden = true;
         this.result.textContent = text;
         this.result.classList.add(success ? "success" : "fail", grade || "normal", "is-visible");
-        await wait(1200);
+        this.phase = "formula";
+        // 算式阶段不自动切换到成功/失败，必须再次按键或点击确认。
+        await this.waitFor(Infinity, wait, true);
         if (this.backdrop !== backdrop) return;
-        if (outcomeText) {
-          this.result.classList.remove("is-visible");
-          await wait(220);
-          if (this.backdrop !== backdrop) return;
-          this.result.textContent = outcomeText;
-          this.result.classList.add("is-visible");
-          this.audio?.play(success ? DICE_SOUNDS.success : DICE_SOUNDS.fail);
-        } else {
-          this.audio?.play(success ? DICE_SOUNDS.success : DICE_SOUNDS.fail);
-        }
-        await wait(1900);
+        this.result.classList.remove("is-visible");
+        await this.waitFor(220, wait);
+        if (this.backdrop !== backdrop) return;
+        this.result.textContent = outcomeText || (success ? "检定成功" : "检定失败");
+        this.result.classList.add("is-visible");
+        this.phase = "outcome";
+        this.audio?.play(success ? DICE_SOUNDS.success : DICE_SOUNDS.fail);
+        // 结果持续展示，直到玩家按任意键关闭。
+        await this.waitFor(Infinity, wait);
       } finally {
         rollingVoice?.stop();
         if (this.backdrop === backdrop) this.close();
       }
     }
 
+    waitFor(duration, wait, interruptible = false) {
+      return new Promise((resolve) => {
+        let settled = false;
+        const finish = (state) => {
+          if (settled) return;
+          settled = true;
+          this.pendingWaitResolvers.delete(finish);
+          if (interruptible && this.interruptWaitResolve === finish) {
+            this.interruptWaitResolve = null;
+          }
+          resolve(state);
+        };
+        this.pendingWaitResolvers.add(finish);
+        if (interruptible) this.interruptWaitResolve = finish;
+        if (duration !== Infinity) {
+          wait(duration).then(() => finish("elapsed"), () => finish("elapsed"));
+        }
+      });
+    }
+
     close() {
+      for (const resolve of Array.from(this.pendingWaitResolvers)) resolve("closed");
+      this.pendingWaitResolvers.clear();
+      this.interruptWaitResolve = null;
       if (this.backdrop) this.backdrop.remove();
       this.backdrop = null;
       this.diceBoxes = [];
       this.images = [];
       this.status = null;
       this.result = null;
+      this.phase = "idle";
+      if (this.keyHandler) document.removeEventListener("keydown", this.keyHandler, true);
+      if (this.pointerHandler) document.removeEventListener("pointerdown", this.pointerHandler, true);
+      this.keyHandler = null;
+      this.pointerHandler = null;
     }
   }
 

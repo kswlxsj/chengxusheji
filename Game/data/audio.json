@@ -88,6 +88,20 @@
     "description": "在2号车厢成功投掷并击碎玻璃瓶时播放。"
   },
   {
+    "id": "drinking",
+    "name": "饮用饮料",
+    "file": "assets/Audio/SoundEffect/drinking1.mp3",
+    "volume": 0.8,
+    "description": "玩家饮用饮料时播放。"
+  },
+  {
+    "id": "can_striking",
+    "name": "易拉罐碰撞",
+    "file": "assets/Audio/SoundEffect/striking.mp3",
+    "volume": 0.8,
+    "description": "易拉罐被碰撞或丢出并发出声响时播放。"
+  },
+  {
     "id": "tearing",
     "name": "撕裂声",
     "file": "assets/Audio/SoundEffect/tearing.mp3",
@@ -114,6 +128,34 @@
     "file": "assets/Audio/SoundEffect/pouring-sake.mp3",
     "volume": 0.72,
     "description": "停车结局中血水流过脚下的声音。"
+  },
+  {
+    "id": "ending_san0",
+    "name": "SAN 归零结局音乐",
+    "file": "assets/Audio/Bgm/san0.mp3",
+    "volume": 0.8,
+    "description": "SAN 归零结局开场播放，抬头露出笑容前停止。"
+  },
+  {
+    "id": "ending_bad",
+    "name": "停车结局音乐",
+    "file": "assets/Audio/Bgm/be.mp3",
+    "volume": 0.8,
+    "description": "停车结局血水出现时播放。"
+  },
+  {
+    "id": "ending_he",
+    "name": "真结局前段音乐",
+    "file": "assets/Audio/Bgm/he.mp3",
+    "volume": 0.8,
+    "description": "真结局开场播放至醒来。"
+  },
+  {
+    "id": "ending_he2",
+    "name": "真结局醒来音乐",
+    "file": "assets/Audio/Bgm/he2.mp3",
+    "volume": 0.8,
+    "description": "真结局醒来后播放。"
   },
   {
     "id": "opening_cracker_bag",

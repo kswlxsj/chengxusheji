@@ -165,7 +165,9 @@
         "await": { "type": "boolean" },
         "start": { "type": "number", "minimum": 0 },
         "duration": { "type": "number", "exclusiveMinimum": 0 },
-        "volume": { "type": "number", "minimum": 0, "maximum": 1 }
+        "volume": { "type": "number", "minimum": 0, "maximum": 1 },
+        "startWithoutMetadata": { "type": "boolean" },
+        "fadeMs": { "type": "number", "minimum": 0 }
       },
       "additionalProperties": false
     },

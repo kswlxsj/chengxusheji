@@ -178,7 +178,10 @@
       });
       await eatingRamp;
 
-      this.playSound("pouring_sake", { volume: 0.82 });
+      this.eatingVoice?.stop?.({ immediate: true });
+      this.eatingVoice = null;
+      // badend 音乐从血水出现这一刻开始，用较长淡入避免突然切入。
+      this.backgroundAudio?.setTrack?.("ending_bad", { fadeMs: 4200 });
       this.overlay.classList.add("is-blood");
       await this.showLine({
         text: "脚下流过粘稠血水与残骸。",
@@ -205,6 +208,16 @@
         "is-narration"
       );
       await this.showDesperation("不要停下", 2000, "is-message");
+      await this.showDesperation(
+        "你感受到自己渐渐与它们融为一体。",
+        3600,
+        "is-narration"
+      );
+      await this.showDesperation(
+        "主将重现…主将重现…",
+        4600,
+        "is-message"
+      );
       if (videoStarted && Number.isFinite(this.devouredVideo.duration)) {
         const remaining = Math.max(0, this.devouredVideo.duration - this.devouredVideo.currentTime);
         await this.delay(remaining * 1000);
@@ -411,6 +424,7 @@
       this.resolveAdvance = null;
       this.eatingVoice?.stop?.();
       this.eatingVoice = null;
+      this.backgroundAudio?.stopAll?.({ duration: 1600 });
       this.devouredVideo.pause();
       this.audio?.stopAll?.();
       const overlay = this.overlay;

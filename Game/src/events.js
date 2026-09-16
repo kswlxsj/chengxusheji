@@ -346,7 +346,9 @@
           volume: action.volume,
           loop: action.loop === true,
           loopGapMs: action.loopGapMs,
-          segmentDuration: action.segmentDuration
+          segmentDuration: action.segmentDuration,
+          startWithoutMetadata: action.startWithoutMetadata === true,
+          fadeMs: action.fadeMs
         });
         if (action.stopOnDialogueAdvance === true) {
           const advances = Math.max(1, Number(action.stopAfterDialogueAdvances) || 1);

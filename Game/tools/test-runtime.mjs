@@ -1711,7 +1711,17 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.removes, 1, "归还时机到达后应移除音源");
 }
 
-// 10) 元数据就绪前暂停：不得在停止后补播。
+// 10) 短促音效：立即请求播放且不淡入，避免声音结束前仍接近静音。
+{
+  const audio = createAudioStub(SOUND_TEST_REGISTRY, { readyState: 0 });
+  audio.play("sfx_test_short", { startWithoutMetadata: true, fadeMs: 0 });
+  const element = audio.testElements.get("sfx_test_short");
+  assert.equal(element.plays, 1, "短促音效应能跳过元数据等待并立即播放");
+  assert.ok(element.volume > 0, "fadeMs=0 的短促音效不应从静音缓慢淡入");
+  audio.stopAll({ immediate: true });
+}
+
+// 11) 元数据就绪前暂停：不得在停止后补播。
 {
   const audio = createAudioStub(SOUND_TEST_REGISTRY, { readyState: 0 });
   audio.play("sfx_test_short", { duration: 100 });
@@ -1722,7 +1732,7 @@ async function settleMicrotasks(count = 8) {
   assert.equal(element.plays, 0, "已被停止的音效不应在元数据到达后补播");
 }
 
-// 11) 自动播放被拒绝：跳过该音效并立刻结算，不让 await 白等一整段时长。
+// 12) 自动播放被拒绝：跳过该音效并立刻结算，不让 await 白等一整段时长。
 {
   const audio = createAudioStub(SOUND_TEST_REGISTRY, { failPlayback: true });
   const voice = audio.play("sfx_test_short", { duration: 5000 });
@@ -1735,7 +1745,7 @@ async function settleMicrotasks(count = 8) {
   await playback;
 }
 
-// 12) 静音门禁：里世界只允许白名单音效，其余请求静默且停止中的声音立即截断。
+// 13) 静音门禁：里世界只允许白名单音效，其余请求静默且停止中的声音立即截断。
 {
   const audio = createAudioStub();
   audio.play("sfx_test_short");

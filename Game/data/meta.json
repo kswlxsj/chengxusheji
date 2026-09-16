@@ -7,7 +7,9 @@
   "initialState": {
     "sceneId": "carriage_06",
     "currentEventId": null,
-    "flags": {},
+    "flags": {
+      "carriage_06_people_reveal": true
+    },
     "inventory": [],
     "objectStates": {},
     "checkResults": {}

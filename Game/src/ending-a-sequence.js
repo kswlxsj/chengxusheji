@@ -106,6 +106,7 @@
       await this.preload();
       this.overlay.classList.remove("is-loading");
       this.stopAudio();
+      this.playEndingMusic("ending_he", 4200);
       await this.setBackground("frontCarriage", true);
       this.speedVoice = this.playSound("metro_speed_up", { volume: 0.95 });
       await this.showLine({ text: "你不顾乘务员反对，向上拉了拉杆。", auto: 2400, stageClass: "is-accelerating" });
@@ -150,6 +151,8 @@
       this.video.pause();
       this.video.classList.remove("is-visible");
       await this.setBackground("terminalPlatform", true);
+      this.stopEndingMusic(1600);
+      this.playEndingMusic("ending_he2", 4200);
       await this.revealFromBlack(1300);
       await this.showLine({ text: "你猛地惊醒。这是哪？", auto: 2800 });
       await this.showLine({
@@ -316,6 +319,14 @@
       this.backgroundAudio?.stopAll?.();
     }
 
+    playEndingMusic(sound, fadeMs = 1000) {
+      this.backgroundAudio?.setTrack?.(sound, { fadeMs });
+    }
+
+    stopEndingMusic(duration = 1000) {
+      this.backgroundAudio?.stopAll?.({ duration });
+    }
+
     delay(milliseconds) {
       return new Promise((resolve) => {
         const timer = { handle: null, resolve };
@@ -339,6 +350,7 @@
       this.speedVoice?.stop?.();
       this.speedVoice = null;
       this.video.pause();
+      this.stopEndingMusic(1400);
       this.stopAudio();
       this.overlay.remove();
       this.running = null;

@@ -392,6 +392,14 @@ async function validate(meta, scenes, events, items, attributeData, skills, audi
           assert(typeof action.volume === "number" && action.volume >= 0 && action.volume <= 1,
             `事件 ${event.id} 的音效 volume 必须是 0~1 的数字`);
         }
+        if (action.startWithoutMetadata != null) {
+          assert(typeof action.startWithoutMetadata === "boolean",
+            `事件 ${event.id} 的音效 startWithoutMetadata 必须是布尔值`);
+        }
+        if (action.fadeMs != null) {
+          assert(typeof action.fadeMs === "number" && action.fadeMs >= 0,
+            `事件 ${event.id} 的音效 fadeMs 必须是非负数字`);
+        }
       }
       if (action.type === "minigame") {
         assert(typeof action.game === "string" && minigameIds.has(action.game),
