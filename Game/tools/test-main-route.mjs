@@ -16,8 +16,9 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [events, scenes, items, attributes, skills, meta] = await Promise.all(
   ["events", "scenes", "items", "attributes", "skills", "meta"].map(async (name) => JSON.parse(await read(`data/${name}.json`)))
 );
-const [mainSource, bgmSource, homeOpSource, settingsSource, cardBattleSource, crewNegotiationSource] = await Promise.all([
+const [mainSource, diceSource, bgmSource, homeOpSource, settingsSource, cardBattleSource, crewNegotiationSource] = await Promise.all([
   read("src/main.js"),
+  read("src/dice.js"),
   read("src/bgm.js"),
   read("src/home-op.js"),
   read("src/settings.js"),
@@ -253,6 +254,8 @@ assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
 assert.equal(objectOf("carriage_03", "door_03_to_02").clickEvent, "E_023", "3号通往2号的门应先播门前认知崩塌");
 assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员热点应进入教育检定");
+assert.match(diceSource, /registerDice\("ev013_education_01", attrCheck\("education", 17\)\)/, "乘务员前两次救治应使用阈值 17");
+assert.match(diceSource, /registerDice\("ev020_education_01", attrCheck\("education", 16\)\)/, "乘务员第三次救治应使用阈值 16");
 const carriage03 = sceneById.get("carriage_03");
 assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.png");
 assert.deepEqual(carriage03.backgroundVariants, [

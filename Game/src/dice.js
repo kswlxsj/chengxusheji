@@ -168,8 +168,10 @@
   registerDice("ev008_insight_01", attrCheck("insight"));
   registerDice("ev007_education_01", attrCheck("education"));
   registerDice("ev011_insight_01", attrCheck("insight"));
-  registerDice("ev013_education_01", attrCheck("education"));
-  registerDice("ev020_education_01", attrCheck("education"));
+  // 乘务员救治共三次尝试：前两次更严苛，后续紧急补救略放宽。
+  // 默认教育 8 时，三次累计救活率约为 70%。
+  registerDice("ev013_education_01", attrCheck("education", 17));
+  registerDice("ev020_education_01", attrCheck("education", 16));
   registerDice("ev021_education_insight_01", averageAttrCheck(["education", "insight"], 15));
   registerDice("ev016_constitution_01", attrCheck("constitution"));
   registerDice("ev504_insight_01", attrCheck("insight"));
