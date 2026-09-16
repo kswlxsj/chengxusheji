@@ -115,6 +115,22 @@ const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_03
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
+const carriage05CenterDoor = objectOf("carriage_05", "door_05_center");
+assert.equal(carriage05CenterDoor.clickEvent, "E_005_CENTER_DOOR", "5号中央车门应只触发普通门对话");
+assert.equal(carriage05CenterDoor.noHighlight, true, "5号中央车门只能点击，不应出现悬停高亮");
+assert.deepEqual(carriage05CenterDoor.visibleWhen, {
+  all: [
+    { not: { flag: "carriage_06_entry_route_a", equals: true } },
+    { not: { flag: "carriage_06_entry_route_b", equals: true } },
+    { not: { flag: "carriage_07_entry_seen", equals: true } }
+  ]
+}, "5号中央车门应与6号共用进入7号前的显示条件");
+for (const id of ["window_05_left", "window_05_right"]) {
+  const windowObject = objectOf("carriage_05", id);
+  assert.equal(windowObject.clickEvent, "E_005_WINDOW", `${id} 应触发窗户普通对话`);
+  assert.equal(windowObject.invisible, true, `${id} 不应叠加新的窗户贴图`);
+  assert.deepEqual(windowObject.visibleWhen, carriage05CenterDoor.visibleWhen, `${id} 应与5号中央车门共用进入7号前的显示条件`);
+}
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
 assert.equal(carriage06CenterDoor.clickEvent, "E_006_CENTER_DOOR", "6号中央车门应只触发普通门对话");
 assert.equal(carriage06CenterDoor.noHighlight, true, "6号中央车门只能点击，不应出现悬停高亮");
@@ -132,6 +148,16 @@ for (const id of ["window_06_left", "window_06_right"]) {
   assert.deepEqual(windowObject.visibleWhen, carriage06CenterDoor.visibleWhen, `${id} 应与中央车门共用进入7号前的显示条件`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_005_WINDOW", [
+    "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+    "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+    "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+  ]],
+  ["E_005_CENTER_DOOR", [
+    "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+    "车门紧闭着，你试着怎么用力都没有反应。",
+    "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+  ]],
   ["E_006_WINDOW", [
     "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
     "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
@@ -149,6 +175,8 @@ for (const [eventId, expectedTexts] of [
   assert.deepEqual(action.params.texts, expectedTexts, `${eventId} 应使用指定的随机句子`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_005_WINDOW", actionsOf("E_005_WINDOW")[0].params.texts],
+  ["E_005_CENTER_DOOR", actionsOf("E_005_CENTER_DOOR")[0].params.texts],
   ["E_006_WINDOW", actionsOf("E_006_WINDOW")[0].params.texts],
   ["E_006_CENTER_DOOR", actionsOf("E_006_CENTER_DOOR")[0].params.texts]
 ]) {
