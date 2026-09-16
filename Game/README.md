@@ -58,7 +58,7 @@
 - 以小游戏注册表（`TrainGame.Minigames`，仿 dice.js 的“JSON 只写编号”分离架构）接入“事件内小游戏”：事件用 `{ "type": "minigame", "game": "<编号>" }` 触发，小游戏模块结束时可返回**结算动作列表**，由事件引擎按当前事件普通动作的语义顺序执行；宿主窗口 `MinigameWindow`（模态居中近满屏、游戏画面变暗、标题栏含“退出小游戏”）内可自绘任意 DOM/canvas/WebGL 画面，小游戏进行中游戏本体冻结、系统暂停与 Esc 被屏蔽。
 - 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；演示触发物 `mg3d_demo_spot_06` 默认隐藏（验收与删除方法见 `docs/API使用说明.md` 示例九）。
 - 终局控制杆争夺小游戏 `conductor_tug`（`src/minigame-games/conductor-tug.js`）：在先头车厢操作面板选择「右杆下拉——加速，继续前进」（`E_033`）时触发，使用竖直抓握条让玩家与列车员争夺控制杆，并用 `Assets/Image/Scene/Background/ConductorTug` 的仪表盘与指针显示控制权倾向；按住空格/W/↑或鼠标左键把绿色区推向红色控制杆，控制权完全偏向一侧即判定该方获胜，成功跳 `E_034`、失败跳 `E_035`；退出小游戏不产生结算，玩家留在先头车厢可再点控制把手重试。
-- 独立登录、注册、标题主页、游戏、存档管理/写入、结束及占位信息页。
+- 独立登录、注册、标题主页、游戏、存档管理/写入、结束及 Options 页面；Options 以页内标签提供三类账号级音量设置和五类结局收藏。
 - 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
 - 稳定状态存档：事件中保存的是该事件开始前最近的完整状态。
@@ -67,7 +67,7 @@
 - 场景物件支持 `fullCanvas` **整幅画布贴图**：素材按“背景图层蒙版”整幅导出（与背景同画布尺寸、透明边含位置信息），运行时与背景同映射叠放（等同把图层贴回背景）；点击与悬停按不透明像素判定，透明区域不触发事件、不悬停高亮。
 - 底部常驻物品快捷栏：渲染持有物品的图标与名称（含数字快捷键），点击物品运行其 `inspectEvent`；普通物品会在压暗的完整游戏画面中放大展示图片、名称与说明。手机和手电筒在 2 号车厢尚未照明时经项目 `useLight` 自定义动作优先提供“照亮”选择；开启后保留黑幕，并显示从画面右侧中点指向鼠标的射线状光束，其余状态同样进入全屏调查。
 - 原生音效播放：音效索引集中在 `data/audio.json`（编号、音频路径、默认音量；编译期校验音频文件真实存在且非空），事件用内置 `{ "type": "sound", "sound": "<编号>" }` 触发，默认与对话并行（不阻塞），可加 `await: true` 等它播完、用 `start`/`duration` 截取一段、用 `volume` 单次微调。事件音效与场景背景音各用独立管理器，共享一秒线性淡入淡出和异步音源生命周期；暂停、取消和终止会启动淡出但不阻塞游戏流程。
-- 页面音乐与游戏内背景音分离：标题页和结束页仍由 `src/bgm.js` 管理；游戏页按 `scenes.json` 的场景绑定选择唯一背景音，列车声与2号、7号、被啃食6号、伪4号和花海等专属环境音切换时交叉淡化，同一音轨跨场景不重启。
+- 页面音乐与游戏内背景音分离：标题页、设置页和结束页由 `src/bgm.js` 管理；游戏页按 `scenes.json` 的场景绑定选择唯一背景音，列车声与2号、7号、被啃食6号、伪4号和花海等专属环境音切换时交叉淡化，同一音轨跨场景不重启。玩家可分别调整页面音乐、游戏背景音和游戏音效，最终音量为资源默认值、剧情单次倍率与账号设置倍率的乘积。
 - 七份内容 JSON（含 `audio.json`）的 VS Code Schema、编译期交叉引用校验和运行时测试。
 - 无前端依赖、通过同源静态服务器交付。
 
@@ -128,7 +128,7 @@ python -m http.server 8000 --bind 127.0.0.1
 然后始终通过 `http://127.0.0.1:8000/` 访问；更换协议、主机或端口会进入另一份浏览器存储空间。
 
 > [!NOTE]
-> 本地账号和正式存档使用同源 `localStorage`，登录状态与跨页临时数据使用 `sessionStorage`。浏览器对 `file:` 地址下存储的行为没有统一保证，因此直接双击只可用于查看静态页面，不属于受支持的游戏运行方式。
+> 本地账号、正式存档、账号音量设置与结局收藏使用同源 `localStorage`，登录状态与跨页临时数据使用 `sessionStorage`。浏览器对 `file:` 地址下存储的行为没有统一保证，因此直接双击只可用于查看静态页面，不属于受支持的游戏运行方式。
 
 > [!WARNING]
 > 当前登录功能只用于纯前端课程演示，密码以明文保存在浏览器中，页面守卫也不能替代服务端鉴权。请勿使用任何真实密码。
@@ -342,10 +342,12 @@ Game/
 │  ├─ minigames.js
 │  ├─ namespace.js
 │  ├─ page-flow.js
+│  ├─ player-profile.js
 │  ├─ register.js
 │  ├─ save-manager.js
 │  ├─ save-write.js
 │  ├─ scene.js
+│  ├─ settings.js
 │  ├─ state.js
 │  └─ ui.js
 ├─ styles/
@@ -451,6 +453,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
+| `player-profile.js` | 管理当前账号的三类音量倍率、五类结局收藏与结局展示目录。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -458,11 +461,12 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `events.js` | 注册表、取消机制、终止条件、内置动作与 `EventEngine`。 |
 | `dice.js` | `TrainGame.Dice` 检定注册表：每个检定独立注册、可访问状态/UI，只返回结果下标；被 `check` 动作委托。 |
 | `custom-actions.js` | 项目动作白名单；当前包含 `flashScreen`、`useLight`、`endGame`、`weightedBranch`（按权重随机分岔，静默判定）。 |
-| `audio.js` | `TrainGame.AudioManager` 与 `BackgroundAudioManager`：事件音和场景唯一背景音共用异步音源、循环与一秒淡化实现。 |
-| `bgm.js` | 仅在 `home.html` 和 `ending.html` 播放跨页 BGM；其他页面保持静默。 |
+| `audio.js` | `TrainGame.AudioManager` 与 `BackgroundAudioManager`：事件音和场景唯一背景音共用异步音源、循环、一秒淡化与账号音量倍率。 |
+| `bgm.js` | 在 `home.html`、`settings.html` 和 `ending.html` 播放跨页 BGM，并应用账号页面音乐倍率。 |
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
+| `settings.js` | 管理 Options 页标签、音量滑杆即时保存与结局收藏卡渲染。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
 | `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
@@ -479,7 +483,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `tools/test-main-route.mjs` | 主线接线回归：4号车厢首次发现与医学询问、4号折返描写、3号→2号点门驱动与里世界返程接线、Clicker 与控制杆接线。 |
 | `tools/test-resource-timeout.mjs` | 资源等待超时、图片命中 Worker 回退与对白计时器回归。 |
 | `index.html` / `register.html` | 公共登录入口和独立注册页。 |
-| `home.html` | 登录后显示的游戏标题主页；主页菜单含新的游戏、存档管理、设置（占位页）、小组介绍与退出登录；其余 HTML 分别承载游戏、存档写入/管理、设置占位与结束页。 |
+| `home.html` | 登录后显示的游戏标题主页；主页菜单含新的游戏、存档管理、设置、小组介绍与退出登录；其余 HTML 分别承载游戏、存档写入/管理、Options 音量与结局收藏、结束页。 |
 | `package.json` | 项目信息及 `compile`、`test`、`check` 命令。 |
 | `README.md` | 项目总览与协作者入口；细分接口手册见 `docs/API使用说明.md`。 |
 | `AGENTS.md` | 仓库协作与提交约束。 |

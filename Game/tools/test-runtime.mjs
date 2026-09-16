@@ -37,7 +37,7 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
@@ -76,6 +76,34 @@ assert.match(Auth.register("storage-test", "123456").message, /无法保存账�
 localStorage.setItem = originalSetItem;
 assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登录时不应访问默认存档槽");
 assert.equal(Auth.login("Alice", "secret1").ok, true);
+
+// 玩家配置按账号隔离；音量逐字段恢复，结局解锁幂等且只接受已登记编号。
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+assert.equal(Game.PlayerProfile.setAudioSetting("pageMusic", 0.55), 0.55);
+assert.equal(Game.PlayerProfile.setAudioSetting("gameAmbience", -2), 0);
+assert.equal(Game.PlayerProfile.setAudioSetting("gameSfx", 8), 1);
+assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知音量设置/);
+for (const ending of Game.ENDING_CATALOG) assert.equal(Game.PlayerProfile.unlockEnding(ending.id), true);
+assert.equal(Game.PlayerProfile.unlockEnding("true_end"), false, "重复结局不应重复写入");
+assert.equal(Game.PlayerProfile.unlockEnding("unknown"), false, "未知终局不应进入收藏");
+assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "bad_end", "lost", "san"]);
+
+assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
+assert.equal(Auth.login("ProfileBob", "secret3").ok, true);
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], [], "不同账号不应共享结局收藏");
+Game.PlayerProfile.setAudioSetting("pageMusic", 0.2);
+assert.equal(Auth.login("Alice", "secret1").ok, true);
+assert.equal(Game.PlayerProfile.getAudioSettings().pageMusic, 0.55, "切回账号后应恢复该账号音量");
+
+const aliceProfileKey = "train-game-profile-user-v1:Alice";
+storage.set(aliceProfileKey, JSON.stringify({ audio: { pageMusic: "bad", gameAmbience: 0.4 }, unlockedEndings: ["lost", "bad-id", "lost"] }));
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 0.4, gameSfx: 1 });
+assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["lost"], "损坏字段应独立回退并清理无效或重复结局");
+storage.set(aliceProfileKey, "not-json");
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+storage.delete(aliceProfileKey);
+
 const initialState = {
   sceneId: "test_scene",
   currentEventId: null,
@@ -381,7 +409,7 @@ lightChoice = { value: true };
 await lightEngine.play("E_TEST_USE_LIGHT");
 assert.equal(lightState.flags.light_used, true, "使用手机应记录车厢已照明");
 assert.equal(lightState.flags.light_type, "phone", "使用手机应记录照明物品");
-assert.match(lightDialogue.at(-1).text, /照亮了2号车厢/, "使用成功应通过普通剧情文本反馈");
+assert.match(lightDialogue.at(-1).text, /照亮2号车厢/, "使用成功应通过普通剧情文本反馈");
 
 const inspectCountBeforeLit = lightItemPayloads.length;
 await lightEngine.play("E_TEST_USE_LIGHT");
@@ -1362,6 +1390,19 @@ async function settleMicrotasks(count = 8) {
   element.emit("ended");
   assert.equal(audio.voices.size, 0, "音效结束或截断后应从活动表移除");
   assert.equal(element.pauses, 1, "结束后应停掉音源");
+}
+
+// 3b) 用户总音量与资源默认音量、动作倍率独立相乘，演出动态调音不会绕过总音量。
+{
+  const audio = createAudioStub(SOUND_TEST_REGISTRY, {}, { fadeMs: 0, masterVolume: 0.25 });
+  const voice = audio.play("sfx_test_short", { volume: 0.4 });
+  assert.equal(voice.targetVolume, 0.5 * 0.4 * 0.25);
+  voice.setVolume(0.8);
+  assert.equal(voice.targetVolume, 0.5 * 0.8 * 0.25);
+  audio.setMasterVolume(0.5);
+  assert.equal(voice.targetVolume, 0.5 * 0.8 * 0.5);
+  assert.equal(voice.element.volume, voice.targetVolume);
+  voice.stop({ immediate: true });
 }
 
 // 4) await: true：事件等音效结束（或截断时长）才继续，并在结束时停掉本条音效。

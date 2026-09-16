@@ -6,13 +6,15 @@
   <title>常暗之厢</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css">
-  <script src="src/bgm.js?v=page-music-20260914-1" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/player-profile.js"></script>
+  <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
   <script src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
+  <script src="src/bgm.js?v=profile-audio-20260916-1" defer></script>
 </head>
 <body>
   <div id="home-op" class="home-op">
@@ -65,7 +67,7 @@
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/home.js"></script>
   <!-- 初始化主页数据渲染和当前用户展示。 -->
-  <script src="src/home-op.js?v=page-music-20260914-1"></script>
+  <script src="src/home-op.js?v=profile-audio-20260916-1"></script>
   <!-- 登录进入主页后先播放四张开场图片，再开放主页交互。 -->
 
   <!-- CODEX ADD START -->

@@ -33,6 +33,7 @@
   const AUDIO_FADE_OUT_MS = 3000;     // OP 音乐淡出时长
   const AUDIO_SILENCE_MS = 250;       // 两段音乐之间的纯静音间隔
   const AUDIO_FADE_IN_MS = 2000;      // BGM 淡入时长
+  const pageMusicVolume = window.TrainGame?.PlayerProfile?.getAudioSettings?.().pageMusic ?? 1;
 
   const overlay = document.querySelector("#home-op");
   if (!overlay) return;
@@ -46,6 +47,7 @@
   const skipButton = document.querySelector("#home-op-skip");
   const opAudio = new Audio(OP_AUDIO_SOURCE);
   opAudio.preload = "auto";
+  opAudio.volume = pageMusicVolume;
 
   let activeFrameIndex = 0;   // 当前播放到 PLAY_ORDER 的第几个
   let availableFrames = [];   // 已成功加载的图片（按 FRAME_SOURCES 下标对应）
@@ -100,7 +102,7 @@
     } catch (_error) {
       // 当前浏览器若尚未取得元数据，仍以暂停为准。
     }
-    opAudio.volume = 1;
+    opAudio.volume = pageMusicVolume;
   }
 
   function animateVolume(duration, updateVolume, onComplete) {

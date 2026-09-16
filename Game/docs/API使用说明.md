@@ -33,6 +33,7 @@
   - [通用基础（TrainGame 命名空间）](#通用基础traingame-命名空间)
   - [GameState 与状态快照](#gamestate-与状态快照)
   - [Auth（浏览器本地认证）](#auth浏览器本地认证)
+  - [PlayerProfile（账号设置与结局收藏）](#playerprofile账号设置与结局收藏)
   - [SaveManager（三槽存档）](#savemanager三槽存档)
   - [ConfirmDialog（存档页页面内确认框）](#confirmdialog存档页页面内确认框)
   - [SceneManager（场景渲染与物件点击）](#scenemanager场景渲染与物件点击)
@@ -436,6 +437,19 @@ const state = new TrainGame.GameState(
 
 账号键前缀为 `train-game-auth-user-v1:`，用户名会先经过 `encodeURIComponent`；会话键为 `train-game-auth-session-v1`。账号保存在 `localStorage`，关闭标签页后仍存在；登录态保存在 `sessionStorage`，关闭标签页后需要重新登录。每个账号拥有独立的三个游戏存档槽。该机制仅作课程演示，明文密码不替代服务端鉴权，请勿使用真实密码。
 
+### PlayerProfile（账号设置与结局收藏）
+
+`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。
+
+| 接口 | 行为 |
+| --- | --- |
+| `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx }`，各值为 0–1 的用户倍率；缺失或损坏字段单独回退为 `1`。 |
+| `setAudioSetting(key, value)` | 钳制到 0–1 后立即保存当前账号；未知键抛错。 |
+| `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
+| `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
+
+只读 `TrainGame.ENDING_CATALOG` 为 Options 页提供 `true_end`、`fake_end`、`bad_end`、`lost`、`san` 的标题、说明和卡面路径。终局原因一经确定就在过场或跳页前解锁，避免关闭过场导致漏记；旧版本已经达成的结局没有可靠记录，不做推测性补发。
+
 ### SaveManager（三槽存档）
 
 ```javascript
@@ -641,11 +655,12 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 | 接口 | 说明 |
 | --- | --- |
-| `new AudioManager(root, registry)` | 事件音管理器；`root` 为音源挂载宿主，`registry` 为 `GAME_DATA.audio`。无 DOM 环境自动降级。 |
+| `new AudioManager(root, registry, options)` | 事件音管理器；`root` 为音源挂载宿主，`registry` 为 `GAME_DATA.audio`，`options.masterVolume` 为用户总倍率。无 DOM 环境自动降级。 |
 | `play(soundId, options)` | 从静音淡入并返回 `{ finished, duration, stop(), setVolume() }`。不同编号独立；同编号重播时旧实例淡出、新实例从头淡入。`duration` 的末段在配置总时长内完成淡出。 |
 | `stopAll(options)` | 让全部事件音异步淡出；调用本身不等待。页面卸载可传 `{ immediate: true }` 立即清理。 |
 | `setMuted(value, allowedSoundIds)` | 进入或离开事件音静音区；非白名单活动音淡出，后续请求静默降级。 |
-| `new BackgroundAudioManager(root, registry)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`。 |
+| `setMasterVolume(value)` | 更新管理器及当前活动音源的用户总倍率，不覆盖资源默认音量或剧情单次倍率。 |
+| `new BackgroundAudioManager(root, registry, options)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`；同样接受 `options.masterVolume`。 |
 | `setTrack(soundId, options)` | 选择场景背景音。相同编号保持进度，淡出中再次选择会恢复；新编号与旧编号交叉淡化；`null` 淡出到静音。 |
 
 语义与边界：
@@ -657,7 +672,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
 - **里世界静音**：里世界只放行车门、剧情提示和检定等白名单事件音；背景音不经过该白名单，而是完全由当前场景绑定决定。
 - **场景背景音**：普通真实车厢绑定 `train_ambient`；2号绑定 `devil_scared`；7号及被啃食6号绑定带1600ms间隔的 `eating_crisps`；假1号绑定 `maze`；伪4号与两处花海绑定 `fake`。专属音替换列车声，不叠加；相邻场景绑定同一编号时持续播放。
-- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 只负责标题/结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理，三者互不接管。
+- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 负责标题、Options 与结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理。Options 分别保存页面音乐、游戏背景音、游戏音效倍率，公式统一为“资源默认音量 × 剧情单次倍率 × 用户倍率”。
 
 ### UI：GameWindow / TextPlayer / UIManager
 

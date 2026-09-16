@@ -6,21 +6,57 @@
   <title>常暗之厢 · 设置</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css">
-  <script src="src/bgm.js" defer></script>
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/player-profile.js"></script>
+  <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
   <script src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
+  <script src="src/bgm.js" defer></script>
 </head>
 <body>
-  <main class="site-shell content-page">
-    <section class="page-panel compact-panel">
+  <main class="site-shell content-page settings-page">
+    <section class="page-panel settings-panel">
       <h1>设置</h1>
-      <p class="page-introduction">设置功能将在后续版本中提供。</p>
+      <div class="settings-tabs" role="tablist" aria-label="设置分类">
+        <button id="audio-tab" type="button" role="tab" aria-selected="true" aria-controls="audio-panel">音频</button>
+        <button id="endings-tab" type="button" role="tab" aria-selected="false" aria-controls="endings-panel" tabindex="-1">结局收集</button>
+      </div>
+
+      <section id="audio-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="audio-tab">
+        <p class="page-introduction">调整后的音量会立即保存到当前账号。100% 表示保留游戏原本设计的音量。</p>
+        <div class="volume-setting-list">
+          <label class="volume-setting" for="page-music-volume">
+            <span class="volume-setting-copy"><strong>页面音乐</strong><small>主页开场、主页、设置页与结束页音乐</small></span>
+            <input id="page-music-volume" type="range" min="0" max="100" step="5" data-audio-setting="pageMusic" aria-describedby="page-music-value">
+            <output id="page-music-value" for="page-music-volume">100%</output>
+          </label>
+          <label class="volume-setting" for="game-ambience-volume">
+            <span class="volume-setting-copy"><strong>游戏背景音</strong><small>列车与场景中的循环环境声</small></span>
+            <input id="game-ambience-volume" type="range" min="0" max="100" step="5" data-audio-setting="gameAmbience" aria-describedby="game-ambience-value">
+            <output id="game-ambience-value" for="game-ambience-volume">100%</output>
+          </label>
+          <label class="volume-setting" for="game-sfx-volume">
+            <span class="volume-setting-copy"><strong>游戏音效</strong><small>交互、检定与结局演出音效</small></span>
+            <input id="game-sfx-volume" type="range" min="0" max="100" step="5" data-audio-setting="gameSfx" aria-describedby="game-sfx-value">
+            <output id="game-sfx-value" for="game-sfx-volume">100%</output>
+          </label>
+        </div>
+      </section>
+
+      <section id="endings-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="endings-tab" hidden>
+        <div class="ending-collection-header">
+          <p class="page-introduction">到达结局后，对应记录会永久保存在当前账号中。</p>
+          <strong id="ending-progress" aria-live="polite">已收集 0 / 5</strong>
+        </div>
+        <div id="ending-collection" class="ending-collection" aria-label="结局收藏"></div>
+      </section>
       <nav class="page-footer"><a href="home.html">返回主页</a></nav>
     </section>
   </main>
+  <script src="src/settings.js"></script>
+  <!-- 初始化设置标签、音量滑杆和结局收藏卡片。 -->
 </body>
 </html>

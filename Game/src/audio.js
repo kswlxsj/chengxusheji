@@ -33,7 +33,7 @@
   }
 
   class AudioVoice {
-    constructor({ id, entry, element, root, options = {}, fadeMs = FADE_MS, onSettled, onPlaybackFailure }) {
+    constructor({ id, entry, element, root, options = {}, masterVolume = 1, fadeMs = FADE_MS, onSettled, onPlaybackFailure }) {
       this.id = id;
       this.entry = entry;
       this.element = element;
@@ -57,7 +57,8 @@
       this.gappedLoop = this.loop && this.loopGapMs > 0;
       this.multiplier = options.volume == null ? 1 : clamp(Number(options.volume) || 0, 0, 1);
       this.baseVolume = entry.volume == null ? 1 : clamp(Number(entry.volume) || 0, 0, 1);
-      this.targetVolume = this.baseVolume * this.multiplier;
+      this.masterVolume = clamp(Number(masterVolume) || 0, 0, 1);
+      this.targetVolume = this.baseVolume * this.multiplier * this.masterVolume;
       this.metadataTimeout = null;
       this.endTimeout = null;
       this.fadeStartTimeout = null;
@@ -213,7 +214,16 @@
 
     setVolume(value) {
       this.multiplier = clamp(Number(value) || 0, 0, 1);
-      this.targetVolume = this.baseVolume * this.multiplier;
+      this.applyTargetVolume();
+    }
+
+    setMasterVolume(value) {
+      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      this.applyTargetVolume();
+    }
+
+    applyTargetVolume() {
+      this.targetVolume = this.baseVolume * this.multiplier * this.masterVolume;
       if (this.element && !this.stopped && !this.stopping) {
         // 项目演出主动接管音量时终止自动淡入，避免两套动画互相抢写 volume。
         this.fadeToken += 1;
@@ -311,6 +321,9 @@
       this.muted = false;
       this.mutedAllowlist = new Set();
       this.onAutoplayBlocked = null;
+      this.masterVolume = options.masterVolume == null
+        ? 1
+        : clamp(Number(options.masterVolume) || 0, 0, 1);
       this.fadeMs = Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : FADE_MS;
     }
 
@@ -340,6 +353,7 @@
         element: this.createElement(entry),
         root: this.root,
         options,
+        masterVolume: this.masterVolume,
         fadeMs: this.fadeMs,
         onSettled: (settledVoice) => {
           this.activeVoices.delete(settledVoice);
@@ -361,6 +375,11 @@
     stopAll(options = {}) {
       this.voices.clear();
       for (const voice of [...this.activeVoices]) voice.stop(options);
+    }
+
+    setMasterVolume(value) {
+      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      for (const voice of this.activeVoices) voice.setMasterVolume(this.masterVolume);
     }
 
     createElement(_entry) {
@@ -395,6 +414,9 @@
       this.targetId = null;
       this.autoplayWarned = false;
       this.onAutoplayBlocked = null;
+      this.masterVolume = options.masterVolume == null
+        ? 1
+        : clamp(Number(options.masterVolume) || 0, 0, 1);
       this.fadeMs = Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : FADE_MS;
     }
 
@@ -415,6 +437,7 @@
         element: this.createElement(entry),
         root: this.root,
         options: { ...options, loop: true },
+        masterVolume: this.masterVolume,
         fadeMs: this.fadeMs,
         onSettled: (settledVoice) => {
           if (this.current === settledVoice) this.current = null;
@@ -432,6 +455,11 @@
     stopAll(options = {}) {
       this.targetId = null;
       if (this.current && !this.current.stopped) this.current.stop(options);
+    }
+
+    setMasterVolume(value) {
+      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      this.current?.setMasterVolume(this.masterVolume);
     }
 
     createElement(_entry) {

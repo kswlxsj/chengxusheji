@@ -16,10 +16,11 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [events, scenes, items, attributes, skills, meta] = await Promise.all(
   ["events", "scenes", "items", "attributes", "skills", "meta"].map(async (name) => JSON.parse(await read(`data/${name}.json`)))
 );
-const [mainSource, bgmSource, homeOpSource, cardBattleSource, crewNegotiationSource] = await Promise.all([
+const [mainSource, bgmSource, homeOpSource, settingsSource, cardBattleSource, crewNegotiationSource] = await Promise.all([
   read("src/main.js"),
   read("src/bgm.js"),
   read("src/home-op.js"),
+  read("src/settings.js"),
   read("src/minigame-games/card-battle.js"),
   read("src/minigame-games/crew-negotiation.js")
 ]);
@@ -444,8 +445,13 @@ for (const sceneId of ["carriage_inner_01", "carriage_inner_02", "carriage_fake_
 }
 assert.match(mainSource, /backgroundSoundVariants[\s\S]*backgroundAudio\?\.setTrack/);
 assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/Audio\/Bgm\/op-v2\.mp3/);
+assert.match(bgmSource, /home\.html", "settings\.html", "ending\.html/);
+assert.match(bgmSource, /BASE_VOLUME \* userVolume/);
 assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
 assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);
+assert.match(homeOpSource, /PlayerProfile\?\.getAudioSettings/);
+assert.match(mainSource, /unlockEnding\?\.\(reason\)[\s\S]*reason === "lost"/, "所有终局都应在跳页或播放过场前解锁");
+assert.match(settingsSource, /if \(unlocked\)[\s\S]*createElement\("img"\)[\s\S]*else/, "锁定卡片不得创建真实图片元素");
 
 // 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
 assert.equal(eventById.get("E_524_DONE").next, "E_025");

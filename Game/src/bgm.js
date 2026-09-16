@@ -11,12 +11,21 @@
   const SOURCE = new URL(sourceFile, scriptUrl).href;
   const STORAGE_KEY = "train-game-bgm-state-v1";
   const OP_ACTIVE_FLAG = "__TRAIN_GAME_OP_ACTIVE__";
-  const VOLUME = 0.55;
+  const BASE_VOLUME = 0.55;
   const SAVE_INTERVAL = 1000;
   const FADE_MS = 800;          // 淡入淡出时长
-  const BGM_PAGE_FILES = new Set(["home.html", "ending.html"]);
+  const BGM_PAGE_FILES = new Set(["home.html", "settings.html", "ending.html"]);
+  let userVolume = window.TrainGame?.PlayerProfile?.getAudioSettings?.().pageMusic ?? 1;
 
-  // 标题页播放主页 BGM，结束页播放 OP；游戏页和其余辅助页面不播放这套音乐。
+  function clamp(value) {
+    return Math.min(1, Math.max(0, Number(value) || 0));
+  }
+
+  function targetVolume() {
+    return BASE_VOLUME * userVolume;
+  }
+
+  // 标题页与设置页播放主页 BGM，结束页播放 OP；游戏页和其余辅助页面不播放这套音乐。
   if (!BGM_PAGE_FILES.has(pageFile)) {
     window.__TRAIN_GAME_BGM__ = {
       resume: () => Promise.resolve(),
@@ -24,7 +33,8 @@
       pause: () => {},
       save: () => {},
       getAudio: () => null,
-      getVolume: () => VOLUME
+      getVolume: targetVolume,
+      setVolume: () => {}
     };
     return;
   }
@@ -111,10 +121,10 @@
     audio.volume = 0;
     const promise = audio.play();
     if (!promise || typeof promise.catch !== "function") {
-      fadeTo(VOLUME, fadeDuration);
+      fadeTo(targetVolume(), fadeDuration);
       return Promise.resolve();
     }
-    return promise.then(() => fadeTo(VOLUME, fadeDuration)).catch(() => {
+    return promise.then(() => fadeTo(targetVolume(), fadeDuration)).catch(() => {
       armUnlock();
     });
   }
@@ -140,6 +150,18 @@
   function pauseSmooth() {
     if (!audio) return;
     fadeTo(0);
+  }
+
+  function setVolume(value) {
+    userVolume = clamp(value);
+    if (!audio) return targetVolume();
+    if (fadeTimer) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+    }
+    audio.volume = targetVolume();
+    if (userVolume > 0 && audio.paused && window[OP_ACTIVE_FLAG] !== true) play();
+    return targetVolume();
   }
 
   function armUnlock() {
@@ -190,7 +212,8 @@
     pause: pauseSmooth,
     save: () => persist(true),
     getAudio: () => audio,
-    getVolume: () => VOLUME
+    getVolume: targetVolume,
+    setVolume
   };
 
   if (document.readyState === "loading") {

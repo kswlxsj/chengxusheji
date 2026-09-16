@@ -29,6 +29,7 @@
       ending = true;
       flow.clearTransfer();
       const reason = state.flags.ending_reason || "san";
+      Game.PlayerProfile?.unlockEnding?.(reason);
       if (reason === "lost") {
         flow.navigate("ending", { reason }, true);
         return;

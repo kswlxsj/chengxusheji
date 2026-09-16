@@ -963,18 +963,23 @@
 
   class UIManager {
     constructor(root, audio = []) {
+      const audioSettings = Game.PlayerProfile?.getAudioSettings?.() || {};
+      const gameSfxVolume = audioSettings.gameSfx ?? 1;
+      const gameAmbienceVolume = audioSettings.gameAmbience ?? 1;
       this.root = root;
       this.dialog = new DialogWindow(root);
       this.attributeAllocation = new AttributeAllocationWindow(root);
       this.choice = new ChoiceWindow(root);
       this.inspect = new InspectWindow(root);
       this.itemInspect = new ItemInspectWindow(root);
-      this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      this.audio = Game.AudioManager
+        ? new Game.AudioManager(document.body, audio, { masterVolume: gameSfxVolume })
+        : null;
       this.buttonAudio = Game.AudioManager
-        ? new Game.AudioManager(document.body, audio, { fadeMs: 0 })
+        ? new Game.AudioManager(document.body, audio, { fadeMs: 0, masterVolume: gameSfxVolume })
         : null;
       this.backgroundAudio = Game.BackgroundAudioManager
-        ? new Game.BackgroundAudioManager(document.body, audio)
+        ? new Game.BackgroundAudioManager(document.body, audio, { masterVolume: gameAmbienceVolume })
         : null;
       this.dice = new DiceRollWindow(root, this.audio);
       this.mainMenu = new MenuWindow(root, "main-menu-window");

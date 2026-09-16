@@ -665,6 +665,120 @@ a { color: inherit; }
 }
 .ending-actions a { text-align: center; }
 
+/* 设置页：音频与结局收藏共用同一内容面板，通过页内标签切换。 */
+.settings-panel {
+  width: min(1080px, 100%);
+  padding: clamp(20px, 3vw, 36px);
+}
+.settings-tabs {
+  display: flex;
+  gap: 8px;
+  margin: -8px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,.18);
+}
+.settings-tabs button {
+  padding: 11px 20px;
+  color: rgba(236,229,216,.68);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.settings-tabs button:hover { color: var(--ink); }
+.settings-tabs button[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.settings-tabs button:focus-visible {
+  color: var(--ink);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.settings-tab-panel[hidden] { display: none; }
+.settings-tab-panel .page-introduction { margin-top: 0; }
+.volume-setting-list { display: grid; gap: 14px; }
+.volume-setting {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 1.2fr) 58px;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+}
+.volume-setting-copy { display: grid; gap: 5px; }
+.volume-setting-copy strong { color: var(--accent); font-size: 1.08em; }
+.volume-setting-copy small { color: rgba(236,229,216,.62); line-height: 1.45; }
+.volume-setting input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.volume-setting output { color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.ending-collection-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+}
+.ending-collection-header strong { color: var(--accent); white-space: nowrap; }
+.ending-collection {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.ending-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.22);
+}
+.ending-card-preview {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.38);
+}
+.ending-card-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+.ending-card-lock {
+  color: rgba(236,229,216,.2);
+  font-size: clamp(42px, 6vw, 74px);
+  text-shadow: 0 3px 12px #000;
+}
+.ending-card-content { min-height: 112px; padding: 14px 16px; }
+.ending-card-content h2 { margin: 0 0 8px; color: var(--accent); font-size: clamp(16px, 1.5vw, 21px); }
+.ending-card-content p { margin: 0; color: rgba(236,229,216,.72); font-size: .88em; line-height: 1.55; }
+.ending-card.is-locked .ending-card-content { display: grid; align-content: center; text-align: center; }
+.ending-card.is-locked .ending-card-content h2 { color: rgba(236,229,216,.42); letter-spacing: .12em; }
+.ending-card.is-locked .ending-card-content p { color: rgba(236,229,216,.42); }
+
+@media (max-width: 760px) {
+  .site-shell.settings-page {
+    width: 100%;
+    height: 100vh;
+    min-height: 100vh;
+    aspect-ratio: auto;
+    align-items: start;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .settings-panel { max-height: none; padding: 18px; }
+  .volume-setting { grid-template-columns: 1fr 52px; gap: 12px; }
+  .volume-setting-copy { grid-column: 1 / -1; }
+  .ending-collection-header { display: block; }
+  .ending-collection-header strong { display: block; margin: -10px 0 18px; }
+  .ending-collection { grid-template-columns: 1fr; }
+}
+
 /* ============ 5. 认证页（登录 / 注册）：auth-* 表单与提示 ============ */
 
 .auth-page { overflow: auto; }
