@@ -115,6 +115,23 @@ assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem
 const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
+assert.equal(objectOf("carriage_04", "door_04_to_05").clickEvent, "E_GO_04_05", "4号左门应保持原有通往5号事件");
+assert.equal(objectOf("carriage_04", "door_04_to_03").clickEvent, "E_DOOR_04", "4号右门应保持原有通往3号事件");
+const carriage04CenterDoor = objectOf("carriage_04", "door_04_center");
+assert.equal(carriage04CenterDoor.clickEvent, "E_004_CENTER_DOOR", "4号中央车门应只触发普通门对话");
+assert.equal(carriage04CenterDoor.noHighlight, true, "4号中央车门只能点击，不应出现悬停高亮");
+assert.equal(carriage04CenterDoor.zIndex, 11, "4号中央车门应位于乘务员图层下方");
+assert.equal(carriage04CenterDoor.visibleWhen, undefined, "4号中央车门不应改变任何剧情显示条件");
+assert.deepEqual(carriage04CenterDoor.position, { x: 43, y: 28, width: 14, height: 48 }, "4号中央车门热点应收窄到双开门内部");
+for (const id of ["window_04_left", "window_04_right"]) {
+  const windowObject = objectOf("carriage_04", id);
+  assert.equal(windowObject.clickEvent, "E_004_WINDOW", `${id} 应只触发窗户普通对话`);
+  assert.equal(windowObject.invisible, true, `${id} 不应叠加新的窗户贴图`);
+  assert.equal(windowObject.zIndex, 10, `${id} 应位于乘务员和既有物件下方`);
+  assert.equal(windowObject.visibleWhen, undefined, `${id} 不应改变任何剧情显示条件`);
+}
+assert.deepEqual(objectOf("carriage_04", "window_04_left").position, { x: 19, y: 33, width: 18, height: 15 }, "4号左窗热点应收在玻璃内部");
+assert.deepEqual(objectOf("carriage_04", "window_04_right").position, { x: 61, y: 33, width: 18, height: 15 }, "4号右窗热点应收在玻璃内部");
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
 const carriage05CenterDoor = objectOf("carriage_05", "door_05_center");
 assert.equal(carriage05CenterDoor.clickEvent, "E_005_CENTER_DOOR", "5号中央车门应只触发普通门对话");
@@ -156,6 +173,16 @@ for (const id of ["window_06_left", "window_06_right"]) {
   assert.deepEqual(windowObject.visibleWhen, carriage06CenterDoor.visibleWhen, `${id} 应与中央车门共用进入7号前的显示条件`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_004_WINDOW", [
+    "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+    "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+    "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+  ]],
+  ["E_004_CENTER_DOOR", [
+    "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+    "车门紧闭着，你试着怎么用力都没有反应。",
+    "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+  ]],
   ["E_005_WINDOW", [
     "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
     "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
@@ -193,6 +220,8 @@ for (const [eventId, expectedTexts] of [
   assert.deepEqual(action.params.texts, expectedTexts, `${eventId} 应使用指定的随机句子`);
 }
 for (const [eventId, expectedTexts] of [
+  ["E_004_WINDOW", actionsOf("E_004_WINDOW")[0].params.texts],
+  ["E_004_CENTER_DOOR", actionsOf("E_004_CENTER_DOOR")[0].params.texts],
   ["E_005_WINDOW", actionsOf("E_005_WINDOW")[0].params.texts],
   ["E_005_CENTER_DOOR", actionsOf("E_005_CENTER_DOOR")[0].params.texts],
   ["E_05_JUNK_LEFT", actionsOf("E_05_JUNK_LEFT")[0].params.texts],

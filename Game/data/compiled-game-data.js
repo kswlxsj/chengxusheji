@@ -657,6 +657,46 @@ window.GAME_DATA = {
           "clickEvent": "E_DOOR_04"
         },
         {
+          "id": "door_04_center",
+          "name": "中央车门",
+          "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+          "position": {
+            "x": 43,
+            "y": 28,
+            "width": 14,
+            "height": 48
+          },
+          "noHighlight": true,
+          "zIndex": 11,
+          "clickEvent": "E_004_CENTER_DOOR"
+        },
+        {
+          "id": "window_04_left",
+          "name": "左侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 19,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_004_WINDOW"
+        },
+        {
+          "id": "window_04_right",
+          "name": "右侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 61,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_004_WINDOW"
+        },
+        {
           "id": "crew_04",
           "name": "重伤的乘务员",
           "image": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
@@ -1652,6 +1692,38 @@ window.GAME_DATA = {
     },
     {
       "id": "E_005_CENTER_DOOR",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+              "车门紧闭着，你试着怎么用力都没有反应。",
+              "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_004_WINDOW",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+              "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+              "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_004_CENTER_DOOR",
       "actions": [
         {
           "type": "custom",
