@@ -99,7 +99,13 @@ window.GAME_DATA = {
             "height": 63
           },
           "zIndex": 11,
-          "clickEvent": "E_005"
+          "clickEvent": "E_005",
+          "visibleWhen": {
+            "not": {
+              "flag": "carriage_06_eaten",
+              "equals": true
+            }
+          }
         },
         {
           "id": "door_06_to_05",

@@ -277,6 +277,11 @@ assert.equal(
   true,
   "首次进入5号车厢时应立即把6号车厢切为被啃食背景"
 );
+assert.deepEqual(
+  sceneById.get("carriage_06").objects.find((object) => object.id === "door_06_to_07").visibleWhen,
+  { not: { flag: "carriage_06_eaten", equals: true } },
+  "6号车厢被啃食后不得再显示或点击通往7号车厢的门"
+);
 assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，好像是6号车厢的方向。");
 assert.equal(actionsOf("E_012").some((action) => action.type === "check"), false, "隔门时不应检定或看见6号车厢");
 const eatenRevealActions = actionsOf("E_012_S");
