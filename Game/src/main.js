@@ -289,6 +289,7 @@
 
   function autoSaveOnNewCarriage() {
     if (startupLocked || paused || engine.busy || !activeSlot || !state.sceneId) return;
+    if (!Game.PlayerProfile.getAutoSaveEnabled()) return;
     if (autosavedCarriageIds.has(state.sceneId)) return;
     const snapshot = engine.getStableSnapshot();
     if (!snapshot.sceneId || snapshot.sceneId !== state.sceneId) return;

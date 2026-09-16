@@ -717,6 +717,26 @@ a { color: inherit; }
   cursor: pointer;
 }
 .volume-setting output { color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.toggle-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+  cursor: pointer;
+}
+.toggle-setting-copy { display: grid; gap: 5px; }
+.toggle-setting-copy strong { color: var(--accent); font-size: 1.08em; }
+.toggle-setting-copy small { color: rgba(236,229,216,.62); line-height: 1.45; }
+.toggle-setting input[type="checkbox"] {
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
 .ending-collection-header {
   display: flex;
   align-items: baseline;
@@ -774,6 +794,7 @@ a { color: inherit; }
   .settings-panel { max-height: none; padding: 18px; }
   .volume-setting { grid-template-columns: 1fr 52px; gap: 12px; }
   .volume-setting-copy { grid-column: 1 / -1; }
+  .toggle-setting { align-items: start; }
   .ending-collection-header { display: block; }
   .ending-collection-header strong { display: block; margin: -10px 0 18px; }
   .ending-collection { grid-template-columns: 1fr; }

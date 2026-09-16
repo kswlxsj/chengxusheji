@@ -1,7 +1,7 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 2;
+  const PROFILE_VERSION = 3;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
   const AUDIO_REFERENCE_LEVEL = 0.6;
   const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx"]);
@@ -49,6 +49,7 @@
         gameAmbience: AUDIO_REFERENCE_LEVEL,
         gameSfx: AUDIO_REFERENCE_LEVEL
       },
+      autoSaveEnabled: true,
       unlockedEndings: []
     };
   }
@@ -76,6 +77,7 @@
     if (Array.isArray(value.unlockedEndings)) {
       profile.unlockedEndings = [...new Set(value.unlockedEndings.filter((id) => ENDING_IDS.has(id)))];
     }
+    if (typeof value.autoSaveEnabled === "boolean") profile.autoSaveEnabled = value.autoSaveEnabled;
     return profile;
   }
 
@@ -124,6 +126,17 @@
     return toAudioGain(readProfile().audio[key]);
   }
 
+  function getAutoSaveEnabled() {
+    return readProfile().autoSaveEnabled;
+  }
+
+  function setAutoSaveEnabled(value) {
+    const profile = readProfile();
+    profile.autoSaveEnabled = Boolean(value);
+    writeProfile(profile);
+    return profile.autoSaveEnabled;
+  }
+
   function getUnlockedEndings() {
     return [...readProfile().unlockedEndings];
   }
@@ -143,6 +156,8 @@
     setAudioSetting,
     getAudioGain,
     toAudioGain,
+    getAutoSaveEnabled,
+    setAutoSaveEnabled,
     getUnlockedEndings,
     unlockEnding
   });

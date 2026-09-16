@@ -22,6 +22,7 @@
       <h1>设置</h1>
       <div class="settings-tabs" role="tablist" aria-label="设置分类">
         <button id="audio-tab" type="button" role="tab" aria-selected="true" aria-controls="audio-panel">音频</button>
+        <button id="game-tab" type="button" role="tab" aria-selected="false" aria-controls="game-panel" tabindex="-1">游戏</button>
         <button id="endings-tab" type="button" role="tab" aria-selected="false" aria-controls="endings-panel" tabindex="-1">结局收集</button>
       </div>
 
@@ -44,6 +45,14 @@
             <output id="game-sfx-value" for="game-sfx-volume">100%</output>
           </label>
         </div>
+      </section>
+
+      <section id="game-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="game-tab" hidden>
+        <p class="page-introduction">游戏设置会立即保存到当前账号。</p>
+        <label class="toggle-setting" for="auto-save-enabled">
+          <span class="toggle-setting-copy"><strong>自动存档</strong><small>首次进入新车厢时，自动保存当前稳定进度到正在使用的存档槽位。</small></span>
+          <input id="auto-save-enabled" type="checkbox" role="switch">
+        </label>
       </section>
 
       <section id="endings-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="endings-tab" hidden>

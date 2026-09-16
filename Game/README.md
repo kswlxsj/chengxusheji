@@ -453,7 +453,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `namespace.js` | 创建 `window.TrainGame`，提供版本、深拷贝和普通延迟。 |
 | `auth.js` | 管理本地账号、键值对登录、标签页会话和认证跳转。 |
 | `auth-guard.js` | 在受保护页面加载和恢复显示时验证登录状态。 |
-| `player-profile.js` | 管理当前账号的三类音量倍率、五类结局收藏与结局展示目录。 |
+| `player-profile.js` | 管理当前账号的三类音量倍率、自动存档开关、五类结局收藏与结局展示目录。 |
 | `page-flow.js` | 集中维护页面路径、槽位参数和跨页临时状态。 |
 | `state.js` | `GameState`、属性/技能规则、快照恢复与 `SaveManager`。 |
 | `ui.js` | 窗口基类、文本播放器、各类窗口和 `UIManager`。 |
@@ -466,11 +466,11 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `minigames.js` | `TrainGame.Minigames` 小游戏注册表：事件 JSON 的 `minigame` 动作只引用这里的编号；模块顶层只注册，运行期才碰 DOM。 |
 | `minigame-games/` | 项目小游戏模块（每个小游戏一个文件，见 `minigames.js` 契约与 `docs/API使用说明.md` 小游戏一节）。`webgl3d-demo.js` 为原生 WebGL 3D 技术演示，`conductor-tug.js` 为终局控制杆争夺。 |
 | `home.js` | 从游戏元数据初始化主页标题与封面。 |
-| `settings.js` | 管理 Options 页标签、音量滑杆即时保存与结局收藏卡渲染。 |
+| `settings.js` | 管理 Options 页标签、音量滑杆与自动存档开关的即时保存，以及结局收藏卡渲染。 |
 | `login.js` / `register.js` | 处理登录、注册表单和注册后用户名预填。 |
 | `save-manager.js` | 渲染三个槽位并处理读取与删除。 |
 | `save-write.js` | 处理新游戏选槽及游戏稳定快照的跨页写入。 |
-| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏；进入新车厢后自动保存当前槽位；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
+| `main.js` | 游戏页组装入口：新游戏、读取、恢复、暂停菜单与 SAN 归零跳转结束页；渲染 HUD 与底部物品快捷栏；自动存档开启时，首次进入新车厢后保存当前槽位；小游戏进行中屏蔽系统暂停（`ui.minigame.isOpen()` 守卫暂停按钮与 Esc）。 |
 
 ### 其他目录和根文件
 

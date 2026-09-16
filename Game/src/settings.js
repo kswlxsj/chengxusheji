@@ -4,6 +4,7 @@
   const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
   const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
   const sliders = Array.from(document.querySelectorAll("[data-audio-setting]"));
+  const autoSaveEnabled = document.querySelector("#auto-save-enabled");
   const endingList = document.querySelector("#ending-collection");
   const endingProgress = document.querySelector("#ending-progress");
 
@@ -46,6 +47,13 @@
       const value = Game.PlayerProfile.setAudioSetting(key, Number(slider.value) / 100);
       updateOutput(value);
       if (key === "pageMusic") window.__TRAIN_GAME_BGM__?.setVolume?.(value);
+    });
+  }
+
+  if (autoSaveEnabled) {
+    autoSaveEnabled.checked = Game.PlayerProfile.getAutoSaveEnabled();
+    autoSaveEnabled.addEventListener("change", () => {
+      autoSaveEnabled.checked = Game.PlayerProfile.setAutoSaveEnabled(autoSaveEnabled.checked);
     });
   }
 
