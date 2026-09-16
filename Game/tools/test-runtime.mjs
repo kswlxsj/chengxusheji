@@ -324,6 +324,7 @@ assert.equal(inspectedScene.title, "场景线索", "不带物品 ID 的场景调
 assert.equal(typeof Game.Dice.get("ev005_insight_01"), "function", "E_005 灵感检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006a_san_01"), "function", "E_006A SAN 检定应已注册");
 assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检定应已注册");
+assert.equal(typeof Game.Dice.get("ev008_insight_01"), "function", "E_008 洞察检定应已注册");
 assert.equal(typeof Game.Dice.get("ev013_education_01"), "function", "点击乘务员后的教育检定应已注册");
 assert.equal(typeof Game.Dice.get("ev021_education_insight_01"), "function", "话术剧情的教育+灵感检定应已注册");
 
@@ -621,7 +622,7 @@ try {
   sandbox.Math.random = originalRandom;
 }
 
-// SAN 检定损失（真实属性表，SAN 初始分配 5）。
+// SAN 检定只做判定与损失，成败剧情由事件 outcomes 路由。
 const sanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 sanState.completeAttributeAllocation({
   constitution: 10,
@@ -629,37 +630,127 @@ sanState.completeAttributeAllocation({
   insight: 10,
   san: 5
 });
+const sanDialogue = [];
 const sanDiceEngine = new Game.EventEngine({
   events: [],
   state: sanState,
   items: [],
   scene: {},
-  ui: createEngineUi()
+  ui: {
+    ...createEngineUi(),
+    dialog: { showLine: async (payload) => { sanDialogue.push(payload); }, setFast: () => {} }
+  }
 });
 try {
   // ev006a：SAN 0/1，失败扣 1（骰点 1 + SAN 5 = 6 < 11）。
   sandbox.Math.random = () => 0;
-  const sanResult = await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006a_san_01" });
-  assert.equal(sanResult, null, "无 outcomes 的检定不应跳转");
+  const sanResult = await sanDiceEngine.actions.get("check")({
+    type: "check", dice: "ev006a_san_01", outcomes: ["SAN_SUCCESS", "SAN_FAIL"]
+  });
+  assert.equal(sanResult.next, "SAN_FAIL", "SAN 失败应返回失败事件");
+  assert.equal(sanResult.stop, true);
   assert.equal(sanState.getAttribute("san"), 4, "SAN 0/1 失败应扣 1");
-  assert.equal(sanState.checkResults.ev006a_san_01.outcome, null, "无分支检定记录 outcome=null");
+  assert.equal(sanState.checkResults.ev006a_san_01.outcome, 1);
 
   // ev006b：SAN 1/1d4，成功扣 1（SAN 恢复 5 后骰点 6 + 5 = 11 达标）。
   sanState.setAttribute("san", 5);
   sandbox.Math.random = () => 0.999;
-  await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006b_san_01" });
+  const sanSuccess = await sanDiceEngine.actions.get("check")({
+    type: "check", dice: "ev006b_san_01", outcomes: ["SAN_SUCCESS", "SAN_FAIL"]
+  });
+  assert.equal(sanSuccess.next, "SAN_SUCCESS", "SAN 成功应返回成功事件");
+  assert.equal(sanSuccess.stop, true);
   assert.equal(sanState.getAttribute("san"), 4, "SAN 1/1d4 成功应扣 1");
 
   // ev006b：失败掷 1d4（骰点 1，损失 1）并弹掷骰提示。
-  const toastsBefore = realToasts.length;
+  const failedSanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  failedSanState.completeAttributeAllocation({ constitution: 10, education: 9, insight: 10, san: 5 });
   const sanToasts = [];
-  const toastSink = (message) => { sanToasts.push(message); };
-  sanDiceEngine.ui = { ...createEngineUi(), toast: toastSink };
+  const failedSanEngine = new Game.EventEngine({
+    events: [], state: failedSanState, items: [], scene: {},
+    ui: { ...createEngineUi(), toast: (message) => { sanToasts.push(message); } }
+  });
   sandbox.Math.random = () => 0;
-  await sanDiceEngine.actions.get("check")({ type: "check", dice: "ev006b_san_01" });
-  assert.equal(sanState.getAttribute("san"), 3, "SAN 1/1d4 失败应按 1d4 扣损");
+  const sanFailure = await failedSanEngine.actions.get("check")({
+    type: "check", dice: "ev006b_san_01", outcomes: ["SAN_SUCCESS", "SAN_FAIL"]
+  });
+  assert.equal(sanFailure.next, "SAN_FAIL");
+  assert.equal(sanFailure.stop, true);
+  assert.equal(failedSanState.getAttribute("san"), 4, "SAN 1/1d4 失败应按 1d4 扣损");
   assert.equal(sanToasts.length, 1, "骰子损失应弹掷骰提示");
   assert.equal(sanToasts[0].includes("1d4"), true, "提示应包含骰子表达式");
+  assert.equal(sanDialogue.length, 0, "骰子层不得直接播放剧情对白");
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
+// SAN 归零后，引擎应在 check 动作结束时终止，不得继续播放 outcomes 对应剧情。
+const zeroSanState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+zeroSanState.completeAttributeAllocation({ constitution: 10, education: 9, insight: 10, san: 5 });
+zeroSanState.setAttribute("san", 1);
+const zeroSanDialogue = [];
+let zeroSanTerminated = false;
+const zeroSanEngine = new Game.EventEngine({
+  events: [
+    { id: "TEST_SAN_ZERO", actions: [{ type: "check", dice: "ev006a_san_01", outcomes: ["TEST_SAN_ZERO_S", "TEST_SAN_ZERO_F"] }] },
+    { id: "TEST_SAN_ZERO_S", actions: [{ type: "dialogue", text: "不应播放成功剧情。" }] },
+    { id: "TEST_SAN_ZERO_F", actions: [{ type: "dialogue", text: "不应播放失败剧情。" }] }
+  ],
+  state: zeroSanState,
+  items: [],
+  scene: { load() {}, refresh() {}, setInteractionEnabled() {} },
+  ui: {
+    ...createEngineUi(),
+    dialog: { showLine: async (payload) => { zeroSanDialogue.push(payload.text); }, setFast: () => {} }
+  },
+  shouldTerminate: (state) => state.getAttribute("san") <= 0,
+  onTerminate: async () => { zeroSanTerminated = true; }
+});
+try {
+  sandbox.Math.random = () => 0;
+  await zeroSanEngine.play("TEST_SAN_ZERO");
+  assert.equal(zeroSanState.getAttribute("san"), 0);
+  assert.equal(zeroSanTerminated, true);
+  assert.deepEqual(zeroSanDialogue, []);
+} finally {
+  sandbox.Math.random = originalRandom;
+}
+
+// 调整后的关键阈值：常规 8 点配值下，综合检定需掷 4，潜行需掷 3。
+const balanceState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+balanceState.completeAttributeAllocation({ constitution: 8, education: 8, insight: 8, san: 10 });
+const balanceEngine = new Game.EventEngine({
+  events: [], state: balanceState, items: [], scene: {}, ui: createEngineUi()
+});
+try {
+  sandbox.Math.random = () => 0.34; // d6 = 3；8 + 8 + 3 = 19。
+  assert.equal((await balanceEngine.actions.get("check")({
+    type: "check", dice: "ev021_education_insight_01", outcomes: ["PASS", "FAIL"]
+  })).next, "FAIL");
+  sandbox.Math.random = () => 0.5; // d6 = 4；8 + 8 + 4 = 20。
+  assert.equal((await balanceEngine.actions.get("check")({
+    type: "check", dice: "ev021_education_insight_01", outcomes: ["PASS", "FAIL"]
+  })).next, "PASS");
+
+  sandbox.Math.random = () => 0.17; // d6 = 2；8 + 2 = 10。
+  assert.equal((await balanceEngine.actions.get("check")({
+    type: "check", dice: "ev027_constitution_01", outcomes: ["PASS", "FAIL"]
+  })).next, "FAIL");
+  sandbox.Math.random = () => 0.34; // d6 = 3；8 + 3 = 11。
+  assert.equal((await balanceEngine.actions.get("check")({
+    type: "check", dice: "ev027_constitution_01", outcomes: ["PASS", "FAIL"]
+  })).next, "PASS");
+
+  for (const [bonus, rate] of [[0, 40], [15, 55], [30, 70], [45, 85]]) {
+    balanceState.flags.ev014_negotiation_bonus = bonus;
+    sandbox.Math.random = () => (rate - 1) / 100;
+    assert.equal(await Game.Dice.get("ev014_negotiation_final_01")(balanceEngine.context()), 0, `${rate}% 边界应成功`);
+    sandbox.Math.random = () => rate / 100;
+    assert.equal(await Game.Dice.get("ev014_negotiation_final_01")(balanceEngine.context()), 1, `${rate + 1}% 应失败`);
+  }
+  assert.throws(() => Game.Dice.get("ev026_extra_san_01"), /未注册/);
+  assert.throws(() => Game.Dice.get("ev028_constitution_01"), /未注册/);
+  assert.throws(() => Game.Dice.get("ev028_luck_01"), /未注册/);
 } finally {
   sandbox.Math.random = originalRandom;
 }

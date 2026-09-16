@@ -401,7 +401,7 @@ window.GAME_DATA = {
             "height": 24
           },
           "zIndex": 13,
-          "clickEvent": "E_05_SEARCH_NEWS",
+          "clickEvent": "E_011",
           "glow": true,
           "visibleWhen": {
             "all": [
@@ -1531,38 +1531,6 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "door_open"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_a",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_b",
-          "value": false
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "all": [
-              {
-                "flag": "note_back_seen",
-                "equals": true
-              },
-              {
-                "flag": "map_seen",
-                "equals": true
-              },
-              {
-                "not": {
-                  "flag": "carriage_06_guide_seen",
-                  "equals": true
-                }
-              }
-            ]
-          },
-          "next": "E_005_GUIDE"
         }
       ],
       "next": "E_006A"
@@ -1573,38 +1541,6 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "door_open"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_a",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_b",
-          "value": true
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "all": [
-              {
-                "flag": "note_back_seen",
-                "equals": true
-              },
-              {
-                "flag": "map_seen",
-                "equals": true
-              },
-              {
-                "not": {
-                  "flag": "carriage_06_guide_seen",
-                  "equals": true
-                }
-              }
-            ]
-          },
-          "next": "E_005_GUIDE"
         }
       ],
       "next": "E_006B"
@@ -1636,7 +1572,29 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev006a_san_01"
+          "dice": "ev006a_san_01",
+          "outcomes": [
+            "E_006A_SAN_S",
+            "E_006A_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_006A_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你强迫自己辨认门框与座椅的轮廓，用这些熟悉的东西压住翻涌的恐惧，终于把目光从残肢上移开。"
+        }
+      ]
+    },
+    {
+      "id": "E_006A_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "血腥味像是堵进了喉咙。你弯下腰干呕了几声，直到视野不再随着心跳摇晃，才勉强站稳。"
         }
       ]
     },
@@ -1673,7 +1631,29 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev006b_san_01"
+          "dice": "ev006b_san_01",
+          "outcomes": [
+            "E_006B_SAN_S",
+            "E_006B_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_006B_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你的胃一阵痉挛，但还是咬紧牙关忍住了呕吐。你贴着门边站好，不让自己再看地面。"
+        }
+      ]
+    },
+    {
+      "id": "E_006B_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你踉跄着扶住门框，终于还是呕吐了出来。接连的痉挛让你几乎无法呼吸，过了好一会儿才重新抬起头。"
         }
       ]
     },
@@ -1766,6 +1746,10 @@ window.GAME_DATA = {
           "text": "尸体被鲜红的血浆覆盖着，四周散落着大大小小的尸块。"
         },
         {
+          "type": "dialogue",
+          "text": "你努力克制本能，试图用所学知识获得更多线索。"
+        },
+        {
           "type": "setFlag",
           "key": "corpse_07_investigated",
           "value": true
@@ -1818,14 +1802,17 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "不安感笼罩着你。"
+          "text": "你扶着座椅靠背向前挪了半步，试着从明暗交界处辨认那片黑暗的轮廓。"
         },
         {
-          "type": "dialogue",
-          "text": "这里……到底发生了什么？！"
+          "type": "check",
+          "dice": "ev008_insight_01",
+          "outcomes": [
+            "E_008_S",
+            "E_008_F"
+          ]
         }
-      ],
-      "next": "E_008_S"
+      ]
     },
     {
       "id": "E_009",
@@ -1842,16 +1829,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "ev009_seen",
           "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_a",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_b",
-          "value": false
         },
         {
           "type": "sound",
@@ -1926,13 +1903,40 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev010_san_01"
+          "dice": "ev010_san_01",
+          "outcomes": [
+            "E_009_SAN_S",
+            "E_009_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_009_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你把视线从车窗上移开，逐一确认座椅与行李架。那些乘客没有回来，至少眼前的车厢仍然是空的。"
+        }
+      ]
+    },
+    {
+      "id": "E_009_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你不敢再看车窗。即使转过身，那排沉睡的倒影仍黏在视野边缘，仿佛只要眨眼就会再次出现。"
         }
       ]
     },
     {
       "id": "E_009_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "6号车厢依旧空着。你刻意避开车窗，只看着通往5号车厢的门。"
+        }
+      ]
     },
     {
       "id": "E_GO_06_05",
@@ -2206,7 +2210,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "门扉旁有电车示意图。"
+          "text": "车门上有一张不知谁贴上去的纸。好像是电车示意图。纸角有怪异的污渍。"
         },
         {
           "type": "check",
@@ -2377,7 +2381,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "黑暗边缘似乎在移动。"
+          "text": "你屏住呼吸，终于发现黑暗的边缘正在有规律地收缩。"
         },
         {
           "type": "dialogue",
@@ -2397,6 +2401,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
+          "speaker": "你",
           "portrait": "assets/Image/Portrait/player-scared.png",
           "text": "这……这是什么！"
         },
@@ -2412,8 +2417,69 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev008_san_01"
+          "dice": "ev008_san_01",
+          "outcomes": [
+            "E_008_SAN_S",
+            "E_008_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_008_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你盯得双眼发酸，仍无法看清黑暗里究竟藏着什么。"
         },
+        {
+          "type": "dialogue",
+          "text": "一股带着腥气的热风贴着地面涌来，紧接着，金属座椅在黑暗中发出被挤压的呻吟。"
+        },
+        {
+          "type": "dialogue",
+          "text": "咔。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你不知道那里是什么，但你真的不应该再靠近了。"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev008_scouting_ok",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "key": "ev008_scouting_done",
+          "value": true
+        }
+      ],
+      "next": "E_008_AFTER"
+    },
+    {
+      "id": "E_008_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你死死抓住座椅边缘，冰冷的金属让你确认自己仍站在车厢里。那个东西现在还没有靠近。"
+        }
+      ],
+      "next": "E_008_AFTER"
+    },
+    {
+      "id": "E_008_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "那张嘴开合的节奏钻进了脑海。你听见自己的牙齿相互碰撞，双腿几乎不听使唤。"
+        }
+      ],
+      "next": "E_008_AFTER"
+    },
+    {
+      "id": "E_008_AFTER",
+      "actions": [
         {
           "type": "setFlag",
           "key": "visited_carriage_07",
@@ -2421,7 +2487,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你不敢继续停留，还是尽快离开这里吧。"
+          "text": "你不敢继续停留，扶着座椅迅速退回门边。这里必须尽快离开。"
         }
       ]
     },
@@ -2451,13 +2517,8 @@ window.GAME_DATA = {
           "value": true
         },
         {
-          "type": "setFlag",
-          "key": "carriage_05_newspaper_available",
-          "value": true
-        },
-        {
           "type": "dialogue",
-          "text": "5号车厢空无一人。四周散落着各种各样的物品。"
+          "text": "5号车厢空无一人。报纸、背包和零散杂物落在座椅与过道间，像是乘客在同一瞬间凭空消失了。"
         },
         {
           "type": "dialogue",
@@ -2470,7 +2531,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你展开报纸的瞬间，6号车厢的灯灭了。"
+          "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，身后6号车厢的灯灭了。"
         },
         {
           "type": "dialogue",
@@ -2484,7 +2545,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你发现报纸的日期是7月17日。"
+          "text": "你先检查报头和版次，日期清楚地印着“7月17日”。"
         },
         {
           "type": "sound",
@@ -2503,15 +2564,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还......"
+          "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还……"
         },
         {
           "type": "dialogue",
-          "text": "事故原因警方仍在调查中....."
+          "text": "事故原因警方仍在调查中……"
         },
         {
           "type": "dialogue",
-          "text": "幸存者声称......"
+          "text": "幸存者声称……"
         },
         {
           "type": "dialogue",
@@ -2573,8 +2634,37 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev011_san_01"
-        },
+          "dice": "ev011_san_01",
+          "outcomes": [
+            "E_011_SAN_S",
+            "E_011_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_011_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你压住报纸发颤的边角，把日期、获救人数和那句警告重新记了一遍。恐惧没有消失，但线索至少还能被整理。"
+        }
+      ],
+      "next": "E_011_AFTER"
+    },
+    {
+      "id": "E_011_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "纸上的字像虫群一样挤在一起。你用力折起报纸，指尖仍止不住地发抖，那句“不要停下”却牢牢留在脑中。"
+        }
+      ],
+      "next": "E_011_AFTER"
+    },
+    {
+      "id": "E_011_AFTER",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {
@@ -2608,7 +2698,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "portrait": "assets/Image/Portrait/player-scared.png",
-          "text": "你不可置信地看着。"
+          "text": "你发现门框在视野里少了一截，立刻转身看向6号车厢。"
         },
         {
           "type": "dialogue",
@@ -2625,7 +2715,30 @@ window.GAME_DATA = {
         },
         {
           "type": "check",
-          "dice": "ev011_san_01"
+          "dice": "ev011_san_01",
+          "outcomes": [
+            "E_012_SAN_S",
+            "E_012_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_012_SAN_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你咬住舌尖，用疼痛把意识从那片黑暗中拽回来。车厢正在被吞掉，这不是错觉。"
+        }
+      ],
+      "next": "E_012_AFTER"
+    },
+    {
+      "id": "E_012_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你眼睁睁看着黑暗侵入车厢，却无法判断它离自己还有多远。直到灯光闪烁，你才发现自己一直忘了呼吸。"
         }
       ],
       "next": "E_012_AFTER"
@@ -2635,7 +2748,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你没发现什么特别的东西，过量的恐惧与紧张已麻痹了你的神经。"
+          "text": "你只看见6号车厢的灯影一阵晃动。过量的恐惧让你无法分辨那是电路故障，还是有什么东西正在黑暗里靠近。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你不敢回去确认，只能把报纸攥紧，催促自己继续前进。"
         }
       ],
       "next": "E_012_AFTER"
@@ -2694,7 +2811,12 @@ window.GAME_DATA = {
     },
     {
       "id": "E_013_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员的呼吸依旧急促。你已经处理过她的伤口，现在更需要找到让列车停下来的办法。"
+        }
+      ]
     },
     {
       "id": "E_013",
@@ -2727,6 +2849,10 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "dialogue",
+          "text": "你先确认她仍有呼吸，再检查腿上的咬伤。出血最严重的位置在膝下，必须先压迫止血，再固定伤口。"
+        },
+        {
           "type": "check",
           "dice": "ev013_education_01",
           "checkId": "crew_04_medical",
@@ -2740,6 +2866,10 @@ window.GAME_DATA = {
     {
       "id": "E_013_USE_SECOND",
       "actions": [
+        {
+          "type": "dialogue",
+          "text": "你擦掉手心的血，重新调整布条的位置。这一次必须避开伤口边缘，把压力准确落在出血点上。"
+        },
         {
           "type": "check",
           "dice": "ev013_education_01",
@@ -2765,12 +2895,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "乘务员苏醒过来。"
-        },
-        {
-          "type": "setFlag",
-          "key": "crew_04_medical_success",
-          "value": true
+          "text": "你收紧最后一道固定结，确认渗血速度慢了下来。乘务员皱起眉，终于恢复了意识。"
         },
         {
           "type": "setFlag",
@@ -2780,7 +2905,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "啊...呃...天哪..."
+          "text": "啊……呃……天哪……"
         }
       ],
       "next": "E_014_TALK_ENTRY"
@@ -2790,7 +2915,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你尝试用医学知识处理伤势，但颤抖的双手没能完成包扎。"
+          "text": "你试着压住伤口，却把布条缠得太松。鲜血很快从边缘渗出，颤抖的双手也让固定结不断滑脱。"
         },
         {
           "type": "dialogue",
@@ -2808,7 +2933,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "学校里教的医学知识你早已忘了个干净，不停颤抖的手也让你无法做完哪怕包扎这样最基础的动作。"
+          "text": "你再次尝试调整包扎，可越是催促自己冷静，手指越不听使唤。伤口仍在渗血，乘务员的呼吸也没有好转。"
         },
         {
           "type": "dialogue",
@@ -2831,7 +2956,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员表情十分痛苦，脸上不停地冒着冷汗，但你惊讶地发现她居然还能发出声音。"
+          "text": "乘务员脸色惨白，额头不断冒出冷汗。她忍着疼痛睁开眼，喉咙里挤出微弱的声音。"
         },
         {
           "type": "dialogue",
@@ -2839,22 +2964,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "您好，您还能说话吗，您知道这里发生了什么吗。"
+          "speaker": "你",
+          "text": "您还能说话吗？这里到底发生了什么？"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "看...看起来像是人的怪物，突然间袭击了我们."
+          "text": "看……看起来像人的怪物，突然袭击了我们。"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "他们向着乘客一个一个咬去，有如野兽在捕食一般。"
+          "text": "它们扑向乘客，一个接一个地撕咬，像野兽捕食一样。"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "那场面简直像是人间地狱，到处都是惨叫。我当时在逃跑时候也被咬到了，万幸的是我跑了出来"
+          "text": "到处都是惨叫……我逃跑时也被咬了一口，幸好还是从那节车厢里逃了出来。"
         },
         {
           "type": "dialogue",
@@ -2894,22 +3020,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "那，那些怪物是怎么样的，您能想起来吗？"
+          "speaker": "你",
+          "text": "那些怪物是什么样的？您还能想起来吗？"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "样子...跑得太匆忙，我记不清了。"
+          "text": "样子……我当时跑得太匆忙，记不清了。"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "但我记得他们对于声音似乎很敏感，我当时被咬伤的时候，疼的把手边的一个东西甩到了墙壁上，吸引了他们的注意力。"
+          "text": "但它们似乎对声音很敏感。我被咬伤时，疼得把手边的东西甩到墙上，它们立刻转向了声响。"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "呃啊..."
+          "text": "呃啊……"
         }
       ],
       "next": "E_015"
@@ -2919,7 +3046,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "冲击性的消息把你的脑子搅成一团乱麻，你不知道你该问什么。"
+          "text": "你接连抛出几个问题，却没有给她喘息和回忆的时间。乘务员缩回座椅，只重复着“记不清了”。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你没能问出怪物的弱点，只能先记住她提到的袭击方向。"
         }
       ],
       "next": "E_015"
@@ -2947,6 +3078,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
+          "speaker": "你",
           "text": "天呐...那大概掉在哪里您记得吗。"
         },
         {
@@ -2971,11 +3103,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你蹲下来，平视她的眼睛："
-        },
-        {
-          "type": "dialogue",
-          "text": "“如果3号车厢的通道被行李堵住了，我该怎么办？”"
+          "text": "她再次抓住你的衣角："
         },
         {
           "type": "dialogue",
@@ -2984,16 +3112,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她再次抓住你的衣角："
-        },
-        {
-          "type": "dialogue",
           "speaker": "乘务员",
           "text": "快去拿钥匙。进了驾驶室，把右杆持续往上拉——列车会不断减速，直到停下来。"
         },
         {
           "type": "dialogue",
-          "text": "你点点头，不着痕迹地摸了摸口袋里那张泛黄的便签————「MOVE FORWARD」"
+          "text": "你点点头，不着痕迹地摸了摸口袋里那张泛黄的便签——「MOVE FORWARD」。"
         },
         {
           "type": "dialogue",
@@ -3045,11 +3169,16 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你点头，却说不出那句“好”。"
+          "text": "你点头，却说不出话。"
         },
         {
           "type": "dialogue",
-          "text": "因为你还不确定，这辆车到底该不该停。"
+          "speaker": "你",
+          "text": "（停下车逃出去吗？可是刚刚我所看见的……）"
+        },
+        {
+          "type": "dialogue",
+          "text": "焦虑席卷了你的心头。"
         },
         {
           "type": "setFlag",
@@ -3067,6 +3196,10 @@ window.GAME_DATA = {
       "id": "E_016_CARRY_CHECK",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你让她把手臂搭过肩膀，自己半蹲下去，试着在不碰到伤腿的情况下托住她的身体。"
+        },
+        {
           "type": "check",
           "dice": "ev016_constitution_01",
           "outcomes": [
@@ -3081,11 +3214,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你深呼吸，将乘务员的手环在自己的脖子上，自己则用手托着她。"
+          "text": "你深吸一口气，绷紧腰背，稳稳撑住了她下坠的重量。"
         },
         {
           "type": "dialogue",
-          "text": "这么多年的体测可不是白测的！咿呀————你成功背起乘务员。"
+          "text": "起身时你的膝盖一阵发酸，但重心没有散。你调整好她的手臂，终于把她背了起来。"
         },
         {
           "type": "setFlag",
@@ -3099,7 +3232,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "作为多年来的体育苦手，你着实无法背起一名成年女性。"
+          "text": "你刚撑起身体，伤腿的晃动就让她痛得倒吸一口冷气。你的手臂也随之一软，只能立刻把她放回地面。"
         },
         {
           "type": "dialogue",
@@ -3120,11 +3253,16 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你点头，却说不出那句“好”。"
+          "text": "你点头，却说不出话。"
         },
         {
           "type": "dialogue",
-          "text": "因为你还不确定，这辆车到底该不该停。"
+          "speaker": "你",
+          "text": "（停下车逃出去吗？可是刚刚我所看见的……）"
+        },
+        {
+          "type": "dialogue",
+          "text": "焦虑席卷了你的心头。"
         },
         {
           "type": "setFlag",
@@ -3263,11 +3401,6 @@ window.GAME_DATA = {
         },
         {
           "type": "setFlag",
-          "key": "carriage_03_entry_narrative_done",
-          "value": true
-        },
-        {
-          "type": "setFlag",
           "key": "carriage_03_entry_narrative_v2_done",
           "value": true
         }
@@ -3279,11 +3412,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你想起她的话：黑包，3号前门。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_03_entry_narrative_done",
-          "value": true
         },
         {
           "type": "setFlag",
@@ -3547,7 +3675,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还......"
+          "text": "截至本报截稿时，共有22名乘客获救，1名女性乘务员生还……"
         },
         {
           "type": "dialogue",
@@ -3576,7 +3704,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "截至本报截稿时，共有21名乘客获救，1名女性乘务员生还......"
+          "text": "截至本报截稿时，共有21名乘客获救，1名女性乘务员生还……"
         },
         {
           "type": "dialogue",
@@ -3615,11 +3743,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你攥紧报纸，转身往来路走去。"
-        },
-        {
-          "type": "setFlag",
-          "key": "newspaper_21_version",
-          "value": true
         }
       ]
     },
@@ -3774,7 +3897,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你咬着牙，用颤抖的手完成了包扎。"
+          "text": "你重新检查脉搏和出血点，用撕下的布条垫住伤口，再把固定结收紧到不会阻断血流的位置。"
         },
         {
           "type": "dialogue",
@@ -3783,7 +3906,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "......钥匙......黑包......停车......"
+          "text": "……钥匙……黑包……停车……"
         },
         {
           "type": "dialogue",
@@ -3827,7 +3950,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你试了一次，两次，三次。"
+          "text": "你一次次调整按压的位置，可指尖下的脉搏还是越来越弱。"
         },
         {
           "type": "dialogue",
@@ -3846,24 +3969,6 @@ window.GAME_DATA = {
           "type": "setFlag",
           "key": "carried_crew",
           "value": false
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "hasItem": "newspaper"
-          },
-          "next": "E_020_DEAD_NEWSPAPER"
-        }
-      ],
-      "next": "E_020_DEAD_TOOLS"
-    },
-    {
-      "id": "E_020_DEAD_NEWSPAPER",
-      "actions": [
-        {
-          "type": "setFlag",
-          "key": "newspaper_21_version",
-          "value": true
         }
       ],
       "next": "E_020_DEAD_TOOLS"
@@ -3961,7 +4066,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把黑包拿到她面前。她伸手进去翻找。"
+          "text": "你把黑包拿到她面前。她伸手进去翻找，却在摸到钥匙时停顿了一下。你注意到她先看了看驾驶室方向，又悄悄收紧了手指。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你回想她先前的说法和操作规程，试着判断她此刻是否真的愿意把列车交给你。"
         },
         {
           "type": "check",
@@ -3978,12 +4087,12 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员摸出两把钥匙，握在手里看了很久，才递给你："
+          "text": "你指出她伤势太重，若在驾驶室前失去意识，所有人都会被锁在门外。乘务员沉默片刻，终于把两把钥匙递给你："
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "拿着吧......我现在这个样子，保管不好。"
+          "text": "拿着吧……我现在这个样子，确实保管不好。"
         },
         {
           "type": "addItem",
@@ -4011,12 +4120,12 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员摸出两把钥匙，却没有递给你，而是攥在自己手心里："
+          "text": "你没能从她含糊的回答里判断出操作规程，也找不到足以说服她交出钥匙的理由。她把两把钥匙攥在自己手心里："
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "......我来拿着吧。到了车头，我比你熟悉。"
+          "text": "……我来拿着吧。到了车头，我比你熟悉。"
         },
         {
           "type": "setFlag",
@@ -4040,7 +4149,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你打开黑包，在里面翻找。"
+          "text": "你拉开黑包的夹层，沿着内衬逐寸摸索，终于在一只带拉链的小袋里碰到金属。"
         }
       ],
       "next": "E_021_ALONE_S"
@@ -4050,7 +4159,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你在包里摸到了两把钥匙。"
+          "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”，与乘务员留下的信息完全吻合。"
         },
         {
           "type": "addItem",
@@ -4451,16 +4560,41 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "portrait": "assets/Image/Portrait/monster.png",
-          "text": "你看到了，你看到了那个怪物—————那个无眼、头部异形的怪物。"
+          "text": "借着应急灯微弱的红光，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
         },
         {
           "type": "check",
-          "dice": "ev026_san_01"
-        },
+          "dice": "ev026_san_01",
+          "outcomes": [
+            "E_026_SAN_S",
+            "E_026_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_026_SAN_S",
+      "actions": [
         {
-          "type": "check",
-          "dice": "ev026_extra_san_01"
-        },
+          "type": "dialogue",
+          "text": "你把惊叫死死压在喉咙里，甚至放慢了呼吸。怪物的头颅左右转动，却没有立即锁定你的位置。"
+        }
+      ],
+      "next": "E_026_AFTER_SAN"
+    },
+    {
+      "id": "E_026_SAN_F",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "裂开的头部在红光里抽动，你的胃猛地收紧，牙齿不受控制地打颤。那怪物随即停下啃咬，侧耳朝向你。"
+        }
+      ],
+      "next": "E_026_AFTER_SAN"
+    },
+    {
+      "id": "E_026_AFTER_SAN",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {
@@ -4471,7 +4605,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你没有动。"
+          "text": "你僵在原地，不敢再发出任何声音。"
         }
       ]
     },
@@ -4553,6 +4687,10 @@ window.GAME_DATA = {
       "id": "E_027",
       "actions": [
         {
+          "type": "dialogue",
+          "text": "你压低身体，挑选没有碎玻璃和尸体的落脚点。接下来几步必须又慢又稳，不能让呼吸乱掉。"
+        },
+        {
           "type": "check",
           "dice": "ev027_constitution_01",
           "outcomes": [
@@ -4567,7 +4705,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你谨慎通过，到达先头车厢门前。"
+          "text": "你把每一步都踩在座椅投下的阴影里。怪物只追随着远处的杂音转动头颅，你终于贴到了先头车厢门前。"
         },
         {
           "type": "setFlag",
@@ -4586,7 +4724,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你踩到尸体发出声响，怪物们齐刷刷地转向你。"
+          "text": "跨过一具尸体时，你绷紧太久的腿突然发软，鞋底擦过散落的金属罐。清脆的滚动声传遍车厢，怪物们齐刷刷地转向你。"
         },
         {
           "type": "dialogue",
@@ -4600,85 +4738,6 @@ window.GAME_DATA = {
         {
           "type": "minigame",
           "game": "card_battle"
-        }
-      ]
-    },
-    {
-      "id": "E_028",
-      "actions": [
-        {
-          "type": "learnSkill",
-          "skill": "throwing"
-        },
-        {
-          "type": "dialogue",
-          "text": "你记住了投掷的手法。"
-        }
-      ],
-      "next": "E_028_BOTTLE_READY"
-    },
-    {
-      "id": "E_028_BOTTLE_READY",
-      "actions": [
-        {
-          "type": "choice",
-          "prompt": "你要怎么通过或引开 Clicker？",
-          "options": [
-            {
-              "label": "直接冲过去",
-              "next": "E_028_CONSTITUTION_CHECK"
-            },
-            {
-              "label": "投掷彩色玻璃瓶",
-              "next": "E_028_THROW_FIRST"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_028_CONSTITUTION_CHECK",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev028_constitution_01",
-          "outcomes": [
-            "E_028_CONSTITUTION_SUCCESS",
-            "E_028_CONSTITUTION_FAIL"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_028_CONSTITUTION_SUCCESS",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你抓住空隙冲过了Clicker，成功到达先头车厢门前。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        }
-      ]
-    },
-    {
-      "id": "E_028_CONSTITUTION_FAIL",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你没能冲过去，仍然可以退回阴影，投掷彩色玻璃瓶制造声响。"
-        },
-        {
-          "type": "choice",
-          "prompt": "是否投掷彩色玻璃瓶？",
-          "options": [
-            {
-              "label": "投掷彩色玻璃瓶",
-              "next": "E_028_THROW_AFTER_FAIL"
-            }
-          ]
         }
       ]
     },
@@ -4714,48 +4773,12 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_028_THROW_AFTER_FAIL",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev028_luck_01",
-          "outcomes": [
-            "E_028_THROW_AFTER_SUCCESS",
-            "E_029"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_028_THROW_AFTER_SUCCESS",
-      "actions": [
-        {
-          "type": "sound",
-          "sound": "breaking_glass"
-        },
-        {
-          "type": "dialogue",
-          "text": "彩色玻璃瓶的声响成功引开了Clicker，你抓紧机会脱身并通过。"
-        },
-        {
-          "type": "removeItem",
-          "item": "bottle"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_02_passed",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "key": "clicker_cleared",
-          "value": true
-        }
-      ]
-    },
-    {
       "id": "E_029",
       "actions": [
+        {
+          "type": "dialogue",
+          "text": "你握紧能当作武器的东西，观察怪物扑击后的停顿。若能抢先占住通道，至少不会在交手开始时就被逼进角落。"
+        },
         {
           "type": "check",
           "dice": "ev029_constitution_01",
@@ -4771,7 +4794,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你抓住空隙冲向Clicker，战斗轮进入简单模式。"
+          "text": "怪物转头的瞬间，你猛地切入它的侧面，迫使它仓促回身。你抢到了更开阔的位置，战斗轮进入简单模式。"
         },
         {
           "type": "setFlag",
@@ -4789,7 +4812,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你的动作惊动了Clicker，战斗轮进入困难模式。"
+          "text": "你起步慢了半拍，怪物已经循着衣物摩擦声扑来。你被逼到座椅之间，战斗轮进入困难模式。"
         },
         {
           "type": "setFlag",
@@ -5027,16 +5050,6 @@ window.GAME_DATA = {
           "sound": "door_open"
         },
         {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_a",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_entry_route_b",
-          "value": false
-        },
-        {
           "type": "changeScene",
           "scene": "carriage_06"
         },
@@ -5052,11 +5065,6 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "door_open"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_05_newspaper_available",
-          "value": true
         },
         {
           "type": "changeScene",
@@ -5158,11 +5166,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_05_SEARCH_NEWS",
-      "actions": [],
-      "next": "E_011"
-    },
-    {
       "id": "E_05_SEARCH_TOOLS",
       "actions": [
         {
@@ -5248,7 +5251,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "到达先头车厢，这里昏暗安静，前方是驾驶室门。"
+          "text": "你穿过安全门，终于进入先头车厢。这里比后方更加昏暗，列车震动通过地板直接传到脚底，前方只剩一扇紧闭的驾驶室门。"
         },
         {
           "type": "dialogue",
@@ -5286,7 +5289,12 @@ window.GAME_DATA = {
     },
     {
       "id": "E_031_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你又回到驾驶室门前。门锁、操作面板和两根拉杆都维持着离开时的状态。"
+        }
+      ]
     },
     {
       "id": "E_031_PLAYER_KEY",
@@ -5361,7 +5369,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你打开操作面板，面板上积着一层薄灰。"
+          "text": "操作面板的钥匙转动后，盖板向外弹开。你拂去薄灰，确认每个标识仍然清晰可读。"
         },
         {
           "type": "dialogue",
@@ -5369,7 +5377,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**"
+          "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**\n\n笔画很新，像是不久前才留下的。"
         },
         {
           "type": "conditionalJump",
@@ -5424,7 +5432,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你的手刚碰到右杆，乘务员就扑了上来，死死抓住你的手腕。"
+          "text": "你选择继续前进，手指刚扣住右杆准备下压，乘务员就从身后扑来，死死抓住你的手腕。"
         },
         {
           "type": "dialogue",
@@ -5541,11 +5549,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你迈了进去。车厢的噪音突然减弱，"
-        },
-        {
-          "type": "dialogue",
-          "text": "安静得像是整个世界都睡着了。"
+          "text": "你迈过门槛，身后的列车噪音骤然减弱。门还开着，3号车厢却像隔在很远的地方；这里安静得仿佛整个世界都睡着了。"
         }
       ],
       "next": "E_502"
@@ -5578,7 +5582,12 @@ window.GAME_DATA = {
     },
     {
       "id": "E_502_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "空车厢仍在轻轻震动。两端的门看起来完全相同，只有你留下的脚步声能证明自己不是一直站在原地。"
+        }
+      ]
     },
     {
       "id": "E_502_RETURN",
@@ -5814,7 +5823,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你看向窗外。"
+          "text": "你用袖口擦开玻璃上的水雾，贴近车窗向外看。"
         },
         {
           "type": "dialogue",
@@ -5835,11 +5844,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你发现窗外并不完全黑，似乎有隐隐约约的微光。"
+          "text": "雾后并不完全黑。你顺着玻璃上的反光避开车内灯影，终于看见远处有微光缓慢起伏。"
         },
         {
           "type": "dialogue",
-          "text": "你把耳朵贴着窗户，听到窸窸窣窣的声响。"
+          "text": "你把耳朵贴上冰冷的玻璃，听见密集的窸窣声，像无数叶片正贴着列车生长。"
         },
         {
           "type": "setFlag",
@@ -5858,7 +5867,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "雾气浓重，远方一片模糊。你贴着玻璃看了很久，什么也没有看见。"
+          "text": "车内灯光不断映回玻璃，雾中的影子全都重叠在一起。你看了很久，仍无法判断外面是否真的存在地面或天空。"
         },
         {
           "type": "setFlag",
@@ -5975,7 +5984,12 @@ window.GAME_DATA = {
     },
     {
       "id": "E_506_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "柔和的音乐仍在循环，音量与曲调分毫不差。你越听越觉得，这节车厢只是在模仿“温馨”。"
+        }
+      ]
     },
     {
       "id": "E_507",
@@ -6098,19 +6112,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "……那些东西，"
+          "text": "花丛在你踏出车门的一瞬间同时偏转，仿佛那些东西早已看见了你。"
         },
         {
           "type": "dialogue",
-          "text": "在那一瞬间就已经看到你了。"
+          "text": "当你意识到它们存在时，它们也已经看见并抓住了你。"
         },
         {
           "type": "dialogue",
-          "text": "当你看到他们的时候，其实是他们看到并抓住了你。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你感到一种不合时宜的快感，你开始干呕。不安慢慢渗进你的心口和指缝。"
+          "text": "一阵不合时宜的快感沿脊背升起，紧接着变成反胃。你弯腰干呕，不安一点点渗进心口与指缝。"
         },
         {
           "type": "dialogue",
@@ -6178,7 +6188,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "现在过去了多久？"
+          "text": "已经过去多久了？"
         },
         {
           "type": "dialogue",
@@ -6568,13 +6578,13 @@ window.GAME_DATA = {
           "type": "dialogue",
           "speaker": "乘务员",
           "portrait": "assets/Image/Portrait/conductor-crazy.png",
-          "text": "…"
+          "text": "……"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
           "portrait": "assets/Image/Portrait/conductor-crazy.png",
-          "text": "这就是你的选择吗，亲爱的"
+          "text": "这就是你的选择吗，亲爱的？"
         },
         {
           "type": "dialogue",
@@ -6630,7 +6640,7 @@ window.GAME_DATA = {
           "next": "E_REFUSAL_LEFT"
         }
       ],
-      "next": "E_REFUSAL_RIGHT"
+      "next": "E_510"
     },
     {
       "id": "E_REFUSAL_LEFT",
@@ -6662,11 +6672,6 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_REFUSAL_RIGHT",
-      "actions": [],
-      "next": "E_510"
-    },
-    {
       "id": "E_FAKE02_LEFT",
       "actions": [
         {
@@ -6684,7 +6689,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "打开车门，周围天旋地转。万物好像都扭曲了，车厢，车门，把手，一切都变得畸形。"
+          "text": "你撞开车门，周围顿时天旋地转。车厢、车门与把手同时向不同方向弯折，所有熟悉的形状都变得畸形。"
         },
         {
           "type": "dialogue",
@@ -6692,7 +6697,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你感受到一阵控制不住的反胃。你干呕起来"
+          "text": "一阵无法控制的反胃猛地涌上来。你扶住墙壁，干呕起来。"
         },
         {
           "type": "dialogue",
@@ -6702,7 +6707,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "speaker": "你",
           "portrait": "assets/Image/Portrait/player-scared.png",
-          "text": "放过我吧…"
+          "text": "放过我吧……"
         }
       ]
     },
@@ -6808,7 +6813,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你感到一阵强烈的晕眩，下意识的四处张望"
+          "text": "一阵强烈的晕眩袭来，你下意识地四处张望。"
         },
         {
           "type": "sound",
@@ -6885,7 +6890,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "角落里又长着花草。你认得这里。"
+          "text": "角落里仍长着从裂缝钻出的花草。你认得这里，也认得通往现实的方向。"
         },
         {
           "type": "setFlag",
@@ -6951,7 +6956,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你推开门——"
+          "text": "你握紧门把，确认身上的钥匙与物品都还在，随后推开门——"
         },
         {
           "type": "changeScene",
@@ -7038,17 +7043,27 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。"
+          "text": "角落里散落着几支彩色的空玻璃瓶，在昏暗中泛着不真实的颜色。瓶身彼此轻碰，发出的却不是玻璃声，而像很远处的低语。"
         }
       ]
     },
     {
       "id": "E_FAKE03_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "那颗头颅仍倒在血泊里，位置却像是比刚才更靠近门口。你移开视线，不愿确认。"
+        }
+      ]
     },
     {
       "id": "E_503_BOTTLES_REVISIT",
-      "actions": []
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "剩下的玻璃瓶仍挤在角落里。你没有再碰它们，只确认先前拿走的那一支还在身上。"
+        }
+      ]
     },
     {
       "id": "E_516_MET",

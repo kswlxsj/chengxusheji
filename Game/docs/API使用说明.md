@@ -585,6 +585,8 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 
 建议：需要重复使用的低层能力（标准 1d6 属性检定、SAN 扣损掷骰等）做成 dice.js 内部的工厂函数，具体检定条目一行引用，保持条目独立可读。新增检定 = 改 `src/dice.js`（追加条目）+ 在 `events.json` 引用其编号与 `outcomes`；编译器通过 node:vm 加载 `src/dice.js` 校验引用与注册唯一性，运行时对未注册编号同样报错回滚。
 
+项目内置的 `sanCheck(attribute, passLoss, failLoss)` 同样遵守分层约定：它只显示骰子、结算 SAN 损失并返回 `0=成功 / 1=失败`，不得调用对白 UI。成功/失败后的身体反应、线索理解等叙事必须注册为事件，再通过 `check.outcomes` 路由；若扣损使 SAN 归零，引擎会在 check 动作结束时优先进入终止流程，不会继续跳转结果事件。
+
 ### 小游戏：TrainGame.Minigames 注册表与 minigame 动作
 
 `Game/src/minigames.js` 暴露 `TrainGame.Minigames`：`register(id, spec)`（拒绝重复）、`get(id)` / `has(id)` / `list()`。events.json 的 `minigame` 动作只写注册表索引——仿 `check`→`dice.js` 的“JSON 只写编号、机制全在 JS”分离架构，但**不做分支事件假设**：模块结束时可自由选择返回或不返回一个**结算动作列表**，解释器按当前事件内普通动作的语义顺序执行该列表；没有分支时小游戏动作本身不跳转。

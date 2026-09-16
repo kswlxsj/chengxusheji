@@ -270,7 +270,7 @@ assert.equal(game.state.flags.ev519_escape_left, true);
 assert.equal(game.state.flags.ev_fake02_handprints_done, true);
 assert.equal([1, 2, 3, 4].every(index => game.state.flags[`ev_fake02_blood_${index}`] === true), true);
 assert.equal(game.sounds.filter(sound => sound === "knocking_wall").length, 4, "每个血手印各响一次");
-assert.equal(game.trace.some(entry => entry.text === "这就是你的选择吗，亲爱的"), true);
+assert.equal(game.trace.some(entry => entry.text === "这就是你的选择吗，亲爱的？"), true);
 
 // 假车厢拓扑：假2左→假1→黑场切真3；假2右→假3，假3左→假2、右→既有花海事件。
 await game.play("E_FAKE02_LEFT");
@@ -372,12 +372,13 @@ const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.png", import.meta.url))).size > 0);
-// 瓶子只能从里世界获取：2号车厢不再就地拾取；Clicker 初次遭遇只提供潜行/对抗，瓶子从背包直接通关。
-const e028 = events.find(e => e.id === "E_028");
-assert.equal(e028.actions.some(a => a.type === "addItem"), false, "E-028 不得再就地发放瓶子");
-assert.equal(e028.actions.some(a => a.type === "learnSkill" && a.skill === "throwing"), true);
-assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负责瓶子与投掷，不得进入小游戏");
-assert.equal(events.some(e => e.id === "E_028_HAS_BOTTLE"), false, "就地拾瓶分支已删除，不得留下死事件");
+// 瓶子只能从里世界获取：2号车厢不再就地拾取；Clicker 初次遭遇只提供潜行/对抗，背包使用直接通关。
+for (const removed of [
+  "E_028", "E_028_BOTTLE_READY", "E_028_CONSTITUTION_CHECK", "E_028_CONSTITUTION_SUCCESS",
+  "E_028_CONSTITUTION_FAIL", "E_028_THROW_AFTER_FAIL", "E_028_THROW_AFTER_SUCCESS", "E_028_HAS_BOTTLE"
+]) {
+  assert.equal(events.some(e => e.id === removed), false, `${removed} 已删除，不得残留`);
+}
 assert.equal(events.find(e => e.id === "E_028_THROW_FIRST").actions.some(a => a.type === "removeItem" && a.item === "bottle"), true);
 for (const eventId of ["E_026_ACTION"]) {
   const choice = events.find(e => e.id === eventId).actions.find(a => a.type === "choice");
@@ -395,18 +396,6 @@ assert.deepEqual(
   "潜行失败应直接进入卡牌小游戏"
 );
 assert.equal(stealthFailure.actions.at(-1).game, "card_battle", "潜行失败应进入简单卡牌模式");
-game = fixture({}, [], "carriage_02");
-game.ui.choice.choose = async () => null;
-await game.play("E_028");
-assert.equal(game.state.inventory.includes("bottle"), false, "E-028 不再给没有瓶子的玩家补发瓶子");
-assert.equal(game.state.getSkill("throwing"), true, "E-028 仍应解锁投掷");
-assert.equal(game.trace.some(t => t.text?.includes("脚边摸到一个空瓶子")), false);
-
-game = fixture({}, ["bottle"], "carriage_02");
-game.ui.choice.choose = async () => null;
-await game.play("E_028");
-assert.equal(game.state.inventory.filter(item => item === "bottle").length, 1, "已有瓶子时不应重复入包");
-assert.equal(game.state.getSkill("throwing"), true, "已有瓶子时仍应解锁投掷");
 const carriage02 = scenes.find(s => s.id === "carriage_02");
 assert.equal(carriage02.objects.some(o => o.id === "bottle_02"), false);
 assert.equal(

@@ -5,8 +5,8 @@
   // - 与 webgl3d_demo 一样只在顶层做注册（编译器会在 node:vm 里加载本文件收集编号），
   //   所有 DOM 操作延迟到 run()，保证无 DOM 环境（自动化测试）下加载安全。
   // - 玩法：每轮乘务员抛出一个问题，玩家在两个回应里选一个；正确选项（内部标记按“安抚得当”
-  //   制定，不向玩家明示正确与否）+30%，错误选项 +10%。三轮结束后按
-  //   bonus = 30*正确数 + 10*错误数（即 30 + 20*正确数）结算，范围 30~90。
+  //   制定，不向玩家明示正确与否）每次 +15%，错误选项不提供加成。三轮结束后按
+  //   bonus = 15*正确数结算，范围 0~45。
   // - 结果只通过结算动作列表表达：setFlag ev014_negotiation_bonus = bonus。
   //   提前点“退出小游戏”视为交涉中断，加成记为 0（事件引擎随后仍会执行最终检定）。
   // - 布局按需求示意图：左右人物立绘、中央背景、顶部对话记录、中部当前问题与两个选项。
@@ -135,9 +135,9 @@
     let resolveFinish = null;
     const finished = new Promise((resolve) => { resolveFinish = resolve; });
 
-    // 正确 +30%、错误 +10%；三轮后 = 30*正确 + 10*错误。
+    // 每个恰当回应提供 15% 加成；最终检定的四档成功率为 40%/55%/70%/85%。
     function computeBonus() {
-      return 30 * correctCount + 10 * (ROUNDS.length - correctCount);
+      return 15 * correctCount;
     }
 
     function renderOptions() {

@@ -85,7 +85,7 @@
   }
 
   // SAN 类检定：先按 d6 属性检定判成败，再按“成功扣 passLoss / 失败扣 failLoss”扣减。
-  // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣，弹提示）。返回 0。
+  // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣，弹提示）。返回 0=成功 / 1=失败。
   function sanCheck(attribute, passLoss, failLoss) {
     const apply = (context, loss) => {
       if (!loss) return;
@@ -115,114 +115,39 @@
       const detail = `${attributeName(context, attribute)}：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
       await showDiceRollAnimation(context, roll, success, detail);
       apply(context, success ? passLoss : failLoss);
-      return 0;
+      return success ? 0 : 1;
     };
-  }
-
-  function conditionalSanCheck(attribute, passLoss, failLoss, condition) {
-    const check = sanCheck(attribute, passLoss, failLoss);
-    return async (context) => (condition(context) ? check(context) : 0);
-  }
-
-  // 幸运检定：直接掷 1d6，结果大于 3 即成功。
-  async function luckCheck(context, label) {
-    const roll = rollDie(6);
-    const success = roll > 3;
-    const detail = `${label}：掷出 ${roll}，需要大于 3。`;
-    await showDiceRollAnimation(context, roll, success, detail);
-    return success ? 0 : 1;
   }
 
   // ==== 本批剧本候选检定 ====
 
   registerDice("ev001_insight_01", attrCheck("insight"));
   registerDice("ev004_insight_01", attrCheck("insight"));
+  registerDice("ev008_insight_01", attrCheck("insight"));
   registerDice("ev007_education_01", attrCheck("education"));
   registerDice("ev011_insight_01", attrCheck("insight"));
   registerDice("ev013_education_01", attrCheck("education"));
   registerDice("ev020_education_01", attrCheck("education"));
-  registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"]));
+  registerDice("ev021_education_insight_01", sumAttrCheck(["education", "insight"], 20));
   registerDice("ev016_constitution_01", attrCheck("constitution"));
   registerDice("ev504_insight_01", attrCheck("insight"));
 
-  registerDice("ev027_constitution_01", attrCheck("constitution", 7));
-  registerDice("ev028_constitution_01", attrCheck("constitution"));
-  registerDice("ev028_luck_01", (context) => luckCheck(context, "投掷后的幸运检定"));
+  registerDice("ev027_constitution_01", attrCheck("constitution"));
   registerDice("ev029_constitution_01", attrCheck("constitution"));
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev011_san_01", sanCheck("san", 0, 1));
   registerDice("ev026_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
-  registerDice(
-    "ev026_extra_san_01",
-    conditionalSanCheck("san", 1, { count: 1, sides: 4 }, (context) => context.state.flags.visited_carriage_07 === true)
-  );
 
   // ==== 游戏内检定条目（编号必须全局唯一、长期稳定，被 events.json 的 check.dice 引用）====
 
   // E_005：6 号车厢开门前的灵感检定（成败走不同分支）。
   registerDice("ev005_insight_01", attrCheck("insight"));
 
-  // E_006A：7 号车厢开门后 SAN 检定（SAN 0/1：成功 0 损失、失败扣 1），并在结果后补充一段描述。
-  registerDice("ev006a_san_01", async (context) => {
-    const base = context.state.getAttribute("san");
-    const roll = rollDie(6);
-    const total = roll + base;
-    const success = total >= DEFAULT_THRESHOLD;
-    const detail = `san：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
-    await showDiceRollAnimation(context, roll, success, detail);
-    if (success) {
-      context.state.modifyAttribute("san", 0);
-      if (context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
-        await context.ui.dialog.showLine({
-          text: "理智战胜了恐惧，你强忍着恶心，终于把目光从那堆残肢上移开。"
-        });
-      }
-    } else {
-      const before = context.state.getAttribute("san");
-      const after = context.state.modifyAttribute("san", -1);
-      if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
-        await context.ui.dialog.showLine({
-          text: "你还是没能顶住这幅景象，喉咙一紧，差点在车厢里当场呕吐出来。"
-        });
-      }
-    }
-    return 0;
-  });
-
-  // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4），并在结果后补充一段描述。
-  registerDice("ev006b_san_01", async (context) => {
-    const base = context.state.getAttribute("san");
-    const roll = rollDie(6);
-    const total = roll + base;
-    const success = total >= DEFAULT_THRESHOLD;
-    const detail = `san：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
-    await showDiceRollAnimation(context, roll, success, detail);
-    if (success) {
-      const before = context.state.getAttribute("san");
-      const after = context.state.modifyAttribute("san", -1);
-      if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
-        await context.ui.dialog.showLine({
-          text: "你感觉胃里翻江倒海，好在你忍住了呕吐的冲动。"
-        });
-      }
-      return 0;
-    }
-
-    const loss = { count: 1, sides: 4 };
-    const result = rollDice(loss.count, loss.sides, loss.bonus);
-    const amount = result.total;
-    const before = context.state.getAttribute("san");
-    const after = context.state.modifyAttribute("san", -amount);
-    if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
-      context.ui.toast?.(`san -${Math.abs(after - before)}（1d4：${result.rolls.join("+" )}）`);
-      await context.ui.dialog.showLine({
-        text: "你感觉胃里翻江倒海，终于还是呕吐了出来。一阵阵痉挛的剧痛让你几乎无法呼吸。"
-      });
-    }
-    return 0;
-  });
+  // E_006A/B：只负责 SAN 判定与损失；结果叙事由 events.json 的 outcomes 路由。
+  registerDice("ev006a_san_01", sanCheck("san", 0, 1));
+  registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
 
   // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
   registerDice("ev014_negotiation_final_01", async (context) => {
@@ -231,7 +156,7 @@
     const roll = Math.floor(Math.random() * 100) + 1;
     const success = roll <= rate;
     const detail = `安抚与交涉：基础成功率 40% + 交涉加成 ${bonus}% = ${rate}%。`
-      + `掷出 ${roll}%，${success ? "乘务员终于放下了戒心。" : "乘务员仍有顾虑，没能完全打动她。"}`;
+      + `掷出 ${roll}%，需要不高于 ${rate}%。`;
     await showDiceRollAnimation(context, null, success, detail);
     return success ? 0 : 1;
   });

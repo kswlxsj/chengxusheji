@@ -375,7 +375,7 @@
           "height": 24
         },
         "zIndex": 13,
-        "clickEvent": "E_05_SEARCH_NEWS",
+        "clickEvent": "E_011",
         "glow": true,
         "visibleWhen": {
           "all": [
