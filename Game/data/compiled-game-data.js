@@ -7483,6 +7483,10 @@ window.GAME_DATA = {
           "text": "你失去了呼喊的力气。"
         },
         {
+          "type": "check",
+          "dice": "ev_fake01_exit_san_01"
+        },
+        {
           "type": "custom",
           "name": "fadeScene",
           "params": {
@@ -7885,7 +7889,7 @@ window.GAME_DATA = {
           "next": "E_524_CREW"
         }
       ],
-      "next": "E_524_SAN_CHECK"
+      "next": "E_025"
     },
     {
       "id": "E_524_CREW",
@@ -7903,16 +7907,6 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "她依然在你身边，对刚刚的一切似乎并不知情。"
-        }
-      ],
-      "next": "E_524_SAN_CHECK"
-    },
-    {
-      "id": "E_524_SAN_CHECK",
-      "actions": [
-        {
-          "type": "check",
-          "dice": "ev524_exit_san_01"
         }
       ],
       "next": "E_025"

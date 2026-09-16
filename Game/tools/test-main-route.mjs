@@ -545,10 +545,13 @@ assert.match(homeOpSource, /PlayerProfile\?\.getAudioGain/);
 assert.match(mainSource, /unlockEnding\?\.\(reason\)[\s\S]*reason === "lost"/, "所有终局都应在跳页或播放过场前解锁");
 assert.match(settingsSource, /if \(unlocked\)[\s\S]*createElement\("img"\)[\s\S]*else/, "锁定卡片不得创建真实图片元素");
 
-// 里世界返程：E_524 回到真2号后接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
-assert.equal(eventById.get("E_524_DONE").next, "E_524_SAN_CHECK");
-assert.equal(eventById.get("E_524_CREW").next, "E_524_SAN_CHECK");
-assert.equal(eventById.get("E_524_SAN_CHECK").next, "E_025");
+// 里世界常规返程：E_524 回到真2号后直接接 E_025 喘息段，播完停下（不自动进 Clicker 遭遇）。
+assert.equal(eventById.get("E_524_DONE").next, "E_025");
+assert.equal(eventById.get("E_524_CREW").next, "E_025");
+assert.equal(eventById.has("E_524_SAN_CHECK"), false);
+const fake01ExitActions = eventById.get("E_FAKE01_EXIT").actions;
+const fake01ScreamLine = fake01ExitActions.findIndex(action => action.text === "你失去了呼喊的力气。");
+assert.deepEqual(fake01ExitActions[fake01ScreamLine + 1], { type: "check", dice: "ev_fake01_exit_san_01" });
 assert.equal(eventById.get("E_025").next, undefined);
 assert.equal(eventById.get("E_025_CARRIED").next, undefined);
 

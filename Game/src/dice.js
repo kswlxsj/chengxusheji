@@ -170,7 +170,7 @@
   registerDice("ev006a_san_01", sanCheck("san", 0, 1));
   registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
   registerDice("ev012_san_01", sanLossByRoll("san"));
-  registerDice("ev524_exit_san_01", innerExitSanLoss("san"));
+  registerDice("ev_fake01_exit_san_01", innerExitSanLoss("san"));
 
   // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
   registerDice("ev014_negotiation_final_01", async (context) => {

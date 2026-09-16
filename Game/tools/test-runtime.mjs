@@ -888,7 +888,7 @@ try {
   // 两种剧情专用SAN损失都严格复用同一颗六面骰的点数。
   for (const [diceId, expectedLosses] of [
     ["ev012_san_01", [3, 2, 1, 0, 0, 0]],
-    ["ev524_exit_san_01", [2, 1, 1, 1, 0, 0]]
+    ["ev_fake01_exit_san_01", [2, 1, 1, 1, 0, 0]]
   ]) {
     for (let face = 1; face <= 6; face += 1) {
       balanceState.setAttribute("san", 20);

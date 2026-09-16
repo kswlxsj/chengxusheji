@@ -475,13 +475,13 @@ for (const removed of [
 ]) {
   assert.equal(events.some(e => e.id === removed), false, `${removed} 已删除，不得残留`);
 }
-// 里世界出口接回主剧本：E_524 回到真2号后由 E_025 提供喘息段，播完停下等玩家点 Clicker。
-assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_524_SAN_CHECK");
-assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_524_SAN_CHECK");
-assert.deepEqual(events.find(e => e.id === "E_524_SAN_CHECK").actions, [
-  { type: "check", dice: "ev524_exit_san_01" }
-]);
-assert.equal(events.find(e => e.id === "E_524_SAN_CHECK").next, "E_025");
+// 常规返程不做 SAN 检定，E_524 回到真2号后由 E_025 提供喘息段，播完停下等玩家点 Clicker。
+assert.equal(events.find(e => e.id === "E_524_DONE").next, "E_025");
+assert.equal(events.find(e => e.id === "E_524_CREW").next, "E_025");
+assert.equal(events.some(e => e.id === "E_524_SAN_CHECK"), false);
+const fake01Exit = events.find(e => e.id === "E_FAKE01_EXIT");
+const screamLineIndex = fake01Exit.actions.findIndex(action => action.text === "你失去了呼喊的力气。");
+assert.deepEqual(fake01Exit.actions[screamLineIndex + 1], { type: "check", dice: "ev_fake01_exit_san_01" });
 assert.equal(events.find(e => e.id === "E_025").next, undefined);
 assert.equal(events.find(e => e.id === "E_025_CARRIED").next, undefined);
 // 里世界的乘务员分支读死亡状态：crew_met 在必经路径上恒为 true，只有 crew_04_dead 能区分剧本两条线。
