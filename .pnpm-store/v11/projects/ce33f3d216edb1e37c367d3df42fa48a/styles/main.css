@@ -1065,6 +1065,16 @@ body.home-op-active .home-page .auth-user-status {
   filter: brightness(1.45);
 }
 
+/* “救醒但留下”分支复用同一张坐姿透明图层；返回4号时镜像到对面的右侧座椅。 */
+.scene-object-art[data-object-id="crew_04_seated_right"] {
+  transform: scaleX(-1);
+}
+
+.scene-object-art[data-object-id^="crew_04_seated_"].is-hot,
+.scene-object-art[data-object-id^="crew_04_seated_"].is-focused {
+  filter: brightness(1.45);
+}
+
 .scene-object-art[data-object-id="radio_07"].is-hot,
 .scene-object-art[data-object-id="radio_07"].is-focused {
   filter: brightness(1.18);
@@ -1417,6 +1427,9 @@ body.home-op-active .home-page .auth-user-status {
 
 .modal-backdrop {
   position: absolute;
+  /* 对白文字是带 z-index 的定位元素；模态特写必须建立更高的堆叠层，
+     否则地图、调查和小游戏会被仍挂载着的上一句对白穿透。 */
+  z-index: 110;
   inset: 0;
   display: grid;
   place-items: center;
@@ -2185,6 +2198,8 @@ body.home-op-active .home-page .auth-user-status {
 /* 物品栏调查使用独立的全舞台展示；普通场景 inspect 仍使用上方窗口。 */
 .item-inspect-backdrop {
   position: absolute;
+  /* 与通用模态特写保持同一层级，确保物品/便签展示完整遮住对白。 */
+  z-index: 110;
   inset: 0;
   display: grid;
   place-items: center;

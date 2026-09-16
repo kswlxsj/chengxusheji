@@ -205,5 +205,25 @@
     "file": "assets/Audio/SoundEffect/tinnitus-3.mp3",
     "volume": 0.8,
     "description": "假里1号车厢发现窗外乘务员前播放。"
+  },
+  {
+    "id": "button_select",
+    "name": "按钮点击",
+    "file": "assets/Audio/SoundEffect/select02.mp3",
+    "description": "游戏内按钮点击时播放；开场与结局演出除外。"
+  },
+  {
+    "id": "switch1",
+    "name": "车厢熄灯开关声",
+    "file": "assets/Audio/SoundEffect/switch1.mp3",
+    "volume": 0.85,
+    "description": "5号车厢打开报纸、灯光骤灭时播放。"
+  },
+  {
+    "id": "heartbeats",
+    "name": "黑暗中的心跳",
+    "file": "assets/Audio/SoundEffect/heartbeats.mp3",
+    "volume": 0.82,
+    "description": "5号车厢读报时未持有手电筒的等待分支循环播放。"
   }
 ]

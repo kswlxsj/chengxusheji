@@ -214,12 +214,23 @@
   function isSceneUnlit(sceneId, flags) {
     if (sceneId === "carriage_02") return flags.light_used !== true;
     if (sceneId === "carriage_03") return flags.carriage_03_blackout === true;
+    if (sceneId === "carriage_05") {
+      return flags.carriage_05_newspaper_blackout === true
+        && flags.carriage_05_newspaper_flashlight !== true;
+    }
     return false;
   }
 
   // 2号车厢使用手机或手电筒后仍保持黑暗，只显示从画面右侧中点射向鼠标的光束。
   function isSceneDirectionallyLit(sceneId, flags) {
     return sceneId === "carriage_02" && flags.light_used === true;
+  }
+
+  // 5号车厢读报时的手电筒只照亮鼠标周围的一小片圆形区域。
+  function isScenePointLit(sceneId, flags) {
+    return sceneId === "carriage_05"
+      && flags.carriage_05_newspaper_blackout === true
+      && flags.carriage_05_newspaper_flashlight === true;
   }
 
   const comparisonOperators = {
@@ -337,6 +348,7 @@
         backgroundVariant?.image || scene.background,
         isSceneUnlit(scene.id, this.state.flags),
         isSceneDirectionallyLit(scene.id, this.state.flags),
+        isScenePointLit(scene.id, this.state.flags),
         this.state.flags.light_type || "",
         visibleObjects
       ]);
@@ -351,12 +363,14 @@
       const carriageScene = isCarriageScene(scene.id);
       const unlit = isSceneUnlit(scene.id, this.state.flags);
       const directionallyLit = isSceneDirectionallyLit(scene.id, this.state.flags);
+      const pointLit = isScenePointLit(scene.id, this.state.flags);
       const carriageLit = carriageScene && !unlit;
       this.root.dataset.sceneId = scene.id;
       this.root.classList.toggle("is-carriage", carriageScene);
       this.root.classList.toggle("is-lit", carriageLit);
       this.root.classList.toggle("is-unlit", unlit);
       this.root.classList.toggle("is-directionally-lit", directionallyLit);
+      this.root.classList.toggle("is-point-lit", pointLit);
       const background = document.createElement("img");
       background.className = "scene-background";
       background.decoding = "async";
@@ -403,6 +417,7 @@
       }
 
       if (directionallyLit) this.renderDirectionalLight();
+      if (pointLit) this.renderPointLight();
 
       document.querySelector("#scene-name").textContent = scene.name;
       // 预加载解码后，新建 DOM 图片仍可能尚未完成自身的加载任务。
@@ -503,12 +518,62 @@
       this.drawDirectionalLight(this.lastLightPoint);
     }
 
+    renderPointLight() {
+      const canvas = document.createElement("canvas");
+      canvas.className = "scene-directional-light scene-point-light";
+      canvas.setAttribute("aria-hidden", "true");
+      this.directionalLightCanvas = canvas;
+      this.root.append(canvas);
+      this.drawPointLight(this.lastLightPoint);
+    }
+
     updateDirectionalLight(event) {
       if (!this.directionalLightCanvas) return;
       const point = this.stagePoint(event);
       if (!point) return;
       this.lastLightPoint = { x: point.x, y: point.y };
-      this.drawDirectionalLight(this.lastLightPoint);
+      if (this.directionalLightCanvas.classList.contains("scene-point-light")) {
+        this.drawPointLight(this.lastLightPoint);
+      } else {
+        this.drawDirectionalLight(this.lastLightPoint);
+      }
+    }
+
+    drawPointLight(target) {
+      const canvas = this.directionalLightCanvas;
+      if (!canvas) return;
+      const rect = this.root.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      const ratio = Math.min(2, window.devicePixelRatio || 1);
+      const pixelWidth = Math.round(width * ratio);
+      const pixelHeight = Math.round(height * ratio);
+      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+        canvas.width = pixelWidth;
+        canvas.height = pixelHeight;
+      }
+      const context = canvas.getContext("2d");
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = "rgba(1, 1, 1, .992)";
+      context.fillRect(0, 0, width, height);
+
+      const point = target || { x: width * .5, y: height * .48 };
+      const radius = Math.max(110, Math.min(width, height) * .22);
+      const glow = context.createRadialGradient(
+        point.x, point.y, radius * .12,
+        point.x, point.y, radius
+      );
+      glow.addColorStop(0, "rgba(0, 0, 0, .98)");
+      glow.addColorStop(.45, "rgba(0, 0, 0, .88)");
+      glow.addColorStop(.72, "rgba(0, 0, 0, .48)");
+      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      context.globalCompositeOperation = "destination-out";
+      context.fillStyle = glow;
+      context.beginPath();
+      context.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      context.fill();
+      context.globalCompositeOperation = "source-over";
     }
 
     drawDirectionalLight(target) {

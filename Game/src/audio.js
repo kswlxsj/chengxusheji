@@ -89,7 +89,7 @@
       element.addEventListener("error", this.handleError);
       if (this.root && typeof this.root.append === "function") this.root.append(element);
       this.metadataTimeout = setTimeout(() => this.settle(), MAX_VOICE_WAIT_MS);
-      if (element.readyState >= 1) this.beginPlayback();
+      if (element.readyState >= 1 || this.options.startWithoutMetadata === true) this.beginPlayback();
       else element.addEventListener("loadedmetadata", this.startPlayback, { once: true });
       return this;
     }

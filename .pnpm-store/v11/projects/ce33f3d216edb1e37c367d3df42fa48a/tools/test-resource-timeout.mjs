@@ -111,6 +111,8 @@ assert.match(uiSource, /const AUTO_ADVANCE_DELAY_MS = 1200;/, "自动播放句�
 assert.match(uiSource, /if \(this\.player\.running\) return;[\s\S]*this\.handleAdvance\(\);/, "框外点击不得补全流式文本");
 assert.match(mainSource, /ui\.dialog\.isAwaitingAdvance\(\) && !ui\.dialog\.player\.running/, "场景点击不得绕过流式文本保护");
 assert.match(mainStyles, /\.check-roll-modal,\s*\.check-roll-modal \*[\s\S]*user-select: none;/, "检定弹层应禁止文本选中");
+assert.match(mainStyles, /\.modal-backdrop\s*\{[\s\S]*?z-index:\s*110;/, "地图、调查和小游戏模态层应盖住残留对白");
+assert.match(mainStyles, /\.item-inspect-backdrop\s*\{[\s\S]*?z-index:\s*110;/, "物品与便签特写应盖住残留对白");
 vm.runInContext(uiSource, uiSandbox);
 const TextPlayer = uiSandbox.window.TrainGame.TextPlayer;
 const player = new TextPlayer({ textContent: "" });

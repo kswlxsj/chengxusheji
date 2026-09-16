@@ -1,6 +1,15 @@
 (function (Game) {
   "use strict";
 
+  const BUTTON_SOUND = "button_select";
+  const BUTTON_SOUND_EXCLUDED_AREAS = [
+    ".home-op",
+    ".ending-a-sequence",
+    ".parking-ending-sequence",
+    ".san-zero-sequence",
+    "#codex-ending-overlay"
+  ].join(", ");
+
   class GameWindow {
     constructor(root, className = "") {
       this.root = root;
@@ -961,6 +970,9 @@
       this.inspect = new InspectWindow(root);
       this.itemInspect = new ItemInspectWindow(root);
       this.audio = Game.AudioManager ? new Game.AudioManager(document.body, audio) : null;
+      this.buttonAudio = Game.AudioManager
+        ? new Game.AudioManager(document.body, audio, { fadeMs: 0 })
+        : null;
       this.backgroundAudio = Game.BackgroundAudioManager
         ? new Game.BackgroundAudioManager(document.body, audio)
         : null;
@@ -976,6 +988,14 @@
       this.cueSerial = 0;
       if (this.audio) {
         this.audio.onAutoplayBlocked = (message) => this.toast(message);
+      }
+      if (this.buttonAudio) {
+        this.buttonAudio.onAutoplayBlocked = (message) => this.toast(message);
+        document.addEventListener("click", (event) => {
+          const button = event.target?.closest?.("button");
+          if (!button || button.closest(BUTTON_SOUND_EXCLUDED_AREAS)) return;
+          this.buttonAudio.play(BUTTON_SOUND, { startWithoutMetadata: true });
+        }, true);
       }
       if (this.backgroundAudio) {
         this.backgroundAudio.onAutoplayBlocked = (message) => this.toast(message);

@@ -164,11 +164,65 @@
   // E_005：6 号车厢开门前的灵感检定（成败走不同分支）。
   registerDice("ev005_insight_01", attrCheck("insight"));
 
-  // E_006A：7 号车厢开门后 SAN 检定（SAN 0/1：成功 0 损失、失败扣 1）。
-  registerDice("ev006a_san_01", sanCheck("san", 0, 1));
+  // E_006A：7 号车厢开门后 SAN 检定（SAN 0/1：成功 0 损失、失败扣 1），并在结果后补充一段描述。
+  registerDice("ev006a_san_01", async (context) => {
+    const base = context.state.getAttribute("san");
+    const roll = rollDie(6);
+    const total = roll + base;
+    const success = total >= DEFAULT_THRESHOLD;
+    const detail = `san：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
+    await showDiceRollAnimation(context, roll, success, detail);
+    if (success) {
+      context.state.modifyAttribute("san", 0);
+      if (context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
+        await context.ui.dialog.showLine({
+          text: "理智战胜了恐惧，你强忍着恶心，终于把目光从那堆残肢上移开。"
+        });
+      }
+    } else {
+      const before = context.state.getAttribute("san");
+      const after = context.state.modifyAttribute("san", -1);
+      if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
+        await context.ui.dialog.showLine({
+          text: "你还是没能顶住这幅景象，喉咙一紧，差点在车厢里当场呕吐出来。"
+        });
+      }
+    }
+    return 0;
+  });
 
-  // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4）。
-  registerDice("ev006b_san_01", sanCheck("san", 1, { count: 1, sides: 4 }));
+  // E_006B：7 号车厢开门后 SAN 检定（SAN 1/1d4：成功扣 1、失败掷 1d4），并在结果后补充一段描述。
+  registerDice("ev006b_san_01", async (context) => {
+    const base = context.state.getAttribute("san");
+    const roll = rollDie(6);
+    const total = roll + base;
+    const success = total >= DEFAULT_THRESHOLD;
+    const detail = `san：掷出 ${roll} + 属性 ${base} = ${total}\n需要达到 ${DEFAULT_THRESHOLD}。`;
+    await showDiceRollAnimation(context, roll, success, detail);
+    if (success) {
+      const before = context.state.getAttribute("san");
+      const after = context.state.modifyAttribute("san", -1);
+      if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
+        await context.ui.dialog.showLine({
+          text: "你感觉胃里翻江倒海，好在你忍住了呕吐的冲动。"
+        });
+      }
+      return 0;
+    }
+
+    const loss = { count: 1, sides: 4 };
+    const result = rollDice(loss.count, loss.sides, loss.bonus);
+    const amount = result.total;
+    const before = context.state.getAttribute("san");
+    const after = context.state.modifyAttribute("san", -amount);
+    if (before !== after && context.ui?.dialog && typeof context.ui.dialog.showLine === "function") {
+      context.ui.toast?.(`san -${Math.abs(after - before)}（1d4：${result.rolls.join("+" )}）`);
+      await context.ui.dialog.showLine({
+        text: "你感觉胃里翻江倒海，终于还是呕吐了出来。一阵阵痉挛的剧痛让你几乎无法呼吸。"
+      });
+    }
+    return 0;
+  });
 
   // E_014：交涉小游戏的最终检定，使用小游戏写入的加成决定剧情分支。
   registerDice("ev014_negotiation_final_01", async (context) => {

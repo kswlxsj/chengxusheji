@@ -264,7 +264,7 @@ for (const eventId of ["E_011_S", "E_012_AFTER"]) {
   );
 }
 assert.deepEqual(
-  registeredEventsById.get("E_022_ITEM").actions[1],
+  registeredEventsById.get("E_022_ITEM").actions.find((action) => action.type === "conditionalJump"),
   {
     type: "conditionalJump",
     when: { hasItem: "flashlight" },
