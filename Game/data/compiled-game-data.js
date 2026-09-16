@@ -1791,6 +1791,20 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你确认那就是血腥味无疑。你从门前退开，决定先留在6号车厢再作打算。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "冷静。深呼吸。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你努力让自己冷静下来，试图理清现在的情况。"
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 1
         }
       ]
     },
