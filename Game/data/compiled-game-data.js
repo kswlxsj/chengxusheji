@@ -1372,6 +1372,10 @@ window.GAME_DATA = {
           "next": "E_005_LOCKED"
         },
         {
+          "type": "dialogue",
+          "text": "你晃了晃把手，刚刚的动静好像把门锁打开了。"
+        },
+        {
           "type": "check",
           "dice": "ev005_insight_01",
           "outcomes": [
@@ -1436,27 +1440,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "再次观察周围乘客，你发现还是没有人醒来。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你走到了通往7号车厢的门旁边。"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "carriage_06_entry_route_a",
-            "equals": true
-          },
-          "next": "E_006A"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "flag": "carriage_06_entry_route_b",
-            "equals": true
-          },
-          "next": "E_006B"
+          "text": "周围乘客依旧沉睡着，没有人醒来。"
         }
       ]
     },
@@ -1465,14 +1449,32 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味。直觉告诉你，门后的情况绝对不简单。"
+          "text": "敏锐的直觉告诉你，门后的情况绝对不简单。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你凑近门想看窗户，却先闻到一股浓重的血腥味。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "……啊？"
+        },
+        {
+          "type": "dialogue",
+          "text": "你感到危险的气息从门后传来，恐惧拖住了你好奇的脚步。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你选择……"
         },
         {
           "type": "choice",
           "prompt": "",
           "options": [
             {
-              "label": "继续前进",
+              "label": "继续前进，探索7号车厢",
               "next": "E_005_DEPARTURE_A"
             },
             {
@@ -1488,7 +1490,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你从门前退开，决定先留在6号车厢再作打算。"
+          "text": "你确认那就是血腥味无疑。你从门前退开，决定先留在6号车厢再作打算。"
         }
       ]
     },
@@ -1497,23 +1499,14 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你闻到一股浓重的血腥味，却无法判断门后的危险。"
+          "text": "即使头脑还是昏昏沉沉，你也确信刚刚的奇怪声响就来自这里。"
         },
         {
-          "type": "choice",
-          "prompt": "",
-          "options": [
-            {
-              "label": "推门进入",
-              "next": "E_005_DEPARTURE_B"
-            },
-            {
-              "label": "暂时留在6号车厢",
-              "next": "E_005_STAY"
-            }
-          ]
+          "type": "dialogue",
+          "text": "你直接推开7号车厢的门。"
         }
-      ]
+      ],
+      "next": "E_005_DEPARTURE_B"
     },
     {
       "id": "E_005_REVISIT",
@@ -1638,6 +1631,10 @@ window.GAME_DATA = {
           "text": "车厢内部，被撕裂的人类肢体散落一地。"
         },
         {
+          "type": "dialogue",
+          "text": "即使早有心理准备，眼前的景象还是让你头皮发麻。"
+        },
+        {
           "type": "check",
           "dice": "ev006a_san_01"
         }
@@ -1662,7 +1659,17 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "车厢内部，被撕裂的人类肢体散落一地。"
+          "speaker": "你",
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "啊！！！这是什么！"
+        },
+        {
+          "type": "dialogue",
+          "text": "你毫无防备地看到车厢内部满地的碎块。它们曾经是人的一部分。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你痛苦地捂住双眼，但是为时已晚。"
         },
         {
           "type": "check",
@@ -1756,7 +1763,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "尸体被浓浓的血浆覆盖着，四周散落着大大小小的尸块。"
+          "text": "尸体被鲜红的血浆覆盖着，四周散落着大大小小的尸块。"
         },
         {
           "type": "setFlag",
@@ -1778,7 +1785,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你已经检查过这具尸体，没有更多发现。"
+          "text": "你已经检查过这具尸体了，没有更多发现。"
         }
       ]
     },
@@ -2076,6 +2083,10 @@ window.GAME_DATA = {
           "text": "你发现所在车厢的门扉上贴着一张便签。"
         },
         {
+          "type": "dialogue",
+          "text": "你总感觉哪里不太对，或许……"
+        },
+        {
           "type": "check",
           "dice": "ev001_insight_01",
           "outcomes": [
@@ -2090,7 +2101,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你察觉到现在明明早应该到了终点站了，不祥的预感在你心头笼罩。"
+          "text": "不对，现在明明早应该到了终点站了……"
+        },
+        {
+          "type": "dialogue",
+          "text": "不祥的预感在你心头笼罩。"
         }
       ]
     },
@@ -2099,7 +2114,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你没发现任何异常，或许你只是睡过了站。"
+          "text": "或许只是白天太累了吧。还有几站到站？"
         }
       ]
     },
@@ -2108,7 +2123,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "inspect",
-          "title": "便签·正面",
+          "title": "便签正面",
           "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
           "image": "assets/Image/Ui/label-front.png",
           "large": true
@@ -2129,8 +2144,8 @@ window.GAME_DATA = {
         },
         {
           "type": "inspect",
-          "title": "便签·背面",
-          "text": "「第三个箱子里有藏着钥匙。」箱子？这里哪有箱子。",
+          "title": "便签背面",
+          "text": "「第三个箱子里藏着钥匙。」箱子？这里哪有箱子。",
           "image": "assets/Image/Ui/label-back.png",
           "large": true
         },
@@ -2209,7 +2224,7 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "地图检定成功",
-          "text": "你仔细查看这张地图，发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
+          "text": "你仔细查看地图，猛然发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
           "image": "assets/Image/Ui/map-success.png",
           "large": true
         },
@@ -2255,7 +2270,7 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "地图检定失败",
-          "text": "你努力查看这张地图，只能看出 7 号车厢以后的部分看不清楚。",
+          "text": "你努力查看，但是 7 号车厢以后的部分被污染，看不清楚。",
           "image": "assets/Image/Ui/map-failure.png",
           "large": true
         },
@@ -2300,11 +2315,21 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你观察尸体，发现距离死亡时间并未过去很久。"
+          "text": "你观察尸体，组织是有弹性的，血液也没有干透，有些部分还是鲜红色。"
         },
         {
           "type": "dialogue",
-          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+          "text": "看上去刚刚死去不久。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "这是否意味着这附近……"
+        },
+        {
+          "type": "dialogue",
+          "text": "你突然注意到不远处，一台收音机发出嘶嘶的电流声。"
         },
         {
           "type": "setFlag",
@@ -2323,11 +2348,17 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你观察尸体，但并未发现任何异常。"
+          "speaker": "你",
+          "portrait": "assets/Image/Portrait/player-scared.png",
+          "text": "天哪……还是不要继续看下去了。"
         },
         {
           "type": "dialogue",
-          "text": "不远处，一台收音机发出嘶嘶的电流声，把你吸引了过去。"
+          "text": "它经历了什么？你只感觉脊背发凉。"
+        },
+        {
+          "type": "dialogue",
+          "text": "不远处，你突然注意到一台收音机发出嘶嘶的电流声。"
         },
         {
           "type": "setFlag",
@@ -2390,7 +2421,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你不敢继续停留，打算沿来路退回6号车厢。"
+          "text": "你不敢继续停留，还是尽快离开这里吧。"
         }
       ]
     },
@@ -2399,7 +2430,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "车厢尽头仍被那片黑暗吞没，你不愿再靠近。"
+          "text": "车厢尽头仍被那片黑暗吞没，你觉得不应该再靠近了。"
         }
       ]
     },
@@ -3565,7 +3596,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "speaker": "主角内心",
+          "speaker": "你",
           "text": "......我记得刚才不是这么写的。"
         },
         {
@@ -3578,7 +3609,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "speaker": "主角内心",
+          "speaker": "你",
           "text": "如果我不回去......生还名单里，就再也不会有我了。"
         },
         {
@@ -6661,15 +6692,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你感受到一阵控制不住的干呕。"
+          "text": "你感受到一阵控制不住的反胃。你干呕起来"
         },
         {
           "type": "dialogue",
-          "text": "你缓慢而绝望地走着，每一步都变得如此艰难。"
+          "text": "每一步都变得如此艰难。"
         },
         {
           "type": "dialogue",
-          "speaker": "Pc",
+          "speaker": "你",
           "portrait": "assets/Image/Portrait/player-scared.png",
           "text": "放过我吧…"
         }
