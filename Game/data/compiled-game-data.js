@@ -2099,6 +2099,11 @@ window.GAME_DATA = {
           "value": true
         },
         {
+          "type": "setFlag",
+          "key": "carriage_06_eaten",
+          "value": true
+        },
+        {
           "type": "changeScene",
           "scene": "carriage_05"
         },
@@ -2283,6 +2288,10 @@ window.GAME_DATA = {
         {
           "type": "sound",
           "sound": "tearing"
+        },
+        {
+          "type": "dialogue",
+          "text": "你把便签撕了下来"
         },
         {
           "type": "inspect",
@@ -2668,12 +2677,68 @@ window.GAME_DATA = {
       "id": "E_011",
       "actions": [
         {
+          "type": "custom",
+          "name": "newspaperBlackout"
+        },
+        {
+          "type": "sound",
+          "sound": "switch1"
+        },
+        {
           "type": "dialogue",
           "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，身后6号车厢的灯灭了。"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "flashlight"
+          },
+          "next": "E_011_FLASHLIGHT"
+        }
+      ],
+      "next": "E_011_NO_FLASHLIGHT"
+    },
+    {
+      "id": "E_011_FLASHLIGHT",
+      "actions": [
+        {
           "type": "dialogue",
-          "text": "你压下不安，把注意力重新放回报纸。"
+          "text": "你突然想起来，自己刚刚好像找到了手电筒，不知道能不能用。"
+        },
+        {
+          "type": "custom",
+          "name": "awaitNewspaperFlashlight",
+          "params": {
+            "label": "点击手电筒"
+          }
+        },
+        {
+          "type": "dialogue",
+          "text": "借着手电筒的光，你看清了报纸上的字。"
+        }
+      ],
+      "next": "E_011_S"
+    },
+    {
+      "id": "E_011_NO_FLASHLIGHT",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "heartbeats",
+          "loop": true,
+          "stopOnDialogueAdvance": true
+        },
+        {
+          "type": "dialogue",
+          "text": "你不敢贸然行动，只得等待。心跳的声音在空荡的车厢中震耳欲聋，不知过了多久——"
+        },
+        {
+          "type": "dialogue",
+          "text": "灯突然亮了。"
+        },
+        {
+          "type": "custom",
+          "name": "restoreNewspaperLighting"
         }
       ],
       "next": "E_011_S"
@@ -2771,6 +2836,45 @@ window.GAME_DATA = {
           "item": "newspaper"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "carriage_05_newspaper_flashlight",
+            "equals": true
+          },
+          "next": "E_011_FLASHLIGHT_LIGHTS_ON"
+        },
+        {
+          "type": "custom",
+          "name": "restoreNewspaperLighting",
+          "params": {
+            "halfDark": true
+          }
+        },
+        {
+          "type": "check",
+          "dice": "ev011_san_01",
+          "outcomes": [
+            "E_011_SAN_S",
+            "E_011_SAN_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_011_FLASHLIGHT_LIGHTS_ON",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "灯突然亮了。"
+        },
+        {
+          "type": "custom",
+          "name": "restoreNewspaperLighting",
+          "params": {
+            "halfDark": true
+          }
+        },
+        {
           "type": "check",
           "dice": "ev011_san_01",
           "outcomes": [
@@ -2818,34 +2922,27 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "忽然，你感觉背后有哪里不对，于是转身看去。"
-        },
-        {
-          "type": "check",
-          "dice": "ev011_insight_01",
-          "outcomes": [
-            "E_012_S",
-            "E_012_F"
-          ]
+          "text": "你听到背后传来一阵声响，好像是6号车厢的方向。"
         }
-      ]
+      ],
+      "next": "E_012_AFTER"
     },
     {
       "id": "E_012_S",
       "actions": [
         {
+          "type": "setFlag",
+          "key": "carriage_06_eaten_reveal_seen",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "portrait": "assets/Image/Portrait/player-scared.png",
-          "text": "你发现门框在视野里少了一截，立刻转身看向6号车厢。"
+          "text": "你跨进6号车厢，终于看清刚才那阵声响留下了什么。"
         },
         {
           "type": "dialogue",
           "text": "你的眼前，6号车厢只剩不到半截。"
-        },
-        {
-          "type": "setFlag",
-          "key": "carriage_06_eaten",
-          "value": true
         },
         {
           "type": "dialogue",
@@ -2868,8 +2965,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你咬住舌尖，用疼痛把意识从那片黑暗中拽回来。车厢正在被吞掉，这不是错觉。"
         }
-      ],
-      "next": "E_012_AFTER"
+      ]
     },
     {
       "id": "E_012_SAN_F",
@@ -2878,22 +2974,7 @@ window.GAME_DATA = {
           "type": "dialogue",
           "text": "你眼睁睁看着黑暗侵入车厢，却无法判断它离自己还有多远。直到灯光闪烁，你才发现自己一直忘了呼吸。"
         }
-      ],
-      "next": "E_012_AFTER"
-    },
-    {
-      "id": "E_012_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你只看见6号车厢的灯影一阵晃动。过量的恐惧让你无法分辨那是电路故障，还是有什么东西正在黑暗里靠近。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你不敢回去确认，只能把报纸攥紧，催促自己继续前进。"
-        }
-      ],
-      "next": "E_012_AFTER"
+      ]
     },
     {
       "id": "E_012_AFTER",
@@ -5194,6 +5275,16 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你穿过门，返回6号车厢。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "not": {
+              "flag": "carriage_06_eaten_reveal_seen",
+              "equals": true
+            }
+          },
+          "next": "E_012_S"
         }
       ]
     },
@@ -7703,6 +7794,26 @@ window.GAME_DATA = {
       "file": "assets/Audio/SoundEffect/tinnitus-3.mp3",
       "volume": 0.8,
       "description": "假里1号车厢发现窗外乘务员前播放。"
+    },
+    {
+      "id": "button_select",
+      "name": "按钮点击",
+      "file": "assets/Audio/SoundEffect/select02.mp3",
+      "description": "游戏内按钮点击时播放；开场与结局演出除外。"
+    },
+    {
+      "id": "switch1",
+      "name": "车厢熄灯开关声",
+      "file": "assets/Audio/SoundEffect/switch1.mp3",
+      "volume": 0.85,
+      "description": "5号车厢打开报纸、灯光骤灭时播放。"
+    },
+    {
+      "id": "heartbeats",
+      "name": "黑暗中的心跳",
+      "file": "assets/Audio/SoundEffect/heartbeats.mp3",
+      "volume": 0.82,
+      "description": "5号车厢读报时未持有手电筒的等待分支循环播放。"
     }
   ]
 };

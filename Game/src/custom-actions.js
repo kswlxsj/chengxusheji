@@ -227,6 +227,65 @@
       }
     });
 
+    engine.registerCustomAction("newspaperBlackout", async (params, context) => {
+      context.state.flags.carriage_05_newspaper_blackout = true;
+      context.state.flags.carriage_05_newspaper_flashlight = false;
+      context.scene.refresh();
+    });
+
+    engine.registerCustomAction("awaitNewspaperFlashlight", async (params, context) => {
+      if (typeof document === "undefined") {
+        context.state.flags.carriage_05_newspaper_flashlight = true;
+        return;
+      }
+      context.ui.closeDialog();
+      const shell = requireGameShell();
+      const itemIndex = context.state.inventory.indexOf("flashlight");
+      const slots = document.querySelectorAll("#inventory-slots .inventory-slot");
+      const slot = itemIndex >= 0 ? slots[itemIndex] : null;
+      if (!slot) throw new Error("读报手电筒引导找不到物品格");
+
+      const guide = document.createElement("div");
+      guide.className = "newspaper-flashlight-guide";
+      guide.textContent = String(params.label || "点击手电筒");
+      guide.setAttribute("aria-hidden", "true");
+      shell.append(guide);
+      const wasDisabled = slot.disabled;
+      const positionGuide = () => {
+        const shellRect = shell.getBoundingClientRect();
+        const slotRect = slot.getBoundingClientRect();
+        guide.style.left = `${slotRect.left - shellRect.left + slotRect.width / 2}px`;
+        guide.style.top = `${slotRect.top - shellRect.top}px`;
+      };
+      let resolveSelection;
+      const handleSelection = () => resolveSelection();
+      const selected = new Promise((resolve) => { resolveSelection = resolve; });
+      slot.addEventListener("click", handleSelection, { once: true, capture: true });
+      slot.disabled = false;
+      slot.classList.add("newspaper-flashlight-target");
+      positionGuide();
+      window.addEventListener("resize", positionGuide);
+      try {
+        await context.engine.waitFor(selected, undefined, { label: "点击手电筒" });
+        context.throwIfCancelled();
+        context.state.flags.carriage_05_newspaper_flashlight = true;
+        context.scene.refresh();
+      } finally {
+        slot.removeEventListener("click", handleSelection, { capture: true });
+        window.removeEventListener("resize", positionGuide);
+        slot.classList.remove("newspaper-flashlight-target");
+        slot.disabled = wasDisabled;
+        guide.remove();
+      }
+    });
+
+    engine.registerCustomAction("restoreNewspaperLighting", async (params, context) => {
+      context.state.flags.carriage_05_newspaper_blackout = false;
+      context.state.flags.carriage_05_newspaper_flashlight = false;
+      if (params.halfDark === true) context.state.flags.carriage_05_half_dark = true;
+      context.scene.refresh();
+    });
+
     engine.registerCustomAction("useLight", async (params, context) => {
       const item = context.items.get(params.item);
       if (!item) throw new Error(`照明物品不存在：${params.item || "空"}`);

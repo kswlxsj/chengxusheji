@@ -269,14 +269,39 @@ assert.equal(
   true,
   "手机应仍由3号车厢的手机热点发放"
 );
-const eatenRevealActions = actionsOf("E_012_S");
-const eatenRevealIndex = eatenRevealActions.findIndex(
-  (action) => action.type === "dialogue" && action.text === "你的眼前，6号车厢只剩不到半截。"
+assert.equal(
+  actionsOf("E_GO_06_05").some((action) => (
+    action.type === "setFlag" && action.key === "carriage_06_eaten" && action.value === true
+  )),
+  true,
+  "首次进入5号车厢时应立即把6号车厢切为被啃食背景"
 );
-assert.deepEqual(
-  eatenRevealActions[eatenRevealIndex + 1],
-  { type: "setFlag", key: "carriage_06_eaten", value: true },
-  "看到6号车厢残缺后应立刻启用被啃食状态"
+assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，好像是6号车厢的方向。");
+assert.equal(actionsOf("E_012").some((action) => action.type === "check"), false, "隔门时不应检定或看见6号车厢");
+const eatenRevealActions = actionsOf("E_012_S");
+assert.equal(
+  eatenRevealActions.some((action) => action.type === "dialogue" && action.text === "你的眼前，6号车厢只剩不到半截。"),
+  true,
+  "6号车厢残缺描写应保留到玩家真正进入6号之后"
+);
+assert.equal(
+  actionsOf("E_GO_05_06").some((action) => action.type === "conditionalJump" && action.next === "E_012_S"),
+  true,
+  "从5号进入6号时应承接被啃食场景揭示"
+);
+assert.deepEqual(actionsOf("E_011").slice(0, 2), [
+  { type: "custom", name: "newspaperBlackout" },
+  { type: "sound", sound: "switch1" }
+], "读报熄灯后必须通过标准音效动作播放开关声");
+assert.equal(
+  actionsOf("E_011_S").some((action) => action.name === "restoreNewspaperLighting" && action.params?.halfDark === true),
+  true,
+  "无手电筒读报完成后也必须置入5号半暗状态"
+);
+assert.equal(
+  actionsOf("E_011_FLASHLIGHT_LIGHTS_ON").some((action) => action.name === "restoreNewspaperLighting" && action.params?.halfDark === true),
+  true,
+  "手电筒读报完成后必须置入5号半暗状态"
 );
 assert.equal(
   actionsOf("E_501").some((action) => action.type === "setFlag" && action.key === "carriage_06_eaten"),
@@ -543,6 +568,7 @@ assert.equal(game.state.sceneId, "carriage_05");
 game = fixture({ sceneId: "carriage_05" });
 await game.play("E_011_S");
 assert.equal(game.state.sceneId, "carriage_05");
+assert.equal(game.state.flags.carriage_05_half_dark, true, "读报后5号车厢应保持左半侧压暗");
 
 // 4号→3号折返：切景后播折返描写；“还没做3号入场叙述”时仍由 E_018 接走。
 game = fixture({ sceneId: "carriage_04", flags: { crew_04_interacted: true, carriage_03_first_entry_seen: true, carriage_03_bag_interacted: true } });

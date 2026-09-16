@@ -1,6 +1,6 @@
 {
   "formatVersion": 3,
-  "title": "常暗之厢（框架演示）",
+  "title": "常暗之厢",
   "coverImage": "assets/Image/Ui/cover-placeholder.svg",
   "startEvent": "E_001",
   "initialScene": "carriage_06",

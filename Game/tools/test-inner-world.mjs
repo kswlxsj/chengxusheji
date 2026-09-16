@@ -120,7 +120,7 @@ for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_
   assert.equal(calls, 1, "首次调查只掷一次随机");
   assert.equal(game.state.flags.ev502_return_rolled, true);
   assert.equal(game.trace.some(t => t.text === "门被关死，打不开。"), roll === 0.4);
-  assert.equal(game.state.flags.carriage_06_eaten, true, "返回分支不得改写已在5号置位的啃食标签");
+  assert.equal(game.state.flags.carriage_06_eaten, true, "返回分支不得改写首次进入5号时置位的啃食标签");
   assert.ok(!game.state.flags.inner_world_entered, "未到伪4时返回仍可再进里世界");
   assert.equal(game.trace.some(t => t.event === "E_002"), false);
 }

@@ -331,13 +331,19 @@
       {
         "id": "tool_clutter_05",
         "name": "倒下的背包",
-        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
         "fullCanvas": true,
         "position": {
           "x": 0,
           "y": 0,
           "width": 100,
           "height": 100
+        },
+        "hitPosition": {
+          "x": 26.9,
+          "y": 49.1,
+          "width": 11.7,
+          "height": 12.5
         },
         "zIndex": 12,
         "clickEvent": "E_05_SEARCH_TOOLS",
@@ -428,6 +434,13 @@
           "flag": "carried_crew",
           "equals": true
         }
+      },
+      {
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+        "visibleWhen": {
+          "flag": "crew_04_left_seated",
+          "equals": true
+        }
       }
     ],
     "objects": [
@@ -492,14 +505,115 @@
         },
         "zIndex": 12,
         "clickEvent": "E_013"
+      },
+      {
+        "id": "crew_04_seated_left",
+        "name": "坐在左侧座椅上的乘务员",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+        "fullCanvas": true,
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "crew_04_left_seated",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_03_bag_interacted",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "flag": "carried_crew",
+                "equals": true
+              }
+            }
+          ]
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 28.5,
+          "y": 41,
+          "width": 8.5,
+          "height": 33
+        },
+        "zIndex": 12,
+        "clickEvent": "E_013"
+      },
+      {
+        "id": "crew_04_seated_right",
+        "name": "坐在右侧座椅上的乘务员",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+        "fullCanvas": true,
+        "visibleWhen": {
+          "all": [
+            {
+              "flag": "crew_04_left_seated",
+              "equals": true
+            },
+            {
+              "flag": "carriage_03_bag_interacted",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carried_crew",
+                "equals": true
+              }
+            }
+          ]
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "hitPosition": {
+          "x": 63,
+          "y": 41,
+          "width": 8.5,
+          "height": 33
+        },
+        "zIndex": 12,
+        "clickEvent": "E_013"
       }
     ]
   },
   {
     "id": "carriage_03",
     "name": "3 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-03.png",
+    "background": "assets/Image/Scene/Background/carriage-03-full.png",
     "backgroundSound": { "sound": "train_ambient" },
+    "backgroundVariants": [
+      {
+        "image": "assets/Image/Scene/Background/carriage-03.png",
+        "visibleWhen": {
+          "flag": "carriage_03_bag_resolved",
+          "equals": true
+        }
+      },
+      {
+        "image": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+        "visibleWhen": {
+          "flag": "carriage_03_bag_exposed",
+          "equals": true
+        }
+      },
+      {
+        "image": "assets/Image/Scene/Background/carriage-03-halffull.png",
+        "visibleWhen": {
+          "flag": "carriage_03_bag_interacted",
+          "equals": true
+        }
+      }
+    ],
     "objects": [
       {
         "id": "door_03_to_04",
@@ -539,10 +653,10 @@
           "height": 100
         },
         "hitPosition": {
-          "x": 26,
-          "y": 50,
-          "width": 15,
-          "height": 12
+          "x": 63,
+          "y": 50.8,
+          "width": 7.7,
+          "height": 10.3
         },
         "zIndex": 12,
         "clickEvent": "E_017",
@@ -597,12 +711,47 @@
           "x": 0,
           "y": 0,
           "width": 100,
-        "height": 100
+          "height": 100
         },
         "zIndex": 13,
         "clickEvent": "E_018_PHONE",
         "visibleWhen": {
-          "flag": "carriage_03_bag_interacted",
+          "all": [
+            {
+              "flag": "carriage_03_bag_interacted",
+              "equals": true
+            },
+            {
+              "not": {
+                "flag": "carriage_03_bag_exposed",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "flag": "carriage_03_bag_resolved",
+                "equals": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "forward_note_03",
+        "name": "写着前进提示的便签",
+        "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+        "fullCanvas": true,
+        "visualOnly": true,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 100,
+          "height": 100
+        },
+        "zIndex": 14,
+        "clickEvent": "E_022_ITEM_END",
+        "visibleWhen": {
+          "flag": "carriage_03_forward_note_visible",
           "equals": true
         }
       }
@@ -664,7 +813,7 @@
           "height": 44
         },
         "zIndex": 12,
-        "clickEvent": "E_026",
+        "clickEvent": "E_026_ACTION",
         "visibleWhen": {
           "all": [
             {

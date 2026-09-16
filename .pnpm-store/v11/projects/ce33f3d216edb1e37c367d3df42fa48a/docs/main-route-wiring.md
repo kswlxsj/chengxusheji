@@ -72,6 +72,12 @@
 
 主要去重旗标包括 `carriage_07_entry_seen`、`corpse_07_investigated`、`ev008_scouting_done`、`ev009_seen`、`carriage_05_entry_seen`、`carriage_03_first_entry_seen`、`carriage_03_bag_resolved`、`clicker_first_encounter_seen`、`front_carriage_entry_seen`；里世界旗标见 [里世界演出维护记录](inner-world-presentation.md)。旗标缺省均为 `false`，存档版本和数据格式版本保持 3；兼容旧档时也读取已存在的阶段性旗标，避免已完成流程被误判为未解锁或重播。
 
+### 3号车厢行李演出（2026-09-16）
+
+3号背景按 `carriage_03_bag_interacted`、`carriage_03_bag_exposed`、`carriage_03_bag_resolved` 依次表现满载、半清理、只剩黑包与空车厢。旗标改变后立即执行 `refreshScene`，确保行李塌落和黑包调查发生在对应画面上；`carriage_03_bag_resolved` 优先级最高，因此旧档即使没有新增的 `carriage_03_bag_exposed` 也会直接显示完成状态。包内 `MOVE FORWARD` 纸条只在相关对白期间由 `carriage_03_forward_note_visible` 短暂显示，不作为持久场景热点。
+
+5号工具背包已改用独立的 `carriage-05-03-clutter.png`，避免3号新版黑包移位影响5号热点；7号尸体与收音机仅更新同坐标新版素材，剧情接线不变。4号、6号素材经审计与源素材一致，无需调整。
+
 文案同步口径：开场日期为 2013年7月15日；乘务员关于钥匙的问答只保留钥匙位置、取工具与停车操作；右杆统一为「上拉持续减速直至停车」；死亡线声音既像乘务员又陌生。未来日期、幸存人数变化、乘务员记忆错乱及「停车／继续前进」对立仍是刻意悬疑，不作矛盾修正。
 
 ## 验证

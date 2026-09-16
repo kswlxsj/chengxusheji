@@ -53,9 +53,9 @@ await game.play("E_023");
 assert.equal(game.state.sceneId, "carriage_inner_01", "3号车门应先播放 E_023 再进入里世界");
 // 「灯灭了」在最后一句之前生效：黑场句在黑场中显示，且离开3号时清除黑场旗标。
 assert.equal(
-  game.trace.find(t => t.text === "灯，灭了。")?.blackout,
+  game.trace.find(t => t.text === "灯灭了。")?.blackout,
   false,
-  "「灯，灭了。」这句仍在亮灯状态下显示"
+  "「灯灭了。」这句仍在亮灯状态下显示"
 );
 assert.equal(
   game.trace.find(t => t.text === "黑暗中，你摸到了通往2号车厢的门。")?.blackout,
@@ -223,7 +223,7 @@ for (const outcome of [0, 1]) {
 
 // 回程×瓶子×钥匙：含回程重新深入、拾取后停留、出口不强迫检定。
 // 返程链路＝伪4号左门（花海调头后，或窗边谈话结束后）→ 花草车厢 → 空车厢 → 磨损门 → 真实2号车厢
-// → E_025 喘息段（播完停下，等玩家照明后自己点 Clicker；E_524 的喘息描写已并入 E_025）。
+// → E_025 喘息段；主页面在进入并照明后自动触发 Clicker（E_524 的喘息描写已并入 E_025）。
 for (const bottle of [false, true]) for (const given of [true]) {
   game = fixture({ ev503_bottle_taken: bottle, ev519_key_given: given, ev519_key_ever_given: given, crew_met: true },
     [...(bottle ? ["bottle"] : []), ...(!given ? crewKeys : [])], "carriage_fake_04");
@@ -252,7 +252,7 @@ for (const bottle of [false, true]) for (const given of [true]) {
   assert.equal(game.trace.some(t => t.scene === "carriage_02" && t.text === "四周毫无光源。"), true);
   assert.equal(game.trace.some(t => t.text?.includes("你听见明显的喘息声")), false, "E_524 的喘息描写已并入 E_025");
   assert.equal(game.trace.filter(t => t.text?.includes("那不是人类的喘息")).length, 1, "喘息描写只播一次");
-  assert.equal(game.trace.some(t => t.event === "E_026"), false, "回到2号后不自动进入 Clicker 遭遇");
+  assert.equal(game.trace.some(t => t.event === "E_026"), false, "纯事件夹具不应代替主页面自动触发 Clicker");
   const snapshot = game.state.snapshot(); game.state.restore(snapshot);
   assert.equal(game.state.flags.ev519_key_ever_given, given);
 }
@@ -372,34 +372,29 @@ const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.png", import.meta.url))).size > 0);
-// 瓶子只能从里世界获取：2号车厢不再就地拾取，投掷选项一律要求已持有瓶子。
+// 瓶子只能从里世界获取：2号车厢不再就地拾取；Clicker 初次遭遇只提供潜行/对抗，瓶子从背包直接通关。
 const e028 = events.find(e => e.id === "E_028");
 assert.equal(e028.actions.some(a => a.type === "addItem"), false, "E-028 不得再就地发放瓶子");
 assert.equal(e028.actions.some(a => a.type === "learnSkill" && a.skill === "throwing"), true);
 assert.equal(e028.actions.some(a => a.type === "minigame"), false, "E-028 只负责瓶子与投掷，不得进入小游戏");
 assert.equal(events.some(e => e.id === "E_028_HAS_BOTTLE"), false, "就地拾瓶分支已删除，不得留下死事件");
 assert.equal(events.find(e => e.id === "E_028_THROW_FIRST").actions.some(a => a.type === "removeItem" && a.item === "bottle"), true);
-for (const [eventId, label] of [
-  ["E_026", "投掷彩色玻璃瓶，制造声响引开它们"],
-  ["E_026_KNOWLEDGE", "投掷彩色玻璃瓶，制造声响引开它们"],
-  ["E_027_F", "退回阴影，投掷彩色玻璃瓶制造声响引开它们"]
-]) {
+for (const eventId of ["E_026_ACTION"]) {
   const choice = events.find(e => e.id === eventId).actions.find(a => a.type === "choice");
-  const option = choice.options.find(o => o.label === label);
-  assert.equal(option?.next, "E_028", `${eventId} 的投掷选项应指向 E_028`);
-  assert.deepEqual(option.when, { hasItem: "bottle" }, `${eventId} 的投掷选项必须要求持有瓶子`);
+  assert.deepEqual(choice.options.map(o => o.label), ["安静潜行", "正面对抗"], `${eventId} 只应提供两个处理选项`);
+  assert.deepEqual(choice.options.map(o => o.next), ["E_027", "E_029"], `${eventId} 的两个选项应分别接潜行和对抗`);
 }
-for (const [inventory, expected] of [
-  [[], ["屏住呼吸，尝试安静通过"]],
-  [["bottle"], ["屏住呼吸，尝试安静通过", "投掷彩色玻璃瓶，制造声响引开它们"]]
-]) {
-  game = fixture({ monster_behavior_known: true }, inventory, "carriage_02");
-  let offered = [];
-  // 只记录第一个选择框：E_026 之后剧情会继续走到先头车厢的操作面板。
-  game.ui.choice.choose = async (_prompt, options) => { if (!offered.length) offered = options; return options[0]; };
-  await game.play("E_026");
-  assert.deepEqual(offered.map(o => o.label), expected, "无瓶子时投掷选项必须被过滤掉");
+for (const eventId of ["E_026", "E_026_KNOWLEDGE", "E_026_REVISIT"]) {
+  assert.equal(events.find(e => e.id === eventId).actions.some(a => a.type === "choice"), false, `${eventId} 只应播放发现对白`);
 }
+const stealthFailure = events.find(e => e.id === "E_027_F");
+assert.equal(stealthFailure.actions.some(a => a.type === "choice"), false, "潜行失败后不应再弹第二层选择");
+assert.deepEqual(
+  stealthFailure.actions.slice(-2).map(a => a.type),
+  ["setFlag", "minigame"],
+  "潜行失败应直接进入卡牌小游戏"
+);
+assert.equal(stealthFailure.actions.at(-1).game, "card_battle", "潜行失败应进入简单卡牌模式");
 game = fixture({}, [], "carriage_02");
 game.ui.choice.choose = async () => null;
 await game.play("E_028");
@@ -416,8 +411,8 @@ const carriage02 = scenes.find(s => s.id === "carriage_02");
 assert.equal(carriage02.objects.some(o => o.id === "bottle_02"), false);
 assert.equal(
   carriage02.objects.find(o => o.id === "clicker_02").clickEvent,
-  "E_026",
-  "点击2号车厢的Clicker应进入怪物遭遇"
+  "E_026_ACTION",
+  "点击2号车厢的Clicker应进入通过方式选择"
 );
 // 3号通往2号的门先播门前认知崩塌 E_023（只在未到过伪4时播一次），再由 E_501 决定进里世界或走主线。
 const carriage03 = scenes.find(s => s.id === "carriage_03");
@@ -451,7 +446,7 @@ assert.deepEqual(
 const loopActions = events.find(e => e.id === "E_023_LOOP").actions;
 const blackoutAt = loopActions.findIndex(a => a.type === "setFlag" && a.key === "carriage_03_blackout" && a.value === true);
 assert.ok(blackoutAt > 0, "E_023_LOOP 应在「灯灭了」之后置位黑场旗标");
-assert.equal(loopActions[blackoutAt - 1].text, "灯，灭了。");
+assert.equal(loopActions[blackoutAt - 1].text, "灯灭了。");
 assert.deepEqual(loopActions[blackoutAt + 1], { type: "custom", name: "refreshScene" }, "置位后必须刷新场景才能立刻变暗");
 assert.equal(loopActions[blackoutAt + 2].text, "黑暗中，你摸到了通往2号车厢的门。");
 assert.deepEqual(

@@ -1,6 +1,7 @@
 /* 无光车厢的黑场层（由 src/scene.js 的 isSceneUnlit 决定 class）：
    - 2号车厢：首次照明前只保留极弱轮廓，避免玩家提前看清 Clicker 场景；
-   - 3号车厢：认知崩塌「灯灭了」之后（`carriage_03_blackout`），离开3号时清除。 */
+   - 3号车厢：认知崩塌「灯灭了」之后（`carriage_03_blackout`），离开3号时清除；
+   - 5号车厢：读报期间熄灯，手电筒开启前保持全黑。 */
 #scene-layer.is-unlit::after {
   content: "";
   position: absolute;
@@ -21,6 +22,68 @@
   pointer-events: none;
 }
 
+.scene-point-light { cursor: none; }
+
+/* 读报事件之后，5号车厢左半侧的顶灯永久熄灭；返回该车厢时仍保持半暗。 */
+.scene-half-dark {
+  position: absolute;
+  z-index: 26;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 52%;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .96) 0 78%, rgba(0, 0, 0, .88) 90%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* 读报黑暗演出中的手电筒引导。覆盖层不抢点击，箭头指向仍可操作的物品格。 */
+.newspaper-flashlight-guide {
+  position: absolute;
+  z-index: 120;
+  width: max-content;
+  max-width: min(340px, 70vw);
+  padding: 8px 13px;
+  color: #fff4cf;
+  border: 1px solid rgba(255, 218, 137, .78);
+  border-radius: 5px;
+  background: rgba(15, 12, 9, .94);
+  box-shadow: 0 0 18px rgba(255, 205, 92, .32);
+  font-size: clamp(13px, 1.25vw, 17px);
+  text-align: center;
+  pointer-events: none;
+  translate: -50% calc(-100% - 24px);
+  animation: newspaper-guide-float 760ms ease-in-out infinite alternate;
+}
+
+.newspaper-flashlight-guide::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 5px);
+  width: 18px;
+  height: 32px;
+  border-right: 4px solid #ffd36f;
+  border-bottom: 4px solid #ffd36f;
+  transform: translateX(-50%) rotate(45deg);
+  filter: drop-shadow(0 0 5px rgba(255, 211, 111, .85));
+}
+
+.inventory-slot.newspaper-flashlight-target {
+  z-index: 3;
+  outline: 3px solid #ffd36f;
+  background: rgba(255, 211, 111, .28);
+  box-shadow: 0 0 18px rgba(255, 211, 111, .85);
+  animation: newspaper-flashlight-pulse 680ms ease-in-out infinite alternate;
+}
+
+@keyframes newspaper-guide-float {
+  to { translate: -50% calc(-100% - 30px); }
+}
+
+@keyframes newspaper-flashlight-pulse {
+  to { filter: brightness(1.35); transform: scale(1.06); }
+}
+
 /* 3号车厢的「灯灭了」用淡入呈现过程；2号保持立即生效，不提前泄露 Clicker 画面。 */
 #scene-layer.is-unlit[data-scene-id="carriage_03"]::after {
   animation: scene-blackout 900ms ease-out;
@@ -38,4 +101,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   #scene-layer.is-unlit[data-scene-id="carriage_03"]::after { animation: none; }
+  .newspaper-flashlight-guide,
+  .inventory-slot.newspaper-flashlight-target { animation: none; }
 }

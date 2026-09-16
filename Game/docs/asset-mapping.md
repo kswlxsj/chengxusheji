@@ -59,7 +59,7 @@
 | `Assets/Image/Item/应急割带器.png` | — | `Assets/Image/Item/emergency-belt-cutter.png`<br>`Game/assets/Image/Item/emergency-belt-cutter.png` | `a7dd682c0c254655282575c6cf65677b25434a0f831da758cb01cac2b32eed18` | Assets 接入 Game | 正式游戏使用 | 已替换通用钥匙占位符 |
 | — | `Game/assets/flashlight.png` | `Assets/Image/Item/flashlight-v1.png`<br>`Game/assets/Image/Item/flashlight-v1.png` | `aa58824ecf626ba0e2e2615df0188ce35a98d29192fd3504b320f6f83001d22a` | Game 补入 Assets | 正式游戏使用 | 当前运行版本 |
 | `Assets/Image/Item/手电筒.png` | — | `Assets/Image/Item/flashlight-v2.png` | `afe2476acff153f02aaf047735c5c02564c7a67c95e510311394deea36f38136` | Assets 独有 | 仅源素材库 | 新版候选，仅 Assets |
-| — | `Game/assets/newspaper-icon.png` | `Assets/Image/Item/newspaper.png`<br>`Game/assets/Image/Item/newspaper.png` | `d99738285a0bbbd366c27978e58f1a505a919b596e853cf0acc2041cf5f043d6` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
+| — | `Game/assets/newspaper-icon.png` | `Assets/Image/Item/newspaper.png`<br>`Game/assets/Image/Item/newspaper.png` | `f33b386246f29d6dc14af25709bf06fa66a5912437f5a36d1a697e7a23718f30` | Assets 接入 Game | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/便签.png` | `Game/assets/note.png` | `Assets/Image/Item/note.png`<br>`Game/assets/Image/Item/note.png` | `3352c0ef8c11ad12b9bd0270fd7a0e9a81e525a1a4ad8f665752a6e6a48ccf43` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Item/手机.png` | `Game/assets/phone.png` | `Assets/Image/Item/phone.png`<br>`Game/assets/Image/Item/phone.png` | `a034070fb75ee3350b7d98eae80ff15b9da69f255e3bc8d41a3c0c495a7d6774` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | — | `Game/assets/placeholder-key.svg` | `Game/assets/Image/Item/placeholder-key.svg` | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | 运行目录独有 | 当前未引用 | SVG 占位符按约定仅保留在 Game |
