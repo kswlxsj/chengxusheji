@@ -439,12 +439,13 @@ const state = new TrainGame.GameState(
 
 ### PlayerProfile（账号设置与结局收藏）
 
-`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。
+`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。配置包内部版本为 2；读取版本 1 时会把旧直接倍率乘以 60%，迁移后保持实际听感不变。
 
 | 接口 | 行为 |
 | --- | --- |
-| `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx }`，各值为 0–1 的用户倍率；缺失或损坏字段单独回退为 `1`。 |
+| `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx }`，各值为滑杆的 0–1 位置；缺失或损坏字段单独回退为 `0.6`。 |
 | `setAudioSetting(key, value)` | 钳制到 0–1 后立即保存当前账号；未知键抛错。 |
+| `getAudioGain(key)` / `toAudioGain(value)` | 将滑杆位置换算为实际倍率；`0.6` 返回 `1`，即 60% 对应原始设计音量。 |
 | `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
 | `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
 
@@ -672,7 +673,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
 - **里世界静音**：里世界只放行车门、剧情提示和检定等白名单事件音；背景音不经过该白名单，而是完全由当前场景绑定决定。
 - **场景背景音**：普通真实车厢绑定 `train_ambient`；2号绑定 `devil_scared`；7号及被啃食6号绑定带1600ms间隔的 `eating_crisps`；假1号绑定 `maze`；伪4号与两处花海绑定 `fake`。专属音替换列车声，不叠加；相邻场景绑定同一编号时持续播放。
-- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 负责标题、Options 与结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理。Options 分别保存页面音乐、游戏背景音、游戏音效倍率，公式统一为“资源默认音量 × 剧情单次倍率 × 用户倍率”。
+- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 负责标题、Options 与结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理。Options 分别保存页面音乐、游戏背景音、游戏音效滑杆位置；60% 为原始设计音量，公式统一为“资源默认音量 × 剧情单次倍率 ×（滑杆值 ÷ 60%）”，最终限制到浏览器允许的 0–1。
 
 ### UI：GameWindow / TextPlayer / UIManager
 

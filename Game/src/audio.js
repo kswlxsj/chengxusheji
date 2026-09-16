@@ -7,6 +7,7 @@
   const MAX_VOICE_WAIT_MS = 30000;
   const FADE_MS = 1000;
   const FADE_TICK_MS = 30;
+  const MAX_MASTER_VOLUME = 2;
   const AUTOPLAY_HINT = "浏览器阻止了自动播放，音效已跳过；请点击画面任意处后再试。";
 
   function clamp(value, min, max) {
@@ -57,8 +58,8 @@
       this.gappedLoop = this.loop && this.loopGapMs > 0;
       this.multiplier = options.volume == null ? 1 : clamp(Number(options.volume) || 0, 0, 1);
       this.baseVolume = entry.volume == null ? 1 : clamp(Number(entry.volume) || 0, 0, 1);
-      this.masterVolume = clamp(Number(masterVolume) || 0, 0, 1);
-      this.targetVolume = this.baseVolume * this.multiplier * this.masterVolume;
+      this.masterVolume = clamp(Number(masterVolume) || 0, 0, MAX_MASTER_VOLUME);
+      this.targetVolume = clamp(this.baseVolume * this.multiplier * this.masterVolume, 0, 1);
       this.metadataTimeout = null;
       this.endTimeout = null;
       this.fadeStartTimeout = null;
@@ -218,12 +219,12 @@
     }
 
     setMasterVolume(value) {
-      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      this.masterVolume = clamp(Number(value) || 0, 0, MAX_MASTER_VOLUME);
       this.applyTargetVolume();
     }
 
     applyTargetVolume() {
-      this.targetVolume = this.baseVolume * this.multiplier * this.masterVolume;
+      this.targetVolume = clamp(this.baseVolume * this.multiplier * this.masterVolume, 0, 1);
       if (this.element && !this.stopped && !this.stopping) {
         // 项目演出主动接管音量时终止自动淡入，避免两套动画互相抢写 volume。
         this.fadeToken += 1;
@@ -323,7 +324,7 @@
       this.onAutoplayBlocked = null;
       this.masterVolume = options.masterVolume == null
         ? 1
-        : clamp(Number(options.masterVolume) || 0, 0, 1);
+        : clamp(Number(options.masterVolume) || 0, 0, MAX_MASTER_VOLUME);
       this.fadeMs = Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : FADE_MS;
     }
 
@@ -378,7 +379,7 @@
     }
 
     setMasterVolume(value) {
-      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      this.masterVolume = clamp(Number(value) || 0, 0, MAX_MASTER_VOLUME);
       for (const voice of this.activeVoices) voice.setMasterVolume(this.masterVolume);
     }
 
@@ -416,7 +417,7 @@
       this.onAutoplayBlocked = null;
       this.masterVolume = options.masterVolume == null
         ? 1
-        : clamp(Number(options.masterVolume) || 0, 0, 1);
+        : clamp(Number(options.masterVolume) || 0, 0, MAX_MASTER_VOLUME);
       this.fadeMs = Number.isFinite(options.fadeMs) ? Math.max(0, options.fadeMs) : FADE_MS;
     }
 
@@ -458,7 +459,7 @@
     }
 
     setMasterVolume(value) {
-      this.masterVolume = clamp(Number(value) || 0, 0, 1);
+      this.masterVolume = clamp(Number(value) || 0, 0, MAX_MASTER_VOLUME);
       this.current?.setMasterVolume(this.masterVolume);
     }
 

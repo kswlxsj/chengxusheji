@@ -1,8 +1,9 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 1;
+  const PROFILE_VERSION = 2;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
+  const AUDIO_REFERENCE_LEVEL = 0.6;
   const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx"]);
   const AUDIO_KEY_SET = new Set(AUDIO_KEYS);
 
@@ -43,12 +44,16 @@
   function defaultProfile() {
     return {
       version: PROFILE_VERSION,
-      audio: { pageMusic: 1, gameAmbience: 1, gameSfx: 1 },
+      audio: {
+        pageMusic: AUDIO_REFERENCE_LEVEL,
+        gameAmbience: AUDIO_REFERENCE_LEVEL,
+        gameSfx: AUDIO_REFERENCE_LEVEL
+      },
       unlockedEndings: []
     };
   }
 
-  function clampVolume(value, fallback = 1) {
+  function clampVolume(value, fallback = AUDIO_REFERENCE_LEVEL) {
     const number = Number(value);
     if (!Number.isFinite(number)) return fallback;
     return Math.min(1, Math.max(0, number));
@@ -59,7 +64,14 @@
     if (!value || typeof value !== "object" || Array.isArray(value)) return profile;
     const audio = value.audio;
     if (audio && typeof audio === "object" && !Array.isArray(audio)) {
-      for (const key of AUDIO_KEYS) profile.audio[key] = clampVolume(audio[key]);
+      // v1 直接把保存值当作实际倍率；换算成新滑杆位置后保持听感不变。
+      const legacyScale = value.version === 1 ? AUDIO_REFERENCE_LEVEL : 1;
+      for (const key of AUDIO_KEYS) {
+        const number = Number(audio[key]);
+        profile.audio[key] = Number.isFinite(number)
+          ? clampVolume(number * legacyScale)
+          : AUDIO_REFERENCE_LEVEL;
+      }
     }
     if (Array.isArray(value.unlockedEndings)) {
       profile.unlockedEndings = [...new Set(value.unlockedEndings.filter((id) => ENDING_IDS.has(id)))];
@@ -103,6 +115,15 @@
     return profile.audio[key];
   }
 
+  function toAudioGain(value) {
+    return clampVolume(value) / AUDIO_REFERENCE_LEVEL;
+  }
+
+  function getAudioGain(key) {
+    if (!AUDIO_KEY_SET.has(key)) throw new RangeError(`未知音量设置：${key || "空"}`);
+    return toAudioGain(readProfile().audio[key]);
+  }
+
   function getUnlockedEndings() {
     return [...readProfile().unlockedEndings];
   }
@@ -116,9 +137,12 @@
   }
 
   Game.ENDING_CATALOG = ENDING_CATALOG;
+  Game.AUDIO_REFERENCE_LEVEL = AUDIO_REFERENCE_LEVEL;
   Game.PlayerProfile = Object.freeze({
     getAudioSettings,
     setAudioSetting,
+    getAudioGain,
+    toAudioGain,
     getUnlockedEndings,
     unlockEnding
   });

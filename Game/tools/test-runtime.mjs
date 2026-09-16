@@ -78,8 +78,10 @@ assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 
 // 玩家配置按账号隔离；音量逐字段恢复，结局解锁幂等且只接受已登记编号。
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 1, "默认 60% 应保持游戏原始音量");
 assert.equal(Game.PlayerProfile.setAudioSetting("pageMusic", 0.55), 0.55);
+assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 0.55 / 0.6);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameAmbience", -2), 0);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameSfx", 8), 1);
 assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知音量设置/);
@@ -90,7 +92,7 @@ assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fak
 
 assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
 assert.equal(Auth.login("ProfileBob", "secret3").ok, true);
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], [], "不同账号不应共享结局收藏");
 Game.PlayerProfile.setAudioSetting("pageMusic", 0.2);
 assert.equal(Auth.login("Alice", "secret1").ok, true);
@@ -98,10 +100,16 @@ assert.equal(Game.PlayerProfile.getAudioSettings().pageMusic, 0.55, "切回账�
 
 const aliceProfileKey = "train-game-profile-user-v1:Alice";
 storage.set(aliceProfileKey, JSON.stringify({ audio: { pageMusic: "bad", gameAmbience: 0.4 }, unlockedEndings: ["lost", "bad-id", "lost"] }));
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 0.4, gameSfx: 1 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6 });
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["lost"], "损坏字段应独立回退并清理无效或重复结局");
 storage.set(aliceProfileKey, "not-json");
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 1, gameAmbience: 1, gameSfx: 1 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+storage.set(aliceProfileKey, JSON.stringify({ version: 1, audio: { pageMusic: 1, gameAmbience: 0.5, gameSfx: 0 } }));
+assert.deepEqual(
+  { ...Game.PlayerProfile.getAudioSettings() },
+  { pageMusic: 0.6, gameAmbience: 0.3, gameSfx: 0 },
+  "旧版直接倍率应迁移为以 60% 为原始音量的新滑杆位置"
+);
 storage.delete(aliceProfileKey);
 
 const initialState = {
@@ -1403,6 +1411,11 @@ async function settleMicrotasks(count = 8) {
   assert.equal(voice.targetVolume, 0.5 * 0.8 * 0.5);
   assert.equal(voice.element.volume, voice.targetVolume);
   voice.stop({ immediate: true });
+
+  const boosted = createAudioStub(SOUND_TEST_REGISTRY, {}, { fadeMs: 0, masterVolume: 1 / 0.6 });
+  const boostedVoice = boosted.play("sfx_test_positional");
+  assert.equal(boostedVoice.targetVolume, 1, "高于 60% 时可放大，但最终音量不得超过浏览器上限");
+  boostedVoice.stop({ immediate: true });
 }
 
 // 4) await: true：事件等音效结束（或截断时长）才继续，并在结束时停掉本条音效。

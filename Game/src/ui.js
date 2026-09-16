@@ -964,8 +964,8 @@
   class UIManager {
     constructor(root, audio = []) {
       const audioSettings = Game.PlayerProfile?.getAudioSettings?.() || {};
-      const gameSfxVolume = audioSettings.gameSfx ?? 1;
-      const gameAmbienceVolume = audioSettings.gameAmbience ?? 1;
+      const gameSfxVolume = Game.PlayerProfile?.toAudioGain?.(audioSettings.gameSfx) ?? 1;
+      const gameAmbienceVolume = Game.PlayerProfile?.toAudioGain?.(audioSettings.gameAmbience) ?? 1;
       this.root = root;
       this.dialog = new DialogWindow(root);
       this.attributeAllocation = new AttributeAllocationWindow(root);

@@ -33,7 +33,10 @@
   const AUDIO_FADE_OUT_MS = 3000;     // OP 音乐淡出时长
   const AUDIO_SILENCE_MS = 250;       // 两段音乐之间的纯静音间隔
   const AUDIO_FADE_IN_MS = 2000;      // BGM 淡入时长
-  const pageMusicVolume = window.TrainGame?.PlayerProfile?.getAudioSettings?.().pageMusic ?? 1;
+  const pageMusicVolume = Math.min(
+    1,
+    window.TrainGame?.PlayerProfile?.getAudioGain?.("pageMusic") ?? 1
+  );
 
   const overlay = document.querySelector("#home-op");
   if (!overlay) return;

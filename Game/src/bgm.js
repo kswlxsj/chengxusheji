@@ -15,14 +15,14 @@
   const SAVE_INTERVAL = 1000;
   const FADE_MS = 800;          // 淡入淡出时长
   const BGM_PAGE_FILES = new Set(["home.html", "settings.html", "ending.html"]);
-  let userVolume = window.TrainGame?.PlayerProfile?.getAudioSettings?.().pageMusic ?? 1;
+  let userGain = window.TrainGame?.PlayerProfile?.getAudioGain?.("pageMusic") ?? 1;
 
   function clamp(value) {
     return Math.min(1, Math.max(0, Number(value) || 0));
   }
 
   function targetVolume() {
-    return BASE_VOLUME * userVolume;
+    return clamp(BASE_VOLUME * userGain);
   }
 
   // 标题页与设置页播放主页 BGM，结束页播放 OP；游戏页和其余辅助页面不播放这套音乐。
@@ -153,14 +153,14 @@
   }
 
   function setVolume(value) {
-    userVolume = clamp(value);
+    userGain = window.TrainGame?.PlayerProfile?.toAudioGain?.(value) ?? clamp(value);
     if (!audio) return targetVolume();
     if (fadeTimer) {
       clearInterval(fadeTimer);
       fadeTimer = null;
     }
     audio.volume = targetVolume();
-    if (userVolume > 0 && audio.paused && window[OP_ACTIVE_FLAG] !== true) play();
+    if (userGain > 0 && audio.paused && window[OP_ACTIVE_FLAG] !== true) play();
     return targetVolume();
   }
 
