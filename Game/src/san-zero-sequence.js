@@ -15,6 +15,7 @@
     "我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死我不想死" +
     "我不想死我不想死我不想死我不想死我不想死我不想死——";
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "san")?.title || "SAN 归零演出";
 
   function createElement(tagName, className, textContent = "") {
     const element = document.createElement(tagName);
@@ -52,7 +53,7 @@
 
       this.overlay = createElement("section", "san-zero-sequence");
       this.overlay.setAttribute("role", "dialog");
-      this.overlay.setAttribute("aria-label", "SAN 归零演出");
+      this.overlay.setAttribute("aria-label", ENDING_TITLE);
 
       this.cinema = createElement("div", "san-zero-cinema");
       this.backgroundPrimary = createElement("img", "san-zero-background is-active");

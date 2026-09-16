@@ -10,31 +10,31 @@
   const ENDING_CATALOG = Object.freeze([
     Object.freeze({
       id: "true_end",
-      title: "崭新的一天",
-      description: "你在终点站醒来，走出车厢，重新呼吸到了新鲜空气。",
+      title: "不要温和地走进那个良夜",
+      description: "加速的列车驶入光明，迎接属于你的新的开始。",
       image: "assets/Image/Scene/Background/true-end-platform.png"
     }),
     Object.freeze({
       id: "fake_end",
-      title: "伪结局",
-      description: "你以为自己已经逃离列车，熟悉的字迹却再次出现在眼前。",
+      title: "你所说的曙光究竟是什么意思",
+      description: "目睹那些东西之后，回归现实生活……大概吧。",
       image: "assets/Image/Scene/Background/move.png"
     }),
     Object.freeze({
-      id: "bad_end",
-      title: "意识与身体一同消失",
-      description: "列车驶入黑暗，恐怖的记忆挥之不去。",
-      image: "assets/Image/Scene/Background/carriage-03.png"
-    }),
-    Object.freeze({
       id: "lost",
-      title: "迷失",
-      description: "花海在你体内生长。你终于属于这里了。",
+      title: "于他者所思的自我与自我所想的他者之间",
+      description: "层层嵌套，自我指涉，盘曲虬结，错综复杂。",
       image: "assets/Image/Scene/Background/flower-sea.png"
     }),
     Object.freeze({
+      id: "bad_end",
+      title: "恐怖",
+      description: "列车陷入黑暗，意识与身体一同消失。",
+      image: "assets/Image/Scene/Background/carriage-03.png"
+    }),
+    Object.freeze({
       id: "san",
-      title: "游戏结束",
+      title: "患者",
       description: "SAN 已降至 0。",
       image: "assets/Image/Scene/Background/san-zero-hospital.png"
     })

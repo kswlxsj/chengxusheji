@@ -88,7 +88,7 @@ assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知�
 for (const ending of Game.ENDING_CATALOG) assert.equal(Game.PlayerProfile.unlockEnding(ending.id), true);
 assert.equal(Game.PlayerProfile.unlockEnding("true_end"), false, "重复结局不应重复写入");
 assert.equal(Game.PlayerProfile.unlockEnding("unknown"), false, "未知终局不应进入收藏");
-assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "bad_end", "lost", "san"]);
+assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "lost", "bad_end", "san"]);
 
 assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
 assert.equal(Auth.login("ProfileBob", "secret3").ok, true);

@@ -449,7 +449,7 @@ const state = new TrainGame.GameState(
 | `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
 | `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
 
-只读 `TrainGame.ENDING_CATALOG` 为 Options 页提供 `true_end`、`fake_end`、`bad_end`、`lost`、`san` 的标题、说明和卡面路径。终局原因一经确定就在过场或跳页前解锁，避免关闭过场导致漏记；旧版本已经达成的结局没有可靠记录，不做推测性补发。
+只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡、结束页与各结局过场均据此显示。终局原因一经确定就在过场或跳页前解锁，避免关闭过场导致漏记；旧版本已经达成的结局没有可靠记录，不做推测性补发。
 
 ### SaveManager（三槽存档）
 

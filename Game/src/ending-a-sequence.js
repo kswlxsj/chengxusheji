@@ -11,6 +11,7 @@
     pcHappy: "assets/Image/Portrait/player-happy.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "true_end")?.title || "真结局";
 
   function createElement(tagName, className, textContent = "") {
     const element = document.createElement(tagName);
@@ -57,7 +58,7 @@
 
       this.overlay = createElement("section", "ending-a-sequence");
       this.overlay.setAttribute("role", "dialog");
-      this.overlay.setAttribute("aria-label", "真结局");
+      this.overlay.setAttribute("aria-label", ENDING_TITLE);
       this.cinema = createElement("div", "ending-a-cinema");
       this.backgroundPrimary = createElement("img", "ending-a-background is-active");
       this.backgroundPrimary.alt = "";

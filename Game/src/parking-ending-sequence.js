@@ -7,6 +7,7 @@
     carriage03: "assets/Image/Scene/Background/carriage-03.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "bad_end")?.title || "停车结局";
   const VIDEO_LOAD_TIMEOUT_MS = 30000;
 
   function createElement(tagName, className, textContent = "") {
@@ -78,7 +79,7 @@
 
       this.overlay = createElement("section", "parking-ending-sequence");
       this.overlay.setAttribute("role", "dialog");
-      this.overlay.setAttribute("aria-label", "停车结局");
+      this.overlay.setAttribute("aria-label", ENDING_TITLE);
 
       this.cinema = createElement("div", "parking-ending-cinema");
       this.backgroundPrimary = createElement("img", "parking-ending-background is-active");

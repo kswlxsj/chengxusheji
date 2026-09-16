@@ -11,6 +11,7 @@
     pcScared: "assets/Image/Portrait/player-scared.png"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
+  const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "fake_end")?.title || "伪结局";
 
   function waitForImage(image) {
     if (image.complete && image.naturalWidth > 0) return Promise.resolve();
@@ -42,7 +43,7 @@
         ...options,
         assets: { ...DEFAULT_ASSETS, ...(options.assets || {}) }
       });
-      this.overlay.setAttribute("aria-label", "伪结局");
+      this.overlay.setAttribute("aria-label", ENDING_TITLE);
     }
 
     async run() {
