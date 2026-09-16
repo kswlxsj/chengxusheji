@@ -274,6 +274,8 @@
       this.interactionEnabled = true;
       // fullCanvas 物件的运行时条目：{ object, art, button, meta }
       this.canvasObjects = [];
+      // 普通矩形热点：当上层 fullCanvas 按钮的透明区域截获点击时，用于继续向下命中。
+      this.rectObjects = [];
       this.hotEntry = null;
       this.directionalLightCanvas = null;
       this.lastLightPoint = null;
@@ -362,6 +364,7 @@
     render(scene) {
       this.setHotEntry(null);
       this.canvasObjects = [];
+      this.rectObjects = [];
       this.directionalLightCanvas = null;
       this.renderSignature = this.buildRenderSignature(scene);
       this.root.replaceChildren();
@@ -420,6 +423,7 @@
             this.onObjectClick(object.clickEvent, object);
           }
         });
+        this.rectObjects.push({ object, button });
         this.root.append(button);
       }
 
@@ -655,11 +659,19 @@
       const target = event.target;
       const button = target && target.closest ? target.closest(".scene-object-hit") : null;
       if (!button || !this.interactionEnabled) return;
-      const entry = this.findCanvasEntry(button);
-      if (!entry || !entry.object.clickEvent || !this.onObjectClick) return;
-      // 键盘激活的 click（detail === 0）不做像素判定；鼠标点击必须落在不透明内容上。
-      if (event.detail > 0 && !this.isEntryHit(entry, event)) return;
-      this.onObjectClick(entry.object.clickEvent, entry.object);
+      const targetEntry = this.findCanvasEntry(button);
+      if (!targetEntry || !this.onObjectClick) return;
+      // 键盘激活直接使用当前焦点；鼠标则按真实不透明像素重新选最上层物件。
+      if (event.detail === 0) {
+        if (targetEntry.object.clickEvent) this.onObjectClick(targetEntry.object.clickEvent, targetEntry.object);
+        return;
+      }
+      const canvasEntry = this.topCanvasEntryAt(event);
+      const rectEntry = this.topRectEntryAt(event);
+      const canvasZ = canvasEntry?.object.zIndex || 10;
+      const rectZ = rectEntry?.object.zIndex || 10;
+      const entry = canvasEntry && (!rectEntry || canvasZ >= rectZ) ? canvasEntry : rectEntry;
+      if (entry?.object.clickEvent) this.onObjectClick(entry.object.clickEvent, entry.object);
     }
 
     handleCanvasFocus(event, focused) {
@@ -711,6 +723,26 @@
           const z = entry.object.zIndex || 10;
           if (!best || z >= (best.object.zIndex || 10)) best = entry;
         }
+      }
+      return best;
+    }
+
+    // fullCanvas 的透明包围盒可能覆盖下方矩形热点；透明像素处继续命中实际位于指针下方的热点。
+    topRectEntryAt(event) {
+      const point = this.stagePoint(event);
+      if (!point) return null;
+      let best = null;
+      for (const entry of this.rectObjects) {
+        if (entry.button.disabled) continue;
+        const position = entry.object.position;
+        if (!position) continue;
+        const left = position.x / 100 * point.rect.width;
+        const top = position.y / 100 * point.rect.height;
+        const right = left + position.width / 100 * point.rect.width;
+        const bottom = top + position.height / 100 * point.rect.height;
+        if (point.x < left || point.x > right || point.y < top || point.y > bottom) continue;
+        const z = entry.object.zIndex || 10;
+        if (!best || z >= (best.object.zIndex || 10)) best = entry;
       }
       return best;
     }

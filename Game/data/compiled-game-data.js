@@ -439,6 +439,46 @@ window.GAME_DATA = {
           "clickEvent": "E_GO_05_04"
         },
         {
+          "id": "door_05_center",
+          "name": "中央车门",
+          "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+          "position": {
+            "x": 43,
+            "y": 28,
+            "width": 14,
+            "height": 48
+          },
+          "noHighlight": true,
+          "zIndex": 11,
+          "clickEvent": "E_005_CENTER_DOOR"
+        },
+        {
+          "id": "window_05_left",
+          "name": "左侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 19,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_005_WINDOW"
+        },
+        {
+          "id": "window_05_right",
+          "name": "右侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 61,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_005_WINDOW"
+        },
+        {
           "id": "clutter_05_a",
           "name": "散落的行李",
           "image": "assets/Image/Scene/StillLife/bag-05-a.png",
@@ -541,8 +581,14 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 32,
+            "y": 65,
+            "width": 6,
+            "height": 7
+          },
           "zIndex": 12,
-          "clickEvent": "E_05_JUNK_C"
+          "clickEvent": "E_05_JUNK_LEFT"
         },
         {
           "id": "clutter_05_d",
@@ -555,8 +601,14 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 62,
+            "y": 65,
+            "width": 6,
+            "height": 7
+          },
           "zIndex": 12,
-          "clickEvent": "E_05_JUNK_C"
+          "clickEvent": "E_05_JUNK_RIGHT"
         }
       ]
     },
@@ -609,6 +661,46 @@ window.GAME_DATA = {
           },
           "zIndex": 11,
           "clickEvent": "E_DOOR_04"
+        },
+        {
+          "id": "door_04_center",
+          "name": "中央车门",
+          "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+          "position": {
+            "x": 43,
+            "y": 28,
+            "width": 14,
+            "height": 48
+          },
+          "noHighlight": true,
+          "zIndex": 11,
+          "clickEvent": "E_004_CENTER_DOOR"
+        },
+        {
+          "id": "window_04_left",
+          "name": "左侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 19,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_004_WINDOW"
+        },
+        {
+          "id": "window_04_right",
+          "name": "右侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 61,
+            "y": 33,
+            "width": 18,
+            "height": 15
+          },
+          "zIndex": 10,
+          "clickEvent": "E_004_WINDOW"
         },
         {
           "id": "crew_04",
@@ -1574,6 +1666,70 @@ window.GAME_DATA = {
     },
     {
       "id": "E_006_CENTER_DOOR",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+              "车门紧闭着，你试着怎么用力都没有反应。",
+              "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_005_WINDOW",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+              "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+              "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_005_CENTER_DOOR",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+              "车门紧闭着，你试着怎么用力都没有反应。",
+              "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_004_WINDOW",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+              "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+              "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_004_CENTER_DOOR",
       "actions": [
         {
           "type": "custom",
@@ -5448,15 +5604,34 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_05_JUNK_C",
+      "id": "E_05_JUNK_LEFT",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你拨开堆叠的杂物开始寻找。"
-        },
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你蹲下翻了翻这堆袋子，里面只有废纸和空包装。",
+              "塑料袋被碰得窸窣作响，却没有露出任何有用的东西。",
+              "你把最上面的袋子挪开，下面只有落满灰尘的地板。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_05_JUNK_RIGHT",
+      "actions": [
         {
-          "type": "dialogue",
-          "text": "这里没有夹着报纸之类的线索。"
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你拨开右侧堆叠的袋子，只找到几个压扁的空盒。",
+              "袋子里装着揉皱的包装纸，没有任何可用的东西。",
+              "你试着提起其中一袋，里面的东西轻轻晃动，没有特别之处。"
+            ]
+          }
         }
       ]
     },
