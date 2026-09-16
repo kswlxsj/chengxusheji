@@ -166,9 +166,6 @@
     "列车员": "assets/Image/Portrait/conductor.png",
     "医生": "assets/Image/Portrait/doctor.png",
     "你": "assets/Image/Portrait/player.png",
-    "PC": "assets/Image/Portrait/player.png",
-    "Pc": "assets/Image/Portrait/player.png",
-    "主角内心": "assets/Image/Portrait/player.png",
     "？？？": "assets/Image/Portrait/conductor-crazy.png"
   });
 
