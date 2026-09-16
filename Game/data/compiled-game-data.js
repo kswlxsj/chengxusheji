@@ -115,6 +115,112 @@ window.GAME_DATA = {
           "clickEvent": "E_GO_06_05"
         },
         {
+          "id": "door_06_center",
+          "name": "中央车门",
+          "image": "assets/Image/Scene/StillLife/carriage-door.svg",
+          "position": {
+            "x": 40,
+            "y": 21,
+            "width": 20,
+            "height": 63
+          },
+          "noHighlight": true,
+          "zIndex": 11,
+          "clickEvent": "E_006_CENTER_DOOR",
+          "visibleWhen": {
+            "all": [
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_a",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_b",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_07_entry_seen",
+                  "equals": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "window_06_left",
+          "name": "左侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 14,
+            "y": 29,
+            "width": 25,
+            "height": 39
+          },
+          "zIndex": 10,
+          "clickEvent": "E_006_WINDOW",
+          "visibleWhen": {
+            "all": [
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_a",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_b",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_07_entry_seen",
+                  "equals": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "window_06_right",
+          "name": "右侧车窗",
+          "invisible": true,
+          "position": {
+            "x": 61,
+            "y": 29,
+            "width": 25,
+            "height": 39
+          },
+          "zIndex": 10,
+          "clickEvent": "E_006_WINDOW",
+          "visibleWhen": {
+            "all": [
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_a",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_06_entry_route_b",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_07_entry_seen",
+                  "equals": true
+                }
+              }
+            ]
+          }
+        },
+        {
           "id": "note_back_06",
           "name": "便签背面",
           "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
@@ -1445,6 +1551,38 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_006_WINDOW",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+              "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+              "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_006_CENTER_DOOR",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+              "车门紧闭着，你试着怎么用力都没有反应。",
+              "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "id": "E_005_S",
       "actions": [
         {
@@ -2206,7 +2344,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "门扉旁有电车示意图。"
+          "text": "车门上有一张不知谁贴上去的纸。好像是电车示意图。纸角有怪异的污渍。"
         },
         {
           "type": "check",

@@ -21,6 +21,20 @@
       await context.engine.loadScene(context.state.sceneId);
     });
 
+    // 普通环境调查只显示一条随机文案，不改变任何剧情状态或事件分支。
+    engine.registerCustomAction("randomDialogue", async (params, context) => {
+      const texts = Array.isArray(params.texts)
+        ? params.texts.filter((text) => typeof text === "string" && text.trim())
+        : [];
+      if (!texts.length) throw new Error("randomDialogue 缺少 texts 列表");
+      const text = texts[Math.floor(Math.random() * texts.length)];
+      await context.ui.dialog.showLine({
+        text,
+        speaker: typeof params.speaker === "string" ? params.speaker : "",
+        portrait: typeof params.portrait === "string" ? params.portrait : ""
+      });
+    });
+
     engine.registerCustomAction("innerWhisperScare", async (params, context) => {
       context.ui.closeDialog();
       const shell = document.querySelector("#game-shell");
