@@ -450,7 +450,14 @@
         return;
       }
       if (action === "save-return") {
-        if (openSaveWriter("home")) return;
+        try {
+          saves.save(activeSlot, engine.getStableSnapshot());
+          await returnToMainMenu();
+          return;
+        } catch (error) {
+          console.error("保存并返回失败：", error);
+          ui.toast(`保存失败：${errorMessage(error)}`);
+        }
       }
     }
   }
