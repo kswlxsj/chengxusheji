@@ -125,10 +125,10 @@ window.GAME_DATA = {
           "name": "中央车门",
           "image": "assets/Image/Scene/StillLife/carriage-door.svg",
           "position": {
-            "x": 40,
-            "y": 21,
-            "width": 20,
-            "height": 63
+            "x": 43,
+            "y": 28,
+            "width": 14,
+            "height": 48
           },
           "noHighlight": true,
           "zIndex": 11,
@@ -161,10 +161,10 @@ window.GAME_DATA = {
           "name": "左侧车窗",
           "invisible": true,
           "position": {
-            "x": 14,
-            "y": 29,
-            "width": 25,
-            "height": 39
+            "x": 19,
+            "y": 33,
+            "width": 18,
+            "height": 15
           },
           "zIndex": 10,
           "clickEvent": "E_006_WINDOW",
@@ -197,9 +197,9 @@ window.GAME_DATA = {
           "invisible": true,
           "position": {
             "x": 61,
-            "y": 29,
-            "width": 25,
-            "height": 39
+            "y": 33,
+            "width": 18,
+            "height": 15
           },
           "zIndex": 10,
           "clickEvent": "E_006_WINDOW",

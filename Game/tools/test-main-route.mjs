@@ -167,6 +167,7 @@ assert.deepEqual(carriage05RightJunk.hitPosition, { x: 62, y: 65, width: 6, heig
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
 assert.equal(carriage06CenterDoor.clickEvent, "E_006_CENTER_DOOR", "6号中央车门应只触发普通门对话");
 assert.equal(carriage06CenterDoor.noHighlight, true, "6号中央车门只能点击，不应出现悬停高亮");
+assert.deepEqual(carriage06CenterDoor.position, { x: 43, y: 28, width: 14, height: 48 }, "6号中央车门热点应收窄到双开门内部");
 assert.deepEqual(carriage06CenterDoor.visibleWhen, {
   all: [
     { not: { flag: "carriage_06_entry_route_a", equals: true } },
@@ -180,6 +181,8 @@ for (const id of ["window_06_left", "window_06_right"]) {
   assert.equal(windowObject.invisible, true, `${id} 不应叠加新的窗户贴图`);
   assert.deepEqual(windowObject.visibleWhen, carriage06CenterDoor.visibleWhen, `${id} 应与中央车门共用进入7号前的显示条件`);
 }
+assert.deepEqual(objectOf("carriage_06", "window_06_left").position, { x: 19, y: 33, width: 18, height: 15 }, "6号左窗热点应收在玻璃内部，不得延伸到窗框或座椅");
+assert.deepEqual(objectOf("carriage_06", "window_06_right").position, { x: 61, y: 33, width: 18, height: 15 }, "6号右窗热点应收在玻璃内部，不得延伸到窗框或座椅");
 for (const [eventId, expectedTexts] of [
   ["E_004_WINDOW", [
     "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
