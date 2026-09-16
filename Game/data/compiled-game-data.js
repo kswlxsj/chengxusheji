@@ -5022,39 +5022,6 @@ window.GAME_DATA = {
           "text": "借着应急灯微弱的红光，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
         },
         {
-          "type": "check",
-          "dice": "ev026_san_01",
-          "outcomes": [
-            "E_026_SAN_S",
-            "E_026_SAN_F"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_026_SAN_S",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "你把惊叫死死压在喉咙里，甚至放慢了呼吸。怪物的头颅左右转动，却没有立即锁定你的位置。"
-        }
-      ],
-      "next": "E_026_AFTER_SAN"
-    },
-    {
-      "id": "E_026_SAN_F",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "裂开的头部在红光里抽动，你的胃猛地收紧，牙齿不受控制地打颤。那怪物随即停下啃咬，侧耳朝向你。"
-        }
-      ],
-      "next": "E_026_AFTER_SAN"
-    },
-    {
-      "id": "E_026_AFTER_SAN",
-      "actions": [
-        {
           "type": "conditionalJump",
           "when": {
             "flag": "monster_behavior_known",
@@ -5064,7 +5031,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你僵在原地，不敢再发出任何声音。"
+          "text": "你僵在原地，不敢发出任何声音。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "bottle"
+          },
+          "next": "E_026_BOTTLE_HINT"
+        }
+      ]
+    },
+    {
+      "id": "E_026_BOTTLE_HINT",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你摸了摸口袋里的瓶子。"
         }
       ]
     },
@@ -5078,6 +5061,13 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你没有动。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "hasItem": "bottle"
+          },
+          "next": "E_026_BOTTLE_HINT"
         }
       ]
     },
@@ -5153,11 +5143,87 @@ window.GAME_DATA = {
           "type": "check",
           "dice": "ev027_constitution_01",
           "outcomes": [
-            "E_027_S",
+            "E_027_STEP_1_S",
             "E_027_F"
           ]
         }
       ]
+    },
+    {
+      "id": "E_027_STEP_1_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你踩进第一片阴影，屏住呼吸从一排座椅后方挪了过去。"
+        },
+        {
+          "type": "check",
+          "dice": "ev027_san_01"
+        }
+      ],
+      "next": "E_027_STEP_2"
+    },
+    {
+      "id": "E_027_STEP_2",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "前方散落着碎玻璃和尸体，你必须在怪物再次转头前穿过这段空隙。"
+        },
+        {
+          "type": "check",
+          "dice": "ev027_constitution_02",
+          "outcomes": [
+            "E_027_STEP_2_S",
+            "E_027_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_027_STEP_2_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你稳住发软的膝盖，从尸体与座椅之间无声地侧身通过。"
+        },
+        {
+          "type": "check",
+          "dice": "ev027_san_02"
+        }
+      ],
+      "next": "E_027_STEP_3"
+    },
+    {
+      "id": "E_027_STEP_3",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "安全门已经近在眼前。最后几步没有遮挡，你只能趁Clicker背对你时一口气贴过去。"
+        },
+        {
+          "type": "check",
+          "dice": "ev027_constitution_03",
+          "outcomes": [
+            "E_027_STEP_3_S",
+            "E_027_F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E_027_STEP_3_S",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你咬紧牙关跨过最后一具尸体，怪物的裂口几乎擦着你的肩膀转了过去。"
+        },
+        {
+          "type": "check",
+          "dice": "ev027_san_03"
+        }
+      ],
+      "next": "E_027_S"
     },
     {
       "id": "E_027_S",
@@ -5187,21 +5253,34 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "潜行失败，你被迫进入战斗轮。"
+          "text": "潜行失败，你在毫无准备的情况下被迫迎战。"
+        }
+      ],
+      "next": "E_029_CARD_HARD"
+    },
+    {
+      "id": "E_028_THROW_FIRST",
+      "actions": [
+        {
+          "type": "dialogue",
+          "text": "你悄悄握住瓶身，瞄准远处的车厢壁。只要声响落得足够远，或许能把Clicker引开。"
         },
         {
-          "type": "setFlag",
-          "key": "card_battle_won",
-          "value": false
+          "type": "removeItem",
+          "item": "bottle"
         },
         {
-          "type": "minigame",
-          "game": "card_battle"
+          "type": "check",
+          "dice": "ev028_throw_01",
+          "outcomes": [
+            "E_028_THROW_SUCCESS",
+            "E_028_THROW_FAIL"
+          ]
         }
       ]
     },
     {
-      "id": "E_028_THROW_FIRST",
+      "id": "E_028_THROW_SUCCESS",
       "actions": [
         {
           "type": "sound",
@@ -5209,15 +5288,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把彩色玻璃瓶用力掷向远处的车厢壁，脆响吸引了Clicker的注意。"
-        },
-        {
-          "type": "removeItem",
-          "item": "bottle"
+          "text": "彩色玻璃瓶越过座椅，在远处的车厢壁上炸开。Clicker立刻扑向声响传来的方向。"
         },
         {
           "type": "dialogue",
-          "text": "Clicker扑向声响方向，你趁机绕过它，抵达通往先头车厢的安全门前。"
+          "text": "你趁机绕过它，抵达通往先头车厢的安全门前。"
         },
         {
           "type": "setFlag",
@@ -5232,28 +5307,29 @@ window.GAME_DATA = {
       ]
     },
     {
+      "id": "E_028_THROW_FAIL",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "breaking_glass"
+        },
+        {
+          "type": "dialogue",
+          "text": "瓶身从汗湿的指间滑脱，在你脚边摔得粉碎。近在咫尺的脆响让Clicker猛地转向你。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你彻底暴露了，只能在它占尽先手时迎战。"
+        }
+      ],
+      "next": "E_029_CARD_HARD"
+    },
+    {
       "id": "E_029",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你握紧能当作武器的东西，观察怪物扑击后的停顿。若能抢先占住通道，至少不会在交手开始时就被逼进角落。"
-        },
-        {
-          "type": "check",
-          "dice": "ev029_constitution_01",
-          "outcomes": [
-            "E_029_CARD_EASY",
-            "E_029_CARD_HARD"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "E_029_CARD_EASY",
-      "actions": [
-        {
-          "type": "dialogue",
-          "text": "怪物转头的瞬间，你猛地切入它的侧面，迫使它仓促回身。你抢到了更开阔的位置，战斗轮进入简单模式。"
+          "text": "你握紧能当作武器的东西，主动迎向Clicker，在它扑击前抢占了更开阔的位置。"
         },
         {
           "type": "setFlag",
@@ -5271,7 +5347,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你起步慢了半拍，怪物已经循着衣物摩擦声扑来。你被逼到座椅之间，战斗轮进入困难模式。"
+          "text": "Clicker已经锁定了你的位置。你被逼到座椅之间，战斗轮进入困难模式。"
         },
         {
           "type": "setFlag",

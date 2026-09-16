@@ -224,10 +224,7 @@
       slot.type = "button";
       slot.className = `inventory-slot${item ? " occupied" : " empty"}`;
       slot.disabled = !item || startupLocked || paused || engine.busy;
-      const bottleTargetsClicker = canUseBottleOnClicker(item);
-      slot.title = item
-        ? `${item.name}（${bottleTargetsClicker ? "点击投掷并直接通过" : "点击使用/调查"}）`
-        : `空物品格 ${index + 1}`;
+      slot.title = item ? `${item.name}（点击使用/调查）` : `空物品格 ${index + 1}`;
       slot.setAttribute("aria-label", slot.title);
 
       const shortcut = document.createElement("span");

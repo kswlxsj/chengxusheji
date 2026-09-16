@@ -114,12 +114,12 @@ game = fixture({ carried_crew: true });
 await game.play("E_501");
 assert.equal(game.state.flags.carried_crew, false);
 assert.equal(game.state.flags.crew_waiting_outside_inner_world, true);
-assert.equal(game.trace.some(t => t.text === "你身边的乘务员不见了，奇怪，刚刚还在这里的。"), true);
+assert.equal(game.trace.some(t => t.text === "你突然发现身边的乘务员不见了。"), true);
 game.trace.length = 0;
 await game.play("E_502_CARRIAGE03");
 assert.equal(game.state.flags.carried_crew, true);
 assert.equal(game.state.flags.crew_waiting_outside_inner_world, false);
-assert.equal(game.trace.some(t => t.text === "她依然在你身边，对刚刚的一切似乎并不知情。"), true);
+assert.equal(game.trace.some(t => t.text === "你身旁的乘务员似乎并不知道这一切。"), true);
 game.trace.length = 0;
 await game.play("E_501");
 assert.equal(game.state.flags.carried_crew, false, "重新进入里世界时现实乘务员应再次消失");
@@ -129,7 +129,7 @@ game = fixture({ crew_waiting_outside_inner_world: true }, [], "carriage_02");
 await game.play("E_524_DONE");
 assert.equal(game.state.flags.carried_crew, true);
 assert.equal(game.state.flags.crew_waiting_outside_inner_world, false);
-assert.equal(game.trace.some(t => t.text === "她依然在你身边，对刚刚的一切似乎并不知情。"), true);
+assert.equal(game.trace.some(t => t.text === "你身旁的乘务员似乎并不知道这一切。"), true);
 
 // 空车厢左门：首次点击做一次 10%/60%/30% 静默判定，此后重复调查一律被锁上并留在空车厢；
 // 到过伪4（inner_world_entered）后该门解锁，改为磨损门描写 → 真实2号车厢。
@@ -394,7 +394,7 @@ const carriage06 = scenes.find(s => s.id === "carriage_06");
 assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
 assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.png", import.meta.url))).size > 0);
-// 瓶子只能从里世界获取：2号车厢不再就地拾取；Clicker 初次遭遇只提供潜行/对抗，背包使用直接通关。
+// 瓶子只能从里世界获取：Clicker 菜单只提供潜行/对抗，背包投瓶是带失败风险的隐藏捷径。
 for (const removed of [
   "E_028", "E_028_BOTTLE_READY", "E_028_CONSTITUTION_CHECK", "E_028_CONSTITUTION_SUCCESS",
   "E_028_CONSTITUTION_FAIL", "E_028_THROW_AFTER_FAIL", "E_028_THROW_AFTER_SUCCESS", "E_028_HAS_BOTTLE"
@@ -402,6 +402,10 @@ for (const removed of [
   assert.equal(events.some(e => e.id === removed), false, `${removed} 已删除，不得残留`);
 }
 assert.equal(events.find(e => e.id === "E_028_THROW_FIRST").actions.some(a => a.type === "removeItem" && a.item === "bottle"), true);
+assert.deepEqual(
+  events.find(e => e.id === "E_028_THROW_FIRST").actions.find(a => a.type === "check")?.outcomes,
+  ["E_028_THROW_SUCCESS", "E_028_THROW_FAIL"]
+);
 for (const eventId of ["E_026_ACTION"]) {
   const choice = events.find(e => e.id === eventId).actions.find(a => a.type === "choice");
   assert.deepEqual(choice.options.map(o => o.label), ["安静潜行", "正面对抗"], `${eventId} 只应提供两个处理选项`);
@@ -412,12 +416,7 @@ for (const eventId of ["E_026", "E_026_KNOWLEDGE", "E_026_REVISIT"]) {
 }
 const stealthFailure = events.find(e => e.id === "E_027_F");
 assert.equal(stealthFailure.actions.some(a => a.type === "choice"), false, "潜行失败后不应再弹第二层选择");
-assert.deepEqual(
-  stealthFailure.actions.slice(-2).map(a => a.type),
-  ["setFlag", "minigame"],
-  "潜行失败应直接进入卡牌小游戏"
-);
-assert.equal(stealthFailure.actions.at(-1).game, "card_battle", "潜行失败应进入简单卡牌模式");
+assert.equal(stealthFailure.next, "E_029_CARD_HARD", "潜行失败应进入困难卡牌模式");
 const carriage02 = scenes.find(s => s.id === "carriage_02");
 assert.equal(carriage02.objects.some(o => o.id === "bottle_02"), false);
 assert.equal(
@@ -522,7 +521,8 @@ assert.equal(
   "耳鸣后应切换到带乘务员的假1号背景"
 );
 const e029 = events.find(e => e.id === "E_029");
-assert.equal(e029.actions.some(a => a.type === "check" && a.dice === "ev029_constitution_01"), true);
+assert.equal(e029.actions.some(a => a.type === "check"), false, "正面迎战不应再进行前置体质检定");
+assert.equal(e029.actions.some(a => a.type === "minigame" && a.game === "card_battle"), true, "正面迎战应直接进入简单卡牌");
 assert.equal(events.find(e => e.id === "E_034").actions[0].next, "E_515", "涉足花海后真结局应替换为伪结局");
 assert.deepEqual(events.find(e => e.id === "E_515").actions, [
   { type: "custom", name: "endGame", params: { reason: "fake_end" } }

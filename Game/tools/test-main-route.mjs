@@ -247,6 +247,7 @@ for (const [eventId, expectedTexts] of [
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026_ACTION", "点击 Clicker 后应进入通过方式选择");
 assert.match(mainSource, /canUseBottleOnClicker/, "背包应有 Clicker 场景下的玻璃瓶使用分支");
 assert.match(mainSource, /E_028_THROW_FIRST/, "玻璃瓶在 Clicker 场景下应直通投掷事件");
+assert.doesNotMatch(mainSource, /点击投掷并直接通过/, "物品栏不得明示隐藏的投瓶捷径");
 assert.match(crewNegotiationSource, /return 15 \* correctCount;/, "交涉小游戏每个正确回应应提供15%加成");
 assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应自动播放 Clicker 发现对白");
 assert.equal(objectOf("front_carriage", "control_27").clickEvent, "E_032", "控制把手应打开操作面板");
@@ -414,9 +415,10 @@ assert.equal(actionsOf("E_023")[0].next, "E_023_LOCKED", "黑包流程未完成�
 assert.deepEqual(actionsOf("E_006A").find((action) => action.dice === "ev006a_san_01").outcomes, ["E_006A_SAN_S", "E_006A_SAN_F"]);
 assert.deepEqual(actionsOf("E_006B").find((action) => action.dice === "ev006b_san_01").outcomes, ["E_006B_SAN_S", "E_006B_SAN_F"]);
 assert.deepEqual(actionsOf("E_008").find((action) => action.dice === "ev008_insight_01").outcomes, ["E_008_S", "E_008_F"]);
-assert.deepEqual(actionsOf("E_026").find((action) => action.dice === "ev026_san_01").outcomes, ["E_026_SAN_S", "E_026_SAN_F"]);
-assert.equal(actionsOf("E_026").filter((action) => action.type === "check").length, 1, "Clicker 首次遭遇只应进行一次 SAN 检定");
+assert.equal(actionsOf("E_026").some((action) => action.type === "check"), false, "Clicker 初见不应再进行 SAN 检定");
+assert.equal(actionsOf("E_026_BOTTLE_HINT")[0].text, "你摸了摸口袋里的瓶子。");
 for (const removed of [
+  "E_026_SAN_S", "E_026_SAN_F", "E_026_AFTER_SAN", "E_029_CARD_EASY",
   "E_028", "E_028_BOTTLE_READY", "E_028_CONSTITUTION_CHECK", "E_028_CONSTITUTION_SUCCESS",
   "E_028_CONSTITUTION_FAIL", "E_028_THROW_AFTER_FAIL", "E_028_THROW_AFTER_SUCCESS",
   "E_05_SEARCH_NEWS", "E_020_DEAD_NEWSPAPER", "E_REFUSAL_RIGHT"
@@ -579,7 +581,8 @@ assert.equal(
   actionsOf("E_005_GUIDE").some((action) => action.type === "sound" && action.sound === "opening_cracker_bag"),
   true
 );
-assert.deepEqual(actionsOf("E_028_THROW_FIRST")[0], { type: "sound", sound: "breaking_glass" });
+assert.equal(actionsOf("E_028_THROW_SUCCESS").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true);
+assert.equal(actionsOf("E_028_THROW_FAIL").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true);
 for (const id of [
   "E_018_SEARCH_PHONE",
   "E_021_CARRIED",
@@ -716,30 +719,71 @@ assert.equal(game.state.sceneId, "carriage_02");
 assert.equal(game.trace.some((entry) => entry.scene === "carriage_02" && entry.text === "四周毫无光源。"), true);
 assert.equal(game.trace.some((entry) => entry.event === "E_026"), false, "进入2号后应等待玩家点击 Clicker");
 
-// 进入2号后的发现对白不带选择；点击 Clicker 后才出现安静潜行/正面对抗。
+// 初见只做演出；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
 game = fixture({ sceneId: "carriage_02", flags: { light_used: true } });
 await game.play("E_026");
 assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /怪物/);
+assert.equal(game.diceCalls.length, 0, "Clicker 初见不得掷 SAN");
+assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), false);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
 assert.equal(game.trace.some((entry) => entry.event === "E_026_ACTION"), false, "发现对白结束前不应弹通过方式");
-game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["安静潜行"], dice: { ev027_constitution_01: 0 } });
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, inventory: ["bottle"] });
+await game.play("E_026");
+assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), true, "持瓶初见应给出模糊提示");
+
+game = fixture({
+  sceneId: "carriage_02",
+  flags: { clicker_first_encounter_seen: true },
+  choiceLabels: ["安静潜行"],
+  dice: {
+    ev027_constitution_01: 0,
+    ev027_san_01: 0,
+    ev027_constitution_02: 0,
+    ev027_san_02: 1,
+    ev027_constitution_03: 0,
+    ev027_san_03: 0
+  }
+});
 await game.play("E_026_ACTION");
 assert.equal(game.state.flags.carriage_02_passed, true, "安静通过后要置通过状态");
 assert.equal(game.state.sceneId, "carriage_02", "安静通过成功后应停在安全门前");
 assert.equal(game.trace.some((entry) => entry.scene === "front_carriage"), false);
+assert.deepEqual(game.diceCalls, [
+  "ev027_constitution_01", "ev027_san_01",
+  "ev027_constitution_02", "ev027_san_02",
+  "ev027_constitution_03", "ev027_san_03"
+], "潜行必须依次执行三轮体质与 SAN 检定");
 
-// 潜行失败直接进入卡牌小游戏；正面对抗仍按 E_029 的检定结果分流简单/困难模式。
-game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["安静潜行"], dice: { ev027_constitution_01: 1 } });
-await game.play("E_026_ACTION");
-assert.equal(game.state.flags.card_battle_won, false, "潜行失败进入小游戏前应重置战斗结果");
-assert.equal(game.trace.some((entry) => entry.text === "潜行失败，你被迫进入战斗轮。"), true);
-for (const [outcome, mode] of [[0, "简单模式"], [1, "困难模式"]]) {
-  game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["正面对抗"], dice: { ev029_constitution_01: outcome } });
+// 任一潜行阶段失败都进入困难卡牌；正面对抗不掷体质，直接进入简单卡牌。
+for (const failedDice of ["ev027_constitution_01", "ev027_constitution_02", "ev027_constitution_03"]) {
+  game = fixture({
+    sceneId: "carriage_02",
+    flags: { clicker_first_encounter_seen: true },
+    choiceLabels: ["安静潜行"],
+    dice: { [failedDice]: 1 }
+  });
   await game.play("E_026_ACTION");
-  assert.equal(game.trace.some((entry) => entry.text?.includes(mode)), true, `正面对抗应保留${mode}分流`);
+  assert.equal(game.state.flags.card_battle_won, false, `${failedDice} 失败前应重置战斗结果`);
+  assert.equal(game.trace.some((entry) => entry.text?.includes("困难模式")), true, `${failedDice} 失败应进入困难模式`);
 }
+game = fixture({ sceneId: "carriage_02", flags: { clicker_first_encounter_seen: true }, choiceLabels: ["正面对抗"] });
+await game.play("E_026_ACTION");
+assert.equal(game.diceCalls.length, 0, "正面对抗不得再进行前置体质检定");
+assert.equal(actionsOf("E_029").some((action) => action.type === "minigame" && action.game === "card_battle"), true);
+
+// 物品栏投瓶：成功直接通行，失手消耗瓶子并进入困难卡牌。
+game = fixture({ sceneId: "carriage_02", inventory: ["bottle"], dice: { ev028_throw_01: 0 } });
+await game.play("E_028_THROW_FIRST");
+assert.equal(game.state.inventory.length, 0);
+assert.equal(game.state.flags.carriage_02_passed, true);
+assert.equal(game.state.flags.clicker_cleared, true);
+game = fixture({ sceneId: "carriage_02", inventory: ["bottle"], dice: { ev028_throw_01: 1 } });
+await game.play("E_028_THROW_FIRST");
+assert.equal(game.state.inventory.length, 0);
+assert.equal(game.state.flags.carriage_02_passed, undefined);
+assert.equal(game.trace.some((entry) => entry.text?.includes("困难模式")), true);
 game = fixture({
   sceneId: "carriage_02",
   flags: { carriage_02_passed: true },

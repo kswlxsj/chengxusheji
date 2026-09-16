@@ -439,6 +439,12 @@ assert.equal(typeof Game.Dice.get("ev006b_san_01"), "function", "E_006B SAN 检�
 assert.equal(typeof Game.Dice.get("ev008_insight_01"), "function", "E_008 洞察检定应已注册");
 assert.equal(typeof Game.Dice.get("ev013_education_01"), "function", "点击乘务员后的教育检定应已注册");
 assert.equal(typeof Game.Dice.get("ev021_education_insight_01"), "function", "话术剧情的教育+灵感检定应已注册");
+for (const diceId of [
+  "ev027_constitution_01", "ev027_constitution_02", "ev027_constitution_03",
+  "ev027_san_01", "ev027_san_02", "ev027_san_03", "ev028_throw_01"
+]) {
+  assert.equal(typeof Game.Dice.get(diceId), "function", `${diceId} 应已注册`);
+}
 
 function createEngineUi() {
   return {
@@ -906,6 +912,31 @@ try {
     }
   }
 
+  // Clicker 潜行每轮 SAN 检定均为 4~6 不扣、1~3 扣 1。
+  for (const diceId of ["ev027_san_01", "ev027_san_02", "ev027_san_03"]) {
+    for (const [face, expectedLoss] of [[1, 1], [3, 1], [4, 0], [6, 0]]) {
+      balanceState.setAttribute("san", 8);
+      sandbox.Math.random = () => (face - 0.5) / 6;
+      await Game.Dice.get(diceId)(balanceEngine.context(), []);
+      assert.equal(8 - balanceState.getAttribute("san"), expectedLoss, `${diceId} 的骰点${face}损失错误`);
+    }
+  }
+
+  // 投瓶使用体质与封顶 SAN 的平均值；8/8 时 1+2 失败、2+2 成功，即失败率 3/36≈8.3%。
+  async function bottleResult(constitution, san, rolls) {
+    balanceState.setAttribute("constitution", constitution);
+    balanceState.setAttribute("san", san);
+    let rollIndex = 0;
+    sandbox.Math.random = () => (rolls[rollIndex++] - 0.5) / 6;
+    const result = await Game.Dice.get("ev028_throw_01")(balanceEngine.context(), []);
+    return Number.isInteger(result) ? result : result.index;
+  }
+  assert.equal(await bottleResult(8, 8, [1, 2]), 1, "8/8 投瓶掷出3应失败");
+  assert.equal(await bottleResult(8, 8, [2, 2]), 0, "8/8 投瓶掷出4应成功");
+  assert.equal(await bottleResult(10, 20, [1, 1]), 1, "双1必须大失败");
+  assert.equal(await bottleResult(1, 1, [6, 6]), 0, "双6必须大成功");
+  assert.equal(await bottleResult(1, 20, [3, 3]), 1, "投瓶计算中的 SAN 贡献必须封顶为10");
+
   for (const [bonus, rate] of [[0, 40], [15, 55], [30, 70], [45, 85]]) {
     balanceState.flags.ev014_negotiation_bonus = bonus;
     sandbox.Math.random = () => (rate - 1) / 100;
@@ -914,6 +945,8 @@ try {
     assert.equal(await Game.Dice.get("ev014_negotiation_final_01")(balanceEngine.context()), 1, `${rate + 1}% 应失败`);
   }
   assert.throws(() => Game.Dice.get("ev026_extra_san_01"), /未注册/);
+  assert.throws(() => Game.Dice.get("ev026_san_01"), /未注册/);
+  assert.throws(() => Game.Dice.get("ev029_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_luck_01"), /未注册/);
 } finally {

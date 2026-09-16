@@ -92,6 +92,27 @@
     };
   }
 
+  // 投瓶捷径：SAN 只按最多 10 点参与平均，避免无上限 SAN 让检定失去失败可能。
+  // 均衡属性 8/8 时，除双1必败外，2d6 仅在合计为3时失败，失败率为 3/36≈8.3%。
+  function bottleThrowCheck() {
+    return async (context) => {
+      const constitution = context.state.getAttribute("constitution");
+      const san = context.state.getAttribute("san");
+      const cappedSan = Math.min(san, 10);
+      const average = Math.floor((constitution + cappedSan) / 2);
+      const { rolls, total: rollTotal } = rollDice(2, 6);
+      const criticalSuccess = rolls.every((roll) => roll === 6);
+      const criticalFailure = rolls.every((roll) => roll === 1);
+      const success = criticalSuccess || (!criticalFailure && rollTotal + average >= 12);
+      const grade = criticalSuccess ? "criticalSuccess" : criticalFailure ? "criticalFailure" : null;
+      const sanDetail = san === cappedSan ? String(san) : `${san}（按 ${cappedSan} 计）`;
+      const detail = `投掷：体质 ${constitution} + SAN ${sanDetail}，平均值 ${average}`
+        + `\n掷出 ${rolls.join(" + ")}，合计 ${rollTotal + average}；需要达到 12。`;
+      await showDiceRollAnimation(context, rolls, success, detail, grade);
+      return grade ? { index: success ? 0 : 1, grade } : success ? 0 : 1;
+    };
+  }
+
   // SAN 类检定固定按单颗 d6 判定：4~6 成功、1~3 失败，完全不读取当前 SAN。
   // 损失为整数（固定扣）或 { count, sides, bonus }（掷骰扣）；实际变化由统一属性提示显示。
   function sanCheck(attribute, passLoss, failLoss) {
@@ -154,12 +175,16 @@
   registerDice("ev504_insight_01", attrCheck("insight"));
 
   registerDice("ev027_constitution_01", attrCheck("constitution"));
-  registerDice("ev029_constitution_01", attrCheck("constitution"));
+  registerDice("ev027_constitution_02", attrCheck("constitution"));
+  registerDice("ev027_constitution_03", attrCheck("constitution"));
+  registerDice("ev027_san_01", sanCheck("san", 0, 1));
+  registerDice("ev027_san_02", sanCheck("san", 0, 1));
+  registerDice("ev027_san_03", sanCheck("san", 0, 1));
+  registerDice("ev028_throw_01", bottleThrowCheck());
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
   registerDice("ev010_san_01", sanCheck("san", 0, 1));
   registerDice("ev011_san_01", sanCheck("san", 0, 1));
-  registerDice("ev026_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));
 
   // ==== 游戏内检定条目（编号必须全局唯一、长期稳定，被 events.json 的 check.dice 引用）====
 
