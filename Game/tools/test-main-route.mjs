@@ -115,6 +115,47 @@ const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_03
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
 assert.equal(objectOf("carriage_05", "door_05_to_04").clickEvent, "E_GO_05_04", "5号右门应为普通过门事件");
+const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
+assert.equal(carriage06CenterDoor.clickEvent, "E_006_CENTER_DOOR", "6号中央车门应只触发普通门对话");
+assert.equal(carriage06CenterDoor.noHighlight, true, "6号中央车门只能点击，不应出现悬停高亮");
+assert.deepEqual(carriage06CenterDoor.visibleWhen, {
+  all: [
+    { not: { flag: "carriage_06_entry_route_a", equals: true } },
+    { not: { flag: "carriage_06_entry_route_b", equals: true } },
+    { not: { flag: "carriage_07_entry_seen", equals: true } }
+  ]
+}, "6号中央车门应只在尚未触发进入7号流程时显示");
+for (const id of ["window_06_left", "window_06_right"]) {
+  const windowObject = objectOf("carriage_06", id);
+  assert.equal(windowObject.clickEvent, "E_006_WINDOW", `${id} 应触发窗户普通对话`);
+  assert.equal(windowObject.invisible, true, `${id} 不应叠加新的窗户贴图`);
+  assert.deepEqual(windowObject.visibleWhen, carriage06CenterDoor.visibleWhen, `${id} 应与中央车门共用进入7号前的显示条件`);
+}
+for (const [eventId, expectedTexts] of [
+  ["E_006_WINDOW", [
+    "车站昏暗的灯光与漆黑的隧道在窗外交替掠过。",
+    "你望向窗外，只看见站台灯光和黑色隧道不断交替。",
+    "玻璃上映出你的影子，影子背后是飞速掠过的隧道墙壁。"
+  ]],
+  ["E_006_CENTER_DOOR", [
+    "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
+    "车门紧闭着，你试着怎么用力都没有反应。",
+    "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
+  ]]
+]) {
+  const action = actionsOf(eventId)[0];
+  assert.equal(action.type, "custom", `${eventId} 应使用普通随机对白动作`);
+  assert.equal(action.name, "randomDialogue", `${eventId} 应使用随机对白动作`);
+  assert.deepEqual(action.params.texts, expectedTexts, `${eventId} 应使用指定的随机句子`);
+}
+for (const [eventId, expectedTexts] of [
+  ["E_006_WINDOW", actionsOf("E_006_WINDOW")[0].params.texts],
+  ["E_006_CENTER_DOOR", actionsOf("E_006_CENTER_DOOR")[0].params.texts]
+]) {
+  const game = fixture({ sceneId: "carriage_06" });
+  await game.play(eventId);
+  assert.equal(expectedTexts.includes(game.trace[0].text), true, `${eventId} 应实际显示句子库中的一条文案`);
+}
 assert.equal(objectOf("carriage_02", "clicker_02").clickEvent, "E_026_ACTION", "点击 Clicker 后应进入通过方式选择");
 assert.match(mainSource, /canUseBottleOnClicker/, "背包应有 Clicker 场景下的玻璃瓶使用分支");
 assert.match(mainSource, /E_028_THROW_FIRST/, "玻璃瓶在 Clicker 场景下应直通投掷事件");
@@ -243,9 +284,9 @@ assert.equal(
   "进入里世界不应再次设置6号车厢被啃食状态"
 );
 
-// 跨车厢推进必须停在门前，只有明确选择或门热点负责 changeScene。
-assert.equal(actionsOf("E_005_F").some((action) => action.type === "choice"), false, "开门检定失败后应自动进入7号");
-assert.equal(eventById.get("E_005_F").next, "E_005_DEPARTURE_B");
+// 6号失败分支按当前剧情直接进入7号；成功分支仍由玩家选择是否前进。
+assert.equal(eventById.get("E_005_F").next, "E_005_DEPARTURE_B", "6号失败分支应直接进入7号流程");
+assert.equal(actionsOf("E_005_F").some((action) => action.type === "choice"), false, "6号失败分支不应再弹出选择");
 assert.equal(actionsOf("E_005")[1].next, "E_005_LOCKED", "6号调查未完成时应锁住7号门");
 assert.equal(actionsOf("E_GO_06_05")[0].next, "E_GO_06_05_LOCKED", "未看完7号深处时应锁住5号门");
 assert.equal(actionsOf("E_GO_05_04")[0].next, "E_GO_05_04_LOCKED", "未取得报纸时应锁住4号门");
