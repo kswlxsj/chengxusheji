@@ -6471,7 +6471,7 @@ window.GAME_DATA = {
           "text": "你摸出钥匙，插进锁孔。金属咬合的声音在安静中格外清晰。"
         }
       ],
-      "next": "E_032"
+      "next": "E_032_INTRO"
     },
     {
       "id": "E_031_CREW_KEY",
@@ -6489,7 +6489,7 @@ window.GAME_DATA = {
           "text": "你注意到，她看向驾驶室的目光里，有一种近乎执念的光。"
         }
       ],
-      "next": "E_032"
+      "next": "E_032_INTRO"
     },
     {
       "id": "E_031_NO_KEY_S",
@@ -6532,10 +6532,10 @@ window.GAME_DATA = {
           "value": false
         }
       ],
-      "next": "E_032"
+      "next": "E_032_INTRO"
     },
     {
-      "id": "E_032",
+      "id": "E_032_INTRO",
       "actions": [
         {
           "type": "dialogue",
@@ -6548,7 +6548,12 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**\n\n笔画很新，像是不久前才留下的。"
-        },
+        }
+      ]
+    },
+    {
+      "id": "E_032",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {

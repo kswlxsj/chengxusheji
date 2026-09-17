@@ -943,16 +943,32 @@ game = fixture({
 await game.play("E_GO_02_FRONT_DOOR");
 assert.equal(game.state.sceneId, "front_carriage", "玩家点安全门后才进入先头车厢");
 
-// 先头车厢点控制把手：打开操作面板，不再触发2号车厢的体质检定。
+// 首次打开驾驶室只播放操作台说明；结局操作必须由玩家另行点击控制把手。
 game = fixture({
-  sceneId: "front_carriage",
+  sceneId: "carriage_02",
+  flags: { carriage_02_passed: true },
   inventory: ["driver_cab_key", "control_panel_key"],
   choiceLabels: ["右杆下拉——加速，继续前进"]
 });
-await game.play("E_032");
+await game.play("E_GO_02_FRONT_DOOR");
 assert.deepEqual([...new Set(scenesOf(game))], ["front_carriage"]);
-assert.match(game.trace[0].text, /操作面板/);
+assert.equal(game.trace.some((entry) => /操作面板/.test(entry.text)), true, "首次进入驾驶室应播放操作台说明");
+assert.equal(game.state.flags.ending_reason, undefined, "进入驾驶室后不应自动弹出把手操作选择");
+
+// 点击把手才进入操作选择；单人加速直达真结局，且不触发2号车厢检定。
+await game.play("E_032");
 assert.equal(game.diceCalls.includes("ev027_constitution_01"), false, "控制把手不得触发体质检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
+
+// 携带乘务员时，把手应转入原有的拉杆争夺接线。
+const leverCrewGate = actionsOf("E_032").find((action) => action.type === "conditionalJump");
+assert.deepEqual(leverCrewGate, {
+  type: "conditionalJump",
+  when: { flag: "carried_crew", equals: true },
+  next: "E_032_WITH_CREW"
+});
+const crewLeverChoice = actionsOf("E_032_WITH_CREW").find((action) => action.type === "choice");
+assert.equal(crewLeverChoice.options.find((option) => option.label === "右杆下拉——加速，继续前进").next, "E_033");
+assert.equal(actionsOf("E_033").some((action) => action.type === "minigame" && action.game === "conductor_tug"), true);
 
 console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
