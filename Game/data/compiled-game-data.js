@@ -1148,10 +1148,17 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 42,
+            "y": 52,
+            "width": 27,
+            "height": 30
+          },
           "zIndex": 12,
           "clickEvent": "E_032",
           "visibleWhen": {
-            "hasItem": "control_panel_key"
+            "flag": "front_carriage_entry_seen",
+            "equals": true
           }
         }
       ]

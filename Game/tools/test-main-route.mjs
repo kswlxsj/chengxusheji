@@ -123,7 +123,8 @@ assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.webp");
 assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.webp", "手电筒应使用无版本后缀的正式贴图");
 assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.webp", "饮料应使用正式贴图");
 assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.webp", "空易拉罐应使用正式贴图");
-assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem: "control_panel_key" });
+assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { flag: "front_carriage_entry_seen", equals: true });
+assert.deepEqual(objectOf("front_carriage", "control_27").hitPosition, { x: 42, y: 52, width: 27, height: 30 });
 const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
