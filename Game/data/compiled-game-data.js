@@ -2213,7 +2213,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "6号车厢空无一人。"
+          "text": "白天的疲惫让你难以集中注意力。"
+        },
+        {
+          "type": "dialogue",
+          "text": "再次回过神来的时候，你猛然发现对面的座椅已经空无一人。"
         },
         {
           "type": "dialogue",
@@ -2241,7 +2245,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "空无一人。"
+          "text": "又是空无一人。"
         },
         {
           "type": "dialogue",
@@ -2527,8 +2531,8 @@ window.GAME_DATA = {
         },
         {
           "type": "inspect",
-          "title": "便签正面",
-          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+          "title": "便签",
+          "text": "「只管前进吧，已经没有退路了。」\n这是……什么意思？",
           "image": "assets/Image/Ui/label-front.png",
           "large": true
         },
@@ -2547,7 +2551,20 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你莫名觉得有些眼熟，思索片刻，你想起来，这是凯撒密码，解谜方式就是往前推三个字母。"
+          "text": "你莫名觉得有些眼熟，思索片刻，你想起来这是凯撒密码。"
+        },
+        {
+          "type": "dialogue",
+          "text": "每个字母往前推三个的话，就是……"
+        },
+        {
+          "type": "dialogue",
+          "text": "「MOVE FORWARD」"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "……"
         },
         {
           "type": "setFlag",
@@ -2561,7 +2578,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你盯着便签看了半天，没有丝毫头绪。"
+          "text": "你盯着便签看了半天，只是一堆混乱的字母，没有丝毫头绪。"
         },
         {
           "type": "setFlag",
@@ -2877,7 +2894,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你盯得双眼发酸，仍无法看清黑暗里究竟藏着什么。"
+          "text": "即使盯得双眼发酸，你仍无法看清黑暗里究竟藏着什么。"
         },
         {
           "type": "dialogue",
@@ -2965,7 +2982,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "5号车厢空无一人。报纸、背包和零散杂物落在座椅与过道间，像是乘客在同一瞬间凭空消失了。"
+          "text": "5号车厢同样空无一人。报纸、背包和零散杂物落在座椅与过道间。"
+        },
+        {
+          "type": "dialogue",
+          "text": "像是乘客在同一瞬间凭空消失了。"
         },
         {
           "type": "dialogue",
