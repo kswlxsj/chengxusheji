@@ -546,7 +546,7 @@ assert.deepEqual(door04[1], { type: "sound", sound: "door_open" });
 assert.deepEqual(door04[2], { type: "changeScene", scene: "carriage_03" });
 assert.match(door04.find((action) => action.type === "dialogue").text, /返回3号车厢/);
 
-// 3号→2号不再由剧情自动进车：E_022_ITEM 拿完手电即停，E_023 末段直接接里世界入口；
+// 3号→2号不再由剧情自动进车：E_022_ITEM 完成黑包流程即停，E_023 末段直接接里世界入口；
 // 进车只能由玩家点 door_03_to_02（E_023 门前认知崩塌 → E_501）。E_024 光源侦查旧线已删除（见 docs/main-route-wiring.md）。
 assert.equal(eventById.get("E_022_ITEM").next, undefined);
 assert.equal(eventById.get("E_023_LOOP").next, "E_501");
@@ -654,7 +654,6 @@ for (const id of [
   "E_021_CARRIED",
   "E_021_ALONE",
   "E_022_ALONE",
-  "E_022_ITEM",
   "E_05_SEARCH_TOOLS"
 ]) {
   assert.equal(

@@ -3379,29 +3379,6 @@
       {
         "type": "custom",
         "name": "refreshScene"
-      },
-      {
-        "type": "conditionalJump",
-        "when": {
-          "hasItem": "flashlight"
-        },
-        "next": "E_022_ITEM_END"
-      },
-      {
-        "type": "sound",
-        "sound": "finding_in_papers"
-      },
-      {
-        "type": "dialogue",
-        "text": "你继续在行李间翻找，找到了一个手电筒。"
-      },
-      {
-        "type": "dialogue",
-        "text": "你试了试，勉强能用。"
-      },
-      {
-        "type": "addItem",
-        "item": "flashlight"
       }
     ]
   },

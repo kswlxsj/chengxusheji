@@ -437,14 +437,12 @@ for (const eventId of ["E_011_S", "E_012_AFTER"]) {
     `${eventId} 结束后应停在5号车厢等待玩家点门`
   );
 }
-assert.deepEqual(
-  registeredEventsById.get("E_022_ITEM").actions.find((action) => action.type === "conditionalJump"),
-  {
-    type: "conditionalJump",
-    when: { hasItem: "flashlight" },
-    next: "E_022_ITEM_END"
-  },
-  "已从5号车厢工具背包获得手电筒时，E_022_ITEM 不应重复发放"
+assert.equal(
+  registeredEventsById.get("E_022_ITEM").actions.some((action) =>
+    action.item === "flashlight" || action.when?.hasItem === "flashlight"
+  ),
+  false,
+  "3号车厢黑包收尾不得检查或发放手电筒"
 );
 const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 assert.equal(registeredState.getSkill("throwing"), false);
