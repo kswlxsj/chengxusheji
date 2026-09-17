@@ -1630,6 +1630,7 @@ body.home-op-active .home-page .auth-user-status {
   border: 20px solid transparent;
   border-width: 20px 30px;
   border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  background-clip: padding-box;
   box-shadow: none;
   cursor: pointer;
 }
