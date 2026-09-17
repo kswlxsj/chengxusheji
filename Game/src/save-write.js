@@ -36,6 +36,7 @@
       if (!confirmed) return;
     }
     flow.clearTransfer();
+    flow.clearRefreshSnapshot();
     flow.markNewGameIntent(slot);
     flow.navigate("game", { mode: "new", slot });
   }

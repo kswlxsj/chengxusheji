@@ -41,7 +41,10 @@
       load.type = "button";
       load.textContent = "读取";
       load.disabled = info.empty || !info.compatible;
-      load.addEventListener("click", () => Game.PageFlow.navigate("game", { mode: "load", slot: info.slot }));
+      load.addEventListener("click", () => {
+        Game.PageFlow.clearRefreshSnapshot();
+        Game.PageFlow.navigate("game", { mode: "load", slot: info.slot });
+      });
       const remove = document.createElement("button");
       remove.type = "button";
       remove.textContent = "删除";

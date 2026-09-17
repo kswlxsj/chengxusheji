@@ -7,6 +7,8 @@
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
   const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
+  // 当前标签页刷新恢复使用独立键，不与跨页交接混用；关闭标签页后由浏览器自动清除。
+  const REFRESH_SNAPSHOT_KEY = "train-game-refresh-snapshot-v1";
   const GAME_UI_BUILD = "conductor-tug-20260915-10";
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
@@ -96,6 +98,60 @@
     }
   }
 
+  function isPlainObject(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function setRefreshSnapshot(slot, snapshot) {
+    if (!parseSlot(slot) || !isPlainObject(snapshot)) return false;
+    try {
+      sessionStorage.setItem(REFRESH_SNAPSHOT_KEY, JSON.stringify({
+        kind: "refresh-game",
+        slot,
+        snapshot
+      }));
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function getRefreshSnapshot(slot) {
+    if (!parseSlot(slot)) return null;
+    try {
+      const raw = sessionStorage.getItem(REFRESH_SNAPSHOT_KEY);
+      if (!raw) return null;
+      const payload = JSON.parse(raw);
+      if (
+        !isPlainObject(payload)
+        || payload.kind !== "refresh-game"
+        || payload.slot !== slot
+        || !isPlainObject(payload.snapshot)
+      ) {
+        clearRefreshSnapshot();
+        return null;
+      }
+      return payload.snapshot;
+    } catch (_error) {
+      clearRefreshSnapshot();
+      return null;
+    }
+  }
+
+  function clearRefreshSnapshot() {
+    try {
+      sessionStorage.removeItem(REFRESH_SNAPSHOT_KEY);
+    } catch (_error) {
+      // 临时恢复数据清理失败不应阻止页面导航。
+    }
+  }
+
+  function isReloadNavigation() {
+    const navigation = window.performance?.getEntriesByType?.("navigation")?.[0];
+    if (navigation) return navigation.type === "reload";
+    return window.performance?.navigation?.type === 1;
+  }
+
   function markNewGameIntent(slot) {
     sessionStorage.setItem(NEW_GAME_INTENT_KEY, String(slot));
   }
@@ -119,6 +175,10 @@
     setTransfer,
     getTransfer,
     clearTransfer,
+    setRefreshSnapshot,
+    getRefreshSnapshot,
+    clearRefreshSnapshot,
+    isReloadNavigation,
     markNewGameIntent,
     consumeNewGameIntent
   };

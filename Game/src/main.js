@@ -28,6 +28,7 @@
       if (ending) return;
       ending = true;
       flow.clearTransfer();
+      flow.clearRefreshSnapshot();
       const reason = state.flags.ending_reason || "san";
       Game.PlayerProfile?.unlockEnding?.(reason);
       // 预加载结局素材期间也不能继续播放旧场景音频。
@@ -293,6 +294,13 @@
     maybeTriggerCarriage06Guide();
     autoSaveOnNewCarriage();
     maybeTriggerClickerReveal();
+    rememberRefreshSnapshot();
+  }
+
+  // 刷新恢复只记录完整事件链形成的稳定快照，不改变正式三槽存档。
+  function rememberRefreshSnapshot() {
+    if (startupLocked || engine.busy || !activeSlot) return;
+    flow.setRefreshSnapshot(activeSlot, engine.getStableSnapshot());
   }
 
   function syncAutosavedCarriages() {
@@ -377,6 +385,27 @@
     }
   }
 
+  function restoreRefreshSnapshot(slot) {
+    const snapshot = flow.getRefreshSnapshot(slot);
+    if (!snapshot) return false;
+    const previousState = state.snapshot();
+    try {
+      state.restore(snapshot);
+      if (!state.sceneId || !scene.hasScene(state.sceneId)) {
+        throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
+      }
+      syncAutosavedCarriages();
+      scene.load(state.sceneId);
+      engine.adoptStableState();
+      return true;
+    } catch (error) {
+      state.restore(previousState);
+      flow.clearRefreshSnapshot();
+      console.warn("刷新恢复临时状态失败：", error);
+      return false;
+    }
+  }
+
   function resumeGame() {
     if (!paused) return;
     paused = false;
@@ -409,12 +438,14 @@
     scene.setInteractionEnabled(false);
     updateHud();
     flow.clearTransfer();
+    flow.clearRefreshSnapshot();
     flow.navigate("home", {}, true);
   }
 
   function openSaveWriter(returnTo) {
     if (engine.busy) return false;
     try {
+      flow.clearRefreshSnapshot();
       flow.setTransfer({
         kind: "save-write",
         snapshot: engine.getStableSnapshot(),
@@ -532,6 +563,7 @@
   }
 
   async function startNewGame(slot) {
+    flow.clearRefreshSnapshot();
     state.reset();
     scene.load(data.meta.initialScene);
     syncAutosavedCarriages();
@@ -575,10 +607,22 @@
       return;
     }
     try {
+      const newGameRequested = mode === "new" && flow.consumeNewGameIntent(requestedSlot);
+      if (newGameRequested) {
+        await startNewGame(requestedSlot);
+        return;
+      }
+      if (flow.isReloadNavigation() && restoreRefreshSnapshot(requestedSlot)) {
+        if (state.getAttribute("san") <= 0) {
+          flow.clearRefreshSnapshot();
+          flow.navigate("ending", { reason: "san" }, true);
+          return;
+        }
+        activateGame();
+        return;
+      }
       if (mode === "new") {
-        if (flow.consumeNewGameIntent(requestedSlot)) {
-          await startNewGame(requestedSlot);
-        } else if (restoreSave(requestedSlot)) {
+        if (restoreSave(requestedSlot)) {
           activateGame();
         } else {
           await startNewGame(requestedSlot);

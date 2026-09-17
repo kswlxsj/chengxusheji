@@ -33,16 +33,39 @@ const sandbox = {
   clearTimeout,
   localStorage,
   sessionStorage,
-  window: { localStorage, sessionStorage }
+  window: { localStorage, sessionStorage, performance }
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js", "src/ui.js"]) {
+for (const file of ["src/namespace.js", "src/page-flow.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js", "src/ui.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
+
+// 同一标签页的刷新恢复快照与跨页交接隔离，并拒绝槽位不符或损坏的数据。
+{
+  const refreshSnapshot = { sceneId: "carriage_06", flags: { carriage_06_people_reveal: false } };
+  assert.equal(Game.PageFlow.setRefreshSnapshot(1, refreshSnapshot), true);
+  assert.deepEqual(Game.PageFlow.getRefreshSnapshot(1), refreshSnapshot);
+  assert.equal(Game.PageFlow.getRefreshSnapshot(2), null, "槽位不符的临时快照不得被读取");
+  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "槽位不符的临时快照应被清理");
+
+  session.set("train-game-refresh-snapshot-v1", "{");
+  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "损坏的临时快照不得阻断游戏入口");
+  assert.equal(session.has("train-game-refresh-snapshot-v1"), false, "损坏快照应被清理");
+
+  assert.equal(Game.PageFlow.setRefreshSnapshot(1, refreshSnapshot), true);
+  Game.PageFlow.clearRefreshSnapshot();
+  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "显式离开游戏时应清理临时快照");
+
+  sandbox.window.performance = { getEntriesByType: () => [{ type: "reload" }] };
+  assert.equal(Game.PageFlow.isReloadNavigation(), true);
+  sandbox.window.performance = { getEntriesByType: () => [{ type: "navigate" }] };
+  assert.equal(Game.PageFlow.isReloadNavigation(), false);
+  sandbox.window.performance = performance;
+}
 
 // 属性变更提示应排队，避免同一事件里的后一项覆盖前一项。
 {
@@ -496,6 +519,66 @@ function createEngineUi() {
     setPaused: () => {},
     toast: () => {}
   };
+}
+
+// 6号车厢乘客消失后的刷新恢复只采用完整事件链的稳定快照。
+{
+  const disappearance = registeredEventsById.get("E_009").actions
+    .find((action) => action.type === "setFlag" && action.key === "carriage_06_people_reveal");
+  assert.deepEqual(disappearance, {
+    type: "setFlag",
+    key: "carriage_06_people_reveal",
+    value: false
+  });
+
+  const refreshState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  refreshState.completeAttributeAllocation({ constitution: 8, education: 8, insight: 8, san: 8 });
+  refreshState.sceneId = "carriage_06";
+  refreshState.flags.carriage_06_people_reveal = true;
+  let finishDialogue;
+  let dialogueStarted;
+  const dialogueStartedPromise = new Promise((resolve) => { dialogueStarted = resolve; });
+  const refreshEngine = new Game.EventEngine({
+    events: [{
+      id: "E_TEST_CARRIAGE_06_DISAPPEAR",
+      actions: [
+        disappearance,
+        { type: "dialogue", text: "等待玩家推进。" }
+      ]
+    }],
+    state: refreshState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      dialog: {
+        setFast: () => {},
+        showLine: async () => {
+          dialogueStarted();
+          await new Promise((resolve) => { finishDialogue = resolve; });
+        }
+      }
+    }
+  });
+
+  const playing = refreshEngine.play("E_TEST_CARRIAGE_06_DISAPPEAR");
+  await dialogueStartedPromise;
+  assert.equal(refreshState.flags.carriage_06_people_reveal, false, "事件内状态会立即更新画面");
+  assert.equal(
+    refreshEngine.getStableSnapshot().flags.carriage_06_people_reveal,
+    true,
+    "未完成对白时刷新只能恢复事件前的稳定状态"
+  );
+
+  finishDialogue();
+  await playing;
+  const stableSnapshot = refreshEngine.getStableSnapshot();
+  assert.equal(stableSnapshot.flags.carriage_06_people_reveal, false);
+  Game.PageFlow.setRefreshSnapshot(1, stableSnapshot);
+  const refreshedState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  refreshedState.restore(Game.PageFlow.getRefreshSnapshot(1));
+  assert.equal(refreshedState.flags.carriage_06_people_reveal, false, "刷新后应继续显示无乘客背景");
+  Game.PageFlow.clearRefreshSnapshot();
 }
 
 // 手机与手电筒仅在 2 号车厢尚未照明时优先进入使用选择；其他状态统一展示物品。
