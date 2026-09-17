@@ -36,16 +36,16 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-06-people.png",
+          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
           "visibleWhen": {
-            "flag": "carriage_06_people_reveal",
+            "flag": "carriage_06_eaten",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+          "image": "assets/Image/Scene/Background/carriage-06-people.png",
           "visibleWhen": {
-            "flag": "carriage_06_eaten",
+            "flag": "carriage_06_people_reveal",
             "equals": true
           }
         },
