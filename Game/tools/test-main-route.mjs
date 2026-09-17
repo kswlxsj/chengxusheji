@@ -515,6 +515,14 @@ assert.equal(actionsOf("E_013_F").some((action) => action.type === "setFlag" && 
 for (const id of ["E_013_S", "E_020_SECOND_MEDICAL_S"]) {
   assert.equal(actionsOf(id).some((action) => action.type === "modifyAttribute" && action.attribute === "san" && action.amount === 2), true, `${id} 救活乘务员后应奖励 2 点 SAN`);
 }
+assert.equal(actionsOf("E_018_ALONE_REACTION").some((action) => action.text?.includes("乘务员") || action.text?.includes("反复念叨")), false, "未获乘务员口述时，短信后的反应不得凭空得知停车线索");
+assert.equal(actionsOf("E_018_FINAL").some((action) => action.text?.includes("4号车厢")), false, "未获乘务员口述时，不得提前得知员工柜工具位置");
+assert.equal(actionsOf("E_021_ALONE_S").some((action) => action.text?.includes("乘务员留下的信息")), false, "独自打开黑包时不得引用未获得的乘务员情报");
+assert.equal(actionsOf("E_020").find((action) => action.when?.flag === "crew_04_dead")?.next, "E_020_DEAD_TOOLS", "已死亡的旧状态检查员工柜时应进入补发工具分支");
+for (const item of ["emergency_cutter", "pry_bar"]) {
+  assert.equal(actionsOf("E_020_DEAD_TOOLS").some((action) => action.type === "addItem" && action.item === item), true, `死亡线应取得 ${item}`);
+}
+assert.equal(actionsOf("E_020_DEAD_TOOLS").some((action) => action.type === "setFlag" && action.key === "tools_ready" && action.value === true), true, "死亡线应解锁工具进度");
 assert.equal(actionsOf("E_016_LEAVE").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated" && action.value === true), true);
 assert.equal(actionsOf("E_016_CARRY_FAIL").some((action) => action.type === "setFlag" && action.key === "crew_04_left_seated"), false, "尝试背起但失败不应混入明确选择留下的坐姿分支");
 
@@ -749,6 +757,40 @@ await game.play("E_013");
 assert.deepEqual(game.diceCalls, ["ev013_education_01", "ev013_education_01"]);
 assert.equal(game.state.flags.crew_04_interacted, true, "第二次医学检定失败后应结束调查");
 assert.equal(game.state.flags.crew_04_medical_failed, true);
+
+// 两次初步救治失败后，主角只会看到黑包和手机短信，不会把未听到的口述情报当作已知。
+await game.play("E_DOOR_04");
+await game.play("E_017");
+await game.play("E_018_PHONE");
+assert.equal(game.trace.some((entry) => entry.text?.includes("黑包，3号前门")), false, "失败路线不得凭空知道黑包位置");
+assert.equal(game.trace.some((entry) => entry.text?.includes("反复念叨的那句“停车”")), false, "失败路线不得凭空知道停车线索");
+assert.equal(game.trace.some((entry) => entry.text?.includes("工具，似乎在4号车厢")), false, "失败路线不得提前知道工具位置");
+
+// 第三次救治失败后仍可取工具、返回3号清开行李并继续黑包流程。
+game = fixture({
+  sceneId: "carriage_04",
+  flags: { crew_04_interacted: true, crew_04_medical_failed: true, carriage_03_first_entry_seen: true, carriage_03_bag_interacted: true },
+  dice: { ev020_education_01: 1 }
+});
+await game.play("E_020");
+assert.equal(game.state.flags.crew_04_dead, true, "第三次救治失败后乘务员应死亡");
+assert.equal(game.state.flags.tools_ready, true, "乘务员死亡不得阻断工具进度");
+assert.equal(game.state.inventory.includes("emergency_cutter"), true);
+assert.equal(game.state.inventory.includes("pry_bar"), true);
+await game.play("E_DOOR_04");
+assert.equal(game.state.flags.carriage_03_bag_exposed, true, "带工具返回3号后应能清开黑包");
+assert.equal(game.state.inventory.includes("driver_cab_key"), true, "死亡线仍应能从黑包取得驾驶室钥匙");
+assert.equal(game.state.inventory.includes("control_panel_key"), true, "死亡线仍应能从黑包取得操作面板钥匙");
+
+// 兼容旧存档：已死亡但尚未领取工具时，再查员工柜必须补发工具。
+game = fixture({
+  sceneId: "carriage_04",
+  flags: { crew_04_dead: true, crew_04_interacted: true, carriage_03_bag_interacted: true }
+});
+await game.play("E_020");
+assert.equal(game.state.flags.tools_ready, true, "死亡旧档应通过员工柜恢复工具进度");
+assert.equal(game.state.inventory.includes("emergency_cutter"), true);
+assert.equal(game.state.inventory.includes("pry_bar"), true);
 
 // 读报路线同样停在 carriage_05。
 game = fixture({ sceneId: "carriage_05" });

@@ -2553,7 +2553,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你想起乘务员反复念叨的那句“停车”，又低头看向屏幕上的“不要停车”。"
+        "text": "你盯着屏幕上的“不要停车”，一时不知该如何理解。"
       }
     ],
     "next": "E_018_FINAL"
@@ -2567,7 +2567,7 @@
       },
       {
         "type": "dialogue",
-        "text": "你望向黑包，又望向自己来时的方向——行李需要工具才能清开，而工具，似乎在4号车厢里。"
+        "text": "你望向被行李压住的黑包，又望向自己来时的方向——要清开这些行李，得先找能割断带子、撬开箱体的工具。"
       },
       {
         "type": "conditionalJump",
@@ -2693,7 +2693,7 @@
           "flag": "crew_04_dead",
           "equals": true
         },
-        "next": "E_020_LOCKED"
+        "next": "E_020_DEAD_TOOLS"
       },
       {
         "type": "conditionalJump",
@@ -2986,7 +2986,24 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你沉默地站了一会儿。乘务员已经死了，柜里的工具也无法取出。"
+        "text": "你沉默地站了一会儿。乘务员已经死了，但眼下不能再让这场意外困住你。"
+      },
+      {
+        "type": "dialogue",
+        "text": "你从员工柜里取出应急割带器和撬杆，收进背包。"
+      },
+      {
+        "type": "addItem",
+        "item": "emergency_cutter"
+      },
+      {
+        "type": "addItem",
+        "item": "pry_bar"
+      },
+      {
+        "type": "setFlag",
+        "key": "tools_ready",
+        "value": true
       }
     ]
   },
@@ -3168,7 +3185,7 @@
     "actions": [
       {
         "type": "dialogue",
-        "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”，与乘务员留下的信息完全吻合。"
+        "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”。"
       },
       {
         "type": "addItem",
