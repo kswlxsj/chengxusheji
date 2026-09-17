@@ -1181,9 +1181,17 @@ try {
     }
   }
 
-  // Clicker 潜行每轮 SAN 检定均为 4~6 不扣、1~3 扣 1。
+  // Clicker 初见为 1~2 扣2、3~4 扣1、5~6 不扣。
+  for (const [face, expectedLoss] of [[1, 2], [3, 1], [5, 0]]) {
+    balanceState.setAttribute("san", 8);
+    sandbox.Math.random = () => (face - 0.5) / 6;
+    await Game.Dice.get("ev026_san_01")(balanceEngine.context(), []);
+    assert.equal(8 - balanceState.getAttribute("san"), expectedLoss, `ev026_san_01 的骰点${face}损失错误`);
+  }
+
+  // Clicker 潜行每轮 SAN 检定均为 1~3 扣2、4~5 扣1、6 不扣。
   for (const diceId of ["ev027_san_01", "ev027_san_02", "ev027_san_03"]) {
-    for (const [face, expectedLoss] of [[1, 1], [3, 1], [4, 0], [6, 0]]) {
+    for (const [face, expectedLoss] of [[1, 2], [4, 1], [6, 0]]) {
       balanceState.setAttribute("san", 8);
       sandbox.Math.random = () => (face - 0.5) / 6;
       await Game.Dice.get(diceId)(balanceEngine.context(), []);
@@ -1214,7 +1222,6 @@ try {
     assert.equal(await Game.Dice.get("ev014_negotiation_final_01")(balanceEngine.context()), 1, `${rate + 1}% 应失败`);
   }
   assert.throws(() => Game.Dice.get("ev026_extra_san_01"), /未注册/);
-  assert.throws(() => Game.Dice.get("ev026_san_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev029_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_luck_01"), /未注册/);

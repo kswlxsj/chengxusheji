@@ -5307,6 +5307,10 @@ window.GAME_DATA = {
           "text": "借着应急灯微弱的光芒，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
         },
         {
+          "type": "check",
+          "dice": "ev026_san_01"
+        },
+        {
           "type": "conditionalJump",
           "when": {
             "flag": "monster_behavior_known",

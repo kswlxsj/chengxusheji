@@ -448,7 +448,11 @@ assert.deepEqual(
   "实际呕吐才应扣除 1 点体质"
 );
 assert.deepEqual(actionsOf("E_008").find((action) => action.dice === "ev008_insight_01").outcomes, ["E_008_S", "E_008_F"]);
-assert.equal(actionsOf("E_026").some((action) => action.type === "check"), false, "Clicker 初见不应再进行 SAN 检定");
+assert.deepEqual(
+  actionsOf("E_026").filter((action) => action.type === "check"),
+  [{ type: "check", dice: "ev026_san_01" }],
+  "Clicker 初见应进行一次 SAN 检定"
+);
 assert.equal(actionsOf("E_026_BOTTLE_HINT")[0].text, "你摸了摸口袋里的瓶子。");
 for (const removed of [
   "E_026_SAN_S", "E_026_SAN_F", "E_026_AFTER_SAN", "E_029_CARD_EASY",
@@ -866,17 +870,17 @@ await game.play("TEST_KEY_HOPE_NORMAL");
 assert.equal(game.state.getAttribute("san"), 6);
 assert.equal(game.trace.some((entry) => entry.text === "看着乘务员手中的钥匙，你觉得又有了活下去的希望。"), true);
 
-// 初见只做演出；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
-game = fixture({ sceneId: "carriage_02", flags: { light_used: true } });
+// 初见进行一次 SAN 检定；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, dice: { ev026_san_01: 0 } });
 await game.play("E_026");
 assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /怪物/);
-assert.equal(game.diceCalls.length, 0, "Clicker 初见不得掷 SAN");
+assert.deepEqual(game.diceCalls, ["ev026_san_01"], "Clicker 初见应掷一次 SAN");
 assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), false);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
 assert.equal(game.trace.some((entry) => entry.event === "E_026_ACTION"), false, "发现对白结束前不应弹通过方式");
-game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, inventory: ["bottle"] });
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, inventory: ["bottle"], dice: { ev026_san_01: 0 } });
 await game.play("E_026");
 assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), true, "持瓶初见应给出模糊提示");
 
