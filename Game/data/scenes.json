@@ -901,7 +901,7 @@
         "glow": true,
         "visibleWhen": {
           "not": {
-            "flag": "carriage_03_bag_interacted",
+            "flag": "carriage_03_bag_exposed",
             "equals": true
           }
         }

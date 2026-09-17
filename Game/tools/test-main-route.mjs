@@ -280,6 +280,9 @@ assert.deepEqual(carriage03.backgroundVariants, [
 const blackBag03 = objectOf("carriage_03", "black_bag_03");
 assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.png");
 assert.deepEqual(blackBag03.hitPosition, { x: 63, y: 50.8, width: 7.7, height: 10.3 });
+assert.deepEqual(blackBag03.visibleWhen, {
+  not: { flag: "carriage_03_bag_exposed", equals: true }
+}, "没工具时点击背包不得将其隐藏");
 assert.equal(
   objectOf("carriage_03", "forward_note_03").image,
   "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png"
@@ -452,6 +455,24 @@ for (const id of ["E_008_S", "E_009", "E_011_S", "E_012_AFTER", "E_016_LEAVE", "
   assert.equal(eventById.get(id).next, undefined, `${id} 结束时不得自动串到下一节车厢`);
   assert.equal(actionsOf(id).some((action) => action.type === "changeScene"), false, `${id} 不得替玩家切景`);
 }
+// 没工具时调查背包只给提示，不置“已调查”旗标，返回4号死亡线仍可拿工具后回来。
+let bugRegressionGame = fixture({
+  sceneId: "carriage_03",
+  flags: { carriage_03_entry_narrative_v2_done: true }
+});
+await bugRegressionGame.play("E_017");
+assert.equal(bugRegressionGame.state.flags.carriage_03_bag_interacted, true);
+assert.equal(bugRegressionGame.state.flags.carriage_03_phone_available, true);
+assert.equal(bugRegressionGame.trace.some((entry) => entry.text?.includes("需要能割断带子、撬开箱体的工具")), true);
+
+bugRegressionGame = fixture({
+  sceneId: "carriage_04",
+  flags: { crew_04_dead: true, carriage_03_bag_interacted: true }
+});
+await bugRegressionGame.play("E_020");
+assert.equal(bugRegressionGame.state.flags.tools_ready, true, "乘务员死亡后仍应能从员工柜取出工具");
+assert.equal(bugRegressionGame.state.inventory.includes("emergency_cutter"), true);
+assert.equal(bugRegressionGame.state.inventory.includes("pry_bar"), true);
 assert.doesNotMatch(cardBattleSource, /next:\s*["']E_031["']/, "卡牌胜利不得自动进入先头车厢");
 assert.doesNotMatch(mainSource, /maybeTriggerE009|flags\.ev008_scouting_done/, "7号返回6号不得再由主流程自动触发空车厢演出");
 

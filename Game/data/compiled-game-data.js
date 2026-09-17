@@ -933,7 +933,7 @@ window.GAME_DATA = {
           "glow": true,
           "visibleWhen": {
             "not": {
-              "flag": "carriage_03_bag_interacted",
+              "flag": "carriage_03_bag_exposed",
               "equals": true
             }
           }
@@ -3910,7 +3910,7 @@ window.GAME_DATA = {
               }
             ]
           },
-          "next": "E_018_TOOLS_READY"
+          "next": "E_017_TOOLS_READY"
         },
         {
           "type": "dialogue",
@@ -3926,6 +3926,11 @@ window.GAME_DATA = {
         }
       ],
       "next": "E_018_ALONE_TOOL_HINT"
+    },
+    {
+      "id": "E_017_TOOLS_READY",
+      "actions": [],
+      "next": "E_018_TOOLS_READY"
     },
     {
       "id": "E_018_TOOLS_READY",
@@ -4371,7 +4376,7 @@ window.GAME_DATA = {
             "flag": "crew_04_dead",
             "equals": true
           },
-          "next": "E_020_LOCKED"
+          "next": "E_020_DEAD_TOOLS"
         },
         {
           "type": "conditionalJump",
@@ -4664,7 +4669,24 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你沉默地站了一会儿。乘务员已经死了，柜里的工具也无法取出。"
+          "text": "你沉默地站了一会儿。乘务员已经死了，但员工柜的内层锁扣终于可以打开。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你从柜里取出应急割带器和撬杆。"
+        },
+        {
+          "type": "addItem",
+          "item": "emergency_cutter"
+        },
+        {
+          "type": "addItem",
+          "item": "pry_bar"
+        },
+        {
+          "type": "setFlag",
+          "key": "tools_ready",
+          "value": true
         }
       ]
     },
