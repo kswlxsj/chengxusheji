@@ -294,13 +294,13 @@
     maybeTriggerCarriage06Guide();
     autoSaveOnNewCarriage();
     maybeTriggerClickerReveal();
-    rememberRefreshSnapshot();
+    rememberRefreshCheckpoint();
   }
 
-  // 刷新恢复只记录完整事件链形成的稳定快照，不改变正式三槽存档。
-  function rememberRefreshSnapshot() {
-    if (startupLocked || engine.busy || !activeSlot) return;
-    flow.setRefreshSnapshot(activeSlot, engine.getStableSnapshot());
+  // 刷新恢复跟随事件引擎的稳定检查点；即使正在等待 choice，也不会记录半截动作状态。
+  function rememberRefreshCheckpoint(checkpoint = engine.getCheckpoint()) {
+    if (startupLocked || !activeSlot) return;
+    flow.setRefreshCheckpoint(activeSlot, checkpoint);
   }
 
   function syncAutosavedCarriages() {
@@ -317,18 +317,18 @@
     if (startupLocked || paused || engine.busy || !activeSlot || !state.sceneId) return;
     if (!Game.PlayerProfile.getAutoSaveEnabled()) return;
     if (autosavedCarriageIds.has(state.sceneId)) return;
-    const snapshot = engine.getStableSnapshot();
-    if (!snapshot.sceneId || snapshot.sceneId !== state.sceneId) return;
-    const nextAutosavedIds = [...autosavedCarriageIds, snapshot.sceneId];
-    snapshot.flags = {
-      ...snapshot.flags,
+    const checkpoint = engine.getCheckpoint();
+    if (!checkpoint.state.sceneId || checkpoint.state.sceneId !== state.sceneId) return;
+    const nextAutosavedIds = [...autosavedCarriageIds, checkpoint.state.sceneId];
+    checkpoint.state.flags = {
+      ...checkpoint.state.flags,
       [autosavedCarriagesFlag]: nextAutosavedIds
     };
     try {
-      saves.save(activeSlot, snapshot);
+      saves.save(activeSlot, checkpoint);
       autosavedCarriageIds = new Set(nextAutosavedIds);
       state.flags[autosavedCarriagesFlag] = nextAutosavedIds;
-      engine.adoptStableState();
+      engine.adoptCheckpoint(checkpoint.resume);
       ui.toast("已自动保存当前车厢进度");
     } catch (error) {
       console.error("切换车厢时自动保存失败：", error);
@@ -354,6 +354,7 @@
   }
 
   engine.onStateChanged = updateHud;
+  engine.onCheckpointChanged = rememberRefreshCheckpoint;
 
   function errorMessage(error) {
     return error instanceof Error ? error.message : "未知错误";
@@ -361,22 +362,29 @@
 
   function restoreSave(slot) {
     const previousState = state.snapshot();
+    const previousCheckpoint = engine.getCheckpoint();
     try {
-      if (!saves.load(slot)) {
+      const checkpoint = saves.load(slot);
+      if (!checkpoint) {
         ui.toast(`槽位 ${slot} 还没有存档`);
         return false;
       }
+      engine.restoreCheckpoint(checkpoint);
       if (!state.sceneId || !scene.hasScene(state.sceneId)) {
         throw new Error(`存档引用了不存在的场景：${state.sceneId || "空"}`);
       }
       syncAutosavedCarriages();
       scene.load(state.sceneId);
-      engine.adoptStableState();
+      engine.adoptCheckpoint(checkpoint.resume);
       updateHud();
       ui.toast(`已读取槽位 ${slot}`);
       return true;
     } catch (error) {
-      state.restore(previousState);
+      try {
+        engine.restoreCheckpoint(previousCheckpoint);
+      } catch (_restoreError) {
+        state.restore(previousState);
+      }
       scene.load(state.sceneId || data.meta.initialScene);
       updateHud();
       console.error("读取存档失败：", error);
@@ -385,21 +393,26 @@
     }
   }
 
-  function restoreRefreshSnapshot(slot) {
-    const snapshot = flow.getRefreshSnapshot(slot);
-    if (!snapshot) return false;
+  function restoreRefreshCheckpoint(slot) {
+    const checkpoint = flow.getRefreshCheckpoint(slot);
+    if (!checkpoint) return false;
     const previousState = state.snapshot();
+    const previousCheckpoint = engine.getCheckpoint();
     try {
-      state.restore(snapshot);
+      engine.restoreCheckpoint(checkpoint);
       if (!state.sceneId || !scene.hasScene(state.sceneId)) {
         throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
       }
       syncAutosavedCarriages();
       scene.load(state.sceneId);
-      engine.adoptStableState();
+      engine.adoptCheckpoint(checkpoint.resume);
       return true;
     } catch (error) {
-      state.restore(previousState);
+      try {
+        engine.restoreCheckpoint(previousCheckpoint);
+      } catch (_restoreError) {
+        state.restore(previousState);
+      }
       flow.clearRefreshSnapshot();
       console.warn("刷新恢复临时状态失败：", error);
       return false;
@@ -430,7 +443,7 @@
   async function returnToMainMenu() {
     startupLocked = true;
     updateHud();
-    await engine.cancelToStable();
+    await engine.cancelToCheckpoint();
     paused = false;
     gameShell.classList.remove("paused");
     engine.setPaused(false);
@@ -442,13 +455,14 @@
     flow.navigate("home", {}, true);
   }
 
-  function openSaveWriter(returnTo) {
-    if (engine.busy) return false;
+  async function openSaveWriter(returnTo) {
     try {
+      await engine.cancelToCheckpoint();
+      ui.closePauseMenus();
       flow.clearRefreshSnapshot();
       flow.setTransfer({
         kind: "save-write",
-        snapshot: engine.getStableSnapshot(),
+        checkpoint: engine.getCheckpoint(),
         slot: activeSlot,
         returnTo
       });
@@ -463,24 +477,13 @@
 
   async function runPauseMenu() {
     while (paused && !startupLocked) {
-      const savingDisabled = engine.busy;
       const action = await ui.pauseMenu.choose({
         title: "游戏已暂停",
         options: [
           { label: "继续游戏", value: "resume" },
-          {
-            label: savingDisabled ? "保存（事件结束后可用）" : "保存",
-            value: "save",
-            disabled: savingDisabled,
-            description: savingDisabled ? "请先完成当前事件或对话" : "选择一个槽位写入"
-          },
+          { label: "保存", value: "save", description: "保存最近的稳定检查点" },
           { label: "返回主界面", value: "return" },
-          {
-            label: savingDisabled ? "保存并返回（事件结束后可用）" : "保存并返回主界面",
-            value: "save-return",
-            disabled: savingDisabled,
-            description: savingDisabled ? "请先完成当前事件或对话" : "保存后返回主界面"
-          }
+          { label: "保存并返回主界面", value: "save-return", description: "保存最近的稳定检查点后返回" }
         ]
       });
       if (!paused || startupLocked) return;
@@ -489,7 +492,7 @@
         return;
       }
       if (action === "save") {
-        if (openSaveWriter("game")) return;
+        if (await openSaveWriter("game")) return;
         continue;
       }
       if (action === "return") {
@@ -501,7 +504,8 @@
       }
       if (action === "save-return") {
         try {
-          saves.save(activeSlot, engine.getStableSnapshot());
+          await engine.cancelToCheckpoint();
+          saves.save(activeSlot, engine.getCheckpoint());
           await returnToMainMenu();
           return;
         } catch (error) {
@@ -535,10 +539,10 @@
     flow.navigate(destination, {}, true);
   }
 
-  async function saveInitialState(slot) {
+  async function saveInitialCheckpoint(slot) {
     while (true) {
       try {
-        saves.save(slot, engine.getStableSnapshot());
+        saves.save(slot, engine.getCheckpoint());
         return true;
       } catch (error) {
         console.error("建立初始存档失败：", error);
@@ -576,29 +580,28 @@
       return;
     }
     state.completeAttributeAllocation(allocation);
-    engine.adoptStableState();
-    if (!await saveInitialState(slot)) {
+    engine.adoptCheckpoint({ eventId: data.meta.startEvent, actionIndex: 0 });
+    if (!await saveInitialCheckpoint(slot)) {
       flow.navigate("home", {}, true);
       return;
     }
     activateGame();
-    void engine.play(data.meta.startEvent);
+    void engine.resumeCheckpoint();
   }
 
   function restoreTransfer(slot) {
     const transfer = flow.getTransfer("resume-game");
-    if (!transfer || transfer.slot !== slot || !transfer.snapshot) {
+    if (!transfer || transfer.slot !== slot || !transfer.checkpoint) {
       throw new Error("恢复游戏所需的临时状态不存在或已经失效");
     }
-    state.restore(transfer.snapshot);
+    engine.restoreCheckpoint(transfer.checkpoint);
     syncAutosavedCarriages();
     flow.clearTransfer();
     if (!state.sceneId || !scene.hasScene(state.sceneId)) {
       throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
     }
     scene.load(state.sceneId);
-    engine.adoptStableState();
-    activateGame();
+    engine.adoptCheckpoint(transfer.checkpoint.resume);
   }
 
   async function initialize() {
@@ -612,18 +615,20 @@
         await startNewGame(requestedSlot);
         return;
       }
-      if (flow.isReloadNavigation() && restoreRefreshSnapshot(requestedSlot)) {
+      if (flow.isReloadNavigation() && restoreRefreshCheckpoint(requestedSlot)) {
         if (state.getAttribute("san") <= 0) {
           flow.clearRefreshSnapshot();
           flow.navigate("ending", { reason: "san" }, true);
           return;
         }
         activateGame();
+        void engine.resumeCheckpoint();
         return;
       }
       if (mode === "new") {
         if (restoreSave(requestedSlot)) {
           activateGame();
+          void engine.resumeCheckpoint();
         } else {
           await startNewGame(requestedSlot);
         }
@@ -639,6 +644,7 @@
         return;
       }
       activateGame();
+      void engine.resumeCheckpoint();
     } catch (error) {
       flow.clearTransfer();
       await showStartupError(`无法进入游戏：${errorMessage(error)}`);

@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.4.0**，数据格式版本 **4**（`meta.json.formatVersion`），存档版本 **4**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.5.0**，数据格式版本 **4**（`meta.json.formatVersion`），存档版本 **5**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -366,7 +366,7 @@
 
 | 接口 | 用法 |
 | --- | --- |
-| `TrainGame.version` | 当前运行时版本 `0.4.0`。 |
+| `TrainGame.version` | 当前运行时版本 `0.5.0`。 |
 | `deepClone(value)` | JSON 深拷贝；不适用函数、DOM 或循环引用。 |
 | `delay(ms)` | 普通延迟；事件演出应改用 `context.wait()`。 |
 | `evaluateCondition(condition, state)` | 计算通用条件；未知条件警告并返回 `false`。 |
@@ -404,7 +404,7 @@ const state = new TrainGame.GameState(
 
 框架代码可只读查询 `state.attributeDefinitions`、`state.skillDefinitions` 和 `state.totalAttributePoints`。**不要直接改 `state.attributes` 或 `state.skills`**，否则会跳过边界钳制和技能重算；属性接口只接受整数并把结果限制在注册的 `min` 与 `max` 之间。
 
-快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`、`checkAttempts`。可序列化快照示例（存档与调试入口所见状态的结构）：
+状态快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`、`checkAttempts`。它只是检查点中的状态部分，不自行表达恢复位置。可序列化状态快照示例：
 
 ```json
 {
@@ -461,11 +461,13 @@ const saves = new TrainGame.SaveManager(state);
 | --- | --- |
 | `listSlots()` | 返回固定三个槽位的占用、兼容性、保存时间、场景和 SAN 摘要。 |
 | `hasSave(slot)` | 判断指定的 `1..3` 槽位是否存在数据。 |
-| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 4, savedAt, state }`；属性未分配完时拒绝。 |
-| `load(slot)` | 空槽返回 `false`；不兼容时抛错；成功恢复并返回 `true`。 |
+| `save(slot, checkpoint)` | 写入 `{ saveVersion: 5, savedAt, checkpoint }`；检查点格式非法或属性未分配完时拒绝。 |
+| `load(slot)` | 空槽返回 `null`；不兼容时抛错；成功返回检查点深拷贝，不直接恢复状态。 |
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
-默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽与旧单槽键均不迁移也不删除；兼容判断以数据内的 `saveVersion: 4` 为准，v3存档明确提示不兼容。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
+检查点结构为 `{ state, resume }`：`state` 是 `GameState.snapshot()`，`resume` 为 `null` 或 `{ eventId, actionIndex }`。稳定边界及游标由 `EventEngine` 决定；`SaveManager` 只校验基础结构并持久化，不创建检查点。
+
+默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。v4 `{ state }` 存档会读取为 `resume: null` 的检查点，并在下一次写入时升级为 v5；v3 与更早版本仍不兼容。旧共享槽与旧单槽键均不迁移也不删除。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
 
 `SaveManager` 本身不做任何交互确认：覆盖已占用槽位与删除存档的二次确认属于页面职责，由存档页在调用前经 `TrainGame.ConfirmDialog` 询问（见下一节）。
 
@@ -525,24 +527,27 @@ const engine = new TrainGame.EventEngine({ events, state, scene, ui, items });
 | --- | --- |
 | `busy` / `paused` | 是否正运行事件、是否暂停。 |
 | `onStateChanged` | 状态回调，入口用它刷新 HUD。 |
+| `onCheckpointChanged` | 检查点变更回调；入口用它更新当前标签页的刷新恢复数据。 |
 | `registerAction(type, handler)` | 注册通用动作；重复名称或非函数会抛错。 |
 | `registerCustomAction(name, handler)` | 注册 `custom` 白名单。 |
 | `context()` | 创建当前动作上下文。 |
-| `getStableSnapshot()` | 返回最近完整事件链状态的深拷贝。 |
-| `adoptStableState()` | 将当前状态设为稳定点。 |
-| `restoreStableState()` | 恢复稳定点、重载场景并通知状态变化。 |
+| `getCheckpoint()` | 返回最近稳定检查点 `{ state, resume }` 的深拷贝。 |
+| `adoptCheckpoint(resume = null)` | 用当前状态与指定续跑游标建立检查点。 |
+| `restoreCheckpoint(checkpoint?)` | 校验并恢复检查点、重载场景并通知状态及检查点变化。 |
 | `setPaused(value)` | 暂停/恢复 UI、等待和引擎计时器。 |
 | `wait(milliseconds, run?)` | 可暂停、取消的计时器；返回实际有效等待毫秒数（不含暂停时间），可用于持续演出避免定时器精度累积误差。 |
-| `cancelToStable()` | 取消运行、关闭待处理 UI 并恢复稳定点。 |
+| `cancelToCheckpoint()` | 取消运行、关闭待处理 UI 并恢复最近检查点。 |
+| `resumeCheckpoint()` | 无游标时返回 `false`；有游标时从指定事件动作续跑。 |
 | `loadScene(sceneId)` | 等待场景素材就绪和暂停恢复，检查取消后提交；仅在活动事件内使用，不关闭对话。 |
 | `waitFor(promise)` | 可取消地等待异步任务；取消立即结束等待，迟到任务不会提交状态。 |
-| `play(eventId)` | 忙碌时返回 `false`；成功为 `true`；取消/错误时回滚并返回 `false`。 |
+| `play(eventId, actionIndex = 0)` | 从事件动作下标开始执行；忙碌时返回 `false`，成功为 `true`，取消/错误时回滚并返回 `false`。 |
 
 规则与语义：
 
 - 事件链最多连续进入 100 个事件，超过视为可能存在无输入死循环。
 - 通用动作处理器签名为 `async (action, context)`；返回 `{ next: "E_TARGET", stop: true }` 可跳转并停止当前事件。
-- **稳定状态**：`EventEngine` 只在完整事件链成功结束后更新稳定快照；事件执行中不保存，保存与返回主界面都以稳定快照为准，不保留半个事件的调用栈。读取存档或重置状态后，应调用 `adoptStableState()` 建立新的稳定点。
+- **稳定检查点**：从自由探索触发事件时先把该事件入口写入现有稳定状态；每个完整事件结束后再提交一次，若存在后继事件，`resume` 指向后继事件的第 0 个动作。`choice` 在显示选项前额外提交指向自身动作下标的检查点，因此暂停保存、刷新或读档后会直接重开同一选项。属性分配后的新游戏入口则以 `E_001#0` 建立首个检查点。
+- **非检查点动作**：对白、调查、检定、小游戏及普通状态动作不会单独提交；在这些动作中暂停保存时，只持久化最近检查点，恢复后可能重放当前事件的一部分。保存动作不会序列化 DOM、Promise 或事件调用栈。
 - 只有频繁复用的基础能力才使用 `registerAction()`；单次演出优先用 `custom`（见下节），并同步[变更联动清单](#变更协议时的联动清单)。
 
 ### 自定义动作上下文
@@ -751,7 +756,8 @@ class NoticeWindow extends TrainGame.GameWindow {
 
 ```javascript
 game.state.snapshot()
-game.engine.getStableSnapshot()
+game.engine.getCheckpoint()
+game.engine.resumeCheckpoint()
 game.engine.play("E_001")
 game.scene.refresh()
 game.pauseGame()

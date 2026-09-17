@@ -21,8 +21,8 @@
     return Number.isNaN(date.getTime()) ? "保存时间未知" : date.toLocaleString("zh-CN");
   }
 
-  function resumeGame(snapshot, slot) {
-    flow.setTransfer({ kind: "resume-game", snapshot, slot });
+  function resumeGame(checkpoint, slot) {
+    flow.setTransfer({ kind: "resume-game", checkpoint, slot });
     flow.navigate("game", { mode: "resume", slot }, true);
   }
 
@@ -41,7 +41,7 @@
     flow.navigate("game", { mode: "new", slot });
   }
 
-  // 写入稳定快照：从游戏内保存进来时，所选就是当前槽位，属于明确的写入意图，不再重复确认。
+  // 写入稳定检查点：从游戏内保存进来时，所选就是当前槽位，属于明确的写入意图，不再重复确认。
   async function writeSlot(slot) {
     if (slot !== transfer?.slot && saves.hasSave(slot)) {
       const confirmed = await Game.ConfirmDialog.ask({
@@ -51,13 +51,13 @@
       if (!confirmed) return;
     }
     try {
-      saves.save(slot, transfer.snapshot);
+      saves.save(slot, transfer.checkpoint);
       flow.clearTransfer();
       if (transfer.returnTo === "home") {
         flow.navigate("home", {}, true);
         return;
       }
-      resumeGame(transfer.snapshot, slot);
+      resumeGame(transfer.checkpoint, slot);
     } catch (saveError) {
       console.error("写入存档失败：", saveError);
       error.textContent = `写入失败：${saveError instanceof Error ? saveError.message : "未知错误"}`;
@@ -76,11 +76,11 @@
       return;
     }
     flow.clearTransfer();
-    resumeGame(transfer.snapshot, transfer.slot);
+    resumeGame(transfer.checkpoint, transfer.slot);
   }
 
   function render() {
-    if (intent !== "new" && (intent !== "save" || !transfer?.snapshot || !flow.parseSlot(transfer.slot))) {
+    if (intent !== "new" && (intent !== "save" || !transfer?.checkpoint || !flow.parseSlot(transfer.slot))) {
       error.textContent = "写入请求不存在或已经失效，请返回主页重新进入。";
       document.querySelector("#cancel-write").textContent = "返回主页";
       return;
@@ -89,7 +89,7 @@
     document.querySelector("#write-title").textContent = intent === "new" ? "为新游戏选择槽位" : "选择写入槽位";
     document.querySelector("#write-introduction").textContent = intent === "new"
       ? "属性分配确认后才会覆盖所选槽位。"
-      : "选择任意槽位保存当前稳定状态。";
+      : "选择任意槽位保存最近的稳定检查点。";
 
     for (const info of saves.listSlots()) {
       const button = document.createElement("button");

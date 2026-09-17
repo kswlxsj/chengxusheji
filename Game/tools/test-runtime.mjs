@@ -44,21 +44,24 @@ for (const file of ["src/namespace.js", "src/page-flow.js", "src/auth.js", "src/
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
 
-// 同一标签页的刷新恢复快照与跨页交接隔离，并拒绝槽位不符或损坏的数据。
+// 同一标签页的刷新恢复检查点与跨页交接隔离，并拒绝槽位不符或损坏的数据。
 {
-  const refreshSnapshot = { sceneId: "carriage_06", flags: { carriage_06_people_reveal: false } };
-  assert.equal(Game.PageFlow.setRefreshSnapshot(1, refreshSnapshot), true);
-  assert.deepEqual(Game.PageFlow.getRefreshSnapshot(1), refreshSnapshot);
-  assert.equal(Game.PageFlow.getRefreshSnapshot(2), null, "槽位不符的临时快照不得被读取");
-  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "槽位不符的临时快照应被清理");
+  const refreshCheckpoint = {
+    state: { sceneId: "carriage_06", flags: { carriage_06_people_reveal: false } },
+    resume: { eventId: "E_TEST", actionIndex: 0 }
+  };
+  assert.equal(Game.PageFlow.setRefreshCheckpoint(1, refreshCheckpoint), true);
+  assert.deepEqual(Game.PageFlow.getRefreshCheckpoint(1), refreshCheckpoint);
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(2), null, "槽位不符的临时检查点不得被读取");
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "槽位不符的临时检查点应被清理");
 
-  session.set("train-game-refresh-snapshot-v1", "{");
-  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "损坏的临时快照不得阻断游戏入口");
-  assert.equal(session.has("train-game-refresh-snapshot-v1"), false, "损坏快照应被清理");
+  session.set("train-game-refresh-checkpoint-v2", "{");
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "损坏的临时检查点不得阻断游戏入口");
+  assert.equal(session.has("train-game-refresh-checkpoint-v2"), false, "损坏检查点应被清理");
 
-  assert.equal(Game.PageFlow.setRefreshSnapshot(1, refreshSnapshot), true);
+  assert.equal(Game.PageFlow.setRefreshCheckpoint(1, refreshCheckpoint), true);
   Game.PageFlow.clearRefreshSnapshot();
-  assert.equal(Game.PageFlow.getRefreshSnapshot(1), null, "显式离开游戏时应清理临时快照");
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "显式离开游戏时应清理临时检查点");
 
   sandbox.window.performance = { getEntriesByType: () => [{ type: "reload" }] };
   assert.equal(Game.PageFlow.isReloadNavigation(), true);
@@ -221,6 +224,10 @@ function createState() {
   return new Game.GameState(initialState, attributeData, skills);
 }
 
+function checkpointOf(targetState, resume = null) {
+  return { state: targetState.snapshot(), resume };
+}
+
 const state = createState();
 assert.deepEqual(state.attributes, { strength: 2, insight: 1 });
 assert.equal(state.getSkill("strong"), false);
@@ -317,31 +324,44 @@ sceneManager.handleCanvasClick(interceptedClick);
 assert.deepEqual(clickedSceneEvents, ["E_AMBIENT", "E_FOREGROUND"], "不透明前景像素仍应优先触发原物件");
 
 const saves = new Game.SaveManager(state, "test-save");
-saves.save(1);
+saves.save(1, checkpointOf(state, { eventId: "E_START", actionIndex: 0 }));
+assert.equal(JSON.parse(storage.get("test-save-1")).saveVersion, 5, "新存档应使用 v5 检查点信封");
 assert.equal(saves.listSlots().length, 3);
 assert.equal(saves.listSlots()[0].empty, false);
 assert.equal(typeof saves.listSlots()[0].savedAt, "string");
 assert.equal(saves.listSlots()[1].empty, true);
 const restored = createState();
-new Game.SaveManager(restored, "test-save").load(1);
+const restoredCheckpoint = new Game.SaveManager(restored, "test-save").load(1);
+restored.restore(restoredCheckpoint.state);
 assert.deepEqual(restored.snapshot(), state.snapshot());
+assert.deepEqual(restoredCheckpoint.resume, { eventId: "E_START", actionIndex: 0 });
 restored.setAttribute("strength", 5);
 assert.equal(restored.getSkill("strong"), true, "读取后应保留技能自动屏蔽状态");
 
 state.setAttribute("insight", 4);
-saves.save(2);
+saves.save(2, checkpointOf(state));
 assert.equal(saves.hasSave(1), true);
 assert.equal(saves.hasSave(2), true);
-saves.load(1);
+state.restore(saves.load(1).state);
 assert.equal(state.getAttribute("insight"), 3, "不同槽位的状态应相互隔离");
 saves.delete(2);
 assert.equal(saves.hasSave(2), false);
 assert.throws(() => saves.hasSave(0), /1 到 3/);
-assert.throws(() => saves.save(4), /1 到 3/);
+assert.throws(() => saves.save(4, checkpointOf(state)), /1 到 3/);
+assert.throws(
+  () => saves.save(3, checkpointOf(state, { eventId: "E_BAD", actionIndex: -1 })),
+  /恢复游标无效/,
+  "负数动作游标不得写入存档"
+);
+
+storage.set("v4-save-1", JSON.stringify({ saveVersion: 4, savedAt: "2026-09-17T00:00:00.000Z", state: state.snapshot() }));
+const migratedV4 = new Game.SaveManager(createState(), "v4-save").load(1);
+assert.deepEqual(migratedV4.state, state.snapshot(), "v4 裸状态存档应兼容读取");
+assert.equal(migratedV4.resume, null, "v4 存档没有可靠续跑位置，应迁移为空游标");
 
 const aliceSaves = new Game.SaveManager(state);
 assert.equal(aliceSaves.slotKey(1), "train-game-save-user-v1:Alice:slot-1");
-aliceSaves.save(1);
+aliceSaves.save(1, checkpointOf(state));
 Auth.logout();
 assert.equal(Auth.register("Bob", "secret3").ok, true);
 assert.equal(Auth.login("Bob", "secret3").ok, true);
@@ -362,7 +382,7 @@ assert.equal(Auth.login("LegacyCheck", "secret4").ok, true);
 assert.equal(new Game.SaveManager(createState()).listSlots().every((slot) => slot.empty), true, "旧共享存档与旧单槽存档都不应自动迁移");
 
 const unallocated = createState();
-assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1), /分配完成前/);
+assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1, checkpointOf(unallocated)), /分配完成前/);
 
 const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
 const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
@@ -565,18 +585,23 @@ function createEngineUi() {
   await dialogueStartedPromise;
   assert.equal(refreshState.flags.carriage_06_people_reveal, false, "事件内状态会立即更新画面");
   assert.equal(
-    refreshEngine.getStableSnapshot().flags.carriage_06_people_reveal,
+    refreshEngine.getCheckpoint().state.flags.carriage_06_people_reveal,
     true,
     "未完成对白时刷新只能恢复事件前的稳定状态"
+  );
+  assert.deepEqual(
+    refreshEngine.getCheckpoint().resume,
+    { eventId: "E_TEST_CARRIAGE_06_DISAPPEAR", actionIndex: 0 },
+    "自由探索触发的事件应在执行前把入口写入检查点"
   );
 
   finishDialogue();
   await playing;
-  const stableSnapshot = refreshEngine.getStableSnapshot();
-  assert.equal(stableSnapshot.flags.carriage_06_people_reveal, false);
-  Game.PageFlow.setRefreshSnapshot(1, stableSnapshot);
+  const stableCheckpoint = refreshEngine.getCheckpoint();
+  assert.equal(stableCheckpoint.state.flags.carriage_06_people_reveal, false);
+  Game.PageFlow.setRefreshCheckpoint(1, stableCheckpoint);
   const refreshedState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
-  refreshedState.restore(Game.PageFlow.getRefreshSnapshot(1));
+  refreshedState.restore(Game.PageFlow.getRefreshCheckpoint(1).state);
   assert.equal(refreshedState.flags.carriage_06_people_reveal, false, "刷新后应继续显示无乘客背景");
   Game.PageFlow.clearRefreshSnapshot();
 }
@@ -636,6 +661,113 @@ function createEngineScene() {
     refresh: () => {},
     setInteractionEnabled: () => {}
   };
+}
+
+// 连续事件在每个事件结束后提交检查点；后续事件未完成时应回到其入口。
+{
+  const checkpointState = createState();
+  checkpointState.completeAttributeAllocation({ strength: 4, insight: 1 });
+  let releaseDialogue;
+  let dialogueStarted;
+  const dialogueStartedPromise = new Promise((resolve) => { dialogueStarted = resolve; });
+  const engine = new Game.EventEngine({
+    events: [
+      { id: "E_CP_A", actions: [{ type: "setFlag", key: "event_a_done", value: true }], next: "E_CP_B" },
+      { id: "E_CP_B", actions: [{ type: "dialogue", text: "等待取消。" }] }
+    ],
+    state: checkpointState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      dialog: {
+        setFast: () => {},
+        showLine: async () => {
+          dialogueStarted();
+          await new Promise((resolve) => { releaseDialogue = resolve; });
+        }
+      },
+      cancelPending: () => releaseDialogue?.()
+    }
+  });
+  engine.adoptCheckpoint({ eventId: "E_CP_A", actionIndex: 0 });
+  const playing = engine.resumeCheckpoint();
+  await dialogueStartedPromise;
+  assert.deepEqual(engine.getCheckpoint().resume, { eventId: "E_CP_B", actionIndex: 0 });
+  assert.equal(engine.getCheckpoint().state.flags.event_a_done, true);
+  await engine.cancelToCheckpoint();
+  assert.equal(await playing, false);
+  assert.equal(checkpointState.flags.event_a_done, true, "取消后应保留已完成事件的状态");
+}
+
+// choice 等待前提交动作游标；恢复后直接重开选项，不重放前置动作。
+{
+  const events = [
+    {
+      id: "E_CP_CHOICE",
+      actions: [
+        { type: "custom", name: "incrementCheckpointCounter" },
+        { type: "choice", prompt: "请选择", options: [{ label: "继续", next: "E_CP_AFTER" }] }
+      ]
+    },
+    { id: "E_CP_AFTER", actions: [{ type: "setFlag", key: "choice_done", value: true }] }
+  ];
+  const firstState = createState();
+  firstState.completeAttributeAllocation({ strength: 4, insight: 1 });
+  let closeChoice;
+  let choiceShown;
+  const choiceShownPromise = new Promise((resolve) => { choiceShown = resolve; });
+  const firstEngine = new Game.EventEngine({
+    events,
+    state: firstState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      choice: {
+        choose: async () => {
+          choiceShown();
+          return new Promise((resolve) => { closeChoice = resolve; });
+        }
+      },
+      cancelPending: () => closeChoice?.(null)
+    }
+  });
+  firstEngine.registerCustomAction("incrementCheckpointCounter", async (_params, context) => {
+    context.state.flags.checkpoint_counter = (context.state.flags.checkpoint_counter || 0) + 1;
+  });
+  firstEngine.adoptCheckpoint({ eventId: "E_CP_CHOICE", actionIndex: 0 });
+  const firstRun = firstEngine.resumeCheckpoint();
+  await choiceShownPromise;
+  const choiceCheckpoint = firstEngine.getCheckpoint();
+  assert.deepEqual(choiceCheckpoint.resume, { eventId: "E_CP_CHOICE", actionIndex: 1 });
+  assert.equal(choiceCheckpoint.state.flags.checkpoint_counter, 1);
+  await firstEngine.cancelToCheckpoint();
+  await firstRun;
+
+  const resumedState = createState();
+  const resumedEngine = new Game.EventEngine({
+    events,
+    state: resumedState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      choice: { choose: async (_prompt, options) => options[0] }
+    }
+  });
+  resumedEngine.registerCustomAction("incrementCheckpointCounter", async (_params, context) => {
+    context.state.flags.checkpoint_counter = (context.state.flags.checkpoint_counter || 0) + 1;
+  });
+  resumedEngine.restoreCheckpoint(choiceCheckpoint);
+  assert.equal(await resumedEngine.resumeCheckpoint(), true);
+  assert.equal(resumedState.flags.checkpoint_counter, 1, "恢复 choice 时不得重放前置动作");
+  assert.equal(resumedState.flags.choice_done, true);
+  assert.equal(resumedEngine.getCheckpoint().resume, null);
+  assert.throws(
+    () => resumedEngine.restoreCheckpoint({ state: choiceCheckpoint.state, resume: { eventId: "E_CP_CHOICE", actionIndex: 99 } }),
+    /动作下标越界/
+  );
 }
 
 // 对话动作按句拆分：同一段文本必须逐句等待玩家推进，不能挤进一个对话框。
@@ -1379,7 +1511,7 @@ registerStubMinigame("mg_test_jump", async () => [
   assert.equal(state.flags.mg_settled, true, "小游戏返回的结算动作列表应被顺序执行");
   assert.equal(state.getAttribute("strength"), 5, "结算中的属性修改应生效");
   assert.equal(state.flags.after_minigame, true, "小游戏动作之后的动作应继续执行");
-  assert.equal(engine.getStableSnapshot().flags.mg_settled, true, "事件链结束后结算应进入稳定快照");
+  assert.equal(engine.getCheckpoint().state.flags.mg_settled, true, "事件链结束后结算应进入稳定检查点");
 }
 
 // 2) 小游戏未返回结算（undefined/null/空数组）时不改动状态、事件照常继续。
@@ -1765,7 +1897,7 @@ async function settleMicrotasks(count = 8) {
   const playback = engine.play("E_SFX_CANCEL");
   await settleMicrotasks();
   assert.equal(audio.voices.size, 1, "取消前音效应在播放中");
-  await engine.cancelToStable();
+  await engine.cancelToCheckpoint();
   assert.equal(await playback, false, "取消后事件应回滚结束");
   assert.equal(audio.voices.size, 0, "取消应掐断正在播放的音效");
   assert.equal(state.flags.after_cancelled_sound, undefined, "取消后不应继续执行后续动作");

@@ -1709,9 +1709,15 @@ body.home-op-active .home-page .auth-user-status {
   background: rgba(0,0,0,.58);
 }
 
+/* 选项等待时场景与物品栏已由 engine.busy 禁用；让遮罩本身透传指针，
+   仅选项面板继续接收点击，使 HUD 暂停按钮仍可使用。 */
+.choice-backdrop { pointer-events: none; }
+.choice-backdrop .choice-window { pointer-events: auto; }
+
 .menu-backdrop,
 .main-menu-backdrop {
   position: absolute;
+  z-index: 130;
   inset: 0;
   display: grid;
   place-items: center;

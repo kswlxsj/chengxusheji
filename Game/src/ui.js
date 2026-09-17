@@ -517,7 +517,7 @@
     choose(prompt, options) {
       this.close(null);
       const backdrop = document.createElement("div");
-      backdrop.className = "modal-backdrop";
+      backdrop.className = "modal-backdrop choice-backdrop";
       const title = document.createElement("h2");
       title.textContent = prompt || "请选择";
       const list = document.createElement("div");

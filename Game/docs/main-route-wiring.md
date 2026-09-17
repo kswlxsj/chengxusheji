@@ -165,7 +165,7 @@ SAN检定不再读取当前SAN：通用检定固定单颗d6，4—6成功、1—
 
 同步改动：`data/compiled-game-data.js` 重新生成；`game.html` 的 `carriage-02-darkness.css`／`scene.js`／`compiled-game-data.js` 缓存戳统一升到 `scene-blackout-20260915-1`；`tools/test-inner-world.mjs`（门目标、守卫与黑场结构、黑场时刻行为、回访跳过、被删对象不得残留）、`tools/test-runtime.mjs`（`Game.isSceneUnlit` 谓词）、`tools/test-main-route.mjs`（门目标与注释）。
 
-验证：`npm run compile` 输出 `15 个场景，204 个事件，8 个物品，4 个属性，1 个技能，6 个小游戏，30 个音效`；`npm run check` 全绿；可达性复跑 **可达 201 / 不可达 3 / 悬挂引用 0**。黑场可观测性由「事件期间锁定场景交互」（`src/events.js` 在 `play()` 起始处 `setInteractionEnabled(false)`）保证：整段 `E_023 → … → E_501` 属同一次 `play()` 链，控制权不会回到 3 号。存档侧无需兼容：黑场旗标在同一次事件链内置位并清除，而自动存档只在 `!engine.busy` 时写 `engine.getStableSnapshot()`，因此该旗标不会落盘。
+验证：`npm run compile` 输出 `15 个场景，204 个事件，8 个物品，4 个属性，1 个技能，6 个小游戏，30 个音效`；`npm run check` 全绿；可达性复跑 **可达 201 / 不可达 3 / 悬挂引用 0**。黑场可观测性由「事件期间锁定场景交互」（`src/events.js` 在 `play()` 起始处 `setInteractionEnabled(false)`）保证：整段 `E_023 → … → E_501` 属同一次 `play()` 链，控制权不会回到 3 号。检查点系统按事件边界记录状态；若手动保存恰好取得黑场后的检查点，其续跑游标会指向 `E_501`，读档后立即清除黑场并继续推进。自动存档仍只在 `!engine.busy` 时触发，不会扩大到链内事件边界。
 
 ## 接线批次当时的遗留项（保留历史结论）
 

@@ -7,9 +7,9 @@
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
   const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
-  // 当前标签页刷新恢复使用独立键，不与跨页交接混用；关闭标签页后由浏览器自动清除。
-  const REFRESH_SNAPSHOT_KEY = "train-game-refresh-snapshot-v1";
-  const GAME_UI_BUILD = "conductor-tug-20260915-10";
+  // 当前标签页刷新恢复使用独立检查点键，不与跨页交接混用；关闭标签页后由浏览器自动清除。
+  const REFRESH_CHECKPOINT_KEY = "train-game-refresh-checkpoint-v2";
+  const GAME_UI_BUILD = "checkpoint-20260917-1";
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
   const routes = Object.freeze({
@@ -102,13 +102,13 @@
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
   }
 
-  function setRefreshSnapshot(slot, snapshot) {
-    if (!parseSlot(slot) || !isPlainObject(snapshot)) return false;
+  function setRefreshCheckpoint(slot, checkpoint) {
+    if (!parseSlot(slot) || !isPlainObject(checkpoint)) return false;
     try {
-      sessionStorage.setItem(REFRESH_SNAPSHOT_KEY, JSON.stringify({
+      sessionStorage.setItem(REFRESH_CHECKPOINT_KEY, JSON.stringify({
         kind: "refresh-game",
         slot,
-        snapshot
+        checkpoint
       }));
       return true;
     } catch (_error) {
@@ -116,22 +116,22 @@
     }
   }
 
-  function getRefreshSnapshot(slot) {
+  function getRefreshCheckpoint(slot) {
     if (!parseSlot(slot)) return null;
     try {
-      const raw = sessionStorage.getItem(REFRESH_SNAPSHOT_KEY);
+      const raw = sessionStorage.getItem(REFRESH_CHECKPOINT_KEY);
       if (!raw) return null;
       const payload = JSON.parse(raw);
       if (
         !isPlainObject(payload)
         || payload.kind !== "refresh-game"
         || payload.slot !== slot
-        || !isPlainObject(payload.snapshot)
+        || !isPlainObject(payload.checkpoint)
       ) {
         clearRefreshSnapshot();
         return null;
       }
-      return payload.snapshot;
+      return payload.checkpoint;
     } catch (_error) {
       clearRefreshSnapshot();
       return null;
@@ -140,7 +140,7 @@
 
   function clearRefreshSnapshot() {
     try {
-      sessionStorage.removeItem(REFRESH_SNAPSHOT_KEY);
+      sessionStorage.removeItem(REFRESH_CHECKPOINT_KEY);
     } catch (_error) {
       // 临时恢复数据清理失败不应阻止页面导航。
     }
@@ -175,8 +175,8 @@
     setTransfer,
     getTransfer,
     clearTransfer,
-    setRefreshSnapshot,
-    getRefreshSnapshot,
+    setRefreshCheckpoint,
+    getRefreshCheckpoint,
     clearRefreshSnapshot,
     isReloadNavigation,
     markNewGameIntent,
