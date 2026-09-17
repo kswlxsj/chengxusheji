@@ -2608,7 +2608,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把便签撕了下来"
+          "text": "你把便签撕了下来，发现背面居然还有字。"
         },
         {
           "type": "inspect",
@@ -5287,7 +5287,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "portrait": "assets/Image/Portrait/monster.png",
-          "text": "借着应急灯微弱的红光，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
+          "text": "借着应急灯微弱的光芒，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
         },
         {
           "type": "conditionalJump",
