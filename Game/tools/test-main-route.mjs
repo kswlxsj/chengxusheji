@@ -417,6 +417,15 @@ assert.equal(
 assert.equal(eventById.get("E_005_F").next, "E_005_DEPARTURE_B", "6号失败分支应直接进入7号流程");
 assert.equal(actionsOf("E_005_F").some((action) => action.type === "choice"), false, "6号失败分支不应再弹出选择");
 assert.equal(actionsOf("E_005")[1].next, "E_005_LOCKED", "6号调查未完成时应锁住7号门");
+assert.deepEqual(actionsOf("E_005_STAY").slice(0, 2), [
+  {
+    type: "conditionalJump",
+    when: { flag: "ev005_stay_rewarded", equals: true },
+    next: "E_005_STAY_REVISIT"
+  },
+  { type: "setFlag", key: "ev005_stay_rewarded", value: true }
+], "6号留守奖励应先检查并记录一次性完成状态");
+assert.deepEqual(actionsOf("E_005_STAY_REVISIT"), [], "6号留守重访应静默结束");
 assert.deepEqual(
   actionsOf("E_GO_06_05")[0],
   {
@@ -730,6 +739,16 @@ assert.equal(game.trace.some((entry) => entry.text?.includes("一名重伤昏迷
 assert.equal(game.trace.some((entry) => entry.text?.includes("还没有处理她的伤口")), true, "未交互时重复到达不得误报已处理伤口");
 assert.notEqual(game.state.flags.crew_04_interacted, true, "重复进入车厢不得把乘务员标记为已交互");
 assert.deepEqual(game.diceCalls, []);
+
+// 6号车厢的冷静段落只结算一次；旧存档没有旗标时仍能正常获得首次奖励。
+game = fixture({ sceneId: "carriage_06" });
+await game.play("E_005_STAY");
+assert.equal(game.state.flags.ev005_stay_rewarded, true, "首次留在6号车厢应记录已获得冷静奖励");
+assert.equal(game.attributeChanges.filter(({ name, requested }) => name === "SAN" && requested === 1).length, 1, "首次留守应只奖励 1 点 SAN");
+game.trace.length = 0;
+await game.play("E_005_STAY");
+assert.equal(game.attributeChanges.filter(({ name, requested }) => name === "SAN" && requested === 1).length, 1, "再次留守不得重复奖励 SAN");
+assert.deepEqual(game.trace, [], "再次留在6号车厢不得重播冷静段落");
 
 // 点击乘务员：直接教育检定；失败后允许再试一次，成功或第二次失败后结束。
 game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: [1, 0] } });

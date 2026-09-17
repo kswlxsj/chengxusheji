@@ -1825,6 +1825,19 @@ window.GAME_DATA = {
       "id": "E_005_STAY",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev005_stay_rewarded",
+            "equals": true
+          },
+          "next": "E_005_STAY_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev005_stay_rewarded",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "你确认那就是血腥味无疑。你从门前退开，决定先留在6号车厢再作打算。"
         },
@@ -1843,6 +1856,10 @@ window.GAME_DATA = {
           "amount": 1
         }
       ]
+    },
+    {
+      "id": "E_005_STAY_REVISIT",
+      "actions": []
     },
     {
       "id": "E_005_F",
