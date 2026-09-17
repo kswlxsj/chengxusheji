@@ -68,6 +68,14 @@ const Auth = Game.Auth;
   sandbox.window.performance = { getEntriesByType: () => [{ type: "navigate" }] };
   assert.equal(Game.PageFlow.isReloadNavigation(), false);
   sandbox.window.performance = performance;
+
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), false, "没有入口标记时主页不应播放 OP");
+  assert.equal(Game.PageFlow.markHomeOpIntent("settings"), false, "普通功能页不得请求主页 OP");
+  assert.equal(Game.PageFlow.markHomeOpIntent("login"), true);
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), true, "登录入口应播放一次 OP");
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), false, "OP 入口标记消费后不得在刷新时重播");
+  assert.equal(Game.PageFlow.markHomeOpIntent("ending"), true);
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), true, "结局入口应播放一次 OP");
 }
 
 // 属性变更提示应排队，避免同一事件里的后一项覆盖前一项。

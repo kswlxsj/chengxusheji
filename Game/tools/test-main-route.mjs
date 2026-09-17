@@ -572,6 +572,14 @@ for (const sceneId of ["carriage_inner_01", "carriage_inner_02", "carriage_fake_
 assert.match(mainSource, /backgroundSoundVariants[\s\S]*backgroundAudio\?\.setTrack/);
 assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/Audio\/Bgm\/op-v2\.mp3/);
 assert.match(bgmSource, /home\.html", "settings\.html", "ending\.html/);
+const pageFlowSource = await read("src/page-flow.js");
+const loginSource = await read("src/login.js");
+const endingPageSource = await read("ending.html");
+assert.match(loginSource, /markHomeOpIntent\("login"\)/, "登录成功进入主页前应请求 OP");
+assert.match(mainSource, /markHomeOpIntent\("ending"\)[\s\S]*navigate\("home"/, "结局覆盖层返回主页前应请求 OP");
+assert.match(endingPageSource, /markHomeOpIntent\("ending"\)/, "独立结局页返回主页前应请求 OP");
+assert.match(homeOpSource, /consumeHomeOpIntent/, "主页 OP 应消费一次性入口标记");
+assert.match(pageFlowSource, /source !== "login" && source !== "ending"/, "OP 标记只允许登录与结局来源");
 assert.match(bgmSource, /BASE_VOLUME \* userGain/);
 assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
 assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);

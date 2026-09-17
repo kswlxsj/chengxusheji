@@ -10,6 +10,8 @@
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
+  <!-- TrainGame.PageFlow，提供主页 OP 入口标记与页面跳转。 -->
   <script src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
   <script src="src/auth-guard.js"></script>
@@ -27,7 +29,7 @@
     </section>
     <nav class="ending-actions" aria-label="结束页操作">
       <a href="save-manager.html">读取存档</a>
-      <a href="home.html">返回主页</a>
+      <a id="ending-home" href="home.html">返回主页</a>
     </nav>
   </main>
   <script>
@@ -38,6 +40,11 @@
     document.querySelector("#ending-description").textContent = ending.description;
     const video = document.querySelector("#ending-video");
     video?.play().catch(() => {});
+    document.querySelector("#ending-home")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      TrainGame.PageFlow.markHomeOpIntent("ending");
+      TrainGame.PageFlow.navigate("home", {}, true);
+    });
   </script>
 </body>
 </html>

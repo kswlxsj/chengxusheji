@@ -178,6 +178,7 @@
     };
     const returnToMainMenu = () => {
       flow.clearTransfer();
+      flow.markHomeOpIntent("ending");
       flow.navigate("home", {}, true);
     };
     const tryPlay = () => {

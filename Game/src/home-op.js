@@ -40,6 +40,12 @@
 
   const overlay = document.querySelector("#home-op");
   if (!overlay) return;
+  if (!window.TrainGame?.PageFlow?.consumeHomeOpIntent?.()) {
+    overlay.hidden = true;
+    return;
+  }
+
+  overlay.hidden = false;
 
   window.__TRAIN_GAME_OP_ACTIVE__ = true;
   document.body.classList.add("home-op-active");

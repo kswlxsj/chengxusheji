@@ -21,6 +21,7 @@
       error.textContent = loginResult.message;
       return;
     }
-    window.location.replace(new URL("home.html", window.location.href));
+    Game.PageFlow.markHomeOpIntent("login");
+    Game.PageFlow.navigate("home", {}, true);
   });
 })(window.TrainGame);

@@ -7,6 +7,7 @@
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
   const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
+  const HOME_OP_INTENT_KEY = "train-game-home-op-intent-v1";
   // 当前标签页刷新恢复使用独立检查点键，不与跨页交接混用；关闭标签页后由浏览器自动清除。
   const REFRESH_CHECKPOINT_KEY = "train-game-refresh-checkpoint-v2";
   const GAME_UI_BUILD = "checkpoint-20260917-1";
@@ -166,6 +167,26 @@
     }
   }
 
+  function markHomeOpIntent(source) {
+    if (source !== "login" && source !== "ending") return false;
+    try {
+      sessionStorage.setItem(HOME_OP_INTENT_KEY, source);
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function consumeHomeOpIntent() {
+    try {
+      const source = sessionStorage.getItem(HOME_OP_INTENT_KEY);
+      sessionStorage.removeItem(HOME_OP_INTENT_KEY);
+      return source === "login" || source === "ending";
+    } catch (_error) {
+      return false;
+    }
+  }
+
   // 对外暴露的模块接口：路由表 + 跳转 / 槽位校验 / 临时交接能力
   Game.PageFlow = {
     routes,
@@ -180,6 +201,8 @@
     clearRefreshSnapshot,
     isReloadNavigation,
     markNewGameIntent,
-    consumeNewGameIntent
+    consumeNewGameIntent,
+    markHomeOpIntent,
+    consumeHomeOpIntent
   };
 })(window.TrainGame);
