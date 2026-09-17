@@ -7,8 +7,6 @@
   const MAX_PLAYER_HP = 10;
   const MAX_ENEMY_HP = 10;
   const MAX_ENERGY = 3;
-  const DESIGN_WIDTH = 1080;
-  const DESIGN_HEIGHT = 574;
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
   const cardDetails = {
     attack: "单出造成 2 点伤害",
@@ -30,8 +28,8 @@
   ];
 
   const styleText = `
-    .card-battle { position: absolute; top: 50%; left: 50%; box-sizing: border-box; width: 1080px; height: 574px; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.png"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; transform: translate(-50%, -50%) scale(var(--cb-scale, 1)); transform-origin: center; }
-    .card-battle.is-responsive { position: relative; top: auto; left: auto; width: 100%; height: 100%; padding: 10px; overflow: auto; transform: none; }
+    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.png"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle.is-responsive { padding: 10px; }
     .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
     .card-battle button { font: inherit; }
@@ -217,27 +215,7 @@
     root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 3 回合冷却。`;
     stage.append(style, root);
 
-    const resizeObserver = typeof ResizeObserver === "function"
-      ? new ResizeObserver(() => fitToStage())
-      : null;
-
-    function fitToStage() {
-      if (stage.clientWidth <= 700) {
-        root.classList.add("is-responsive");
-        root.style.removeProperty("--cb-scale");
-        return;
-      }
-      root.classList.remove("is-responsive");
-      const scale = Math.min(
-        stage.clientWidth / DESIGN_WIDTH,
-        stage.clientHeight / DESIGN_HEIGHT,
-        1
-      );
-      root.style.setProperty("--cb-scale", scale.toFixed(4));
-    }
-
-    resizeObserver?.observe(stage);
-    fitToStage();
+    root.classList.toggle("is-responsive", stage.clientWidth <= 700);
 
     const elements = {
       round: root.querySelector("[data-round]"),
@@ -591,7 +569,6 @@
       cleaned = true;
       if (transitionTimer !== null) window.clearTimeout(transitionTimer);
       if (resultTimer !== null) window.clearTimeout(resultTimer);
-      resizeObserver?.disconnect();
       elements.cards.forEach((button) => button.removeEventListener("click", onCardClick));
       elements.intent.removeEventListener("click", revealIntent);
       elements.play.removeEventListener("click", playSelected);
