@@ -40,6 +40,7 @@ const actionsOf = (id) => eventById.get(id).actions || [];
 function fixture({ flags = {}, inventory = [], sceneId, dice = {}, choiceLabels = [] } = {}) {
   const state = new Game.GameState({ ...meta.initialState, flags, inventory, sceneId }, attributes, skills);
   const trace = [];
+  const attributeChanges = [];
   const diceCalls = [];
   const diceCallCounts = new Map();
   const ui = {
@@ -55,7 +56,8 @@ function fixture({ flags = {}, inventory = [], sceneId, dice = {}, choiceLabels 
       }
     },
     audio: { play() { return { finished: Promise.resolve(), stop() {} }; } },
-    closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); }
+    closeDialog() {}, cancelPending() {}, setPaused() {}, toast(message) { trace.push({ error: message }); },
+    showAttributeChange(payload) { attributeChanges.push(payload); }
   };
   const scene = {
     async prepare() {}, async whenReady() {}, load(id) { state.sceneId = id; }, refresh() {}, setInteractionEnabled() {}
@@ -77,7 +79,7 @@ function fixture({ flags = {}, inventory = [], sceneId, dice = {}, choiceLabels 
   };
   // 本文件只验证接线与切景；真实小游戏画面与结算另在浏览器验收。
   Game.Minigames = { get: () => ({ title: "测试小游戏", run: async () => undefined }) };
-  return { state, engine, trace, diceCalls, async play(id) {
+  return { state, engine, trace, diceCalls, attributeChanges, async play(id) {
     const result = await engine.play(id);
     assert.equal(trace.some((entry) => entry.error), false, JSON.stringify(trace));
     return result;
@@ -669,8 +671,18 @@ let rewardGame = fixture({ sceneId: "carriage_05", flags: allCarriage05Inspected
 await rewardGame.play("E_05_CHECK_ALL");
 assert.equal(rewardGame.state.flags.carriage_05_all_inspected_rewarded, true);
 assert.equal(rewardGame.state.getAttribute("insight"), 4, "六个物件齐全后应奖励灵感+1");
+assert.equal(rewardGame.state.getAttribute("san"), 2, "六个物件齐全后应奖励 SAN+1");
+assert.deepEqual(
+  rewardGame.attributeChanges.map(({ name, requested, before, after }) => ({ name, requested, before, after })),
+  [
+    { name: "灵感", requested: 1, before: 3, after: 4 },
+    { name: "SAN", requested: 1, before: 1, after: 2 }
+  ],
+  "整理成线索的两项属性奖励应按灵感、SAN 的顺序触发提示"
+);
 await rewardGame.play("E_05_CHECK_ALL");
 assert.equal(rewardGame.state.getAttribute("insight"), 4, "完整调查奖励只能获得一次");
+assert.equal(rewardGame.state.getAttribute("san"), 2, "完整调查奖励只能获得一次 SAN+1");
 rewardGame = fixture({
   sceneId: "carriage_05",
   flags: { ...allCarriage05Inspected, carriage_05_inspected_clutter_d: false }

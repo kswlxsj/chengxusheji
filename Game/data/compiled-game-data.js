@@ -6321,6 +6321,11 @@ window.GAME_DATA = {
           "type": "modifyAttribute",
           "attribute": "insight",
           "amount": 1
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
+          "amount": 1
         }
       ]
     },
