@@ -4556,7 +4556,7 @@
         "text": "你注意到，她看向驾驶室的目光里，有一种近乎执念的光。"
       }
     ],
-    "next": "E_032_INTRO"
+    "next": "E_032_CREW_AUTO"
   },
   {
     "id": "E_031_NO_KEY_S",
@@ -4610,7 +4610,7 @@
       },
       {
         "type": "dialogue",
-        "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆下拉加速，持续上拉则不断减速直至停车。"
+        "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆上推加速，持续下拉则不断减速直至停车。"
       },
       {
         "type": "dialogue",
@@ -4627,18 +4627,18 @@
           "flag": "carried_crew",
           "equals": true
         },
-        "next": "E_032_WITH_CREW"
+        "next": "E_032_CREW_AUTO"
       },
       {
         "type": "choice",
         "prompt": "你要怎么操作拉杆？",
         "options": [
           {
-            "label": "右杆下拉——加速，继续前进",
+            "label": "右杆上推——加速，继续前进",
             "next": "E_034"
           },
           {
-            "label": "右杆上拉——减速，停车",
+            "label": "右杆下拉——减速，停车",
             "next": "E_035"
           }
         ]
@@ -4646,35 +4646,57 @@
     ]
   },
   {
-    "id": "E_032_WITH_CREW",
+    "id": "E_032_CREW_AUTO",
     "actions": [
       {
         "type": "dialogue",
-        "speaker": "乘务员",
-        "text": "拉它！停车！我们逃出去！"
+        "text": "操作面板的钥匙转动后，盖板向外弹开。你拂去薄灰，确认每个标识仍然清晰可读。"
       },
       {
-        "type": "choice",
-        "prompt": "你要怎么操作拉杆？",
-        "options": [
-          {
-            "label": "右杆下拉——加速，继续前进",
-            "next": "E_033"
-          },
-          {
-            "label": "右杆上拉——减速，停车",
-            "next": "E_035"
-          }
-        ]
+        "type": "dialogue",
+        "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆上推加速，持续下拉则不断减速直至停车。"
+      },
+      {
+        "type": "dialogue",
+        "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**\n\n笔画很新，像是不久前才留下的。"
+      },
+      {
+        "type": "dialogue",
+        "text": "乘务员没有看你，只是一瘸一拐地走到驾驶台前，伸手握住右杆。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "乘务员",
+        "text": "停车……我们得停车。"
+      },
+      {
+        "type": "custom",
+        "name": "timedStoryChoice",
+        "params": {
+          "prompt": "乘务员正要把右杆向下拉——",
+          "duration": 5000,
+          "flag": "ev032_take_lever",
+          "defaultValue": false,
+          "options": [
+            { "label": "抢过把手，向上推——加速", "value": true },
+            { "label": "让乘务员来操作", "value": false }
+          ]
+        }
+      },
+      {
+        "type": "conditionalJump",
+        "when": { "flag": "ev032_take_lever", "equals": true },
+        "next": "E_033"
       }
-    ]
+    ],
+    "next": "E_035"
   },
   {
     "id": "E_033",
     "actions": [
       {
         "type": "dialogue",
-        "text": "你选择继续前进，手指刚扣住右杆准备下压，乘务员就从身后扑来，死死抓住你的手腕。"
+        "text": "你猛地抢过右杆，向上推去。乘务员从身后扑来，死死抓住你的手腕。"
       },
       {
         "type": "dialogue",

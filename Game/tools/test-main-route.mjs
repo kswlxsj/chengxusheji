@@ -948,7 +948,7 @@ game = fixture({
   sceneId: "carriage_02",
   flags: { carriage_02_passed: true },
   inventory: ["driver_cab_key", "control_panel_key"],
-  choiceLabels: ["右杆下拉——加速，继续前进"]
+  choiceLabels: ["右杆上推——加速，继续前进"]
 });
 await game.play("E_GO_02_FRONT_DOOR");
 assert.deepEqual([...new Set(scenesOf(game))], ["front_carriage"]);
@@ -960,15 +960,35 @@ await game.play("E_032");
 assert.equal(game.diceCalls.includes("ev027_constitution_01"), false, "控制把手不得触发体质检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
 
-// 携带乘务员时，把手应转入原有的拉杆争夺接线。
-const leverCrewGate = actionsOf("E_032").find((action) => action.type === "conditionalJump");
-assert.deepEqual(leverCrewGate, {
-  type: "conditionalJump",
-  when: { flag: "carried_crew", equals: true },
-  next: "E_032_WITH_CREW"
+// 乘务员持钥匙时自动操作把手：限时抢夺才进入拉杆争夺，超时或放手则停车。
+assert.equal(eventById.get("E_031_CREW_KEY").next, "E_032_CREW_AUTO");
+const crewAutoChoice = actionsOf("E_032_CREW_AUTO").find((action) => action.name === "timedStoryChoice");
+assert.deepEqual(crewAutoChoice.params, {
+  prompt: "乘务员正要把右杆向下拉——",
+  duration: 5000,
+  flag: "ev032_take_lever",
+  defaultValue: false,
+  options: [
+    { label: "抢过把手，向上推——加速", value: true },
+    { label: "让乘务员来操作", value: false }
+  ]
 });
-const crewLeverChoice = actionsOf("E_032_WITH_CREW").find((action) => action.type === "choice");
-assert.equal(crewLeverChoice.options.find((option) => option.label === "右杆下拉——加速，继续前进").next, "E_033");
+assert.equal(actionsOf("E_032_CREW_AUTO").find((action) => action.type === "conditionalJump").next, "E_033");
+assert.equal(eventById.get("E_032_CREW_AUTO").next, "E_035");
 assert.equal(actionsOf("E_033").some((action) => action.type === "minigame" && action.game === "conductor_tug"), true);
+game = fixture({
+  sceneId: "front_carriage",
+  flags: { carried_crew: true, keys_crew: true },
+  choiceLabels: ["让乘务员来操作"]
+});
+await game.play("E_031_CREW_KEY");
+assert.equal(game.state.flags.ending_reason, "bad_end", "让乘务员操作应进入停车坏结局");
+game = fixture({
+  sceneId: "front_carriage",
+  flags: { carried_crew: true, keys_crew: true },
+  choiceLabels: ["抢过把手，向上推——加速"]
+});
+await game.play("E_031_CREW_KEY");
+assert.equal(game.trace.some((entry) => entry.text?.includes("猛地抢过右杆")), true, "抢夺把手应进入控制杆争夺前的剧情");
 
 console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
