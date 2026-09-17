@@ -36,16 +36,16 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-06-people.png",
+          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
           "visibleWhen": {
-            "flag": "carriage_06_people_reveal",
+            "flag": "carriage_06_eaten",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+          "image": "assets/Image/Scene/Background/carriage-06-people.png",
           "visibleWhen": {
-            "flag": "carriage_06_eaten",
+            "flag": "carriage_06_people_reveal",
             "equals": true
           }
         },
@@ -4236,7 +4236,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你想起乘务员反复念叨的那句“停车”，又低头看向屏幕上的“不要停车”。"
+          "text": "你盯着屏幕上的“不要停车”，一时不知该如何理解。"
         }
       ],
       "next": "E_018_FINAL"
@@ -4250,7 +4250,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你望向黑包，又望向自己来时的方向——行李需要工具才能清开，而工具，似乎在4号车厢里。"
+          "text": "你望向被行李压住的黑包，又望向自己来时的方向——要清开这些行李，得先找能割断带子、撬开箱体的工具。"
         },
         {
           "type": "conditionalJump",
@@ -4669,11 +4669,11 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你沉默地站了一会儿。乘务员已经死了，但员工柜的内层锁扣终于可以打开。"
+          "text": "你沉默地站了一会儿。乘务员已经死了，但眼下不能再让这场意外困住你。"
         },
         {
           "type": "dialogue",
-          "text": "你从柜里取出应急割带器和撬杆。"
+          "text": "你从员工柜里取出应急割带器和撬杆，收进背包。"
         },
         {
           "type": "addItem",
@@ -4868,7 +4868,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”，与乘务员留下的信息完全吻合。"
+          "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”。"
         },
         {
           "type": "addItem",
@@ -6342,6 +6342,11 @@ window.GAME_DATA = {
         {
           "type": "modifyAttribute",
           "attribute": "insight",
+          "amount": 1
+        },
+        {
+          "type": "modifyAttribute",
+          "attribute": "san",
           "amount": 1
         }
       ]

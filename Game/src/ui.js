@@ -1061,6 +1061,9 @@
       // sound 动作与检定演出共用 ui.audio；暂停/取消统一在这里掐断。
       this.toastElement = document.querySelector("#toast");
       this.toastTimer = null;
+      this.toastMode = null;
+      this.attributeToastQueue = [];
+      this.attributeToastCurrent = null;
       this.cueLayer = document.querySelector("#acquisition-layer");
       this.cueSerial = 0;
       if (this.audio) {
@@ -1124,7 +1127,30 @@
           : `已达下限 ${min}`;
         message = `属性未变化：${name}（${reason}）`;
       }
-      this.toast(message);
+      this.enqueueAttributeToast(message);
+    }
+
+    enqueueAttributeToast(message) {
+      this.attributeToastQueue.push(message);
+      if (this.toastMode === null) this.showNextAttributeToast();
+    }
+
+    showNextAttributeToast() {
+      if (this.toastMode !== null) return;
+      const message = this.attributeToastQueue.shift();
+      if (!message) return;
+
+      this.attributeToastCurrent = message;
+      this.toastMode = "attribute";
+      this.toastElement.textContent = message;
+      this.toastElement.classList.add("visible");
+      this.toastTimer = setTimeout(() => {
+        this.toastTimer = null;
+        this.toastMode = null;
+        this.attributeToastCurrent = null;
+        this.toastElement.classList.remove("visible");
+        this.showNextAttributeToast();
+      }, 1800);
     }
 
     showCue({ title = "获得物品", label = "", image = null, detail = "" } = {}) {
@@ -1167,9 +1193,19 @@
 
     toast(message) {
       clearTimeout(this.toastTimer);
+      if (this.toastMode === "attribute" && this.attributeToastCurrent) {
+        this.attributeToastQueue.unshift(this.attributeToastCurrent);
+      }
+      this.attributeToastCurrent = null;
+      this.toastMode = "standard";
       this.toastElement.textContent = message;
       this.toastElement.classList.add("visible");
-      this.toastTimer = setTimeout(() => this.toastElement.classList.remove("visible"), 1800);
+      this.toastTimer = setTimeout(() => {
+        this.toastTimer = null;
+        this.toastMode = null;
+        this.toastElement.classList.remove("visible");
+        this.showNextAttributeToast();
+      }, 1800);
     }
   }
 

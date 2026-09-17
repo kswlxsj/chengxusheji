@@ -37,12 +37,51 @@ const sandbox = {
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js"]) {
+for (const file of ["src/namespace.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js", "src/ui.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
+
+// 属性变更提示应排队，避免同一事件里的后一项覆盖前一项。
+{
+  const scheduled = [];
+  const originalSetTimeout = sandbox.setTimeout;
+  const originalClearTimeout = sandbox.clearTimeout;
+  sandbox.setTimeout = (callback) => {
+    scheduled.push(callback);
+    return scheduled.length;
+  };
+  sandbox.clearTimeout = () => {};
+  const toastElement = {
+    textContent: "",
+    classList: { add() {}, remove() {} }
+  };
+  const ui = {
+    toastElement,
+    toastTimer: null,
+    toastMode: null,
+    attributeToastQueue: [],
+    attributeToastCurrent: null,
+    enqueueAttributeToast: Game.UIManager.prototype.enqueueAttributeToast,
+    showNextAttributeToast: Game.UIManager.prototype.showNextAttributeToast
+  };
+  Game.UIManager.prototype.showAttributeChange.call(ui, {
+    name: "灵感", requested: 1, before: 3, after: 4, min: 1, max: 10
+  });
+  Game.UIManager.prototype.showAttributeChange.call(ui, {
+    name: "SAN", requested: 1, before: 1, after: 2, min: 0, max: null
+  });
+  assert.match(toastElement.textContent, /灵感 \+1/, "第一条属性提示应立即显示");
+  assert.equal(ui.attributeToastQueue.length, 1, "第二条属性提示应进入队列");
+  scheduled.shift()();
+  assert.match(toastElement.textContent, /SAN \+1/, "第一条结束后应显示第二条属性提示");
+  scheduled.shift()();
+  assert.equal(ui.attributeToastQueue.length, 0, "全部属性提示显示后应清空队列");
+  sandbox.setTimeout = originalSetTimeout;
+  sandbox.clearTimeout = originalClearTimeout;
+}
 
 assert.equal(Auth.register("", "password").ok, false, "空用户名不应注册");
 assert.equal(Auth.register("   ", "password").ok, false, "纯空格用户名不应注册");
