@@ -211,7 +211,7 @@
       {
         "type": "dialogue",
         "speaker":"你",
-        "portrait":"assets/Image/Portrait/player-scared.png",
+        "portrait":"assets/Image/Portrait/player-scared.webp",
         "text": "……啊？"
       },
       {
@@ -385,7 +385,7 @@
       {
         "type": "dialogue",
         "speaker": "你",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "啊！！！这是什么！"
       },
       {
@@ -655,7 +655,7 @@
       },
       {
         "type": "dialogue",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "刚才的人，都去哪了？",
         "audio": {
           "sound": "bullying_e009",
@@ -793,7 +793,7 @@
         "item": "note_06_item",
         "title": "便签",
         "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
-        "image": "assets/Image/Item/note.png",
+        "image": "assets/Image/Item/note.webp",
         "large": true
       }
     ]
@@ -916,7 +916,7 @@
         "type": "inspect",
         "title": "便签",
         "text": "「只管前进吧，已经没有退路了。」\n这是……什么意思？",
-        "image": "assets/Image/Ui/label-front.png",
+        "image": "assets/Image/Ui/label-front.webp",
         "large": true
       },
       {
@@ -977,7 +977,7 @@
         "type": "inspect",
         "title": "便签正面",
         "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
-        "image": "assets/Image/Ui/label-front.png",
+        "image": "assets/Image/Ui/label-front.webp",
         "large": true
       }
     ]
@@ -997,7 +997,7 @@
         "type": "inspect",
         "title": "便签背面",
         "text": "「第三个箱子里藏着钥匙。」箱子？这里哪有箱子。",
-        "image": "assets/Image/Ui/label-back.png",
+        "image": "assets/Image/Ui/label-back.webp",
         "large": true
       },
       {
@@ -1076,7 +1076,7 @@
         "type": "inspect",
         "title": "地图检定成功",
         "text": "你仔细查看地图，猛然发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
-        "image": "assets/Image/Ui/map-success.png",
+        "image": "assets/Image/Ui/map-success.webp",
         "large": true
       },
       {
@@ -1122,7 +1122,7 @@
         "type": "inspect",
         "title": "地图检定失败",
         "text": "你努力查看，但是 7 号车厢以后的部分被污染，看不清楚。",
-        "image": "assets/Image/Ui/map-failure.png",
+        "image": "assets/Image/Ui/map-failure.webp",
         "large": true
       },
       {
@@ -1175,7 +1175,7 @@
       {
         "type": "dialogue",
         "speaker": "你",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "这是否意味着这附近……"
       },
       {
@@ -1200,7 +1200,7 @@
       {
         "type": "dialogue",
         "speaker": "你",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "天哪……还是不要继续看下去了。"
       },
       {
@@ -1249,7 +1249,7 @@
       {
         "type": "dialogue",
         "speaker": "你",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "这……这是什么！"
       },
       {
@@ -1677,7 +1677,7 @@
       },
       {
         "type": "dialogue",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "你跨进6号车厢，终于看清刚才那阵声响留下了什么。"
       },
       {
@@ -3587,7 +3587,7 @@
       { "type": "setFlag", "key": "clicker_first_encounter_seen", "value": true },
       {
         "type": "dialogue",
-        "portrait": "assets/Image/Portrait/monster.png",
+        "portrait": "assets/Image/Portrait/monster.webp",
         "text": "借着应急灯微弱的光芒，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
       },
       {
@@ -5865,26 +5865,26 @@
       {
         "type": "dialogue",
         "speaker": "乘务员",
-        "portrait": "assets/Image/Portrait/conductor-crazy.png",
+        "portrait": "assets/Image/Portrait/conductor-crazy.webp",
         "text": "……"
       },
       {
         "type": "dialogue",
         "speaker": "乘务员",
-        "portrait": "assets/Image/Portrait/conductor-crazy.png",
+        "portrait": "assets/Image/Portrait/conductor-crazy.webp",
         "text": "这就是你的选择吗，亲爱的？"
       },
       {
         "type": "dialogue",
         "speaker": "乘务员",
-        "portrait": "assets/Image/Portrait/conductor-crazy.png",
+        "portrait": "assets/Image/Portrait/conductor-crazy.webp",
         "text": "愚蠢。"
       },
       {
         "type": "custom",
         "name": "centeredCinematic",
         "params": {
-          "image": "assets/Image/Scene/Background/inner-refusal-crew-01.png",
+          "image": "assets/Image/Scene/Background/inner-refusal-crew-01.webp",
           "text": "你以为，不给我，你就能从这里出去吗？",
           "duration": 2400
         }
@@ -5893,7 +5893,7 @@
         "type": "custom",
         "name": "centeredCinematic",
         "params": {
-          "image": "assets/Image/Scene/Background/inner-refusal-crew-02.png",
+          "image": "assets/Image/Scene/Background/inner-refusal-crew-02.webp",
           "text": "把钥匙给我",
           "duration": 1600,
           "flash": true
@@ -5952,7 +5952,7 @@
       {
         "type": "dialogue",
         "speaker": "你",
-        "portrait": "assets/Image/Portrait/player-scared.png",
+        "portrait": "assets/Image/Portrait/player-scared.webp",
         "text": "放过我吧……"
       }
     ]

@@ -3,7 +3,7 @@
 ## 值得一看的项目或许有:
 
 ### [ScratchEditor](https://github.com/leixin0725/ScratchEditor)
-![](assets/1_1.png)
+![](assets/1_1.webp)
 ScratchEditor 是一款面向 Windows 的轻量临时文本编辑器，适合快速整理剪贴板文本、 编写 Markdown，以及在 Codex、pi-coding-agent 等命令行工具中编辑较长的提示词。 它以速度和键盘操作为重点：窗口可常驻后台并通过全局快捷键即时唤出，也可以按文件 启动为一次性的外部编辑器。
 
 ### [Bai](https://github.com/leixin0725/Bai)

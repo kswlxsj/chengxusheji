@@ -3,11 +3,11 @@
 
   const OP_AUDIO_SOURCE = "assets/Audio/Bgm/op-v2.mp3";
   const FRAME_SOURCES = [
-    "assets/Image/Scene/Background/op-01.png",
-    "assets/Image/Scene/Background/op-02.png",
-    "assets/Image/Scene/Background/op-03.png",
-    "assets/Image/Scene/Background/op-04.png",
-    "assets/Image/Scene/Background/op-05.png"
+    "assets/Image/Scene/Background/op-01.webp",
+    "assets/Image/Scene/Background/op-02.webp",
+    "assets/Image/Scene/Background/op-03.webp",
+    "assets/Image/Scene/Background/op-04.webp",
+    "assets/Image/Scene/Background/op-05.webp"
   ];
 
   // 每一帧对应的底部文字（按 FRAME_SOURCES 下标）

@@ -28,7 +28,7 @@
   ];
 
   const styleText = `
-    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.png"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.webp"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; }
     .card-battle.is-responsive { padding: 10px; }
     .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
@@ -46,7 +46,7 @@
     .cb-fighter-name small { color: #9d8e78; font-size: 11px; }
     .cb-fighter-name strong { color: #f6ead5; font-size: 16px; }
     .cb-hp-line { display: grid; gap: 3px; color: #efb45f; font-size: 12px; }
-    .cb-hp-track { position: relative; height: 16px; padding: 0; border: 0; overflow: visible; background: url("assets/Image/Ui/CardBattle/hp-bar.png") center / 100% 100% no-repeat; }
+    .cb-hp-track { position: relative; height: 16px; padding: 0; border: 0; overflow: visible; background: url("assets/Image/Ui/CardBattle/hp-bar.webp") center / 100% 100% no-repeat; }
     .cb-hp-fill { position: absolute; left: 13px; top: 5px; display: block; height: 6px; background: linear-gradient(90deg, #b6372c, #efb45f); transition: width .2s ease; }
     .cb-resource { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: #9d8e78; font-size: 11px; }
     .cb-orbs { display: flex; gap: 3px; min-height: 17px; color: rgba(85, 208, 212, .22); font-size: 16px; }
@@ -71,15 +71,15 @@
     .cb-play, .cb-restart { padding: 8px 12px; border: 1px solid rgba(239, 180, 95, .65); color: #17100a; background: #efb45f; cursor: pointer; }
     .cb-play:disabled { cursor: not-allowed; opacity: .4; }
     .cb-cards { display: grid; grid-template-columns: repeat(4, 82px); justify-content: center; gap: 10px; }
-    .cb-card { position: relative; width: 82px; aspect-ratio: 3 / 4; min-height: 0; padding: 0; overflow: hidden; border: 0; color: #f6ead5; background-color: transparent; background-image: var(--card-art), url("assets/Image/Ui/CardBattle/card-base.png"); background-position: center; background-repeat: no-repeat; background-size: contain; cursor: pointer; text-align: left; transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease; }
-    .cb-card[data-card="attack"] { --card-art: url("assets/Image/Ui/CardBattle/attack.png"); }
+    .cb-card { position: relative; width: 82px; aspect-ratio: 3 / 4; min-height: 0; padding: 0; overflow: hidden; border: 0; color: #f6ead5; background-color: transparent; background-image: var(--card-art), url("assets/Image/Ui/CardBattle/card-base.webp"); background-position: center; background-repeat: no-repeat; background-size: contain; cursor: pointer; text-align: left; transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease; }
+    .cb-card[data-card="attack"] { --card-art: url("assets/Image/Ui/CardBattle/attack.webp"); }
     .cb-card[data-card="heal"] { --card-art: url("assets/Image/Ui/CardBattle/heal.png"); }
     .cb-card[data-card="defend"] { --card-art: url("assets/Image/Ui/CardBattle/defend.png"); }
     .cb-card[data-card="ultimate"] { --card-art: url("assets/Image/Ui/CardBattle/ultimate.png"); }
     .cb-card:hover:not(:disabled), .cb-card.selected { filter: brightness(1.14); transform: translateY(-3px); }
     .cb-card.selected { outline: 3px solid rgba(239, 180, 95, .8); outline-offset: 2px; }
     .cb-card:disabled { cursor: not-allowed; opacity: .4; }
-    .cb-card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/Image/Ui/CardBattle/card-base.png") center / contain no-repeat; opacity: .94; }
+    .cb-card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/Image/Ui/CardBattle/card-base.webp") center / contain no-repeat; opacity: .94; }
     .cb-card .key { position: absolute; z-index: 2; top: 6px; right: 7px; display: grid; place-items: center; width: 18px; height: 18px; color: #17100a; background: rgba(239, 180, 95, .94); font-size: 10px; font-weight: 700; }
     .cb-card .symbol { display: none; }
     .cb-card .name { position: absolute; z-index: 2; right: 5px; bottom: 6px; left: 5px; color: #fff7e8; font-size: 11px; font-weight: 700; text-align: center; text-shadow: 0 1px 3px #000, 0 0 3px #000; }
@@ -111,7 +111,7 @@
         <div class="cb-fighter-name"><small>敌人</small><strong>无眼者</strong></div>
         <div class="cb-hp-line"><span data-enemy-hp>10 / 10</span><div class="cb-hp-track"><span class="cb-hp-fill" data-enemy-fill></span></div></div>
         <div class="cb-resource"><span>体力</span><span class="cb-orbs" data-enemy-orbs aria-label="敌人体力 0 / 3"></span></div>
-        <div class="cb-face cb-enemy-face" aria-hidden="true"><img src="assets/Image/Portrait/monster-pixel.png" alt=""></div>
+        <div class="cb-face cb-enemy-face" aria-hidden="true"><img src="assets/Image/Portrait/monster-pixel.webp" alt=""></div>
         <button class="cb-intent" type="button" data-intent aria-expanded="false">? 点击查看两张候选牌</button>
         <div class="cb-last-play" data-last-play hidden><span class="cb-last-kicker">上回合出牌</span><strong data-last-name></strong><span class="cb-last-detail" data-last-detail></span></div>
       </section>

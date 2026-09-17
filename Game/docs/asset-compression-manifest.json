@@ -1,0 +1,1298 @@
+[
+  {
+    "runtimePath": "assets/Image/Item/bottle.webp",
+    "sourcePath": "assets/Image/Item/bottle.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 16905,
+    "runtimeBytes": 11924,
+    "runtimeSha256": "774C68E3DC7E4F4ACA88136F9DA58CCAEFCDB1798CFBE897F1C3919EB826D1B1"
+  },
+  {
+    "runtimePath": "assets/Image/Item/control-panel-key.webp",
+    "sourcePath": "assets/Image/Item/control-panel-key.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1270872,
+    "runtimeBytes": 523614,
+    "runtimeSha256": "ED52742824A7C7EE659ACB6BA7888F2B71F98CFF647B369D25C276316599B343"
+  },
+  {
+    "runtimePath": "assets/Image/Item/drink_empty.webp",
+    "sourcePath": "assets/Image/Item/drink_empty.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 475426,
+    "runtimeBytes": 301342,
+    "runtimeSha256": "FEB7430D04D24E00351F641614A31AE6B67A1B37F9A43E6576951888086D86AF"
+  },
+  {
+    "runtimePath": "assets/Image/Item/drink.webp",
+    "sourcePath": "assets/Image/Item/drink.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 430947,
+    "runtimeBytes": 273300,
+    "runtimeSha256": "B10D94ECCF2E1FEA50080F31B19845B733ADF0A898D711600AC3E9853A41932B"
+  },
+  {
+    "runtimePath": "assets/Image/Item/driver-cab-key.webp",
+    "sourcePath": "assets/Image/Item/driver-cab-key.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1762203,
+    "runtimeBytes": 657256,
+    "runtimeSha256": "63C71576D7816E8C99D50F0D8EE326504B76342F4DA2794BABB47DF5536C17E8"
+  },
+  {
+    "runtimePath": "assets/Image/Item/emergency-belt-cutter.webp",
+    "sourcePath": "assets/Image/Item/emergency-belt-cutter.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1150584,
+    "runtimeBytes": 713338,
+    "runtimeSha256": "EE38AC83048336394AEAD84190BE1A26ACDBE848C3D59164EB7AE99CF433DD61"
+  },
+  {
+    "runtimePath": "assets/Image/Item/flashlight.webp",
+    "sourcePath": "assets/Image/Item/flashlight.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 945676,
+    "runtimeBytes": 310864,
+    "runtimeSha256": "D6B02A5EBCE309BF51A47A5D58A209400C9CD3F1B0BBA060167E964EDA150A6A"
+  },
+  {
+    "runtimePath": "assets/Image/Item/newspaper.webp",
+    "sourcePath": "assets/Image/Item/newspaper.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 834183,
+    "runtimeBytes": 569666,
+    "runtimeSha256": "14F802FB21D5FE872CBD438A481A3CF097FEEBC8BF34C66F2D9A1FAE1EF35B5F"
+  },
+  {
+    "runtimePath": "assets/Image/Item/note.webp",
+    "sourcePath": "assets/Image/Item/note.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 3287,
+    "runtimeBytes": 1226,
+    "runtimeSha256": "5E110F0187DA6144B8D97D7E0CD7119DD992FC6549B58FC12AABDC9DC63F9514"
+  },
+  {
+    "runtimePath": "assets/Image/Item/phone.webp",
+    "sourcePath": "assets/Image/Item/phone.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1756,
+    "runtimeBytes": 522,
+    "runtimeSha256": "8F3F0A83410E40562560FC3302A19AEF982D6E0070A8B0E01ED752C0C39C23F8"
+  },
+  {
+    "runtimePath": "assets/Image/Item/pry-bar.webp",
+    "sourcePath": "assets/Image/Item/pry-bar.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 623503,
+    "runtimeBytes": 183408,
+    "runtimeSha256": "64FA0F18699EE60BBF96C712035606E2834168C9121F3596C85CDEAFA578A539"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/conductor-crazy.webp",
+    "sourcePath": "assets/Image/Portrait/conductor-crazy.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 38579,
+    "runtimeBytes": 23928,
+    "runtimeSha256": "68C17643B1C5F638A2FD4862A5CDEA55918754A8B9A61CEB5BAB61D838FED2D5"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/conductor-crying.webp",
+    "sourcePath": "assets/Image/Portrait/conductor-crying.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 36269,
+    "runtimeBytes": 20546,
+    "runtimeSha256": "0662C9A0FD7D256997B832A342BB14B181E2F5D9EA55F288CAC997D6F2D20D3F"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/conductor.webp",
+    "sourcePath": "assets/Image/Portrait/conductor.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 36303,
+    "runtimeBytes": 20182,
+    "runtimeSha256": "EF5C4F8C8F3B158CC62D87E0C590E83E19107797A41403B4B199C116A35A1675"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/doctor.webp",
+    "sourcePath": "assets/Image/Portrait/doctor.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 901962,
+    "runtimeBytes": 50692,
+    "runtimeSha256": "CEF54C8A62DE972F4823504BA503B72CCE853E2FA19B0BEAD58EB29C5615F0AF"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/monster-pixel.webp",
+    "sourcePath": "assets/Image/Portrait/monster-pixel.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 7617,
+    "runtimeBytes": 1676,
+    "runtimeSha256": "431440988F52AEE0A98EDA8C98A2475068F6E9AED15FF83A1E2FE5510ECEF5CA"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/monster.webp",
+    "sourcePath": "assets/Image/Portrait/monster.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 39573,
+    "runtimeBytes": 25454,
+    "runtimeSha256": "53B19C8C45FF2922B0DA42F2EECF5F1DE2E86D49206F783FEE9AD30E6E2B3958"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/player-crazy.webp",
+    "sourcePath": "assets/Image/Portrait/player-crazy.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 41515,
+    "runtimeBytes": 26420,
+    "runtimeSha256": "3B5371E5EA82D9A3EADD26832EB940B0E5DAD8154BEC2B0D3033E20D1FA0414B"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/player-happy.webp",
+    "sourcePath": "assets/Image/Portrait/player-happy.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 33210,
+    "runtimeBytes": 17586,
+    "runtimeSha256": "B099EEBCA0C744E502A72BA0641D80A5552A6488475340EF73C2AF0058A00F0F"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/player-scared.webp",
+    "sourcePath": "assets/Image/Portrait/player-scared.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 33416,
+    "runtimeBytes": 18000,
+    "runtimeSha256": "D05A841504293B317E5DEDA2951262B3B91A8C82736F6F600E6FC8FBC2936201"
+  },
+  {
+    "runtimePath": "assets/Image/Portrait/player.webp",
+    "sourcePath": "assets/Image/Portrait/player.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 33290,
+    "runtimeBytes": 17592,
+    "runtimeSha256": "9EE01BB30AE6928A667196F04E93FC3A9FB50353050D1E9D91D36E6BF905A9B1"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/card-battle.webp",
+    "sourcePath": "assets/Image/Scene/Background/card-battle.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1048125,
+    "runtimeBytes": 159734,
+    "runtimeSha256": "6F0834A35E937C3B6FD67B6FBA88EC6071BBC4B87923401DF311FCC473189C62"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-02.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 81131,
+    "runtimeBytes": 37152,
+    "runtimeSha256": "B85B1EC50A8574B0DF57AE8350DDB9CE975875BEC19C7A75C8E278F7972F15DF"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-03-full.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-03-full.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 98145,
+    "runtimeBytes": 42094,
+    "runtimeSha256": "A1F233298C60F227C9190CC632684365C329ED730C1710BBBE4D35E2117A7125"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-03-halffull.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-03-halffull.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 87204,
+    "runtimeBytes": 37508,
+    "runtimeSha256": "6F89D52F9A75D910484F3A2B14B5E8E8078E02841E544BD131940971B04FFEC2"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-03-onlybag.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 62279,
+    "runtimeBytes": 27096,
+    "runtimeSha256": "A5292887A75E5ACCC55E2BDB9767634DEBF535A45D111D8C630FE6250408F59C"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-03.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 58229,
+    "runtimeBytes": 25040,
+    "runtimeSha256": "9591F1C1A6404AF4C5D7915A4A092E326CB6C26B541B21DD77A30EC6B206F8B5"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-04.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 78663,
+    "runtimeBytes": 36020,
+    "runtimeSha256": "545AEFAC7D1CA1623F794DDC48023B2C9C422FE1526F866DDD3E19640B789914"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-05.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-05.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 55632,
+    "runtimeBytes": 23684,
+    "runtimeSha256": "202D4BF62622F359260ED162D9597C44C656195F9C62402A869E6419ED8382B2"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-06-eaten.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-06-eaten.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 338999,
+    "runtimeBytes": 86176,
+    "runtimeSha256": "E60BE36642BE4DEA98578BB01BAA2D182CE4469F8E841FB0E9F872358201DAAA"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-06-note-removed.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-06-note-removed.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 535033,
+    "runtimeBytes": 35878,
+    "runtimeSha256": "B01789A21FE81385610B32590F93E5A8153F40F4FF21E647EBD7F52A5951418D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-06-people.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-06-people.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 5956664,
+    "runtimeBytes": 4415138,
+    "runtimeSha256": "FE58772518F9D115CAA74595F1DC8A4C4BE9F44B495ECDE534585E63DFBFADC3"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-06.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-06.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 78295,
+    "runtimeBytes": 35982,
+    "runtimeSha256": "636659BE4080FB3307B519EB8D98B6C2B2AB837C0CC84C52E02D95C87CA26F9D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-07.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-07.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 327184,
+    "runtimeBytes": 89974,
+    "runtimeSha256": "381F9D4AB5C7729F21DCF3C76F3541C9B39AE3A21BA29A0245FDB83AC1508DBB"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-fake-01-crew.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1098991,
+    "runtimeBytes": 502488,
+    "runtimeSha256": "9D519876D7176AD45797FC87268290BAA9966E0BED19D8EA777126F45FD63E2F"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-fake-01.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-fake-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1036511,
+    "runtimeBytes": 468910,
+    "runtimeSha256": "5313D146D875C68B8656BB2DE35C7BEC1E9F48C79DB02D143D943BB782F027C1"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-fake-02.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-fake-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 334817,
+    "runtimeBytes": 116612,
+    "runtimeSha256": "C9EE97C9DFC5ED3278C300099D2E3EDBCA6E4840403AB0B08996A3BC8A0786A8"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-fake-04-fog.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 169606,
+    "runtimeBytes": 115072,
+    "runtimeSha256": "AD9702C40CEF8BC52D3A6DF90532284A47DB8F6A33E83B22C146701F355FA91F"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-fake-04.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-fake-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 177418,
+    "runtimeBytes": 122302,
+    "runtimeSha256": "858FB9229696F1E7386863AE36943BF79327F1FC0F7497F46EBB129AAEE31A73"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-inner-01.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-inner-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 542979,
+    "runtimeBytes": 350004,
+    "runtimeSha256": "E1BE3D5A00FDC86DF7EFE3B21420E9DF4714255C3FFE4F73970B3DA4EE74FD33"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/carriage-inner-02.webp",
+    "sourcePath": "assets/Image/Scene/Background/carriage-inner-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 182372,
+    "runtimeBytes": 123426,
+    "runtimeSha256": "BE69CBBC93860412F9CB84092307501EF3555E1E4580B9F1933C3AF85544F796"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/ConductorTug/dashboard.webp",
+    "sourcePath": "assets/Image/Scene/Background/ConductorTug/dashboard.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 806181,
+    "runtimeBytes": 428936,
+    "runtimeSha256": "A8ED47893BCBA2F07311F5BE4D6EA4D66B5E83D6D44C671F98F47B0378C4C6B0"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/ConductorTug/fishing-rod.webp",
+    "sourcePath": "assets/Image/Scene/Background/ConductorTug/fishing-rod.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 557507,
+    "runtimeBytes": 280922,
+    "runtimeSha256": "22401169DCFCF7A90145DC53BF7F2465FB543199CDCCAE9E1413381105C5AFF5"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/ConductorTug/player.webp",
+    "sourcePath": "assets/Image/Scene/Background/ConductorTug/player.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 391187,
+    "runtimeBytes": 240780,
+    "runtimeSha256": "72715A5DDD16C29B3BA061B55B3D1130C30B4F28FC379FCB06050E8EBBD8B3E3"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/ConductorTug/pointer.webp",
+    "sourcePath": "assets/Image/Scene/Background/ConductorTug/pointer.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 52474,
+    "runtimeBytes": 24780,
+    "runtimeSha256": "3422465B25E3944250D460524BC3521E3B38EBE1579B2C2691B2EFD51BF01A49"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/crew-negotiation.webp",
+    "sourcePath": "assets/Image/Scene/Background/crew-negotiation.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1631552,
+    "runtimeBytes": 625708,
+    "runtimeSha256": "25E736C26BF6F6DD7C7919A5AA658B19A52F774C334DFF4C4807E615585BC61B"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/end-3-state1.webp",
+    "sourcePath": "assets/Image/Scene/Background/end-3-state1.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 304286,
+    "runtimeBytes": 227864,
+    "runtimeSha256": "91E0B39AF19F087C0A60929DF152534841106F51D80B9A20E5ADBF275BCF289A"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/end-3-state2.webp",
+    "sourcePath": "assets/Image/Scene/Background/end-3-state2.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 357143,
+    "runtimeBytes": 274482,
+    "runtimeSha256": "D3F90CD6FF7D94CAF429F2595ED6062B002D554FBF47E33B11F43BF82AAC8BBC"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/end-3-state3.webp",
+    "sourcePath": "assets/Image/Scene/Background/end-3-state3.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 327619,
+    "runtimeBytes": 239066,
+    "runtimeSha256": "76B79B224E46A150ACAC0FC8FB138CA53DB40D311169AA48AF58FBA32FD46430"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/flower-sea-inside.webp",
+    "sourcePath": "assets/Image/Scene/Background/flower-sea-inside.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 343431,
+    "runtimeBytes": 277022,
+    "runtimeSha256": "5EA154A3AE1608A8623B4EF23ED53DBF6A341150626025AA390F65E1AB87C11D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/flower-sea.webp",
+    "sourcePath": "assets/Image/Scene/Background/flower-sea.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 565563,
+    "runtimeBytes": 469424,
+    "runtimeSha256": "3BB5AC70A329EC7AB4929F24177316014EE998F1FA8E9AD4701A8FBB6D172D09"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/front-carriage.webp",
+    "sourcePath": "assets/Image/Scene/Background/front-carriage.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 61828,
+    "runtimeBytes": 26130,
+    "runtimeSha256": "283A5234AF6C1FDB2C5512DA1BD235634358F7087B73E97D25F2143937413B39"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/inner-refusal-crew-01.webp",
+    "sourcePath": "assets/Image/Scene/Background/inner-refusal-crew-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 414298,
+    "runtimeBytes": 155980,
+    "runtimeSha256": "7A062BE29CF4DFEFF35448B9CEFEC0C8AF8A0FB75662DF3600F5752B284BB755"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/inner-refusal-crew-02.webp",
+    "sourcePath": "assets/Image/Scene/Background/inner-refusal-crew-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1790615,
+    "runtimeBytes": 861940,
+    "runtimeSha256": "D41E75CD8D1F5B327FC516440CF09A769F6E709DB807D6B20DC35415E9AA5E4D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/move-blur.webp",
+    "sourcePath": "assets/Image/Scene/Background/move-blur.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2192355,
+    "runtimeBytes": 894738,
+    "runtimeSha256": "06A1BE1B46655FDC5C87FA963B24D4AB4BA613E3D647BF5549DF0FFCC950009B"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/move.webp",
+    "sourcePath": "assets/Image/Scene/Background/move.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2828113,
+    "runtimeBytes": 1536866,
+    "runtimeSha256": "AB782FDA2EF287D6C9D57AF6D87F9BDAB1EF70D95A83E33ACE6ED40CA3B8F281"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/op-01.webp",
+    "sourcePath": "assets/Image/Scene/Background/op-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2592277,
+    "runtimeBytes": 1584278,
+    "runtimeSha256": "D212D0CC6C942DC98A6167D847D18DB812BA80EB25968C05981EF3312B2C705F"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/op-02.webp",
+    "sourcePath": "assets/Image/Scene/Background/op-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4069677,
+    "runtimeBytes": 2886112,
+    "runtimeSha256": "A68EC869378714A6E222F081CFAD1B7AF853B4211F592C1AF517C1296BE9903E"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/op-03.webp",
+    "sourcePath": "assets/Image/Scene/Background/op-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2072077,
+    "runtimeBytes": 1236632,
+    "runtimeSha256": "3B6ABC1503752B7A1F88F51C1355CE30828B477AB30DA6170AFCE28EAC3BFEE4"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/op-04.webp",
+    "sourcePath": "assets/Image/Scene/Background/op-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 3528488,
+    "runtimeBytes": 2373112,
+    "runtimeSha256": "0D4EF57B96875C05F778B9C212BD8E61A1A480E102F1A61B47609FB6BEC55392"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/op-05.webp",
+    "sourcePath": "assets/Image/Scene/Background/op-05.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1916389,
+    "runtimeBytes": 989280,
+    "runtimeSha256": "9578974228E72C9C78D7FB49C336FD9120E5A556659A36110D3582D3703DAA9E"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/san-zero-broadcast.webp",
+    "sourcePath": "assets/Image/Scene/Background/san-zero-broadcast.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 87222,
+    "runtimeBytes": 37420,
+    "runtimeSha256": "A3D6207F01EFA74453084CB0E73D0154330E4F20B98BA6B047A88FB2746F3A05"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/san-zero-closeup-smile.webp",
+    "sourcePath": "assets/Image/Scene/Background/san-zero-closeup-smile.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 8508401,
+    "runtimeBytes": 4813540,
+    "runtimeSha256": "0590915266B00CFA842F0E7AE14CABB04FC423C27D4D6ABE77E166A33292AA88"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/san-zero-closeup.webp",
+    "sourcePath": "assets/Image/Scene/Background/san-zero-closeup.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 8636724,
+    "runtimeBytes": 5601464,
+    "runtimeSha256": "BE5745436BEAED42FF495D93EF5CF5F27EB5250C6EA6C8ED3E4684ADC051CD82"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/san-zero-hospital.webp",
+    "sourcePath": "assets/Image/Scene/Background/san-zero-hospital.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 3451077,
+    "runtimeBytes": 2540826,
+    "runtimeSha256": "A5C2C97312CBE33E1FD28FDEBE5F0FE01824009C76E96B9FA108540CDD00D217"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/sunny-platform.webp",
+    "sourcePath": "assets/Image/Scene/Background/sunny-platform.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4020728,
+    "runtimeBytes": 2195966,
+    "runtimeSha256": "7825DBF51A5D5FEBF0853F3153B81EE3E8AC3E770513E4B912DFB4503B903F01"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/true-end-platform.webp",
+    "sourcePath": "assets/Image/Scene/Background/true-end-platform.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2254237,
+    "runtimeBytes": 1106314,
+    "runtimeSha256": "DFC7DB8EA1FE517222A40F7C48F5EF2A16C406602BAB585B585CAE1B97A12644"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/Background/welcome.webp",
+    "sourcePath": "assets/Image/Scene/Background/welcome.PNG",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2888166,
+    "runtimeBytes": 1403836,
+    "runtimeSha256": "ABBAABB2483E0D65A0329086C12EF1A8CFE3ACC49D97256D4F86283B4A42F16F"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/bag-05-a.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/bag-05-a.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 24007,
+    "runtimeBytes": 2838,
+    "runtimeSha256": "5889BDC10E815600CF827EBBB67866C5057EAB4E02C9F96C54BD363D8593F7F4"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/bag-05-b.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/bag-05-b.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 23168,
+    "runtimeBytes": 2436,
+    "runtimeSha256": "C5F66F09193BC529757AE13D47817E71811F37374BDD9721AA458D67345D8963"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/black-bag-03.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/black-bag-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 32094,
+    "runtimeBytes": 9732,
+    "runtimeSha256": "4DBF3F54157E5C5C85352DB42AF72158E89BE566362DD196351EBB745BD189BE"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1643693,
+    "runtimeBytes": 1386378,
+    "runtimeSha256": "555B9EA07B0453B882BDC99DC125A4CBEFD692D2DDF79769540E071FB4887159"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 25797,
+    "runtimeBytes": 3534,
+    "runtimeSha256": "9EC01FFCDC0733B4E622C987B3CC4ADC9EE035D60018DF1FEFD954C7BE773E1D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-04-conductor.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 24784,
+    "runtimeBytes": 3236,
+    "runtimeSha256": "C9F6084ADFC5414C826018AF3420EBF69959B191F5AC284FF8D3BDC2316DDB30"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-04-employeelocker.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-04-employeelocker.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 25555,
+    "runtimeBytes": 3632,
+    "runtimeSha256": "507316B66A64B8A84733358A9632C123EB46C143D792767043AB3CB3493B4C61"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 24553,
+    "runtimeBytes": 3098,
+    "runtimeSha256": "6FC3D180DD015200CC58CCDDE8A29D04DFB3231375E858D7817447B9FD048CEB"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 26597,
+    "runtimeBytes": 4296,
+    "runtimeSha256": "8E7FB715CB82A60FE1AA14AADAE8B9D28B7C991C8A9F05538B065FCF3D5C4B07"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-06-map.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-06-map.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 22802,
+    "runtimeBytes": 2312,
+    "runtimeSha256": "9E5AB4D5072364B198A91BFA38A9D7404EEFDE3E1D8444443B3298E616936E1B"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/carriage-06-note.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/carriage-06-note.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 22313,
+    "runtimeBytes": 1968,
+    "runtimeSha256": "5C257D3BE78C461190977D55F770189843D430E335AC864FCCDBC58529D34CD5"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/clicker-02.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/clicker-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 30802,
+    "runtimeBytes": 5280,
+    "runtimeSha256": "D58CC9AAF9559D8E3A67DD3C76B3C742D363836B60E4EE9D46BD8F289ACD4232"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/control-lever.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/control-lever.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 23484,
+    "runtimeBytes": 2492,
+    "runtimeSha256": "767740A842438AF99F27C305AAFBBAD4D4770FA818713C6E7AF5C6352708D722"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/corpse-07.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/corpse-07.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 24191,
+    "runtimeBytes": 3236,
+    "runtimeSha256": "0295E0E7FD993F21FA25902A65A3785FE4E9BBCEF8BC4B29C478851FD8535B6A"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/inner-02-bottle.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/inner-02-bottle.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 24231,
+    "runtimeBytes": 2976,
+    "runtimeSha256": "DDF72816D8E39BCABEFFF3E9D1F697DB5D830838618526DEDFABDCBA05F5F6B0"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/inner-02-window.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/inner-02-window.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 26421,
+    "runtimeBytes": 3592,
+    "runtimeSha256": "5B1BF7B8A339A81F829AC7F9B7D1C7B8C2B3BEBAFBC620B8C5212F046FD192DC"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/inner-03-flower-window.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/inner-03-flower-window.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 46075,
+    "runtimeBytes": 12500,
+    "runtimeSha256": "35ED2DB07FC0FD731BC6700F276A76041234C5BDDA90668F5A8018D695C93B15"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/inner-03-fog-window.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/inner-03-fog-window.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 43755,
+    "runtimeBytes": 10186,
+    "runtimeSha256": "6C1BDE594A1D938A2A314E273ACAA5CDE1F9E17EFD8A8EBE0E5F81F1207521FC"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 91331,
+    "runtimeBytes": 6294,
+    "runtimeSha256": "61E83FB6E4BE02C905221BBBC1518E4301C5ED287745C2F4E6C573DA92554971"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/newspaper-05.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/newspaper-05.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 25678,
+    "runtimeBytes": 3354,
+    "runtimeSha256": "7AA7D8CCD2553D6352384CE897179B4F7047D35DB89C4583D77B71D03800B0B4"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/phone.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/phone.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4436,
+    "runtimeBytes": 1712,
+    "runtimeSha256": "0C22EBF75C5C6B704127A1E6AEF8AEA2563FCF683A9262FFD229BC9490CF142D"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/radio-07.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/radio-07.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 29648,
+    "runtimeBytes": 7320,
+    "runtimeSha256": "3B4CB5E9DEE33FD7302FB415F45E4686DD69DD5793F0EF8AD91FE95EA17FF517"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/trash-05-a.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/trash-05-a.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 23752,
+    "runtimeBytes": 2712,
+    "runtimeSha256": "DCDFDA06B1C21F746D4B4C12C392662A5EC4E04BE606A0E12A8F860D12262E8A"
+  },
+  {
+    "runtimePath": "assets/Image/Scene/StillLife/trash-05-b.webp",
+    "sourcePath": "assets/Image/Scene/StillLife/trash-05-b.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 23891,
+    "runtimeBytes": 2732,
+    "runtimeSha256": "1383B47099783BD2EF2AC6AF78AB85C9618B0519AE7CD87F406877251A24D458"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/attribute-minus.webp",
+    "sourcePath": "assets/Image/Ui/attribute-minus.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1293,
+    "runtimeBytes": 262,
+    "runtimeSha256": "9496BDD8FDC44E0CF53BA9E00EBFC6BAC344A33151B2144EBE839048284AD851"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/attribute-plus.webp",
+    "sourcePath": "assets/Image/Ui/attribute-plus.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1369,
+    "runtimeBytes": 274,
+    "runtimeSha256": "862B4A09C2AC7EC06094AB1900562B79912E47868591F103738A6C2BDCF40291"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/backpack-frame.webp",
+    "sourcePath": "assets/Image/Ui/backpack-frame.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2607,
+    "runtimeBytes": 296,
+    "runtimeSha256": "F993CBAAB84B49ED458A0C97F29B539EBF74782EC37CC2F82824EEB5286D2D81"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/CardBattle/attack.webp",
+    "sourcePath": "assets/Image/Ui/CardBattle/attack.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4180407,
+    "runtimeBytes": 3938014,
+    "runtimeSha256": "392AF540D3710330B0DE16551A8C19B745A802ECC139A3EF9389E9777798CADB"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/CardBattle/card-base.webp",
+    "sourcePath": "assets/Image/Ui/CardBattle/card-base.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2490321,
+    "runtimeBytes": 1480066,
+    "runtimeSha256": "82263A4B2A9FB4A3770D856771100BD839F1FDD6AFC044F8481FCFD54B60431A"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/CardBattle/hp-bar.webp",
+    "sourcePath": "assets/Image/Ui/CardBattle/hp-bar.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 31450,
+    "runtimeBytes": 19638,
+    "runtimeSha256": "EC5B5631C75B18646E2051F5C0F794EC3D5DE9130C22AD4595BCDC718A2AB685"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/ConductorTug/target.webp",
+    "sourcePath": "assets/Image/Ui/ConductorTug/target.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 94041,
+    "runtimeBytes": 36930,
+    "runtimeSha256": "2AA8299EF8A28F827F247AAAF7A15F9F8A2D1A46FC22162C5A873FA0BFEDE615"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/ConductorTug/track.webp",
+    "sourcePath": "assets/Image/Ui/ConductorTug/track.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1081787,
+    "runtimeBytes": 488492,
+    "runtimeSha256": "EB77ECF4B017281398287885B8A11C25AD71FB98B8B29993EF6147ACCF921A54"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dialog-box.webp",
+    "sourcePath": "assets/Image/Ui/dialog-box.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 91649,
+    "runtimeBytes": 35582,
+    "runtimeSha256": "203BB58E5F7FAD708B8856F260DEEC8D7612CC9E51EB47FCC42FBD45069A2D3E"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-00.webp",
+    "sourcePath": "assets/Image/Ui/dice-00.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 15546,
+    "runtimeBytes": 9442,
+    "runtimeSha256": "2793FEF0F556563DE03E50F4D9979C4C70DAC5BF3A5601CF5E5EDAC14A5463CF"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-01.webp",
+    "sourcePath": "assets/Image/Ui/dice-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 545,
+    "runtimeBytes": 118,
+    "runtimeSha256": "CAE4CD063287C202F6837978F3C9C6C4E67F076D8F0ECE11054C4F1B88BA3C57"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-02.webp",
+    "sourcePath": "assets/Image/Ui/dice-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 595,
+    "runtimeBytes": 154,
+    "runtimeSha256": "7FE5E9BAA6D0D20932FE88B6736F9AF376C80B7B91A0D2C17D7C6CB6A8566475"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-03.webp",
+    "sourcePath": "assets/Image/Ui/dice-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 651,
+    "runtimeBytes": 186,
+    "runtimeSha256": "5932D9445A9B1439A8AE48993E0268BA8777F8C673978C312C3ECD3F78E39B76"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-04.webp",
+    "sourcePath": "assets/Image/Ui/dice-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 629,
+    "runtimeBytes": 150,
+    "runtimeSha256": "76343855A83560208ED43195F200F9F7A4CAFD9F901AC7C355866DFFE933A171"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-05.webp",
+    "sourcePath": "assets/Image/Ui/dice-05.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 700,
+    "runtimeBytes": 186,
+    "runtimeSha256": "67868FC197F18424F57AE688712C467869DF5A92649B4EB9917ABC3484A8CF8E"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/dice-06.webp",
+    "sourcePath": "assets/Image/Ui/dice-06.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 695,
+    "runtimeBytes": 146,
+    "runtimeSha256": "1A052F99CD5596F770F4DE36FE32D07DFA04CDEA24E747A68DC1D05BE1E0BF79"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/label-back.webp",
+    "sourcePath": "assets/Image/Ui/label-back.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 7500,
+    "runtimeBytes": 2572,
+    "runtimeSha256": "3D0A113AC75C24EE5DA0D747528FCF9B68769F805CC699459A81019FC9340670"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/label-front.webp",
+    "sourcePath": "assets/Image/Ui/label-front.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 7498,
+    "runtimeBytes": 2640,
+    "runtimeSha256": "CC6E2B79D5EA2EDB03135EE1D117F604BF5B06F485562E97FC97CAE34EBE89A5"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/map-failure.webp",
+    "sourcePath": "assets/Image/Ui/map-failure.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 17943,
+    "runtimeBytes": 9022,
+    "runtimeSha256": "25816DC490F9573BFA7560B79C058B2F0DA2345F8B34F5A90E93496BB203CBEB"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/map-success.webp",
+    "sourcePath": "assets/Image/Ui/map-success.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 23115,
+    "runtimeBytes": 14814,
+    "runtimeSha256": "26FC27626EE7484C305FFD7D3B7849B758A1FF647D70A8E1BC40951CA102F6A7"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-02.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 219198,
+    "runtimeBytes": 15714,
+    "runtimeSha256": "59BB5154F3D0659137C649D02DCA1578324BD61C94DF0E8224D37D4A9104500E"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-03.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 163382,
+    "runtimeBytes": 36942,
+    "runtimeSha256": "4ED7FCCED9F97E82A7634B16A87CA2044956B04525B704A34D3719E9502B144D"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-04.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 201574,
+    "runtimeBytes": 14416,
+    "runtimeSha256": "7CEE629E350B5660AADBCA83C93023FE80B03DCEE42634187159A92BA5B6CE3D"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-05.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-05.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 185688,
+    "runtimeBytes": 8874,
+    "runtimeSha256": "DB64697457F6055526B0C61F8A684C39745E08C08020D5E67E62BDD9DDB0BEA3"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-06.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-06.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 202068,
+    "runtimeBytes": 14456,
+    "runtimeSha256": "EEF1F1EBD29A3DF48A33F16171728C35EA55AC293980617F72C9D9DBA43AB4FF"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-07.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-07.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 186042,
+    "runtimeBytes": 77020,
+    "runtimeSha256": "36F5C90C982D28BE15856CA34EE3565D12E707F93484124E86D2F9BD0F4ED3D5"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-01.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 81712,
+    "runtimeBytes": 55282,
+    "runtimeSha256": "61E1B04E43010AA09ED7973E1EF38FCD061549B5BB846D82A9E1421CB09F7C8C"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-02.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 79669,
+    "runtimeBytes": 54272,
+    "runtimeSha256": "48D9F19FA171231E7FE82C3BABF165B8BFE9E249472B51D3CA3EECF5629051AD"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-03.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-03.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 211868,
+    "runtimeBytes": 165342,
+    "runtimeSha256": "4D1E901CA3F1A613B7FCDB0395CCA95AB38C599E12D92B90C0A304FE09618EBA"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-04.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-fake-04.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 413222,
+    "runtimeBytes": 44748,
+    "runtimeSha256": "998AA8794C7AA423036CA833054D850ADD0899FB53A7B1BCCCF604C698D77AB6"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-inner-01.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-inner-01.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 469085,
+    "runtimeBytes": 129390,
+    "runtimeSha256": "E4C005D55F8DB2DFEE4D7F62FCD739A8A10F7D10B7DA0ABAC464614E9CB472AB"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-carriage-inner-02.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-carriage-inner-02.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 279310,
+    "runtimeBytes": 37776,
+    "runtimeSha256": "073C1D4BDE4989C6B746A863ECF662DEFEEEA29AEF74D82AC88F45E90623848E"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-flower-sea-inside.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-flower-sea-inside.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 414498,
+    "runtimeBytes": 212466,
+    "runtimeSha256": "0489485AFE0EA625253578A94DBB16114EEFE35A1AE28D2C98A9387F73BA8CC1"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-flower-sea.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-flower-sea.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 549878,
+    "runtimeBytes": 400634,
+    "runtimeSha256": "B8C78FD9067B5CE7ECE0C1057C0F48AA401E68A7A1B84F7A955EE49214E296D4"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/Save/save-silhouette-front-carriage.webp",
+    "sourcePath": "assets/Image/Ui/Save/save-silhouette-front-carriage.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 213103,
+    "runtimeBytes": 15708,
+    "runtimeSha256": "A5F44473C2A7E35A8F59F676BDFE151D071DB7C7C5D8727B27C01FA216A2A459"
+  },
+  {
+    "runtimePath": "assets/Image/Ui/status-bar.webp",
+    "sourcePath": "assets/Image/Ui/status-bar.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 42893,
+    "runtimeBytes": 34562,
+    "runtimeSha256": "6212E39262D821D271A7F357B7AE8A6AD19E1BE527C6F362F0250C3C863F8CA3"
+  },
+  {
+    "runtimePath": "assets/ui/radio-tuning/dashboard.webp",
+    "sourcePath": "assets/ui/radio-tuning/dashboard.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1019579,
+    "runtimeBytes": 568768,
+    "runtimeSha256": "3BF7FDD4089EC01151ED4EBF8F350944086DB66C6722BD8AD69324989465F68D"
+  },
+  {
+    "runtimePath": "assets/ui/radio-tuning/radio-base.webp",
+    "sourcePath": "assets/ui/radio-tuning/radio-base.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1161135,
+    "runtimeBytes": 789614,
+    "runtimeSha256": "E3C4EE997B3B5AA2962A2BDFB023523ECD9FE0B79A14AE7BB8D9A96E1E132803"
+  },
+  {
+    "runtimePath": "assets/ui/radio-tuning/radio.webp",
+    "sourcePath": "assets/ui/radio-tuning/radio.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 2298373,
+    "runtimeBytes": 1424576,
+    "runtimeSha256": "C01666E0E4FC477E3882851AC7BCD83124891EA30B1896C76FF7F6F3B4CAE665"
+  },
+  {
+    "runtimePath": "GroupIntro/background.webp",
+    "sourcePath": "GroupIntro/background.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 14123,
+    "runtimeBytes": 198,
+    "runtimeSha256": "4D6E9A86C354E8545A6064F8D7ECF1A6C14FBB1563C1364D6E2D2C1E0927BE33"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/1_1.webp",
+    "sourcePath": "GroupIntro/dxh/assets/1_1.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 303674,
+    "runtimeBytes": 180798,
+    "runtimeSha256": "4BBAD7A7921185FF3FD5515F6A858589A731BAFDBD1C4161C82C1A923299DC88"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/20260427_fin.webp",
+    "sourcePath": "GroupIntro/dxh/assets/20260427_fin.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1072369,
+    "runtimeBytes": 826950,
+    "runtimeSha256": "36397E8CFB8CDD0874766478AFFEFD69FFBC7C7239DC5130FE9639B1349B40E2"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/20260615.webp",
+    "sourcePath": "GroupIntro/dxh/assets/20260615.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4386793,
+    "runtimeBytes": 2766866,
+    "runtimeSha256": "D4B0674659434912C5DCB1DFDEF52910F8D5E4B131FCA7B6A50668024B605BAC"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/20260717.webp",
+    "sourcePath": "GroupIntro/dxh/assets/20260717.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 778511,
+    "runtimeBytes": 356716,
+    "runtimeSha256": "FDA4A627EBCD41865CB6239917975C45321250C3408589E4D5921EE3D867C3D6"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/20260722.webp",
+    "sourcePath": "GroupIntro/dxh/assets/20260722.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 12821271,
+    "runtimeBytes": 9825236,
+    "runtimeSha256": "AD288108D5A284C2B36DF503A8D8E97CE88EF3472FAF3D4E6364D929D632A95B"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/bottom.webp",
+    "sourcePath": "GroupIntro/dxh/assets/bottom.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1885901,
+    "runtimeBytes": 1350114,
+    "runtimeSha256": "7C6A16D1F8B3759058853E7EA4D3D014A5928764982468917656B649B82B2C81"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/profile.webp",
+    "sourcePath": "GroupIntro/dxh/assets/profile.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 14859,
+    "runtimeBytes": 8476,
+    "runtimeSha256": "1372E44E0F33F549F2B4D690E2C80A7A1FC0DB1C62F08263F64533CDC29B6F3F"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/screen2_1.webp",
+    "sourcePath": "GroupIntro/dxh/assets/screen2_1.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 444669,
+    "runtimeBytes": 210962,
+    "runtimeSha256": "B43DFF18C10A276955BCAF06F4D5EB5A971D24A6A62813A41A56B30C6A350128"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/screen2_2.webp",
+    "sourcePath": "GroupIntro/dxh/assets/screen2_2.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 203131,
+    "runtimeBytes": 35244,
+    "runtimeSha256": "BEAAF2CEB60932A71C9AB9EB0D8949DCC0B08DE8AFE714311F6B30851D87F746"
+  },
+  {
+    "runtimePath": "GroupIntro/dxh/assets/screen2_3.webp",
+    "sourcePath": "GroupIntro/dxh/assets/screen2_3.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 1072369,
+    "runtimeBytes": 826950,
+    "runtimeSha256": "36397E8CFB8CDD0874766478AFFEFD69FFBC7C7239DC5130FE9639B1349B40E2"
+  },
+  {
+    "runtimePath": "GroupIntro/zxy/image/p1.webp",
+    "sourcePath": "GroupIntro/zxy/image/p1.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 4630568,
+    "runtimeBytes": 322842,
+    "runtimeSha256": "497052847B51BC2E3D1182FF306658E07EE106477AC171932802ED75FD4FA939"
+  },
+  {
+    "runtimePath": "GroupIntro/zxy/image/p2.webp",
+    "sourcePath": "GroupIntro/zxy/image/p2.png",
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "sourceBytes": 531641,
+    "runtimeBytes": 333986,
+    "runtimeSha256": "6FBE52D2B44FB9F0D60D1BD6438339D038DE0512A343F4F6EA7CFFF5A40609A3"
+  }
+]

@@ -48,7 +48,7 @@
       <div class="mg-tug-board">
         <div class="mg-tug-fighter mg-tug-player">
           <div class="mg-tug-avatar-frame">
-            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/player.png")}" alt="" draggable="false">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/player.webp")}" alt="" draggable="false">
           </div>
           <h2>你</h2>
           <p>我方<br>把绿色区推向控制杆</p>
@@ -57,10 +57,10 @@
         <div class="mg-tug-center">
           <div class="mg-tug-track-wrap">
             <div class="mg-tug-track" id="mgTugTrack" aria-label="垂直抓握区">
-              <img class="mg-tug-track-art" src="${assetPath("Image/Ui/ConductorTug/track.png")}" alt="" draggable="false">
+              <img class="mg-tug-track-art" src="${assetPath("Image/Ui/ConductorTug/track.webp")}" alt="" draggable="false">
               <div class="mg-tug-track-line"></div>
               <div class="mg-tug-target" id="mgTugTarget" aria-label="红色控制杆">
-                <img class="mg-tug-target-art" src="${assetPath("Image/Ui/ConductorTug/target.png")}" alt="控制杆" draggable="false">
+                <img class="mg-tug-target-art" src="${assetPath("Image/Ui/ConductorTug/target.webp")}" alt="控制杆" draggable="false">
               </div>
               <div class="mg-tug-zone" id="mgTugZone" aria-label="绿色抓握区"></div>
             </div>
@@ -73,9 +73,9 @@
           <div class="mg-tug-gauge-wrap">
             <div class="mg-tug-gauge-labels" aria-hidden="true"><span>我方</span><span>列车员</span></div>
             <div class="mg-tug-gauge" id="mgTugGauge" role="img" aria-label="控制权倾向仪表盘">
-              <img class="mg-tug-dashboard-art" src="${assetPath("Image/Scene/Background/ConductorTug/dashboard.png")}" alt="仪表盘" draggable="false">
+              <img class="mg-tug-dashboard-art" src="${assetPath("Image/Scene/Background/ConductorTug/dashboard.webp")}" alt="仪表盘" draggable="false">
               <span class="mg-tug-pointer" id="mgTugPointer" aria-hidden="true">
-                <img class="mg-tug-pointer-art" src="${assetPath("Image/Scene/Background/ConductorTug/pointer.png")}" alt="" draggable="false">
+                <img class="mg-tug-pointer-art" src="${assetPath("Image/Scene/Background/ConductorTug/pointer.webp")}" alt="" draggable="false">
               </span>
             </div>
             <strong class="mg-tug-tilt-text" id="mgTugTiltText">倾向居中</strong>
@@ -84,7 +84,7 @@
 
         <div class="mg-tug-fighter mg-tug-conductor">
           <div class="mg-tug-avatar-frame">
-            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/conductor.png")}" alt="" draggable="false">
+            <img class="mg-tug-avatar-art" src="${assetPath("Image/Portrait/conductor.webp")}" alt="" draggable="false">
           </div>
           <h2>列车员</h2>
           <p>对方<br>别让他夺走控制杆</p>

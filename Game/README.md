@@ -255,7 +255,7 @@ Game/
 ├─ GroupIntro/
 │  ├─ back-button.css
 │  ├─ back-button.js
-│  ├─ background.png
+│  ├─ background.webp
 │  ├─ cr/
 │  │  ├─ images/
 │  │  │  └─ avatar.jpg
@@ -266,17 +266,17 @@ Game/
 │  │  └─ index.html
 │  ├─ dxh/
 │  │  ├─ assets/
-│  │  │  ├─ 1_1.png
-│  │  │  ├─ 20260427_fin.png
-│  │  │  ├─ 20260615.png
-│  │  │  ├─ 20260717.png
-│  │  │  ├─ 20260722.png
-│  │  │  ├─ bottom.png
-│  │  │  ├─ profile.png
+│  │  │  ├─ 1_1.webp
+│  │  │  ├─ 20260427_fin.webp
+│  │  │  ├─ 20260615.webp
+│  │  │  ├─ 20260717.webp
+│  │  │  ├─ 20260722.webp
+│  │  │  ├─ bottom.webp
+│  │  │  ├─ profile.webp
 │  │  │  ├─ README.md
-│  │  │  ├─ screen2_1.png
-│  │  │  ├─ screen2_2.png
-│  │  │  └─ screen2_3.png
+│  │  │  ├─ screen2_1.webp
+│  │  │  ├─ screen2_2.webp
+│  │  │  └─ screen2_3.webp
 │  │  ├─ build-markdown.cmd
 │  │  ├─ content/
 │  │  │  ├─ about.md
@@ -300,14 +300,14 @@ Game/
 │  │  ├─ picture/
 │  │  │  └─ 2.gif
 │  │  └─ video/
-│  │     └─ Timeline 1.mov
+│  │     └─ Timeline 1.mp4
 │  ├─ xyx/
 │  │  ├─ index.html
 │  │  └─ yue.gif
 │  └─ zxy/
 │     ├─ image/
-│     │  ├─ p1.png
-│     │  └─ p2.png
+│     │  ├─ p1.webp
+│     │  └─ p2.webp
 │     └─ index.html
 ├─ schemas/
 │  ├─ attributes.schema.json

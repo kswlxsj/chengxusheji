@@ -116,13 +116,13 @@ assert.equal(
 );
 
 const itemById = new Map(items.map((item) => [item.id, item]));
-assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.png");
-assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.png");
-assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.png");
-assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.png");
-assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.png", "手电筒应使用无版本后缀的正式贴图");
-assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.png", "饮料应使用正式贴图");
-assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.png", "空易拉罐应使用正式贴图");
+assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.webp");
+assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.webp");
+assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.webp");
+assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.webp");
+assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.webp", "手电筒应使用无版本后缀的正式贴图");
+assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.webp", "饮料应使用正式贴图");
+assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.webp", "空易拉罐应使用正式贴图");
 assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem: "control_panel_key" });
 const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
@@ -163,11 +163,11 @@ assert.deepEqual(objectOf("carriage_05", "window_05_right").position, { x: 61, y
 assert.equal(objectOf("carriage_05", "clutter_05_a").clickEvent, "E_05_JUNK_A");
 assert.equal(objectOf("carriage_05", "clutter_05_b").clickEvent, "E_05_JUNK_B");
 const carriage05LeftJunk = objectOf("carriage_05", "clutter_05_c");
-assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.png", "5号左侧杂物应对应左边的白色袋堆");
+assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.webp", "5号左侧杂物应对应左边的白色袋堆");
 assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物应使用独立随机对白");
 assert.deepEqual(carriage05LeftJunk.hitPosition, { x: 32, y: 65, width: 6, height: 7 }, "5号左侧杂物热点应只覆盖袋子主体");
 const carriage05RightJunk = objectOf("carriage_05", "clutter_05_d");
-assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.png", "5号右侧杂物应对应右边的白色袋堆");
+assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.webp", "5号右侧杂物应对应右边的白色袋堆");
 assert.equal(carriage05RightJunk.clickEvent, "E_05_JUNK_RIGHT", "5号右侧杂物应提供饮料获取事件");
 assert.deepEqual(carriage05RightJunk.hitPosition, { x: 62, y: 65, width: 6, height: 7 }, "5号右侧杂物热点应只覆盖袋子主体");
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
@@ -264,50 +264,50 @@ assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员�
 assert.match(diceSource, /registerDice\("ev013_education_01", attrCheck\("education", 17\)\)/, "乘务员前两次救治应使用阈值 17");
 assert.match(diceSource, /registerDice\("ev020_education_01", attrCheck\("education", 16\)\)/, "乘务员第三次救治应使用阈值 16");
 const carriage03 = sceneById.get("carriage_03");
-assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.png");
+assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.webp");
 assert.deepEqual(carriage03.backgroundVariants, [
   {
-    image: "assets/Image/Scene/Background/carriage-03.png",
+    image: "assets/Image/Scene/Background/carriage-03.webp",
     visibleWhen: { flag: "carriage_03_bag_resolved", equals: true }
   },
   {
-    image: "assets/Image/Scene/Background/carriage-03-onlybag.png",
+    image: "assets/Image/Scene/Background/carriage-03-onlybag.webp",
     visibleWhen: { flag: "carriage_03_bag_exposed", equals: true }
   },
   {
-    image: "assets/Image/Scene/Background/carriage-03-halffull.png",
+    image: "assets/Image/Scene/Background/carriage-03-halffull.webp",
     visibleWhen: { flag: "carriage_03_bag_interacted", equals: true }
   }
 ], "3号背景应按清空、黑包露出、半清理的优先级覆盖满载底图");
 const blackBag03 = objectOf("carriage_03", "black_bag_03");
-assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.png");
+assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.webp");
 assert.deepEqual(blackBag03.hitPosition, { x: 63, y: 50.8, width: 7.7, height: 10.3 });
 assert.equal(
   objectOf("carriage_03", "forward_note_03").image,
-  "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png"
+  "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp"
 );
 assert.equal(
   objectOf("carriage_05", "tool_clutter_05").image,
-  "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+  "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
   "5号倒下的背包不得继续复用3号黑包"
 );
-assert.equal(objectOf("carriage_07", "corpse_07").image, "assets/Image/Scene/StillLife/corpse-07.png");
-assert.equal(objectOf("carriage_07", "radio_07").image, "assets/Image/Scene/StillLife/radio-07.png");
+assert.equal(objectOf("carriage_07", "corpse_07").image, "assets/Image/Scene/StillLife/corpse-07.webp");
+assert.equal(objectOf("carriage_07", "radio_07").image, "assets/Image/Scene/StillLife/radio-07.webp");
 
 for (const asset of [
-  "carriage-03-full.png",
-  "carriage-03-halffull.png",
-  "carriage-03-onlybag.png",
-  "carriage-03.png"
+  "carriage-03-full.webp",
+  "carriage-03-halffull.webp",
+  "carriage-03-onlybag.webp",
+  "carriage-03.webp"
 ]) {
   assert.ok((await stat(new URL(`../assets/Image/Scene/Background/${asset}`, import.meta.url))).size > 0);
 }
 for (const asset of [
-  "black-bag-03.png",
-  "carriage-05-03-clutter.png",
-  "carriage-05-03-forward-note.png",
-  "corpse-07.png",
-  "radio-07.png"
+  "black-bag-03.webp",
+  "carriage-05-03-clutter.webp",
+  "carriage-05-03-forward-note.webp",
+  "corpse-07.webp",
+  "radio-07.webp"
 ]) {
   assert.ok((await stat(new URL(`../assets/Image/Scene/StillLife/${asset}`, import.meta.url))).size > 0);
 }
@@ -332,7 +332,7 @@ assertFlagImmediatelyRefreshes("E_022_ALONE", "carriage_03_forward_note_visible"
 assertFlagImmediatelyRefreshes("E_022_ITEM", "carriage_03_bag_resolved");
 const seatedCrewLeft = objectOf("carriage_04", "crew_04_seated_left");
 const seatedCrewRight = objectOf("carriage_04", "crew_04_seated_right");
-assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png");
+assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp");
 assert.equal(seatedCrewRight.image, seatedCrewLeft.image, "左右座位应复用同一张坐姿乘务员图层");
 assert.equal(seatedCrewLeft.clickEvent, "E_013", "左侧坐姿应承接原乘务员热点");
 assert.equal(seatedCrewRight.clickEvent, "E_013", "右侧坐姿应承接原乘务员热点");
@@ -352,7 +352,7 @@ assert.deepEqual(seatedCrewRight.visibleWhen, {
 });
 assert.equal(
   sceneById.get("carriage_04").backgroundVariants.some((variant) => (
-    variant.image === "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png"
+    variant.image === "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp"
       && variant.visibleWhen?.flag === "crew_04_left_seated"
   )),
   true,

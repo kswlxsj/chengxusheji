@@ -162,11 +162,11 @@
   const AUTO_ADVANCE_DELAY_MS = 1200;
   const FAST_ADVANCE_DELAY_MS = 90;
   const DEFAULT_DIALOGUE_PORTRAITS = Object.freeze({
-    "乘务员": "assets/Image/Portrait/conductor-crying.png",
-    "列车员": "assets/Image/Portrait/conductor.png",
-    "医生": "assets/Image/Portrait/doctor.png",
-    "你": "assets/Image/Portrait/player.png",
-    "？？？": "assets/Image/Portrait/conductor-crazy.png"
+    "乘务员": "assets/Image/Portrait/conductor-crying.webp",
+    "列车员": "assets/Image/Portrait/conductor.webp",
+    "医生": "assets/Image/Portrait/doctor.webp",
+    "你": "assets/Image/Portrait/player.webp",
+    "？？？": "assets/Image/Portrait/conductor-crazy.webp"
   });
 
   class DialogWindow extends GameWindow {
@@ -318,7 +318,7 @@
       const resolvedSource = source || DEFAULT_DIALOGUE_PORTRAITS[speaker] || "";
       this.element.classList.toggle("has-portrait", Boolean(resolvedSource));
       const isPlayerPortrait = ["你", "PC", "玩家"].includes(speaker.trim())
-        || /\/portrait\/player(?:-[^/]+)?\.png(?:[?#]|$)/i.test(resolvedSource);
+        || /\/portrait\/player(?:-[^/]+)?\.(?:png|webp)(?:[?#]|$)/i.test(resolvedSource);
       this.portrait.classList.toggle("is-player", isPlayerPortrait);
       if (!resolvedSource) {
         this.portrait.hidden = true;
@@ -449,7 +449,7 @@
         const minus = document.createElement("button");
         minus.type = "button";
         const minusImage = document.createElement("img");
-        minusImage.src = "assets/Image/Ui/attribute-minus.png";
+        minusImage.src = "assets/Image/Ui/attribute-minus.webp";
         minusImage.alt = "";
         minusImage.setAttribute("aria-hidden", "true");
         minus.append(minusImage);
@@ -459,7 +459,7 @@
         const plus = document.createElement("button");
         plus.type = "button";
         const plusImage = document.createElement("img");
-        plusImage.src = "assets/Image/Ui/attribute-plus.png";
+        plusImage.src = "assets/Image/Ui/attribute-plus.webp";
         plusImage.alt = "";
         plusImage.setAttribute("aria-hidden", "true");
         plus.append(plusImage);
@@ -754,7 +754,7 @@
         const diceBox = document.createElement("div");
         diceBox.className = "dice-box dice-rolling";
         const image = document.createElement("img");
-        image.src = "assets/Image/Ui/dice-00.png";
+        image.src = "assets/Image/Ui/dice-00.webp";
         image.alt = `骰子 ${index + 1}`;
         diceBox.append(image);
         diceRow.append(diceBox);
@@ -803,8 +803,8 @@
         rollingVoice?.stop();
         rollValues.forEach((rollValue, index) => {
           const face = Number.isInteger(rollValue) && rollValue >= 1 && rollValue <= 6
-            ? `assets/Image/Ui/dice-0${rollValue}.png`
-            : "assets/Image/Ui/dice-00.png";
+            ? `assets/Image/Ui/dice-0${rollValue}.webp`
+            : "assets/Image/Ui/dice-00.webp";
           this.images[index].src = face;
           this.diceBoxes[index].classList.remove("dice-rolling");
           this.diceBoxes[index].classList.add("dice-result-static");

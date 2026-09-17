@@ -394,9 +394,9 @@ assert.match(fake.background, /fog/);
 assert.equal(fake.backgroundVariants[0].visibleWhen.flag, "ev517_flower_revealed");
 // 6号被啃食：5号残缺揭示置位的标签驱动背景变体，且优先于便签消失版。
 const carriage06 = scenes.find(s => s.id === "carriage_06");
-assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.png/);
+assert.match(carriage06.backgroundVariants[0].image, /carriage-06-eaten\.webp/);
 assert.deepEqual(carriage06.backgroundVariants[0].visibleWhen, { flag: "carriage_06_eaten", equals: true });
-assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.png", import.meta.url))).size > 0);
+assert.ok((await stat(new URL("../assets/Image/Scene/Background/carriage-06-eaten.webp", import.meta.url))).size > 0);
 // 瓶子只能从里世界获取：Clicker 菜单只提供潜行/对抗，背包投瓶是带失败风险的隐藏捷径。
 for (const removed of [
   "E_028", "E_028_BOTTLE_READY", "E_028_CONSTITUTION_CHECK", "E_028_CONSTITUTION_SUCCESS",
@@ -518,7 +518,7 @@ assert.equal(e513.next, "E_FAKE03_INTRO");
 assert.equal(events.some(e => e.id === "E_513_REVISIT"), false);
 const fake01 = scenes.find(scene => scene.id === "carriage_fake_01");
 assert.equal(
-  fake01.backgroundVariants.some(variant => variant.image === "assets/Image/Scene/Background/carriage-fake-01-crew.png"
+  fake01.backgroundVariants.some(variant => variant.image === "assets/Image/Scene/Background/carriage-fake-01-crew.webp"
     && variant.visibleWhen?.flag === "ev_fake01_crew_seen"),
   true,
   "耳鸣后应切换到带乘务员的假1号背景"

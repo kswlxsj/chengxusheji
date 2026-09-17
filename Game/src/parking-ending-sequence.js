@@ -2,9 +2,9 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    frontCarriage: "assets/Image/Scene/Background/front-carriage.png",
+    frontCarriage: "assets/Image/Scene/Background/front-carriage.webp",
     devoured: "assets/Video/swallowed.mp4",
-    carriage03: "assets/Image/Scene/Background/carriage-03.png"
+    carriage03: "assets/Image/Scene/Background/carriage-03.webp"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "bad_end")?.title || "停车结局";

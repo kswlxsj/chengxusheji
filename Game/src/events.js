@@ -184,7 +184,7 @@
               && INNER_WORLD_LIVING_CONDUCTOR_EVENTS.has(this.state.currentEventId)
               && this.state.flags.crew_met === true
               && this.state.flags.crew_04_medical_success === true
-              ? "assets/Image/Portrait/conductor.png"
+              ? "assets/Image/Portrait/conductor.webp"
               : "");
           await this.ui.dialog.showLine({
             ...action,

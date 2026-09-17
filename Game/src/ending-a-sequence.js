@@ -2,13 +2,13 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    frontCarriage: "assets/Image/Scene/Background/front-carriage.png",
-    memory: "assets/Image/Scene/Background/op-01.png",
+    frontCarriage: "assets/Image/Scene/Background/front-carriage.webp",
+    memory: "assets/Image/Scene/Background/op-01.webp",
     trueEndVideo: "assets/video/trueend.mp4",
-    terminalPlatform: "assets/Image/Scene/Background/true-end-platform.png",
-    welcome: "assets/Image/Scene/Background/welcome.PNG",
-    conductorSmile: "assets/Image/Portrait/conductor.png",
-    pcHappy: "assets/Image/Portrait/player-happy.png"
+    terminalPlatform: "assets/Image/Scene/Background/true-end-platform.webp",
+    welcome: "assets/Image/Scene/Background/welcome.webp",
+    conductorSmile: "assets/Image/Portrait/conductor.webp",
+    pcHappy: "assets/Image/Portrait/player-happy.webp"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "true_end")?.title || "真结局";

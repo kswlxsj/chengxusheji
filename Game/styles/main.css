@@ -1391,7 +1391,7 @@ body.home-op-active .home-page .auth-user-status {
   color: var(--ink);
   border: 0;
   background-color: transparent;
-  background-image: url("../assets/Image/Ui/status-bar.png");
+  background-image: url("../assets/Image/Ui/status-bar.webp");
   background-position: center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -1429,7 +1429,7 @@ body.home-op-active .home-page .auth-user-status {
   grid-template-columns: repeat(10, minmax(0, 1fr));
   padding: 0;
   overflow: hidden;
-  background: url("../assets/Image/Ui/backpack-frame.png") left center / 10% 100% repeat-x;
+  background: url("../assets/Image/Ui/backpack-frame.webp") left center / 10% 100% repeat-x;
 }
 
 .inventory-slot {
@@ -1629,7 +1629,7 @@ body.home-op-active .home-page .auth-user-status {
   padding: 4px 28px 50px;
   border: 20px solid transparent;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   background-clip: padding-box;
   box-shadow: none;
   cursor: pointer;
@@ -2878,7 +2878,7 @@ body.home-op-active .home-page .auth-user-status {
   opacity: 0;
   border: 20px solid transparent;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -3637,7 +3637,7 @@ body.home-op-active .home-page .auth-user-status {
   opacity: 0;
   border: 20px solid transparent;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -4045,7 +4045,7 @@ body.codex-start-video-ready .home-page .home-action::after {
   top: 50%;
   width: var(--menu-marker-size);
   aspect-ratio: 1;
-  background: url("../assets/Image/Portrait/monster-pixel.png") center / contain no-repeat;
+  background: url("../assets/Image/Portrait/monster-pixel.webp") center / contain no-repeat;
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%) scale(.82);

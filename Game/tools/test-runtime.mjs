@@ -508,17 +508,17 @@ const inspectEngine = new Game.EventEngine({
 await inspectEngine.actions.get("inspect")({ type: "inspect", item: "phone" });
 assert.equal(inspectedItem.title, "手机", "物品调查应读取注册表中的名称");
 assert.equal(inspectedItem.text, "一部手机。", "物品调查应读取注册表中的说明");
-assert.equal(inspectedItem.image, "assets/Image/Item/phone.png", "物品调查应读取注册表中的图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/phone.webp", "物品调查应读取注册表中的图片");
 await inspectEngine.actions.get("inspect")({
   type: "inspect",
   item: "phone",
   title: "手机特写",
   text: "覆盖说明",
-  image: "assets/Image/Item/flashlight.png"
+  image: "assets/Image/Item/flashlight.webp"
 });
 assert.equal(inspectedItem.title, "手机特写", "物品调查应允许事件覆盖名称");
 assert.equal(inspectedItem.text, "覆盖说明", "物品调查应允许事件覆盖说明");
-assert.equal(inspectedItem.image, "assets/Image/Item/flashlight.png", "物品调查应允许事件覆盖图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/flashlight.webp", "物品调查应允许事件覆盖图片");
 await inspectEngine.actions.get("inspect")({ type: "inspect", title: "场景线索", text: "仍使用普通窗口。" });
 assert.equal(inspectedScene.title, "场景线索", "不带物品 ID 的场景调查应继续使用普通调查窗口");
 
@@ -786,7 +786,7 @@ const dialogueEngine = new Game.EventEngine({
     actions: [{
       type: "dialogue",
       speaker: "测试说话人",
-      portrait: "assets/Image/Portrait/player.png",
+      portrait: "assets/Image/Portrait/player.webp",
       speed: 12,
       text: "第一句。她说：“第二句？”真的吗？！\n\n第三段没有句号"
     }]
@@ -809,7 +809,7 @@ assert.deepEqual(
   "对话动作应按句末标点和空行拆成多个对话框"
 );
 assert.equal(dialogueCalls.every((action) => action.speaker === "测试说话人"), true);
-assert.equal(dialogueCalls.every((action) => action.portrait === "assets/Image/Portrait/player.png"), true);
+assert.equal(dialogueCalls.every((action) => action.portrait === "assets/Image/Portrait/player.webp"), true);
 assert.equal(dialogueCalls.every((action) => action.speed === 12), true);
 
 const originalRandom = sandbox.Math.random;

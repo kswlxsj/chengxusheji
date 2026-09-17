@@ -2,13 +2,13 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    broadcast: "assets/Image/Scene/Background/san-zero-broadcast.png",
-    hospital: "assets/Image/Scene/Background/san-zero-hospital.png",
-    closeup: "assets/Image/Scene/Background/san-zero-closeup.png",
-    closeupSmile: "assets/Image/Scene/Background/san-zero-closeup-smile.png",
-    doctor: "assets/Image/Portrait/doctor.png",
-    pcScared: "assets/Image/Portrait/player-scared.png",
-    pcCrazy: "assets/Image/Portrait/player-crazy.png"
+    broadcast: "assets/Image/Scene/Background/san-zero-broadcast.webp",
+    hospital: "assets/Image/Scene/Background/san-zero-hospital.webp",
+    closeup: "assets/Image/Scene/Background/san-zero-closeup.webp",
+    closeupSmile: "assets/Image/Scene/Background/san-zero-closeup-smile.webp",
+    doctor: "assets/Image/Portrait/doctor.webp",
+    pcScared: "assets/Image/Portrait/player-scared.webp",
+    pcCrazy: "assets/Image/Portrait/player-crazy.webp"
   };
 
   const SCREAM_TEXT =

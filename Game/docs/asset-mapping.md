@@ -1,6 +1,8 @@
 # 素材映射表
 
-本表记录截至 2026-09-16 的完整媒体路径。`Game/assets/` 当前共有 175 个运行素材；`Assets/` 共有 174 个媒体素材。除 5 个仅在运行目录保留的 SVG 占位符外，两边同路径素材均保持 SHA-256 一致。
+本表保留 2026-09-16 的素材整理基线与历史路径。2026-09-17 完成运行期压缩后，当前 `Game/assets/` 有 189 个文件；其中 5 个运行期 SVG 占位符不进入美术源库，其余 184 个文件均由 `npm run verify:asset-sync` 验证为与 `Assets/` 同路径、同字节。
+
+本次 144 个 PNG 的当前运行版本改为无损 WebP：原 PNG 保留在 `Assets/` 作为编辑源，运行 WebP 同时存在于 `Assets/` 和 `Game/assets/` 的相同路径。每项的旧路径、字节数、新 SHA-256 与压缩结果见 [`asset-compression-manifest.json`](asset-compression-manifest.json)。四个运行 MP4 重编码后也已同步至 `Assets/Video/`；原始 MOV 已替换为 `Game/GroupIntro/lty/video/Timeline 1.mp4`。
 
 判定说明：`SHA-256 相同` 表示整理前两边已有字节级相同内容；`Game 补入 Assets` 表示源素材库原先缺少该运行文件；`Assets 内置化` 表示原本由游戏跨目录引用，现已复制进运行目录；`Assets 独有` 表示尚未进入正式游戏。
 

@@ -20,7 +20,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_06",
       "name": "6 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-06.png",
+      "background": "assets/Image/Scene/Background/carriage-06.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -36,21 +36,21 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+          "image": "assets/Image/Scene/Background/carriage-06-eaten.webp",
           "visibleWhen": {
             "flag": "carriage_06_eaten",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-people.png",
+          "image": "assets/Image/Scene/Background/carriage-06-people.webp",
           "visibleWhen": {
             "flag": "carriage_06_people_reveal",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-note-removed.png",
+          "image": "assets/Image/Scene/Background/carriage-06-note-removed.webp",
           "visibleWhen": {
             "flag": "note_collected",
             "equals": true
@@ -61,7 +61,7 @@ window.GAME_DATA = {
         {
           "id": "note_06",
           "name": "门上的便签",
-          "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -238,7 +238,7 @@ window.GAME_DATA = {
         {
           "id": "note_back_06",
           "name": "便签背面",
-          "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -281,7 +281,7 @@ window.GAME_DATA = {
         {
           "id": "map_06",
           "name": "电车示意图",
-          "image": "assets/Image/Scene/StillLife/carriage-06-map.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-map.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -326,7 +326,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_07",
       "name": "7 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-07.png",
+      "background": "assets/Image/Scene/Background/carriage-07.webp",
       "backgroundSound": {
         "sound": "eating_crisps",
         "loopGapMs": 1600
@@ -335,7 +335,7 @@ window.GAME_DATA = {
         {
           "id": "radio_07",
           "name": "损坏的收音机",
-          "image": "assets/Image/Scene/StillLife/radio-07.png",
+          "image": "assets/Image/Scene/StillLife/radio-07.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -382,7 +382,7 @@ window.GAME_DATA = {
         {
           "id": "corpse_07",
           "name": "尸体",
-          "image": "assets/Image/Scene/StillLife/corpse-07.png",
+          "image": "assets/Image/Scene/StillLife/corpse-07.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -416,7 +416,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_05",
       "name": "5 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-05.png",
+      "background": "assets/Image/Scene/Background/carriage-05.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -490,7 +490,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_a",
           "name": "散落的行李",
-          "image": "assets/Image/Scene/StillLife/bag-05-a.png",
+          "image": "assets/Image/Scene/StillLife/bag-05-a.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -504,7 +504,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_b",
           "name": "遗落的提包",
-          "image": "assets/Image/Scene/StillLife/bag-05-b.png",
+          "image": "assets/Image/Scene/StillLife/bag-05-b.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -518,7 +518,7 @@ window.GAME_DATA = {
         {
           "id": "tool_clutter_05",
           "name": "倒下的背包",
-          "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -547,7 +547,7 @@ window.GAME_DATA = {
         {
           "id": "clue_clutter_05",
           "name": "可疑的纸堆",
-          "image": "assets/Image/Scene/StillLife/newspaper-05.png",
+          "image": "assets/Image/Scene/StillLife/newspaper-05.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -582,7 +582,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_c",
           "name": "堆叠的杂物",
-          "image": "assets/Image/Scene/StillLife/trash-05-b.png",
+          "image": "assets/Image/Scene/StillLife/trash-05-b.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -602,7 +602,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_d",
           "name": "散落的垃圾袋",
-          "image": "assets/Image/Scene/StillLife/trash-05-a.png",
+          "image": "assets/Image/Scene/StillLife/trash-05-a.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -624,20 +624,20 @@ window.GAME_DATA = {
     {
       "id": "carriage_04",
       "name": "4 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-04.png",
+      "background": "assets/Image/Scene/Background/carriage-04.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
           "visibleWhen": {
             "flag": "carried_crew",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
           "visibleWhen": {
             "flag": "crew_04_left_seated",
             "equals": true
@@ -714,7 +714,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04",
           "name": "重伤的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -750,7 +750,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04_seated_left",
           "name": "坐在左侧座椅上的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -790,7 +790,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04_seated_right",
           "name": "坐在右侧座椅上的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -828,7 +828,7 @@ window.GAME_DATA = {
         {
           "id": "employee_locker_04",
           "name": "员工柜",
-          "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "not": {
@@ -857,27 +857,27 @@ window.GAME_DATA = {
     {
       "id": "carriage_03",
       "name": "3 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-03-full.png",
+      "background": "assets/Image/Scene/Background/carriage-03-full.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-03.png",
+          "image": "assets/Image/Scene/Background/carriage-03.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_resolved",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+          "image": "assets/Image/Scene/Background/carriage-03-onlybag.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_exposed",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-03-halffull.png",
+          "image": "assets/Image/Scene/Background/carriage-03-halffull.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_interacted",
             "equals": true
@@ -914,7 +914,7 @@ window.GAME_DATA = {
         {
           "id": "black_bag_03",
           "name": "黑色背包",
-          "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+          "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -941,7 +941,7 @@ window.GAME_DATA = {
         {
           "id": "phone_03",
           "name": "发光的手机",
-          "image": "assets/Image/Scene/StillLife/phone.png",
+          "image": "assets/Image/Scene/StillLife/phone.webp",
           "position": {
             "x": 34,
             "y": 57,
@@ -974,7 +974,7 @@ window.GAME_DATA = {
         {
           "id": "black_bag_03_foreground",
           "name": "椅面杂物前景",
-          "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+          "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1009,7 +1009,7 @@ window.GAME_DATA = {
         {
           "id": "forward_note_03",
           "name": "写着前进提示的便签",
-          "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1030,7 +1030,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_02",
       "name": "2 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-02.png",
+      "background": "assets/Image/Scene/Background/carriage-02.webp",
       "backgroundSound": {
         "sound": "devil_scared"
       },
@@ -1070,7 +1070,7 @@ window.GAME_DATA = {
         {
           "id": "clicker_02",
           "name": "Clicker",
-          "image": "assets/Image/Scene/StillLife/clicker-02.png",
+          "image": "assets/Image/Scene/StillLife/clicker-02.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1119,7 +1119,7 @@ window.GAME_DATA = {
     {
       "id": "front_carriage",
       "name": "先头车厢",
-      "background": "assets/Image/Scene/Background/front-carriage.png",
+      "background": "assets/Image/Scene/Background/front-carriage.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -1140,7 +1140,7 @@ window.GAME_DATA = {
         {
           "id": "control_27",
           "name": "前进与停车把手",
-          "image": "assets/Image/Scene/StillLife/control-lever.png",
+          "image": "assets/Image/Scene/StillLife/control-lever.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1159,7 +1159,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_inner_01",
       "name": "里世界·空车厢",
-      "background": "assets/Image/Scene/Background/carriage-inner-01.png",
+      "background": "assets/Image/Scene/Background/carriage-inner-01.webp",
       "objects": [
         {
           "id": "door_inner01_to_inner02",
@@ -1196,12 +1196,12 @@ window.GAME_DATA = {
     {
       "id": "carriage_inner_02",
       "name": "里世界·花草车厢",
-      "background": "assets/Image/Scene/Background/carriage-inner-02.png",
+      "background": "assets/Image/Scene/Background/carriage-inner-02.webp",
       "objects": [
         {
           "id": "window_inner",
           "name": "窗外",
-          "image": "assets/Image/Scene/StillLife/inner-02-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-02-window.webp",
           "fullCanvas": true,
           "hitPosition": {
             "x": 58,
@@ -1221,7 +1221,7 @@ window.GAME_DATA = {
         {
           "id": "bottle_inner",
           "name": "彩色玻璃瓶",
-          "image": "assets/Image/Scene/StillLife/inner-02-bottle.png",
+          "image": "assets/Image/Scene/StillLife/inner-02-bottle.webp",
           "fullCanvas": true,
           "hitPosition": {
             "x": 75,
@@ -1279,13 +1279,13 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_01",
       "name": "里世界·假1号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-01.webp",
       "backgroundSound": {
         "sound": "maze"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
+          "image": "assets/Image/Scene/Background/carriage-fake-01-crew.webp",
           "visibleWhen": {
             "flag": "ev_fake01_crew_seen",
             "equals": true
@@ -1328,12 +1328,12 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_02",
       "name": "里世界·假2号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-02.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-02.webp",
       "objects": [
         {
           "id": "fake02_blood_1",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1352,7 +1352,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_2",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1371,7 +1371,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_3",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1390,7 +1390,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_4",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1478,7 +1478,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-04-fog.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1516,7 +1516,7 @@ window.GAME_DATA = {
         {
           "id": "window_fake04_flower",
           "name": "车窗",
-          "image": "assets/Image/Scene/StillLife/inner-03-flower-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-03-flower-window.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1534,7 +1534,7 @@ window.GAME_DATA = {
         {
           "id": "window_fake04_fog",
           "name": "车窗",
-          "image": "assets/Image/Scene/StillLife/inner-03-fog-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-03-fog-window.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1554,7 +1554,7 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-fake-04.png",
+          "image": "assets/Image/Scene/Background/carriage-fake-04.webp",
           "visibleWhen": {
             "flag": "ev517_flower_revealed",
             "equals": true
@@ -1565,7 +1565,7 @@ window.GAME_DATA = {
     {
       "id": "flower_sea",
       "name": "花海·车门外",
-      "background": "assets/Image/Scene/Background/flower-sea.png",
+      "background": "assets/Image/Scene/Background/flower-sea.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1574,7 +1574,7 @@ window.GAME_DATA = {
     {
       "id": "flower_sea_inside",
       "name": "花海·室内",
-      "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+      "background": "assets/Image/Scene/Background/flower-sea-inside.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1794,7 +1794,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "……啊？"
         },
         {
@@ -1985,7 +1985,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "啊！！！这是什么！"
         },
         {
@@ -2274,7 +2274,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "刚才的人，都去哪了？",
           "audio": {
             "sound": "bullying_e009",
@@ -2427,7 +2427,7 @@ window.GAME_DATA = {
           "item": "note_06_item",
           "title": "便签",
           "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
-          "image": "assets/Image/Item/note.png",
+          "image": "assets/Image/Item/note.webp",
           "large": true
         }
       ]
@@ -2550,7 +2550,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "便签",
           "text": "「只管前进吧，已经没有退路了。」\n这是……什么意思？",
-          "image": "assets/Image/Ui/label-front.png",
+          "image": "assets/Image/Ui/label-front.webp",
           "large": true
         },
         {
@@ -2611,7 +2611,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "便签正面",
           "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
-          "image": "assets/Image/Ui/label-front.png",
+          "image": "assets/Image/Ui/label-front.webp",
           "large": true
         }
       ]
@@ -2631,7 +2631,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "便签背面",
           "text": "「第三个箱子里藏着钥匙。」箱子？这里哪有箱子。",
-          "image": "assets/Image/Ui/label-back.png",
+          "image": "assets/Image/Ui/label-back.webp",
           "large": true
         },
         {
@@ -2710,7 +2710,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "地图检定成功",
           "text": "你仔细查看地图，猛然发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
-          "image": "assets/Image/Ui/map-success.png",
+          "image": "assets/Image/Ui/map-success.webp",
           "large": true
         },
         {
@@ -2756,7 +2756,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "地图检定失败",
           "text": "你努力查看，但是 7 号车厢以后的部分被污染，看不清楚。",
-          "image": "assets/Image/Ui/map-failure.png",
+          "image": "assets/Image/Ui/map-failure.webp",
           "large": true
         },
         {
@@ -2809,7 +2809,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "这是否意味着这附近……"
         },
         {
@@ -2834,7 +2834,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "天哪……还是不要继续看下去了。"
         },
         {
@@ -2883,7 +2883,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "这……这是什么！"
         },
         {
@@ -3355,7 +3355,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "你跨进6号车厢，终于看清刚才那阵声响留下了什么。"
         },
         {
@@ -5303,7 +5303,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/monster.png",
+          "portrait": "assets/Image/Portrait/monster.webp",
           "text": "借着应急灯微弱的光芒，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
         },
         {
@@ -7821,26 +7821,26 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "……"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "这就是你的选择吗，亲爱的？"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "愚蠢。"
         },
         {
           "type": "custom",
           "name": "centeredCinematic",
           "params": {
-            "image": "assets/Image/Scene/Background/inner-refusal-crew-01.png",
+            "image": "assets/Image/Scene/Background/inner-refusal-crew-01.webp",
             "text": "你以为，不给我，你就能从这里出去吗？",
             "duration": 2400
           }
@@ -7849,7 +7849,7 @@ window.GAME_DATA = {
           "type": "custom",
           "name": "centeredCinematic",
           "params": {
-            "image": "assets/Image/Scene/Background/inner-refusal-crew-02.png",
+            "image": "assets/Image/Scene/Background/inner-refusal-crew-02.webp",
             "text": "把钥匙给我",
             "duration": 1600,
             "flash": true
@@ -7950,7 +7950,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "放过我吧……"
         }
       ]
@@ -8552,77 +8552,77 @@ window.GAME_DATA = {
     {
       "id": "note_06_item",
       "name": "便签",
-      "image": "assets/Image/Item/note.png",
+      "image": "assets/Image/Item/note.webp",
       "description": "从 6 号车厢门上取下来的便签。",
       "inspectEvent": "E_NOTE_06_ITEM"
     },
     {
       "id": "bottle",
       "name": "彩色玻璃瓶",
-      "image": "assets/Image/Item/bottle.png",
+      "image": "assets/Image/Item/bottle.webp",
       "description": "从诡异的花草车厢里捡到的空瓶子，瓶身是粉红色的普通玻璃。",
       "inspectEvent": "E_023_BOTTLE"
     },
     {
       "id": "newspaper",
       "name": "报纸",
-      "image": "assets/Image/Item/newspaper.png",
+      "image": "assets/Image/Item/newspaper.webp",
       "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
       "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
     },
     {
       "id": "driver_cab_key",
       "name": "驾驶室钥匙",
-      "image": "assets/Image/Item/driver-cab-key.png",
+      "image": "assets/Image/Item/driver-cab-key.webp",
       "description": "用于打开列车驾驶室门的钥匙。",
       "inspectEvent": "E_ITEM_DRIVER_CAB_KEY_INSPECT"
     },
     {
       "id": "control_panel_key",
       "name": "操作面板钥匙",
-      "image": "assets/Image/Item/control-panel-key.png",
+      "image": "assets/Image/Item/control-panel-key.webp",
       "description": "用于打开驾驶室操作面板的钥匙。",
       "inspectEvent": "E_ITEM_CONTROL_PANEL_KEY_INSPECT"
     },
     {
       "id": "phone",
       "name": "手机",
-      "image": "assets/Image/Item/phone.png",
+      "image": "assets/Image/Item/phone.webp",
       "description": "一部手机。",
       "inspectEvent": "E_ITEM_PHONE_INSPECT"
     },
     {
       "id": "flashlight",
       "name": "手电筒",
-      "image": "assets/Image/Item/flashlight.png",
+      "image": "assets/Image/Item/flashlight.webp",
       "description": "一支还能发光的手电筒。",
       "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
     },
     {
       "id": "drink",
       "name": "饮料",
-      "image": "assets/Image/Item/drink.png",
+      "image": "assets/Image/Item/drink.webp",
       "description": "一罐还未开封的饮料。",
       "inspectEvent": "E_ITEM_DRINK_INSPECT"
     },
     {
       "id": "drink_empty",
       "name": "空易拉罐",
-      "image": "assets/Image/Item/drink_empty.png",
+      "image": "assets/Image/Item/drink_empty.webp",
       "description": "喝完饮料后留下的空易拉罐。制造声响时，也许能派上用场。",
       "inspectEvent": "E_ITEM_DRINK_EMPTY_INSPECT"
     },
     {
       "id": "emergency_cutter",
       "name": "应急割带器",
-      "image": "assets/Image/Item/emergency-belt-cutter.png",
+      "image": "assets/Image/Item/emergency-belt-cutter.webp",
       "description": "可以割断黑色背包背带的应急工具。",
       "inspectEvent": "E_ITEM_EMERGENCY_CUTTER_INSPECT"
     },
     {
       "id": "pry_bar",
       "name": "撬杆",
-      "image": "assets/Image/Item/pry-bar.png",
+      "image": "assets/Image/Item/pry-bar.webp",
       "description": "可以撬开被行李压住的箱体。",
       "inspectEvent": "E_ITEM_PRY_BAR_INSPECT"
     }

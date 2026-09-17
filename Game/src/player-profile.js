@@ -12,31 +12,31 @@
       id: "true_end",
       title: "不要温和地走进那个良夜",
       description: "加速的列车驶入光明，迎接属于你的新的开始。",
-      image: "assets/Image/Scene/Background/true-end-platform.png"
+      image: "assets/Image/Scene/Background/true-end-platform.webp"
     }),
     Object.freeze({
       id: "fake_end",
       title: "你所说的曙光究竟是什么意思",
       description: "目睹那些东西之后，回归现实生活……大概吧。",
-      image: "assets/Image/Scene/Background/move.png"
+      image: "assets/Image/Scene/Background/move.webp"
     }),
     Object.freeze({
       id: "lost",
       title: "于他者所思的自我与自我所想的他者之间",
       description: "层层嵌套，自我指涉，盘曲虬结，错综复杂。",
-      image: "assets/Image/Scene/Background/flower-sea.png"
+      image: "assets/Image/Scene/Background/flower-sea.webp"
     }),
     Object.freeze({
       id: "bad_end",
       title: "恐怖",
       description: "列车陷入黑暗，意识与身体一同消失。",
-      image: "assets/Image/Scene/Background/carriage-03.png"
+      image: "assets/Image/Scene/Background/carriage-03.webp"
     }),
     Object.freeze({
       id: "san",
       title: "患者",
       description: "SAN 已降至 0。",
-      image: "assets/Image/Scene/Background/san-zero-hospital.png"
+      image: "assets/Image/Scene/Background/san-zero-hospital.webp"
     })
   ]);
   const ENDING_IDS = new Set(ENDING_CATALOG.map((ending) => ending.id));
