@@ -17,6 +17,11 @@
 # 且随时可以用 `npm install` 重新生成，绝不能提交进仓库。
 node_modules/
 
+# pnpm 的包存储目录（本机缓存，可随时重新生成，会自己长到几百 MB）。
+# 注意：pnpm 在项目根目录生成 .pnpm-store 时，里面会打包一份项目副本，
+# 千万别当成项目内容提交。
+.pnpm-store/
+
 # npm / yarn / pnpm 的运行日志
 npm-debug.log*
 yarn-error.log*
