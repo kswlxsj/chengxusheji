@@ -95,7 +95,7 @@
   `;
 
   const template = `
-    <header class="cb-topbar"><strong>战斗轮 · 双牌试作</strong><span class="cb-round" data-round>回合 1</span></header>
+    <header class="cb-topbar"><strong>战斗轮 · 卡牌对决</strong><span class="cb-round" data-round>回合 1</span></header>
     <details class="cb-rules">
       <summary>规则说明</summary>
       <div class="cb-rule-body">
@@ -595,13 +595,13 @@
   }
 
   Game.Minigames.register("card_battle", {
-    title: "战斗轮 · 双牌试作（简单模式）",
+    title: "战斗轮 · 卡牌对决（简单模式）",
     allowQuit: false,
     run: createRun(3)
   });
 
   Game.Minigames.register("card_battle_hard", {
-    title: "战斗轮 · 双牌试作（困难模式）",
+    title: "战斗轮 · 卡牌对决（困难模式）",
     allowQuit: false,
     run: createRun(5)
   });
