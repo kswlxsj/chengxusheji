@@ -34,79 +34,52 @@
       // 预加载结局素材期间也不能继续播放旧场景音频。
       ui.audio?.stopAll?.({ immediate: true });
       ui.backgroundAudio?.stopAll?.({ immediate: true });
-      if (reason === "lost") {
-        // 终止是在最后一句对白执行时抛出的；先关闭事件对白层，避免它盖在专属演出上。
-        ui.cancelPending?.();
-        if (hud) hud.hidden = true;
-        if (inventoryBar) inventoryBar.hidden = true;
-        document.querySelector("#toast")?.setAttribute("hidden", "");
-        try {
-          if (typeof Game.playLostEndingSequence === "function") {
-            await Game.playLostEndingSequence({
-              root: gameShell,
-              backgroundAudio: ui.backgroundAudio
-            });
-          }
-        } catch (error) {
-          console.error("失落结局演出失败：", error);
-        } finally {
-          // 无论演出资源或音频是否失败，都必须落到统一的旅程终止页。
-          try {
-            flow.navigate("ending", { reason }, true);
-          } catch (error) {
-            console.error("失落结局页面跳转失败：", error);
-            window.location.replace(flow.url("ending", { reason }));
-          }
-        }
-        return;
-      }
-      // CODEX ADD START
-      if (reason === "true_end" && typeof Game.playEndingASequence === "function") {
-        try {
+      // 终止是在最后一句对白执行时抛出的；先清理常规游戏 UI，
+      // 再播放结局专属 OP，最后统一落到结局达成页。
+      ui.cancelPending?.();
+      if (hud) hud.hidden = true;
+      if (inventoryBar) inventoryBar.hidden = true;
+      document.querySelector("#toast")?.setAttribute("hidden", "");
+      try {
+        if (reason === "true_end" && typeof Game.playEndingASequence === "function") {
           await Game.playEndingASequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("真结局演出失败：", error);
         }
-      }
-      if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
-        try {
+        if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
           await Game.playFakeEndingSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("伪结局演出失败：", error);
         }
-      }
-      if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
-        try {
+        if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
           await Game.playParkingEndingSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("停车结局演出失败：", error);
         }
-      }
-      if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
-        try {
+        if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
           await Game.playSanZeroSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("SAN 归零演出失败：", error);
         }
+        if (reason === "lost" && typeof Game.playLostEndingSequence === "function") {
+          await Game.playLostEndingSequence({
+            root: gameShell,
+            backgroundAudio: ui.backgroundAudio
+          });
+        }
+      } catch (error) {
+        console.error(`结局演出失败（${reason}）：`, error);
+      } finally {
+        navigateToEnding(reason);
       }
-      showEndingOverlay(reason);
-      // CODEX ADD END
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -146,57 +119,14 @@
     "dice_success",
     "dice_fail"
   ];
-  // CODEX ADD START
-  function showEndingOverlay(reason) {
-    const overlay = document.querySelector("#codex-ending-overlay");
-    const video = document.querySelector("#codex-ending-video");
-    const loadButton = document.querySelector("#codex-ending-load");
-    const homeButton = document.querySelector("#codex-ending-home");
-    if (!overlay || !video || !loadButton || !homeButton) {
+  function navigateToEnding(reason) {
+    try {
       flow.navigate("ending", { reason }, true);
-      return;
+    } catch (error) {
+      console.error("结局页面跳转失败：", error);
+      window.location.replace(flow.url("ending", { reason }));
     }
-    if (!overlay.hidden) return;
-
-    startupLocked = true;
-    paused = true;
-    gameShell.classList.add("paused");
-    engine.setPaused(true);
-    scene.setInteractionEnabled(false);
-    ui.closePauseMenus();
-    updateHud();
-
-    video.pause();
-    video.currentTime = 0;
-    overlay.hidden = false;
-    // 结局按钮从覆盖层出现时就可用，不需要等待视频播放完毕。
-    loadButton.hidden = false;
-    homeButton.hidden = false;
-    const openSaveManager = () => {
-      flow.clearTransfer();
-      flow.navigate("saveManager");
-    };
-    const returnToMainMenu = () => {
-      flow.clearTransfer();
-      flow.markHomeOpIntent("ending");
-      flow.navigate("home", {}, true);
-    };
-    const tryPlay = () => {
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {});
-      }
-    };
-
-    video.addEventListener("error", () => {
-      video.style.display = "none";
-    }, { once: true });
-    loadButton.addEventListener("click", openSaveManager, { once: true });
-    homeButton.addEventListener("click", returnToMainMenu, { once: true });
-    overlay.addEventListener("pointerdown", tryPlay, { once: true });
-    tryPlay();
   }
-  // CODEX ADD END
 
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);

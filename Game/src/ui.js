@@ -6,8 +6,7 @@
     ".home-op",
     ".ending-a-sequence",
     ".parking-ending-sequence",
-    ".san-zero-sequence",
-    "#codex-ending-overlay"
+    ".san-zero-sequence"
   ].join(", ");
 
   class GameWindow {
@@ -268,7 +267,7 @@
       if (!this.element.isConnected) return;
       if (this.paused) {
         const pauseInterface = document.querySelector(
-          ".pause-menu-window, .menu-backdrop, .san-zero-sequence, #codex-ending-overlay:not([hidden])"
+          ".pause-menu-window, .menu-backdrop, .san-zero-sequence"
         );
         if (pauseInterface) return;
         this.paused = false;

@@ -41,22 +41,6 @@
     <div id="acquisition-layer" aria-label="物品获取提示" aria-live="polite"></div>
   </main>
 
-  <!-- CODEX ADD START -->
-  <div id="codex-ending-overlay" hidden>
-    <video
-      id="codex-ending-video"
-      src="assets/Video/end.mp4"
-      playsinline
-      preload="auto"
-      aria-label="结局视频"
-    ></video>
-    <div id="codex-ending-actions">
-      <button id="codex-ending-load" class="codex-ending-button" type="button" hidden>读取存档</button>
-      <button id="codex-ending-home" class="codex-ending-button" type="button" hidden>返回主页</button>
-    </div>
-  </div>
-  <!-- CODEX ADD END -->
-
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
   <script src="data/compiled-game-data.js?v=carriage06-investigation-gate-20260917-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
