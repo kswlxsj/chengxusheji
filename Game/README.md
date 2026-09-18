@@ -356,7 +356,6 @@ Game/
 │  └─ main.css
 ├─ tools/
 │  ├─ compile-data.mjs
-│  ├─ serve-preview.mjs
 │  ├─ test-inner-world.mjs
 │  ├─ test-main-route.mjs
 │  ├─ test-resource-timeout.mjs
