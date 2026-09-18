@@ -439,17 +439,22 @@ const state = new TrainGame.GameState(
 
 ### PlayerProfile（账号设置与结局收藏）
 
-`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。配置包内部版本为 4；读取版本 1 时会把旧直接倍率乘以 60%，迁移后保持实际听感不变；旧配置缺少后来新增的音量字段时，各字段独立回退为 60%。
+`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。配置包内部版本为 5；读取版本 1 时会把旧直接倍率乘以 60%，迁移后保持实际听感不变；旧配置缺少后来新增的音量字段时，各字段独立回退为 60%。旧配置没有快捷键字段时，会补齐默认快捷键。
 
 | 接口 | 行为 |
 | --- | --- |
 | `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx, buttonSfx }`，各值为滑杆的 0–1 位置；缺失或损坏字段单独回退为 `0.6`。 |
 | `setAudioSetting(key, value)` | 钳制到 0–1 后立即保存当前账号；未知键抛错。 |
 | `getAudioGain(key)` / `toAudioGain(value)` | 将滑杆位置换算为实际倍率；`0.6` 返回 `1`，即 60% 对应原始设计音量。 |
+| `getShortcutSettings()` | 返回账号级快捷键副本 `{ pause, advance, auto, fast }`。默认依次是 `Escape`、空格、`a`、`Control`。 |
+| `setShortcutSetting(action, key)` | 立即保存单键绑定；不支持 `Alt`、`Shift`、`Meta`、死键或未识别键，且不允许与其他操作重复，非法值抛错。字母不区分大小写。 |
+| `resetShortcutSettings()` | 立即恢复四项默认快捷键，并返回新设置副本。 |
 | `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
 | `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
 
 只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡与结局达成过渡页均据此显示。终局原因一经确定就立即解锁；游戏页随后完成该结局专属 OP（如有），无论 OP 正常结束还是资源失败，都会跳转 `ending-reveal.html?reason=<结局编号>`。过渡页以 0.6 秒淡入、展示至第 3.4 秒后再以 0.6 秒淡出，随后替换导航至 `ending.html?reason=<结局编号>`；后者保留旧视频结局画面，并提供读取存档及返回主页操作。旧版本已经达成的结局没有可靠记录，不做推测性补发。
+
+Options 的“游戏”标签可修改四项快捷键。暂停快捷键在游戏中切换暂停/继续；推进、自动和快进只在对话窗口等待推进时响应，以避免干扰选项、检定、物品调查与小游戏。快进是切换开关，不是按住行为。
 
 ### SaveManager（三槽存档）
 

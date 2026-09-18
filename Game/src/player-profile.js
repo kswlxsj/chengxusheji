@@ -1,11 +1,20 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 4;
+  const PROFILE_VERSION = 5;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
   const AUDIO_REFERENCE_LEVEL = 0.6;
   const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx", "buttonSfx"]);
   const AUDIO_KEY_SET = new Set(AUDIO_KEYS);
+  const SHORTCUT_KEYS = Object.freeze(["pause", "advance", "auto", "fast"]);
+  const SHORTCUT_KEY_SET = new Set(SHORTCUT_KEYS);
+  const DEFAULT_SHORTCUTS = Object.freeze({
+    pause: "Escape",
+    advance: " ",
+    auto: "a",
+    fast: "Control"
+  });
+  const UNSUPPORTED_SHORTCUT_KEYS = new Set(["", "Unidentified", "Dead", "Process", "Alt", "Shift", "Meta"]);
 
   const ENDING_CATALOG = Object.freeze([
     Object.freeze({
@@ -51,6 +60,7 @@
         buttonSfx: AUDIO_REFERENCE_LEVEL
       },
       autoSaveEnabled: true,
+      shortcuts: { ...DEFAULT_SHORTCUTS },
       unlockedEndings: []
     };
   }
@@ -59,6 +69,26 @@
     const number = Number(value);
     if (!Number.isFinite(number)) return fallback;
     return Math.min(1, Math.max(0, number));
+  }
+
+  function normalizeShortcutKey(value) {
+    if (typeof value !== "string") return null;
+    const key = value === " " ? value : value.trim();
+    if (UNSUPPORTED_SHORTCUT_KEYS.has(key)) return null;
+    return key.length === 1 ? key.toLowerCase() : key;
+  }
+
+  function normalizeShortcuts(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return { ...DEFAULT_SHORTCUTS };
+    const shortcuts = {};
+    const assigned = new Set();
+    for (const action of SHORTCUT_KEYS) {
+      const key = normalizeShortcutKey(value[action]);
+      if (!key || assigned.has(key)) return { ...DEFAULT_SHORTCUTS };
+      shortcuts[action] = key;
+      assigned.add(key);
+    }
+    return shortcuts;
   }
 
   function normalizeProfile(value) {
@@ -79,6 +109,7 @@
       profile.unlockedEndings = [...new Set(value.unlockedEndings.filter((id) => ENDING_IDS.has(id)))];
     }
     if (typeof value.autoSaveEnabled === "boolean") profile.autoSaveEnabled = value.autoSaveEnabled;
+    profile.shortcuts = normalizeShortcuts(value.shortcuts);
     return profile;
   }
 
@@ -138,6 +169,29 @@
     return profile.autoSaveEnabled;
   }
 
+  function getShortcutSettings() {
+    return { ...readProfile().shortcuts };
+  }
+
+  function setShortcutSetting(action, value) {
+    if (!SHORTCUT_KEY_SET.has(action)) throw new RangeError(`未知快捷键操作：${action || "空"}`);
+    const key = normalizeShortcutKey(value);
+    if (!key) throw new RangeError("该按键不能用作快捷键");
+    const profile = readProfile();
+    const duplicateAction = SHORTCUT_KEYS.find((candidate) => candidate !== action && profile.shortcuts[candidate] === key);
+    if (duplicateAction) throw new RangeError("该按键已被其他操作使用");
+    profile.shortcuts[action] = key;
+    writeProfile(profile);
+    return profile.shortcuts[action];
+  }
+
+  function resetShortcutSettings() {
+    const profile = readProfile();
+    profile.shortcuts = { ...DEFAULT_SHORTCUTS };
+    writeProfile(profile);
+    return { ...profile.shortcuts };
+  }
+
   function getUnlockedEndings() {
     return [...readProfile().unlockedEndings];
   }
@@ -159,6 +213,9 @@
     toAudioGain,
     getAutoSaveEnabled,
     setAutoSaveEnabled,
+    getShortcutSettings,
+    setShortcutSetting,
+    resetShortcutSettings,
     getUnlockedEndings,
     unlockEnding
   });

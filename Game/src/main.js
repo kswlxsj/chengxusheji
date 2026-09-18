@@ -584,11 +584,31 @@
   pauseButton.addEventListener("click", pauseGame);
 
   document.addEventListener("keydown", (event) => {
-    // 小游戏进行中屏蔽系统暂停：Esc 由玩法窗口/退出按钮接管（minigame 期间暂停不可用）。
-    if (event.key !== "Escape" || startupLocked || ui.minigame.isOpen() || event.repeat) return;
-    event.preventDefault();
-    if (paused) resumeGame();
-    else pauseGame();
+    if (event.defaultPrevented || event.repeat || startupLocked || ui.minigame.isOpen()) return;
+    const shortcuts = Game.PlayerProfile.getShortcutSettings();
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    if (key === shortcuts.pause) {
+      event.preventDefault();
+      if (paused) resumeGame();
+      else pauseGame();
+      return;
+    }
+    // 对话相关快捷键只在等待推进时响应，避免干扰选项、检定和物品调查等窗口。
+    if (paused || !ui.dialog.isAwaitingAdvance()) return;
+    if (key === shortcuts.advance) {
+      event.preventDefault();
+      ui.dialog.handleAdvance();
+      return;
+    }
+    if (key === shortcuts.auto) {
+      event.preventDefault();
+      ui.dialog.setAuto(!ui.dialog.auto);
+      return;
+    }
+    if (key === shortcuts.fast) {
+      event.preventDefault();
+      ui.dialog.setFast(!ui.dialog.fast);
+    }
   });
 
   sceneRoot.addEventListener("click", () => {

@@ -5,6 +5,9 @@
   const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
   const sliders = Array.from(document.querySelectorAll("[data-audio-setting]"));
   const autoSaveEnabled = document.querySelector("#auto-save-enabled");
+  const shortcutSettingList = document.querySelector("#shortcut-setting-list");
+  const resetShortcutsButton = document.querySelector("#reset-shortcuts");
+  const shortcutSettingMessage = document.querySelector("#shortcut-setting-message");
   const endingList = document.querySelector("#ending-collection");
   const endingProgress = document.querySelector("#ending-progress");
 
@@ -56,6 +59,81 @@
       autoSaveEnabled.checked = Game.PlayerProfile.setAutoSaveEnabled(autoSaveEnabled.checked);
     });
   }
+
+  const shortcutDefinitions = [
+    { action: "pause", label: "暂停 / 继续", description: "打开暂停菜单，或继续已暂停的游戏。" },
+    { action: "advance", label: "推进 / 跳过本句", description: "完成当前逐字文本，或进入下一句对话。" },
+    { action: "auto", label: "自动", description: "切换对话自动推进。" },
+    { action: "fast", label: "快进", description: "切换对话快进。" }
+  ];
+  const shortcutLabels = { " ": "Space", Escape: "Esc", Control: "Ctrl" };
+
+  function formatShortcut(key) {
+    return shortcutLabels[key] || (key.length === 1 ? key.toUpperCase() : key);
+  }
+
+  function showShortcutMessage(message) {
+    if (shortcutSettingMessage) shortcutSettingMessage.textContent = message;
+  }
+
+  function renderShortcutSettings() {
+    if (!shortcutSettingList) return;
+    const shortcuts = Game.PlayerProfile.getShortcutSettings();
+    shortcutSettingList.replaceChildren();
+    for (const definition of shortcutDefinitions) {
+      const row = document.createElement("div");
+      row.className = "shortcut-setting";
+      const copy = document.createElement("span");
+      copy.className = "shortcut-setting-copy";
+      const heading = document.createElement("strong");
+      heading.textContent = definition.label;
+      const detail = document.createElement("small");
+      detail.textContent = definition.description;
+      copy.append(heading, detail);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "shortcut-capture-button";
+      button.textContent = formatShortcut(shortcuts[definition.action]);
+      button.setAttribute("aria-label", `${definition.label}，当前快捷键 ${formatShortcut(shortcuts[definition.action])}`);
+      button.addEventListener("click", () => captureShortcut(definition, button));
+      row.append(copy, button);
+      shortcutSettingList.append(row);
+    }
+  }
+
+  function captureShortcut(definition, button) {
+    if (button.dataset.capturing === "true") return;
+    const originalLabel = button.textContent;
+    button.dataset.capturing = "true";
+    button.textContent = "请按键…";
+    showShortcutMessage("请按下要使用的快捷键。");
+    const handleKeydown = (event) => {
+      if (event.repeat) return;
+      event.preventDefault();
+      event.stopPropagation();
+      document.removeEventListener("keydown", handleKeydown, true);
+      button.dataset.capturing = "false";
+      try {
+        const key = Game.PlayerProfile.setShortcutSetting(definition.action, event.key);
+        button.textContent = formatShortcut(key);
+        button.setAttribute("aria-label", `${definition.label}，当前快捷键 ${formatShortcut(key)}`);
+        showShortcutMessage(`已将“${definition.label}”设为 ${formatShortcut(key)}。`);
+      } catch (error) {
+        button.textContent = originalLabel;
+        showShortcutMessage(error instanceof Error ? error.message : "无法保存快捷键。");
+      }
+    };
+    document.addEventListener("keydown", handleKeydown, true);
+  }
+
+  if (resetShortcutsButton) {
+    resetShortcutsButton.addEventListener("click", () => {
+      Game.PlayerProfile.resetShortcutSettings();
+      renderShortcutSettings();
+      showShortcutMessage("已恢复默认快捷键。");
+    });
+  }
+  renderShortcutSettings();
 
   function createEndingCard(ending, unlocked) {
     const card = document.createElement("article");

@@ -921,6 +921,31 @@ a { color: inherit; }
   accent-color: var(--accent);
   cursor: pointer;
 }
+.shortcut-settings { margin-top: 22px; }
+.shortcut-settings-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+.shortcut-settings-header h2 { margin: 0 0 5px; color: var(--accent); font-size: 1.15em; }
+.shortcut-settings-header p, .shortcut-setting-message { margin: 0; color: rgba(236,229,216,.62); line-height: 1.45; }
+.shortcut-setting-list { display: grid; gap: 10px; }
+.shortcut-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+}
+.shortcut-setting-copy { display: grid; gap: 4px; }
+.shortcut-setting-copy strong { color: var(--ink); }
+.shortcut-setting-copy small { color: rgba(236,229,216,.62); line-height: 1.4; }
+.shortcut-capture-button { min-width: 92px; }
+.shortcut-setting-message { min-height: 1.45em; margin-top: 10px; }
 .ending-collection-header {
   display: flex;
   align-items: baseline;
@@ -979,6 +1004,8 @@ a { color: inherit; }
   .volume-setting { grid-template-columns: 1fr 52px; gap: 12px; }
   .volume-setting-copy { grid-column: 1 / -1; }
   .toggle-setting { align-items: start; }
+  .shortcut-settings-header, .shortcut-setting { align-items: stretch; flex-direction: column; }
+  .shortcut-capture-button, #reset-shortcuts { align-self: flex-start; }
   .ending-collection-header { display: block; }
   .ending-collection-header strong { display: block; margin: -10px 0 18px; }
   .ending-collection { grid-template-columns: 1fr; }

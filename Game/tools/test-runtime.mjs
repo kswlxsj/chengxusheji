@@ -152,11 +152,12 @@ localStorage.setItem = originalSetItem;
 assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登录时不应访问默认存档槽");
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 
-// 玩家配置按账号隔离；音量逐字段恢复，自动存档默认开启，结局解锁幂等且只接受已登记编号。
+// 玩家配置按账号隔离；音量逐字段恢复，快捷键唯一，自动存档默认开启，结局解锁幂等且只接受已登记编号。
 assert.match(pageButtonSoundSource, /getAudioGain\?\.\("buttonSfx"\)/, "页面点击音效应读取独立音量设置");
 assert.match(uiSource, /buttonSfxVolume/, "游戏内按钮音应读取独立音量设置");
 assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "自动存档默认应开启");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 1, "默认 60% 应保持游戏原始音量");
 assert.equal(Game.PlayerProfile.setAudioSetting("pageMusic", 0.55), 0.55);
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 0.55 / 0.6);
@@ -170,21 +171,30 @@ assert.equal(Game.PlayerProfile.unlockEnding("unknown"), false, "未知终局不
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "lost", "bad_end", "san"]);
 assert.equal(Game.PlayerProfile.setAutoSaveEnabled(false), false);
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "关闭自动存档后应保留设置");
+assert.equal(Game.PlayerProfile.setShortcutSetting("advance", "Enter"), "Enter");
+assert.equal(Game.PlayerProfile.setShortcutSetting("auto", "Z"), "z", "字母快捷键应忽略大小写");
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("fast", "z"), /已被其他操作使用/);
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("unknown", "Q"), /未知快捷键操作/);
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("fast", "Shift"), /不能用作快捷键/);
+assert.deepEqual({ ...Game.PlayerProfile.resetShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 
 assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
 assert.equal(Auth.login("ProfileBob", "secret3").ok, true);
 assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "不同账号应使用默认自动存档设置");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], [], "不同账号不应共享结局收藏");
 Game.PlayerProfile.setAudioSetting("pageMusic", 0.2);
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 assert.equal(Game.PlayerProfile.getAudioSettings().pageMusic, 0.55, "切回账号后应恢复该账号音量");
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "切回账号后应恢复该账号自动存档设置");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" }, "旧账号配置应补齐默认快捷键");
 
 const aliceProfileKey = "train-game-profile-user-v1:Alice";
 storage.set(aliceProfileKey, JSON.stringify({ audio: { pageMusic: "bad", gameAmbience: 0.4 }, unlockedEndings: ["lost", "bad-id", "lost"] }));
 assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "缺失自动存档设置应回退为开启");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" }, "缺失快捷键设置应回退为默认值");
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["lost"], "损坏字段应独立回退并清理无效或重复结局");
 storage.set(aliceProfileKey, JSON.stringify({ autoSaveEnabled: "false" }));
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "非法自动存档设置应回退为开启");
