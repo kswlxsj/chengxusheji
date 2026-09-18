@@ -473,7 +473,7 @@ const saves = new TrainGame.SaveManager(state);
 
 ### ConfirmDialog（存档页页面内确认框）
 
-存档页（`save-write.html` / `save-manager.html`）用它代替浏览器原生 `window.confirm`，外观与游戏本体的暂停 / 确认菜单一致。它只负责"询问并返回玩家的选择"，不读游戏数据、不接管页面导航，因此不属于 `UIManager`，也不会把对话窗口、小游戏宿主等游戏内窗口带进存档页。
+统一存档管理页（`save-manager.html`）用它代替浏览器原生 `window.confirm`，外观与游戏本体的暂停 / 确认菜单一致。它只负责"询问并返回玩家的选择"，不读游戏数据、不接管页面导航，因此不属于 `UIManager`，也不会把对话窗口、小游戏宿主等游戏内窗口带进存档页。
 
 ```javascript
 const confirmed = await TrainGame.ConfirmDialog.ask({

@@ -19,8 +19,7 @@
     ending: "ending.html", // 结局页
     settings: "settings.html", // 设置页
     about: "GroupIntro/index.html", // 小组介绍汇总页（接替原 about.html 占位页）
-    saveManager: "save-manager.html", // 存档管理页（读取 / 删除）
-    saveWrite: "save-write.html" // 存档写入页（新建 / 覆盖写入）
+    saveManager: "save-manager.html" // 统一存档管理页（读取 / 删除 / 写入）
   });
 
   /**

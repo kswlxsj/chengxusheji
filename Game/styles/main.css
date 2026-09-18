@@ -2,7 +2,7 @@
    常暗之厢 全站样式表 main.css
    以下 8 个页面共用本文件：index.html（登录）、register.html（注册）、
    home.html（主页）、settings.html（设置）、ending.html（结束）、
-   save-manager.html（存档管理）、save-write.html（选择槽位）、game.html（游戏）。
+   save-manager.html（统一存档管理）、game.html（游戏）。
    样式按「页面 / 界面区域」分节，新增规则请就近加入对应分节；
    公共设计令牌与全局基础统一维护在第 1 节。
    ============================================================================ */

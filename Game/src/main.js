@@ -456,22 +456,21 @@
     flow.navigate("home", {}, true);
   }
 
-  async function openSaveWriter(returnTo) {
+  async function openSaveManager() {
     try {
       await engine.cancelToCheckpoint();
       ui.closePauseMenus();
       flow.clearRefreshSnapshot();
       flow.setTransfer({
-        kind: "save-write",
+        kind: "save-manager-game",
         checkpoint: engine.getCheckpoint(),
-        slot: activeSlot,
-        returnTo
+        slot: activeSlot
       });
-      flow.navigate("saveWrite", { intent: "save" });
+      flow.navigate("saveManager", { intent: "game" });
       return true;
     } catch (error) {
-      console.error("准备跨页保存失败：", error);
-      ui.toast(`无法打开存档写入页：${errorMessage(error)}`);
+      console.error("准备打开存档管理失败：", error);
+      ui.toast(`无法打开存档管理：${errorMessage(error)}`);
       return false;
     }
   }
@@ -482,7 +481,7 @@
         title: "游戏已暂停",
         options: [
           { label: "继续游戏", value: "resume" },
-          { label: "保存", value: "save", description: "保存最近的稳定检查点" },
+          { label: "存档管理", value: "save-manager", description: "存档、读取或删除存档" },
           { label: "返回主界面", value: "return" },
           { label: "保存并返回主界面", value: "save-return", description: "保存最近的稳定检查点后返回" }
         ]
@@ -492,8 +491,8 @@
         resumeGame();
         return;
       }
-      if (action === "save") {
-        if (await openSaveWriter("game")) return;
+      if (action === "save-manager") {
+        if (await openSaveManager()) return;
         continue;
       }
       if (action === "return") {

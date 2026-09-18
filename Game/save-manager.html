@@ -18,16 +18,17 @@
 <body>
   <main class="site-shell content-page">
     <section class="page-panel save-page-panel">
-      <h1>存档管理</h1>
-      <p class="page-introduction">选择已有存档继续游戏，或删除不再需要的存档。</p>
+      <h1 id="save-title">存档管理</h1>
+      <p id="save-introduction" class="page-introduction"></p>
       <div id="save-slots" class="save-slot-list" aria-live="polite"></div>
-      <nav class="page-footer"><a href="home.html">返回主页</a></nav>
+      <p id="page-error" class="page-error" role="alert"></p>
+      <div class="page-footer"><button id="save-footer-action" type="button"></button></div>
     </section>
     <div id="confirm-layer"></div>
   </main>
   <script src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
-  <script src="src/page-flow.js?v=checkpoint-20260917-1"></script>
+  <script src="src/page-flow.js?v=save-manager-20260918-1"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/state.js?v=checkpoint-20260917-1"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
@@ -35,7 +36,7 @@
   <!-- TrainGame.SaveSlotArt，根据存档 sceneId 选择对应的车厢剪影。 -->
   <script src="src/confirm-dialog.js"></script>
   <!-- TrainGame.ConfirmDialog，提供存档页共用的页面内确认框（替代浏览器原生 confirm）。 -->
-  <script src="src/save-manager.js"></script>
-  <!-- 初始化存档列表渲染、读取和删除存档的交互逻辑。 -->
+  <script src="src/save-manager.js?v=save-manager-20260918-1"></script>
+  <!-- 初始化统一存档管理页：主页读取/删除、游戏内存档/读取/删除与新游戏选槽。 -->
 </body>
 </html>
