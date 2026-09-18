@@ -43,6 +43,8 @@ for (const file of ["src/namespace.js", "src/page-flow.js", "src/auth.js", "src/
 
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
+const pageButtonSoundSource = await readFile("src/page-button-sound.js", "utf8");
+const uiSource = await readFile("src/ui.js", "utf8");
 
 // 同一标签页的刷新恢复检查点与跨页交接隔离，并拒绝槽位不符或损坏的数据。
 {
@@ -151,13 +153,16 @@ assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 
 // 玩家配置按账号隔离；音量逐字段恢复，自动存档默认开启，结局解锁幂等且只接受已登记编号。
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.match(pageButtonSoundSource, /getAudioGain\?\.\("buttonSfx"\)/, "页面点击音效应读取独立音量设置");
+assert.match(uiSource, /buttonSfxVolume/, "游戏内按钮音应读取独立音量设置");
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "自动存档默认应开启");
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 1, "默认 60% 应保持游戏原始音量");
 assert.equal(Game.PlayerProfile.setAudioSetting("pageMusic", 0.55), 0.55);
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 0.55 / 0.6);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameAmbience", -2), 0);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameSfx", 8), 1);
+assert.equal(Game.PlayerProfile.setAudioSetting("buttonSfx", 0), 0);
 assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知音量设置/);
 for (const ending of Game.ENDING_CATALOG) assert.equal(Game.PlayerProfile.unlockEnding(ending.id), true);
 assert.equal(Game.PlayerProfile.unlockEnding("true_end"), false, "重复结局不应重复写入");
@@ -168,7 +173,7 @@ assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "关闭自动存档
 
 assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
 assert.equal(Auth.login("ProfileBob", "secret3").ok, true);
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "不同账号应使用默认自动存档设置");
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], [], "不同账号不应共享结局收藏");
 Game.PlayerProfile.setAudioSetting("pageMusic", 0.2);
@@ -178,17 +183,17 @@ assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "切回账号后应
 
 const aliceProfileKey = "train-game-profile-user-v1:Alice";
 storage.set(aliceProfileKey, JSON.stringify({ audio: { pageMusic: "bad", gameAmbience: 0.4 }, unlockedEndings: ["lost", "bad-id", "lost"] }));
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "缺失自动存档设置应回退为开启");
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["lost"], "损坏字段应独立回退并清理无效或重复结局");
 storage.set(aliceProfileKey, JSON.stringify({ autoSaveEnabled: "false" }));
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "非法自动存档设置应回退为开启");
 storage.set(aliceProfileKey, "not-json");
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 storage.set(aliceProfileKey, JSON.stringify({ version: 1, audio: { pageMusic: 1, gameAmbience: 0.5, gameSfx: 0 } }));
 assert.deepEqual(
   { ...Game.PlayerProfile.getAudioSettings() },
-  { pageMusic: 0.6, gameAmbience: 0.3, gameSfx: 0 },
+  { pageMusic: 0.6, gameAmbience: 0.3, gameSfx: 0, buttonSfx: 0.6 },
   "旧版直接倍率应迁移为以 60% 为原始音量的新滑杆位置"
 );
 storage.delete(aliceProfileKey);

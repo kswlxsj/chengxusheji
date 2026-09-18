@@ -1036,6 +1036,7 @@
     constructor(root, audio = []) {
       const audioSettings = Game.PlayerProfile?.getAudioSettings?.() || {};
       const gameSfxVolume = Game.PlayerProfile?.toAudioGain?.(audioSettings.gameSfx) ?? 1;
+      const buttonSfxVolume = Game.PlayerProfile?.toAudioGain?.(audioSettings.buttonSfx) ?? 1;
       const gameAmbienceVolume = Game.PlayerProfile?.toAudioGain?.(audioSettings.gameAmbience) ?? 1;
       this.root = root;
       this.dialog = new DialogWindow(root);
@@ -1047,7 +1048,7 @@
         ? new Game.AudioManager(document.body, audio, { masterVolume: gameSfxVolume })
         : null;
       this.buttonAudio = Game.AudioManager
-        ? new Game.AudioManager(document.body, audio, { fadeMs: 0, masterVolume: gameSfxVolume })
+        ? new Game.AudioManager(document.body, audio, { fadeMs: 0, masterVolume: buttonSfxVolume })
         : null;
       this.backgroundAudio = Game.BackgroundAudioManager
         ? new Game.BackgroundAudioManager(document.body, audio, { masterVolume: gameAmbienceVolume })

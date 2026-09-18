@@ -1,10 +1,10 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 3;
+  const PROFILE_VERSION = 4;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
   const AUDIO_REFERENCE_LEVEL = 0.6;
-  const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx"]);
+  const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx", "buttonSfx"]);
   const AUDIO_KEY_SET = new Set(AUDIO_KEYS);
 
   const ENDING_CATALOG = Object.freeze([
@@ -47,7 +47,8 @@
       audio: {
         pageMusic: AUDIO_REFERENCE_LEVEL,
         gameAmbience: AUDIO_REFERENCE_LEVEL,
-        gameSfx: AUDIO_REFERENCE_LEVEL
+        gameSfx: AUDIO_REFERENCE_LEVEL,
+        buttonSfx: AUDIO_REFERENCE_LEVEL
       },
       autoSaveEnabled: true,
       unlockedEndings: []

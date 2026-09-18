@@ -3,7 +3,13 @@
 
   const SOURCE = "assets/Audio/SoundEffect/button04b.mp3";
   const PENDING_SOUND_KEY = "train-game-pending-page-button-sound-v1";
+  const BASE_VOLUME = 0.85;
   let activeAudio = null;
+
+  function getButtonVolume() {
+    const gain = window.TrainGame?.PlayerProfile?.getAudioGain?.("buttonSfx") ?? 1;
+    return Math.min(1, Math.max(0, BASE_VOLUME * gain));
+  }
 
   function playButtonSound() {
     if (activeAudio) {
@@ -12,7 +18,7 @@
     }
 
     const audio = new Audio(SOURCE);
-    audio.volume = 0.85;
+    audio.volume = getButtonVolume();
     activeAudio = audio;
     const promise = audio.play();
     if (promise && typeof promise.catch === "function") {
