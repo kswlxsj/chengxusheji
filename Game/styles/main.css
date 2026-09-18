@@ -21,6 +21,8 @@
   font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --ink: #ece5d8;
   --panel: rgba(16, 19, 24, 0.92);
+  --game-window-panel: #181010;
+  --game-window-button-radius: 4px;
   --line: #8e7b5f;
   --accent: #d5ad6d;
 }
@@ -1575,9 +1577,11 @@ body.home-op-active .home-page .auth-user-status {
 .inspect-close,
 .attribute-stepper button,
 .allocation-actions button,
-.menu-actions button {
+.menu-actions button,
+.minigame-exit {
   color: var(--ink);
   border: 1px solid var(--line);
+  border-radius: var(--game-window-button-radius);
   background: #272a2f;
   cursor: pointer;
 }
@@ -1698,8 +1702,9 @@ body.home-op-active .home-page .auth-user-status {
 .game-window {
   pointer-events: auto;
   border: 2px solid var(--line);
+  border-radius: 6px;
   color: var(--ink);
-  background: var(--panel);
+  background: var(--game-window-panel);
   box-shadow: 0 10px 36px rgba(0,0,0,.7);
 }
 
@@ -1712,6 +1717,7 @@ body.home-op-active .home-page .auth-user-status {
   min-height: 26%;
   padding: 4px 28px 50px;
   border: 20px solid transparent;
+  border-radius: 0;
   border-width: 20px 30px;
   border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   background-clip: padding-box;
