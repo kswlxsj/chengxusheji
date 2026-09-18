@@ -4,7 +4,7 @@
 
 阅读前请先通读总览文档 `Game/README.md`（项目定位、快速开始、运行原理、排错与交付），本文不再重复总览级说明；`Game/docs/README.md` 是 docs 目录索引。历史设计文档（`_Archived/架构设计.md`、`_Archived/三天计划.md`）已归档，行为规则一律以本文档与源码为准。
 
-当前版本对照：运行时 **v0.4.0**，数据格式版本 **4**（`meta.json.formatVersion`），存档版本 **4**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
+当前版本对照：运行时 **v0.5.0**，数据格式版本 **4**（`meta.json.formatVersion`），存档版本 **5**（`saveVersion`）。修改本文所述协议时，必须同步更新本文档与 `Game/README.md` 中的版本声明。
 
 按读者分工：
 
@@ -197,7 +197,7 @@
 - **几何统一**：门热点固定 `y: 21`、`width: 12`、`height: 63`，左门 `x: 0`、右门 `x: 89`；两端保持一致，玩家来回穿行时才有稳定的位置感。
 - **里世界例外**：两端门是背景上的隐形热点，坐标为左 x=1 / 右 x=90、y=24、宽9%、高49%，层级13高于窗户蒙版，避免门窗交叠时误触；无贴图、无高亮。
 - **剧情例外**：`door_07_to_08` 对应的 8 号车厢门在剧情中已消失（只存在一片漆黑），它的 `clickEvent`（`E_008`）只播放调查、不切换场景。
-- **点门驱动**：跨车厢只能由玩家点门完成，剧情事件不得用 `changeScene` 替玩家进车（否则玩家没有机会在门前做选择）。例：`door_03_to_02` → `E_023`（门前认知崩塌，仅首次播放）→ `E_501`（里世界入口）；正常路线在5号取得手电筒、3号完成黑包流程并取得手机后停下，等待玩家点这扇门。
+- **点门驱动**：跨车厢只能由玩家点门完成，剧情事件不得用 `changeScene` 替玩家进车（否则玩家没有机会在门前做选择）。例：`door_03_to_02` → `E_023`（门前认知崩塌，仅首次播放）→ `E_501`（里世界入口）；正常路线的手电筒只在5号取得，3号完成黑包流程并取得手机后停下，等待玩家点这扇门。
 - **自检**：新增车厢或改动门接线后，逐门核对「左侧→车厢号更大 / 右侧→车厢号更小或 `front`」，再运行 `npm run compile`。
 
 ### events.json 与内置动作
@@ -366,7 +366,7 @@
 
 | 接口 | 用法 |
 | --- | --- |
-| `TrainGame.version` | 当前运行时版本 `0.4.0`。 |
+| `TrainGame.version` | 当前运行时版本 `0.5.0`。 |
 | `deepClone(value)` | JSON 深拷贝；不适用函数、DOM 或循环引用。 |
 | `delay(ms)` | 普通延迟；事件演出应改用 `context.wait()`。 |
 | `evaluateCondition(condition, state)` | 计算通用条件；未知条件警告并返回 `false`。 |
@@ -404,7 +404,7 @@ const state = new TrainGame.GameState(
 
 框架代码可只读查询 `state.attributeDefinitions`、`state.skillDefinitions` 和 `state.totalAttributePoints`。**不要直接改 `state.attributes` 或 `state.skills`**，否则会跳过边界钳制和技能重算；属性接口只接受整数并把结果限制在注册的 `min` 与 `max` 之间。
 
-快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`、`checkAttempts`。可序列化快照示例（存档与调试入口所见状态的结构）：
+状态快照包含 `sceneId`、`currentEventId`、`attributes`、`skills`、`skillOverrides`、`attributeAllocationComplete`、`flags`、`inventory`、`objectStates`、`checkResults`、`checkAttempts`。它只是检查点中的状态部分，不自行表达恢复位置。可序列化状态快照示例：
 
 ```json
 {
@@ -439,17 +439,22 @@ const state = new TrainGame.GameState(
 
 ### PlayerProfile（账号设置与结局收藏）
 
-`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。配置包内部版本为 2；读取版本 1 时会把旧直接倍率乘以 60%，迁移后保持实际听感不变。
+`TrainGame.PlayerProfile` 维护不属于单个存档槽的账号级数据，存储键为 `train-game-profile-user-v1:<编码后的用户名>`。删除或覆盖游戏存档不会清除这些数据。配置包内部版本为 5；读取版本 1 时会把旧直接倍率乘以 60%，迁移后保持实际听感不变；旧配置缺少后来新增的音量字段时，各字段独立回退为 60%。旧配置没有快捷键字段时，会补齐默认快捷键。
 
 | 接口 | 行为 |
 | --- | --- |
-| `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx }`，各值为滑杆的 0–1 位置；缺失或损坏字段单独回退为 `0.6`。 |
+| `getAudioSettings()` | 返回 `{ pageMusic, gameAmbience, gameSfx, buttonSfx }`，各值为滑杆的 0–1 位置；缺失或损坏字段单独回退为 `0.6`。 |
 | `setAudioSetting(key, value)` | 钳制到 0–1 后立即保存当前账号；未知键抛错。 |
 | `getAudioGain(key)` / `toAudioGain(value)` | 将滑杆位置换算为实际倍率；`0.6` 返回 `1`，即 60% 对应原始设计音量。 |
+| `getShortcutSettings()` | 返回账号级快捷键副本 `{ pause, advance, auto, fast }`。默认依次是 `Escape`、空格、`a`、`Control`。 |
+| `setShortcutSetting(action, key)` | 立即保存单键绑定；不支持 `Alt`、`Shift`、`Meta`、死键或未识别键，且不允许与其他操作重复，非法值抛错。字母不区分大小写。 |
+| `resetShortcutSettings()` | 立即恢复四项默认快捷键，并返回新设置副本。 |
 | `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
 | `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
 
-只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡、结束页与各结局过场均据此显示。终局原因一经确定就在过场或跳页前解锁，避免关闭过场导致漏记；旧版本已经达成的结局没有可靠记录，不做推测性补发。
+只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡与结局达成过渡页均据此显示。终局原因一经确定就立即解锁；游戏页随后完成该结局专属 OP（如有），无论 OP 正常结束还是资源失败，都会跳转 `ending-reveal.html?reason=<结局编号>`。过渡页以 0.6 秒淡入、展示至第 3.4 秒后再以 0.6 秒淡出，随后替换导航至 `ending.html?reason=<结局编号>`；后者保留旧视频结局画面，并提供读取存档及返回主页操作。旧版本已经达成的结局没有可靠记录，不做推测性补发。
+
+Options 的“游戏”标签可修改四项快捷键。暂停快捷键在游戏中切换暂停/继续；推进、自动和快进只在对话窗口等待推进时响应，以避免干扰选项、检定、物品调查与小游戏。快进是切换开关，不是按住行为。
 
 ### SaveManager（三槽存档）
 
@@ -461,17 +466,19 @@ const saves = new TrainGame.SaveManager(state);
 | --- | --- |
 | `listSlots()` | 返回固定三个槽位的占用、兼容性、保存时间、场景和 SAN 摘要。 |
 | `hasSave(slot)` | 判断指定的 `1..3` 槽位是否存在数据。 |
-| `save(slot, snapshot = state.snapshot())` | 写入 `{ saveVersion: 4, savedAt, state }`；属性未分配完时拒绝。 |
-| `load(slot)` | 空槽返回 `false`；不兼容时抛错；成功恢复并返回 `true`。 |
+| `save(slot, checkpoint)` | 写入 `{ saveVersion: 5, savedAt, checkpoint }`；检查点格式非法或属性未分配完时拒绝。 |
+| `load(slot)` | 空槽返回 `null`；不兼容时抛错；成功返回检查点深拷贝，不直接恢复状态。 |
 | `delete(slot)` | 删除指定槽位；非法槽位抛错。 |
 
-默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。旧共享槽与旧单槽键均不迁移也不删除；兼容判断以数据内的 `saveVersion: 4` 为准，v3存档明确提示不兼容。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
+检查点结构为 `{ state, resume }`：`state` 是 `GameState.snapshot()`，`resume` 为 `null` 或 `{ eventId, actionIndex }`。稳定边界及游标由 `EventEngine` 决定；`SaveManager` 只校验基础结构并持久化，不创建检查点。
+
+默认存储键为 `train-game-save-user-v1:<编码后的用户名>:slot-1` 至 `slot-3`。创建默认存档管理器时必须已有有效登录会话。v4 `{ state }` 存档会读取为 `resume: null` 的检查点，并在下一次写入时升级为 v5；v3 与更早版本仍不兼容。旧共享槽与旧单槽键均不迁移也不删除。**不要仅修改存储键**——键决定去哪里找数据，`saveVersion` 才表达结构兼容性。
 
 `SaveManager` 本身不做任何交互确认：覆盖已占用槽位与删除存档的二次确认属于页面职责，由存档页在调用前经 `TrainGame.ConfirmDialog` 询问（见下一节）。
 
 ### ConfirmDialog（存档页页面内确认框）
 
-存档页（`save-write.html` / `save-manager.html`）用它代替浏览器原生 `window.confirm`，外观与游戏本体的暂停 / 确认菜单一致。它只负责"询问并返回玩家的选择"，不读游戏数据、不接管页面导航，因此不属于 `UIManager`，也不会把对话窗口、小游戏宿主等游戏内窗口带进存档页。
+统一存档管理页（`save-manager.html`）用它代替浏览器原生 `window.confirm`，外观与游戏本体的暂停 / 确认菜单一致。它只负责"询问并返回玩家的选择"，不读游戏数据、不接管页面导航，因此不属于 `UIManager`，也不会把对话窗口、小游戏宿主等游戏内窗口带进存档页。
 
 ```javascript
 const confirmed = await TrainGame.ConfirmDialog.ask({
@@ -525,24 +532,27 @@ const engine = new TrainGame.EventEngine({ events, state, scene, ui, items });
 | --- | --- |
 | `busy` / `paused` | 是否正运行事件、是否暂停。 |
 | `onStateChanged` | 状态回调，入口用它刷新 HUD。 |
+| `onCheckpointChanged` | 检查点变更回调；入口用它更新当前标签页的刷新恢复数据。 |
 | `registerAction(type, handler)` | 注册通用动作；重复名称或非函数会抛错。 |
 | `registerCustomAction(name, handler)` | 注册 `custom` 白名单。 |
 | `context()` | 创建当前动作上下文。 |
-| `getStableSnapshot()` | 返回最近完整事件链状态的深拷贝。 |
-| `adoptStableState()` | 将当前状态设为稳定点。 |
-| `restoreStableState()` | 恢复稳定点、重载场景并通知状态变化。 |
+| `getCheckpoint()` | 返回最近稳定检查点 `{ state, resume }` 的深拷贝。 |
+| `adoptCheckpoint(resume = null)` | 用当前状态与指定续跑游标建立检查点。 |
+| `restoreCheckpoint(checkpoint?)` | 校验并恢复检查点、重载场景并通知状态及检查点变化。 |
 | `setPaused(value)` | 暂停/恢复 UI、等待和引擎计时器。 |
 | `wait(milliseconds, run?)` | 可暂停、取消的计时器；返回实际有效等待毫秒数（不含暂停时间），可用于持续演出避免定时器精度累积误差。 |
-| `cancelToStable()` | 取消运行、关闭待处理 UI 并恢复稳定点。 |
+| `cancelToCheckpoint()` | 取消运行、关闭待处理 UI 并恢复最近检查点。 |
+| `resumeCheckpoint()` | 无游标时返回 `false`；有游标时从指定事件动作续跑。 |
 | `loadScene(sceneId)` | 等待场景素材就绪和暂停恢复，检查取消后提交；仅在活动事件内使用，不关闭对话。 |
 | `waitFor(promise)` | 可取消地等待异步任务；取消立即结束等待，迟到任务不会提交状态。 |
-| `play(eventId)` | 忙碌时返回 `false`；成功为 `true`；取消/错误时回滚并返回 `false`。 |
+| `play(eventId, actionIndex = 0)` | 从事件动作下标开始执行；忙碌时返回 `false`，成功为 `true`，取消/错误时回滚并返回 `false`。 |
 
 规则与语义：
 
 - 事件链最多连续进入 100 个事件，超过视为可能存在无输入死循环。
 - 通用动作处理器签名为 `async (action, context)`；返回 `{ next: "E_TARGET", stop: true }` 可跳转并停止当前事件。
-- **稳定状态**：`EventEngine` 只在完整事件链成功结束后更新稳定快照；事件执行中不保存，保存与返回主界面都以稳定快照为准，不保留半个事件的调用栈。读取存档或重置状态后，应调用 `adoptStableState()` 建立新的稳定点。
+- **稳定检查点**：从自由探索触发事件时先把该事件入口写入现有稳定状态；每个完整事件结束后再提交一次，若存在后继事件，`resume` 指向后继事件的第 0 个动作。`choice` 在显示选项前额外提交指向自身动作下标的检查点，因此暂停保存、刷新或读档后会直接重开同一选项。属性分配后的新游戏入口则以 `E_001#0` 建立首个检查点。
+- **非检查点动作**：对白、调查、检定、小游戏及普通状态动作不会单独提交；在这些动作中暂停保存时，只持久化最近检查点，恢复后可能重放当前事件的一部分。保存动作不会序列化 DOM、Promise 或事件调用栈。
 - 只有频繁复用的基础能力才使用 `registerAction()`；单次演出优先用 `custom`（见下节），并同步[变更联动清单](#变更协议时的联动清单)。
 
 ### 自定义动作上下文
@@ -666,6 +676,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 | `setMasterVolume(value)` | 更新管理器及当前活动音源的用户总倍率，不覆盖资源默认音量或剧情单次倍率。 |
 | `new BackgroundAudioManager(root, registry, options)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`；同样接受 `options.masterVolume`。 |
 | `setTrack(soundId, options)` | 选择场景背景音。相同编号保持进度，淡出中再次选择会恢复；新编号与旧编号交叉淡化；`null` 淡出到静音。 |
+| `setPlaybackRate(value)` | 即时调整当前背景音的播放速度和音高；复用当前音源并保留其播放进度。 |
 
 语义与边界：
 
@@ -676,7 +687,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 - **检定演出**：`DiceRollWindow` 直接复用 `ui.audio`，抖动阶段播放注册编号 `dice_rolling`，抖动结束时停止滚动音；随后“成功”或“失败”文字出现时播放 `dice_success` 或 `dice_fail`。这三个编号无需在事件 JSON 里另写 `sound` 动作。
 - **里世界静音**：里世界只放行车门、剧情提示和检定等白名单事件音；背景音不经过该白名单，而是完全由当前场景绑定决定。
 - **场景背景音**：普通真实车厢绑定 `train_ambient`；2号绑定 `devil_scared`；7号及被啃食6号绑定带1600ms间隔的 `eating_crisps`；假1号绑定 `maze`；伪4号与两处花海绑定 `fake`。专属音替换列车声，不叠加；相邻场景绑定同一编号时持续播放。
-- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 负责标题、Options 与结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理。Options 分别保存页面音乐、游戏背景音、游戏音效滑杆位置；60% 为原始设计音量，公式统一为“资源默认音量 × 剧情单次倍率 ×（滑杆值 ÷ 60%）”，最终限制到浏览器允许的 0–1。
+- **与页面 BGM 的区别**：`src/bgm.js` 和 `src/home-op.js` 负责标题、Options 与结束页面音乐；游戏内背景音和事件音都由 `src/audio.js` 管理。Options 分别保存页面音乐、游戏背景音、游戏音效和点击音效滑杆位置；点击音效覆盖游戏内按钮与各页面的按钮、链接，`gameSfx` 不再影响按钮音。60% 为原始设计音量，公式统一为“资源默认音量 × 剧情单次倍率 ×（滑杆值 ÷ 60%）”，最终限制到浏览器允许的 0–1。
 
 ### UI：GameWindow / TextPlayer / UIManager
 
@@ -751,7 +762,8 @@ class NoticeWindow extends TrainGame.GameWindow {
 
 ```javascript
 game.state.snapshot()
-game.engine.getStableSnapshot()
+game.engine.getCheckpoint()
+game.engine.resumeCheckpoint()
 game.engine.play("E_001")
 game.scene.refresh()
 game.pauseGame()

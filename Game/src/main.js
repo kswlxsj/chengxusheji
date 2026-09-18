@@ -28,84 +28,58 @@
       if (ending) return;
       ending = true;
       flow.clearTransfer();
+      flow.clearRefreshSnapshot();
       const reason = state.flags.ending_reason || "san";
       Game.PlayerProfile?.unlockEnding?.(reason);
       // 预加载结局素材期间也不能继续播放旧场景音频。
       ui.audio?.stopAll?.({ immediate: true });
       ui.backgroundAudio?.stopAll?.({ immediate: true });
-      if (reason === "lost") {
-        // 终止是在最后一句对白执行时抛出的；先关闭事件对白层，避免它盖在专属演出上。
-        ui.cancelPending?.();
-        if (hud) hud.hidden = true;
-        if (inventoryBar) inventoryBar.hidden = true;
-        document.querySelector("#toast")?.setAttribute("hidden", "");
-        try {
-          if (typeof Game.playLostEndingSequence === "function") {
-            await Game.playLostEndingSequence({
-              root: gameShell,
-              backgroundAudio: ui.backgroundAudio
-            });
-          }
-        } catch (error) {
-          console.error("失落结局演出失败：", error);
-        } finally {
-          // 无论演出资源或音频是否失败，都必须落到统一的旅程终止页。
-          try {
-            flow.navigate("ending", { reason }, true);
-          } catch (error) {
-            console.error("失落结局页面跳转失败：", error);
-            window.location.replace(flow.url("ending", { reason }));
-          }
-        }
-        return;
-      }
-      // CODEX ADD START
-      if (reason === "true_end" && typeof Game.playEndingASequence === "function") {
-        try {
+      // 终止是在最后一句对白执行时抛出的；先清理常规游戏 UI，
+      // 再播放结局专属 OP，最后统一落到结局达成页。
+      ui.cancelPending?.();
+      if (hud) hud.hidden = true;
+      if (inventoryBar) inventoryBar.hidden = true;
+      document.querySelector("#toast")?.setAttribute("hidden", "");
+      try {
+        if (reason === "true_end" && typeof Game.playEndingASequence === "function") {
           await Game.playEndingASequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("真结局演出失败：", error);
         }
-      }
-      if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
-        try {
+        if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
           await Game.playFakeEndingSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("伪结局演出失败：", error);
         }
-      }
-      if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
-        try {
+        if (reason === "bad_end" && typeof Game.playParkingEndingSequence === "function") {
           await Game.playParkingEndingSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("停车结局演出失败：", error);
         }
-      }
-      if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
-        try {
+        if (reason === "san" && typeof Game.playSanZeroSequence === "function") {
           await Game.playSanZeroSequence({
             root: gameShell,
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
-        } catch (error) {
-          console.error("SAN 归零演出失败：", error);
         }
+        if (reason === "lost" && typeof Game.playLostEndingSequence === "function") {
+          await Game.playLostEndingSequence({
+            root: gameShell,
+            backgroundAudio: ui.backgroundAudio
+          });
+        }
+      } catch (error) {
+        console.error(`结局演出失败（${reason}）：`, error);
+      } finally {
+        navigateToEnding(reason);
       }
-      showEndingOverlay(reason);
-      // CODEX ADD END
     }
   });
   const gameShell = document.querySelector("#game-shell");
@@ -145,56 +119,14 @@
     "dice_success",
     "dice_fail"
   ];
-  // CODEX ADD START
-  function showEndingOverlay(reason) {
-    const overlay = document.querySelector("#codex-ending-overlay");
-    const video = document.querySelector("#codex-ending-video");
-    const loadButton = document.querySelector("#codex-ending-load");
-    const homeButton = document.querySelector("#codex-ending-home");
-    if (!overlay || !video || !loadButton || !homeButton) {
-      flow.navigate("ending", { reason }, true);
-      return;
+  function navigateToEnding(reason) {
+    try {
+      flow.navigate("endingReveal", { reason }, true);
+    } catch (error) {
+      console.error("结局页面跳转失败：", error);
+      window.location.replace(flow.url("endingReveal", { reason }));
     }
-    if (!overlay.hidden) return;
-
-    startupLocked = true;
-    paused = true;
-    gameShell.classList.add("paused");
-    engine.setPaused(true);
-    scene.setInteractionEnabled(false);
-    ui.closePauseMenus();
-    updateHud();
-
-    video.pause();
-    video.currentTime = 0;
-    overlay.hidden = false;
-    // 结局按钮从覆盖层出现时就可用，不需要等待视频播放完毕。
-    loadButton.hidden = false;
-    homeButton.hidden = false;
-    const openSaveManager = () => {
-      flow.clearTransfer();
-      flow.navigate("saveManager");
-    };
-    const returnToMainMenu = () => {
-      flow.clearTransfer();
-      flow.navigate("home", {}, true);
-    };
-    const tryPlay = () => {
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {});
-      }
-    };
-
-    video.addEventListener("error", () => {
-      video.style.display = "none";
-    }, { once: true });
-    loadButton.addEventListener("click", openSaveManager, { once: true });
-    homeButton.addEventListener("click", returnToMainMenu, { once: true });
-    overlay.addEventListener("pointerdown", tryPlay, { once: true });
-    tryPlay();
   }
-  // CODEX ADD END
 
   Game.registerProjectActions(engine);
   scene.onObjectClick = (eventId) => engine.play(eventId);
@@ -293,6 +225,13 @@
     maybeTriggerCarriage06Guide();
     autoSaveOnNewCarriage();
     maybeTriggerClickerReveal();
+    rememberRefreshCheckpoint();
+  }
+
+  // 刷新恢复跟随事件引擎的稳定检查点；即使正在等待 choice，也不会记录半截动作状态。
+  function rememberRefreshCheckpoint(checkpoint = engine.getCheckpoint()) {
+    if (startupLocked || !activeSlot) return;
+    flow.setRefreshCheckpoint(activeSlot, checkpoint);
   }
 
   function syncAutosavedCarriages() {
@@ -309,18 +248,18 @@
     if (startupLocked || paused || engine.busy || !activeSlot || !state.sceneId) return;
     if (!Game.PlayerProfile.getAutoSaveEnabled()) return;
     if (autosavedCarriageIds.has(state.sceneId)) return;
-    const snapshot = engine.getStableSnapshot();
-    if (!snapshot.sceneId || snapshot.sceneId !== state.sceneId) return;
-    const nextAutosavedIds = [...autosavedCarriageIds, snapshot.sceneId];
-    snapshot.flags = {
-      ...snapshot.flags,
+    const checkpoint = engine.getCheckpoint();
+    if (!checkpoint.state.sceneId || checkpoint.state.sceneId !== state.sceneId) return;
+    const nextAutosavedIds = [...autosavedCarriageIds, checkpoint.state.sceneId];
+    checkpoint.state.flags = {
+      ...checkpoint.state.flags,
       [autosavedCarriagesFlag]: nextAutosavedIds
     };
     try {
-      saves.save(activeSlot, snapshot);
+      saves.save(activeSlot, checkpoint);
       autosavedCarriageIds = new Set(nextAutosavedIds);
       state.flags[autosavedCarriagesFlag] = nextAutosavedIds;
-      engine.adoptStableState();
+      engine.adoptCheckpoint(checkpoint.resume);
       ui.toast("已自动保存当前车厢进度");
     } catch (error) {
       console.error("切换车厢时自动保存失败：", error);
@@ -346,6 +285,7 @@
   }
 
   engine.onStateChanged = updateHud;
+  engine.onCheckpointChanged = rememberRefreshCheckpoint;
 
   function errorMessage(error) {
     return error instanceof Error ? error.message : "未知错误";
@@ -353,26 +293,59 @@
 
   function restoreSave(slot) {
     const previousState = state.snapshot();
+    const previousCheckpoint = engine.getCheckpoint();
     try {
-      if (!saves.load(slot)) {
+      const checkpoint = saves.load(slot);
+      if (!checkpoint) {
         ui.toast(`槽位 ${slot} 还没有存档`);
         return false;
       }
+      engine.restoreCheckpoint(checkpoint);
       if (!state.sceneId || !scene.hasScene(state.sceneId)) {
         throw new Error(`存档引用了不存在的场景：${state.sceneId || "空"}`);
       }
       syncAutosavedCarriages();
       scene.load(state.sceneId);
-      engine.adoptStableState();
+      engine.adoptCheckpoint(checkpoint.resume);
       updateHud();
       ui.toast(`已读取槽位 ${slot}`);
       return true;
     } catch (error) {
-      state.restore(previousState);
+      try {
+        engine.restoreCheckpoint(previousCheckpoint);
+      } catch (_restoreError) {
+        state.restore(previousState);
+      }
       scene.load(state.sceneId || data.meta.initialScene);
       updateHud();
       console.error("读取存档失败：", error);
       ui.toast(`读取失败：${errorMessage(error)}`);
+      return false;
+    }
+  }
+
+  function restoreRefreshCheckpoint(slot) {
+    const checkpoint = flow.getRefreshCheckpoint(slot);
+    if (!checkpoint) return false;
+    const previousState = state.snapshot();
+    const previousCheckpoint = engine.getCheckpoint();
+    try {
+      engine.restoreCheckpoint(checkpoint);
+      if (!state.sceneId || !scene.hasScene(state.sceneId)) {
+        throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
+      }
+      syncAutosavedCarriages();
+      scene.load(state.sceneId);
+      engine.adoptCheckpoint(checkpoint.resume);
+      return true;
+    } catch (error) {
+      try {
+        engine.restoreCheckpoint(previousCheckpoint);
+      } catch (_restoreError) {
+        state.restore(previousState);
+      }
+      flow.clearRefreshSnapshot();
+      console.warn("刷新恢复临时状态失败：", error);
       return false;
     }
   }
@@ -401,7 +374,7 @@
   async function returnToMainMenu() {
     startupLocked = true;
     updateHud();
-    await engine.cancelToStable();
+    await engine.cancelToCheckpoint();
     paused = false;
     gameShell.classList.remove("paused");
     engine.setPaused(false);
@@ -409,47 +382,38 @@
     scene.setInteractionEnabled(false);
     updateHud();
     flow.clearTransfer();
+    flow.clearRefreshSnapshot();
     flow.navigate("home", {}, true);
   }
 
-  function openSaveWriter(returnTo) {
-    if (engine.busy) return false;
+  async function openSaveManager() {
     try {
+      await engine.cancelToCheckpoint();
+      ui.closePauseMenus();
+      flow.clearRefreshSnapshot();
       flow.setTransfer({
-        kind: "save-write",
-        snapshot: engine.getStableSnapshot(),
-        slot: activeSlot,
-        returnTo
+        kind: "save-manager-game",
+        checkpoint: engine.getCheckpoint(),
+        slot: activeSlot
       });
-      flow.navigate("saveWrite", { intent: "save" });
+      flow.navigate("saveManager", { intent: "game" });
       return true;
     } catch (error) {
-      console.error("准备跨页保存失败：", error);
-      ui.toast(`无法打开存档写入页：${errorMessage(error)}`);
+      console.error("准备打开存档管理失败：", error);
+      ui.toast(`无法打开存档管理：${errorMessage(error)}`);
       return false;
     }
   }
 
   async function runPauseMenu() {
     while (paused && !startupLocked) {
-      const savingDisabled = engine.busy;
       const action = await ui.pauseMenu.choose({
         title: "游戏已暂停",
         options: [
           { label: "继续游戏", value: "resume" },
-          {
-            label: savingDisabled ? "保存（事件结束后可用）" : "保存",
-            value: "save",
-            disabled: savingDisabled,
-            description: savingDisabled ? "请先完成当前事件或对话" : "选择一个槽位写入"
-          },
+          { label: "存档管理", value: "save-manager", description: "存档、读取或删除存档" },
           { label: "返回主界面", value: "return" },
-          {
-            label: savingDisabled ? "保存并返回（事件结束后可用）" : "保存并返回主界面",
-            value: "save-return",
-            disabled: savingDisabled,
-            description: savingDisabled ? "请先完成当前事件或对话" : "保存后返回主界面"
-          }
+          { label: "保存并返回主界面", value: "save-return", description: "保存最近的稳定检查点后返回" }
         ]
       });
       if (!paused || startupLocked) return;
@@ -457,8 +421,8 @@
         resumeGame();
         return;
       }
-      if (action === "save") {
-        if (openSaveWriter("game")) return;
+      if (action === "save-manager") {
+        if (await openSaveManager()) return;
         continue;
       }
       if (action === "return") {
@@ -470,7 +434,8 @@
       }
       if (action === "save-return") {
         try {
-          saves.save(activeSlot, engine.getStableSnapshot());
+          await engine.cancelToCheckpoint();
+          saves.save(activeSlot, engine.getCheckpoint());
           await returnToMainMenu();
           return;
         } catch (error) {
@@ -504,10 +469,10 @@
     flow.navigate(destination, {}, true);
   }
 
-  async function saveInitialState(slot) {
+  async function saveInitialCheckpoint(slot) {
     while (true) {
       try {
-        saves.save(slot, engine.getStableSnapshot());
+        saves.save(slot, engine.getCheckpoint());
         return true;
       } catch (error) {
         console.error("建立初始存档失败：", error);
@@ -532,6 +497,7 @@
   }
 
   async function startNewGame(slot) {
+    flow.clearRefreshSnapshot();
     state.reset();
     scene.load(data.meta.initialScene);
     syncAutosavedCarriages();
@@ -544,29 +510,28 @@
       return;
     }
     state.completeAttributeAllocation(allocation);
-    engine.adoptStableState();
-    if (!await saveInitialState(slot)) {
+    engine.adoptCheckpoint({ eventId: data.meta.startEvent, actionIndex: 0 });
+    if (!await saveInitialCheckpoint(slot)) {
       flow.navigate("home", {}, true);
       return;
     }
     activateGame();
-    void engine.play(data.meta.startEvent);
+    void engine.resumeCheckpoint();
   }
 
   function restoreTransfer(slot) {
     const transfer = flow.getTransfer("resume-game");
-    if (!transfer || transfer.slot !== slot || !transfer.snapshot) {
+    if (!transfer || transfer.slot !== slot || !transfer.checkpoint) {
       throw new Error("恢复游戏所需的临时状态不存在或已经失效");
     }
-    state.restore(transfer.snapshot);
+    engine.restoreCheckpoint(transfer.checkpoint);
     syncAutosavedCarriages();
     flow.clearTransfer();
     if (!state.sceneId || !scene.hasScene(state.sceneId)) {
       throw new Error(`临时状态引用了不存在的场景：${state.sceneId || "空"}`);
     }
     scene.load(state.sceneId);
-    engine.adoptStableState();
-    activateGame();
+    engine.adoptCheckpoint(transfer.checkpoint.resume);
   }
 
   async function initialize() {
@@ -575,11 +540,25 @@
       return;
     }
     try {
+      const newGameRequested = mode === "new" && flow.consumeNewGameIntent(requestedSlot);
+      if (newGameRequested) {
+        await startNewGame(requestedSlot);
+        return;
+      }
+      if (flow.isReloadNavigation() && restoreRefreshCheckpoint(requestedSlot)) {
+        if (state.getAttribute("san") <= 0) {
+          flow.clearRefreshSnapshot();
+          flow.navigate("endingReveal", { reason: "san" }, true);
+          return;
+        }
+        activateGame();
+        void engine.resumeCheckpoint();
+        return;
+      }
       if (mode === "new") {
-        if (flow.consumeNewGameIntent(requestedSlot)) {
-          await startNewGame(requestedSlot);
-        } else if (restoreSave(requestedSlot)) {
+        if (restoreSave(requestedSlot)) {
           activateGame();
+          void engine.resumeCheckpoint();
         } else {
           await startNewGame(requestedSlot);
         }
@@ -591,10 +570,11 @@
         restoreTransfer(requestedSlot);
       }
       if (state.getAttribute("san") <= 0) {
-        flow.navigate("ending", { reason: "san" }, true);
+        flow.navigate("endingReveal", { reason: "san" }, true);
         return;
       }
       activateGame();
+      void engine.resumeCheckpoint();
     } catch (error) {
       flow.clearTransfer();
       await showStartupError(`无法进入游戏：${errorMessage(error)}`);
@@ -604,11 +584,31 @@
   pauseButton.addEventListener("click", pauseGame);
 
   document.addEventListener("keydown", (event) => {
-    // 小游戏进行中屏蔽系统暂停：Esc 由玩法窗口/退出按钮接管（minigame 期间暂停不可用）。
-    if (event.key !== "Escape" || startupLocked || ui.minigame.isOpen() || event.repeat) return;
-    event.preventDefault();
-    if (paused) resumeGame();
-    else pauseGame();
+    if (event.defaultPrevented || event.repeat || startupLocked || ui.minigame.isOpen()) return;
+    const shortcuts = Game.PlayerProfile.getShortcutSettings();
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    if (key === shortcuts.pause) {
+      event.preventDefault();
+      if (paused) resumeGame();
+      else pauseGame();
+      return;
+    }
+    // 对话相关快捷键只在等待推进时响应，避免干扰选项、检定和物品调查等窗口。
+    if (paused || !ui.dialog.isAwaitingAdvance()) return;
+    if (key === shortcuts.advance) {
+      event.preventDefault();
+      ui.dialog.handleAdvance();
+      return;
+    }
+    if (key === shortcuts.auto) {
+      event.preventDefault();
+      ui.dialog.setAuto(!ui.dialog.auto);
+      return;
+    }
+    if (key === shortcuts.fast) {
+      event.preventDefault();
+      ui.dialog.setFast(!ui.dialog.fast);
+    }
   });
 
   sceneRoot.addEventListener("click", () => {

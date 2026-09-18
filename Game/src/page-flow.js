@@ -7,17 +7,20 @@
   // 页面间临时交接数据（如跨页恢复游戏快照）在 sessionStorage 中使用的键名。
   const TRANSFER_KEY = "train-game-page-transfer-v1";
   const NEW_GAME_INTENT_KEY = "train-game-new-intent-v1";
-  const GAME_UI_BUILD = "conductor-tug-20260915-10";
+  const HOME_OP_INTENT_KEY = "train-game-home-op-intent-v1";
+  // 当前标签页刷新恢复使用独立检查点键，不与跨页交接混用；关闭标签页后由浏览器自动清除。
+  const REFRESH_CHECKPOINT_KEY = "train-game-refresh-checkpoint-v2";
+  const GAME_UI_BUILD = "checkpoint-20260917-1";
 
   // 路由名 → 实际 HTML 文件名的映射表，是页面跳转的唯一事实来源。
   const routes = Object.freeze({
     home: "home.html", // 主页（标题界面）
     game: "game.html", // 游戏主流程页
-    ending: "ending.html", // 结局页
+    endingReveal: "ending-reveal.html", // 结局达成过渡页
+    ending: "ending.html", // 视频结局页
     settings: "settings.html", // 设置页
     about: "GroupIntro/index.html", // 小组介绍汇总页（接替原 about.html 占位页）
-    saveManager: "save-manager.html", // 存档管理页（读取 / 删除）
-    saveWrite: "save-write.html" // 存档写入页（新建 / 覆盖写入）
+    saveManager: "save-manager.html" // 统一存档管理页（读取 / 删除 / 写入）
   });
 
   /**
@@ -96,6 +99,60 @@
     }
   }
 
+  function isPlainObject(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function setRefreshCheckpoint(slot, checkpoint) {
+    if (!parseSlot(slot) || !isPlainObject(checkpoint)) return false;
+    try {
+      sessionStorage.setItem(REFRESH_CHECKPOINT_KEY, JSON.stringify({
+        kind: "refresh-game",
+        slot,
+        checkpoint
+      }));
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function getRefreshCheckpoint(slot) {
+    if (!parseSlot(slot)) return null;
+    try {
+      const raw = sessionStorage.getItem(REFRESH_CHECKPOINT_KEY);
+      if (!raw) return null;
+      const payload = JSON.parse(raw);
+      if (
+        !isPlainObject(payload)
+        || payload.kind !== "refresh-game"
+        || payload.slot !== slot
+        || !isPlainObject(payload.checkpoint)
+      ) {
+        clearRefreshSnapshot();
+        return null;
+      }
+      return payload.checkpoint;
+    } catch (_error) {
+      clearRefreshSnapshot();
+      return null;
+    }
+  }
+
+  function clearRefreshSnapshot() {
+    try {
+      sessionStorage.removeItem(REFRESH_CHECKPOINT_KEY);
+    } catch (_error) {
+      // 临时恢复数据清理失败不应阻止页面导航。
+    }
+  }
+
+  function isReloadNavigation() {
+    const navigation = window.performance?.getEntriesByType?.("navigation")?.[0];
+    if (navigation) return navigation.type === "reload";
+    return window.performance?.navigation?.type === 1;
+  }
+
   function markNewGameIntent(slot) {
     sessionStorage.setItem(NEW_GAME_INTENT_KEY, String(slot));
   }
@@ -110,6 +167,26 @@
     }
   }
 
+  function markHomeOpIntent(source) {
+    if (source !== "login" && source !== "ending") return false;
+    try {
+      sessionStorage.setItem(HOME_OP_INTENT_KEY, source);
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function consumeHomeOpIntent() {
+    try {
+      const source = sessionStorage.getItem(HOME_OP_INTENT_KEY);
+      sessionStorage.removeItem(HOME_OP_INTENT_KEY);
+      return source === "login" || source === "ending";
+    } catch (_error) {
+      return false;
+    }
+  }
+
   // 对外暴露的模块接口：路由表 + 跳转 / 槽位校验 / 临时交接能力
   Game.PageFlow = {
     routes,
@@ -119,7 +196,13 @@
     setTransfer,
     getTransfer,
     clearTransfer,
+    setRefreshCheckpoint,
+    getRefreshCheckpoint,
+    clearRefreshSnapshot,
+    isReloadNavigation,
     markNewGameIntent,
-    consumeNewGameIntent
+    consumeNewGameIntent,
+    markHomeOpIntent,
+    consumeHomeOpIntent
   };
 })(window.TrainGame);

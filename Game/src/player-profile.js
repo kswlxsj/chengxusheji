@@ -1,42 +1,51 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 3;
+  const PROFILE_VERSION = 5;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
   const AUDIO_REFERENCE_LEVEL = 0.6;
-  const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx"]);
+  const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx", "buttonSfx"]);
   const AUDIO_KEY_SET = new Set(AUDIO_KEYS);
+  const SHORTCUT_KEYS = Object.freeze(["pause", "advance", "auto", "fast"]);
+  const SHORTCUT_KEY_SET = new Set(SHORTCUT_KEYS);
+  const DEFAULT_SHORTCUTS = Object.freeze({
+    pause: "Escape",
+    advance: " ",
+    auto: "a",
+    fast: "Control"
+  });
+  const UNSUPPORTED_SHORTCUT_KEYS = new Set(["", "Unidentified", "Dead", "Process", "Alt", "Shift", "Meta"]);
 
   const ENDING_CATALOG = Object.freeze([
     Object.freeze({
       id: "true_end",
       title: "不要温和地走进那个良夜",
       description: "加速的列车驶入光明，迎接属于你的新的开始。",
-      image: "assets/Image/Scene/Background/true-end-platform.png"
+      image: "assets/Image/Scene/Background/true-end-platform.webp"
     }),
     Object.freeze({
       id: "fake_end",
       title: "你所说的曙光究竟是什么意思",
       description: "目睹那些东西之后，回归现实生活……大概吧。",
-      image: "assets/Image/Scene/Background/move.png"
+      image: "assets/Image/Scene/Background/move.webp"
     }),
     Object.freeze({
       id: "lost",
       title: "于他者所思的自我与自我所想的他者之间",
       description: "层层嵌套，自我指涉，盘曲虬结，错综复杂。",
-      image: "assets/Image/Scene/Background/flower-sea.png"
+      image: "assets/Image/Scene/Background/flower-sea.webp"
     }),
     Object.freeze({
       id: "bad_end",
       title: "恐怖",
       description: "列车陷入黑暗，意识与身体一同消失。",
-      image: "assets/Image/Scene/Background/carriage-03.png"
+      image: "assets/Image/Scene/Background/carriage-03.webp"
     }),
     Object.freeze({
       id: "san",
       title: "患者",
       description: "SAN 已降至 0。",
-      image: "assets/Image/Scene/Background/san-zero-hospital.png"
+      image: "assets/Image/Scene/Background/san-zero-hospital.webp"
     })
   ]);
   const ENDING_IDS = new Set(ENDING_CATALOG.map((ending) => ending.id));
@@ -47,9 +56,11 @@
       audio: {
         pageMusic: AUDIO_REFERENCE_LEVEL,
         gameAmbience: AUDIO_REFERENCE_LEVEL,
-        gameSfx: AUDIO_REFERENCE_LEVEL
+        gameSfx: AUDIO_REFERENCE_LEVEL,
+        buttonSfx: AUDIO_REFERENCE_LEVEL
       },
       autoSaveEnabled: true,
+      shortcuts: { ...DEFAULT_SHORTCUTS },
       unlockedEndings: []
     };
   }
@@ -58,6 +69,26 @@
     const number = Number(value);
     if (!Number.isFinite(number)) return fallback;
     return Math.min(1, Math.max(0, number));
+  }
+
+  function normalizeShortcutKey(value) {
+    if (typeof value !== "string") return null;
+    const key = value === " " ? value : value.trim();
+    if (UNSUPPORTED_SHORTCUT_KEYS.has(key)) return null;
+    return key.length === 1 ? key.toLowerCase() : key;
+  }
+
+  function normalizeShortcuts(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return { ...DEFAULT_SHORTCUTS };
+    const shortcuts = {};
+    const assigned = new Set();
+    for (const action of SHORTCUT_KEYS) {
+      const key = normalizeShortcutKey(value[action]);
+      if (!key || assigned.has(key)) return { ...DEFAULT_SHORTCUTS };
+      shortcuts[action] = key;
+      assigned.add(key);
+    }
+    return shortcuts;
   }
 
   function normalizeProfile(value) {
@@ -78,6 +109,7 @@
       profile.unlockedEndings = [...new Set(value.unlockedEndings.filter((id) => ENDING_IDS.has(id)))];
     }
     if (typeof value.autoSaveEnabled === "boolean") profile.autoSaveEnabled = value.autoSaveEnabled;
+    profile.shortcuts = normalizeShortcuts(value.shortcuts);
     return profile;
   }
 
@@ -137,6 +169,29 @@
     return profile.autoSaveEnabled;
   }
 
+  function getShortcutSettings() {
+    return { ...readProfile().shortcuts };
+  }
+
+  function setShortcutSetting(action, value) {
+    if (!SHORTCUT_KEY_SET.has(action)) throw new RangeError(`未知快捷键操作：${action || "空"}`);
+    const key = normalizeShortcutKey(value);
+    if (!key) throw new RangeError("该按键不能用作快捷键");
+    const profile = readProfile();
+    const duplicateAction = SHORTCUT_KEYS.find((candidate) => candidate !== action && profile.shortcuts[candidate] === key);
+    if (duplicateAction) throw new RangeError("该按键已被其他操作使用");
+    profile.shortcuts[action] = key;
+    writeProfile(profile);
+    return profile.shortcuts[action];
+  }
+
+  function resetShortcutSettings() {
+    const profile = readProfile();
+    profile.shortcuts = { ...DEFAULT_SHORTCUTS };
+    writeProfile(profile);
+    return { ...profile.shortcuts };
+  }
+
   function getUnlockedEndings() {
     return [...readProfile().unlockedEndings];
   }
@@ -158,6 +213,9 @@
     toAudioGain,
     getAutoSaveEnabled,
     setAutoSaveEnabled,
+    getShortcutSettings,
+    setShortcutSetting,
+    resetShortcutSettings,
     getUnlockedEndings,
     unlockEnding
   });

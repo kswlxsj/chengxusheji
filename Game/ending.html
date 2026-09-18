@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏结束</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=lost-ending-video-20260917-2">
+  <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
+  <script src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
+  <!-- TrainGame.PageFlow，提供主页 OP 入口标记与页面跳转。 -->
   <script src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
   <script src="src/auth-guard.js"></script>
@@ -18,26 +20,32 @@
   <script src="src/page-button-sound.js?v=button04b-20260916-1"></script>
 </head>
 <body>
-  <video id="ending-video" class="ending-page-video" src="assets/video/end.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-  <div class="ending-page-scrim" aria-hidden="true"></div>
-  <main class="site-shell content-page ending-page">
-    <section class="ending-page-copy">
-      <h1 id="ending-title">患者</h1>
-      <p id="ending-description" class="page-introduction">SAN 已降至 0。本次游戏已经结束。你可以返回主页或读取上一次保存的稳定状态。</p>
-    </section>
-    <nav class="ending-actions" aria-label="结束页操作">
-      <a href="save-manager.html">读取存档</a>
-      <a href="home.html">返回主页</a>
-    </nav>
-  </main>
+  <div id="ending-video-stage">
+    <video id="ending-video" src="assets/video/end.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="ending-page-scrim" aria-hidden="true"></div>
+    <main class="site-shell content-page ending-page">
+      <nav class="ending-actions" aria-label="结束页操作">
+        <a href="save-manager.html">读取存档</a>
+        <a id="ending-home" href="home.html">返回主页</a>
+      </nav>
+    </main>
+  </div>
   <script>
     const reason = new URLSearchParams(window.location.search).get("reason") || "san";
-    const ending = TrainGame.ENDING_CATALOG.find((entry) => entry.id === reason)
-      || TrainGame.ENDING_CATALOG.find((entry) => entry.id === "san");
-    document.querySelector("#ending-title").textContent = ending.title;
-    document.querySelector("#ending-description").textContent = ending.description;
     const video = document.querySelector("#ending-video");
+    const stage = document.querySelector("#ending-video-stage");
+    const syncVideoStage = () => {
+      if (!video?.videoWidth || !video?.videoHeight) return;
+      stage.style.setProperty("--ending-video-ratio", video.videoWidth / video.videoHeight);
+    };
+    video?.addEventListener("loadedmetadata", syncVideoStage, { once: true });
+    syncVideoStage();
     video?.play().catch(() => {});
+    document.querySelector("#ending-home")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      TrainGame.PageFlow.markHomeOpIntent("ending");
+      TrainGame.PageFlow.navigate("home", {}, true);
+    });
   </script>
 </body>
 </html>

@@ -33,16 +33,52 @@ const sandbox = {
   clearTimeout,
   localStorage,
   sessionStorage,
-  window: { localStorage, sessionStorage }
+  window: { localStorage, sessionStorage, performance }
 };
 vm.createContext(sandbox);
 
-for (const file of ["src/namespace.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js", "src/ui.js"]) {
+for (const file of ["src/namespace.js", "src/page-flow.js", "src/auth.js", "src/player-profile.js", "src/state.js", "src/scene.js", "src/events.js", "src/minigames.js", "src/dice.js", "src/audio.js", "src/custom-actions.js", "src/ui.js"]) {
   vm.runInContext(await readFile(file, "utf8"), sandbox, { filename: file });
 }
 
 const Game = sandbox.window.TrainGame;
 const Auth = Game.Auth;
+const pageButtonSoundSource = await readFile("src/page-button-sound.js", "utf8");
+const uiSource = await readFile("src/ui.js", "utf8");
+
+// 同一标签页的刷新恢复检查点与跨页交接隔离，并拒绝槽位不符或损坏的数据。
+{
+  const refreshCheckpoint = {
+    state: { sceneId: "carriage_06", flags: { carriage_06_people_reveal: false } },
+    resume: { eventId: "E_TEST", actionIndex: 0 }
+  };
+  assert.equal(Game.PageFlow.setRefreshCheckpoint(1, refreshCheckpoint), true);
+  assert.deepEqual(Game.PageFlow.getRefreshCheckpoint(1), refreshCheckpoint);
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(2), null, "槽位不符的临时检查点不得被读取");
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "槽位不符的临时检查点应被清理");
+
+  session.set("train-game-refresh-checkpoint-v2", "{");
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "损坏的临时检查点不得阻断游戏入口");
+  assert.equal(session.has("train-game-refresh-checkpoint-v2"), false, "损坏检查点应被清理");
+
+  assert.equal(Game.PageFlow.setRefreshCheckpoint(1, refreshCheckpoint), true);
+  Game.PageFlow.clearRefreshSnapshot();
+  assert.equal(Game.PageFlow.getRefreshCheckpoint(1), null, "显式离开游戏时应清理临时检查点");
+
+  sandbox.window.performance = { getEntriesByType: () => [{ type: "reload" }] };
+  assert.equal(Game.PageFlow.isReloadNavigation(), true);
+  sandbox.window.performance = { getEntriesByType: () => [{ type: "navigate" }] };
+  assert.equal(Game.PageFlow.isReloadNavigation(), false);
+  sandbox.window.performance = performance;
+
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), false, "没有入口标记时主页不应播放 OP");
+  assert.equal(Game.PageFlow.markHomeOpIntent("settings"), false, "普通功能页不得请求主页 OP");
+  assert.equal(Game.PageFlow.markHomeOpIntent("login"), true);
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), true, "登录入口应播放一次 OP");
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), false, "OP 入口标记消费后不得在刷新时重播");
+  assert.equal(Game.PageFlow.markHomeOpIntent("ending"), true);
+  assert.equal(Game.PageFlow.consumeHomeOpIntent(), true, "结局入口应播放一次 OP");
+}
 
 // 属性变更提示应排队，避免同一事件里的后一项覆盖前一项。
 {
@@ -116,14 +152,18 @@ localStorage.setItem = originalSetItem;
 assert.throws(() => new Game.SaveManager({}, undefined), /必须登录/, "未登录时不应访问默认存档槽");
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 
-// 玩家配置按账号隔离；音量逐字段恢复，自动存档默认开启，结局解锁幂等且只接受已登记编号。
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+// 玩家配置按账号隔离；音量逐字段恢复，快捷键唯一，自动存档默认开启，结局解锁幂等且只接受已登记编号。
+assert.match(pageButtonSoundSource, /getAudioGain\?\.\("buttonSfx"\)/, "页面点击音效应读取独立音量设置");
+assert.match(uiSource, /buttonSfxVolume/, "游戏内按钮音应读取独立音量设置");
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "自动存档默认应开启");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 1, "默认 60% 应保持游戏原始音量");
 assert.equal(Game.PlayerProfile.setAudioSetting("pageMusic", 0.55), 0.55);
 assert.equal(Game.PlayerProfile.getAudioGain("pageMusic"), 0.55 / 0.6);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameAmbience", -2), 0);
 assert.equal(Game.PlayerProfile.setAudioSetting("gameSfx", 8), 1);
+assert.equal(Game.PlayerProfile.setAudioSetting("buttonSfx", 0), 0);
 assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知音量设置/);
 for (const ending of Game.ENDING_CATALOG) assert.equal(Game.PlayerProfile.unlockEnding(ending.id), true);
 assert.equal(Game.PlayerProfile.unlockEnding("true_end"), false, "重复结局不应重复写入");
@@ -131,30 +171,39 @@ assert.equal(Game.PlayerProfile.unlockEnding("unknown"), false, "未知终局不
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "lost", "bad_end", "san"]);
 assert.equal(Game.PlayerProfile.setAutoSaveEnabled(false), false);
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "关闭自动存档后应保留设置");
+assert.equal(Game.PlayerProfile.setShortcutSetting("advance", "Enter"), "Enter");
+assert.equal(Game.PlayerProfile.setShortcutSetting("auto", "Z"), "z", "字母快捷键应忽略大小写");
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("fast", "z"), /已被其他操作使用/);
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("unknown", "Q"), /未知快捷键操作/);
+assert.throws(() => Game.PlayerProfile.setShortcutSetting("fast", "Shift"), /不能用作快捷键/);
+assert.deepEqual({ ...Game.PlayerProfile.resetShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 
 assert.equal(Auth.register("ProfileBob", "secret3").ok, true);
 assert.equal(Auth.login("ProfileBob", "secret3").ok, true);
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "不同账号应使用默认自动存档设置");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" });
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], [], "不同账号不应共享结局收藏");
 Game.PlayerProfile.setAudioSetting("pageMusic", 0.2);
 assert.equal(Auth.login("Alice", "secret1").ok, true);
 assert.equal(Game.PlayerProfile.getAudioSettings().pageMusic, 0.55, "切回账号后应恢复该账号音量");
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "切回账号后应恢复该账号自动存档设置");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" }, "旧账号配置应补齐默认快捷键");
 
 const aliceProfileKey = "train-game-profile-user-v1:Alice";
 storage.set(aliceProfileKey, JSON.stringify({ audio: { pageMusic: "bad", gameAmbience: 0.4 }, unlockedEndings: ["lost", "bad-id", "lost"] }));
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.4, gameSfx: 0.6, buttonSfx: 0.6 });
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "缺失自动存档设置应回退为开启");
+assert.deepEqual({ ...Game.PlayerProfile.getShortcutSettings() }, { pause: "Escape", advance: " ", auto: "a", fast: "Control" }, "缺失快捷键设置应回退为默认值");
 assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["lost"], "损坏字段应独立回退并清理无效或重复结局");
 storage.set(aliceProfileKey, JSON.stringify({ autoSaveEnabled: "false" }));
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), true, "非法自动存档设置应回退为开启");
 storage.set(aliceProfileKey, "not-json");
-assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6 });
+assert.deepEqual({ ...Game.PlayerProfile.getAudioSettings() }, { pageMusic: 0.6, gameAmbience: 0.6, gameSfx: 0.6, buttonSfx: 0.6 });
 storage.set(aliceProfileKey, JSON.stringify({ version: 1, audio: { pageMusic: 1, gameAmbience: 0.5, gameSfx: 0 } }));
 assert.deepEqual(
   { ...Game.PlayerProfile.getAudioSettings() },
-  { pageMusic: 0.6, gameAmbience: 0.3, gameSfx: 0 },
+  { pageMusic: 0.6, gameAmbience: 0.3, gameSfx: 0, buttonSfx: 0.6 },
   "旧版直接倍率应迁移为以 60% 为原始音量的新滑杆位置"
 );
 storage.delete(aliceProfileKey);
@@ -196,6 +245,10 @@ const skills = [
 
 function createState() {
   return new Game.GameState(initialState, attributeData, skills);
+}
+
+function checkpointOf(targetState, resume = null) {
+  return { state: targetState.snapshot(), resume };
 }
 
 const state = createState();
@@ -294,31 +347,44 @@ sceneManager.handleCanvasClick(interceptedClick);
 assert.deepEqual(clickedSceneEvents, ["E_AMBIENT", "E_FOREGROUND"], "不透明前景像素仍应优先触发原物件");
 
 const saves = new Game.SaveManager(state, "test-save");
-saves.save(1);
+saves.save(1, checkpointOf(state, { eventId: "E_START", actionIndex: 0 }));
+assert.equal(JSON.parse(storage.get("test-save-1")).saveVersion, 5, "新存档应使用 v5 检查点信封");
 assert.equal(saves.listSlots().length, 3);
 assert.equal(saves.listSlots()[0].empty, false);
 assert.equal(typeof saves.listSlots()[0].savedAt, "string");
 assert.equal(saves.listSlots()[1].empty, true);
 const restored = createState();
-new Game.SaveManager(restored, "test-save").load(1);
+const restoredCheckpoint = new Game.SaveManager(restored, "test-save").load(1);
+restored.restore(restoredCheckpoint.state);
 assert.deepEqual(restored.snapshot(), state.snapshot());
+assert.deepEqual(restoredCheckpoint.resume, { eventId: "E_START", actionIndex: 0 });
 restored.setAttribute("strength", 5);
 assert.equal(restored.getSkill("strong"), true, "读取后应保留技能自动屏蔽状态");
 
 state.setAttribute("insight", 4);
-saves.save(2);
+saves.save(2, checkpointOf(state));
 assert.equal(saves.hasSave(1), true);
 assert.equal(saves.hasSave(2), true);
-saves.load(1);
+state.restore(saves.load(1).state);
 assert.equal(state.getAttribute("insight"), 3, "不同槽位的状态应相互隔离");
 saves.delete(2);
 assert.equal(saves.hasSave(2), false);
 assert.throws(() => saves.hasSave(0), /1 到 3/);
-assert.throws(() => saves.save(4), /1 到 3/);
+assert.throws(() => saves.save(4, checkpointOf(state)), /1 到 3/);
+assert.throws(
+  () => saves.save(3, checkpointOf(state, { eventId: "E_BAD", actionIndex: -1 })),
+  /恢复游标无效/,
+  "负数动作游标不得写入存档"
+);
+
+storage.set("v4-save-1", JSON.stringify({ saveVersion: 4, savedAt: "2026-09-17T00:00:00.000Z", state: state.snapshot() }));
+const migratedV4 = new Game.SaveManager(createState(), "v4-save").load(1);
+assert.deepEqual(migratedV4.state, state.snapshot(), "v4 裸状态存档应兼容读取");
+assert.equal(migratedV4.resume, null, "v4 存档没有可靠续跑位置，应迁移为空游标");
 
 const aliceSaves = new Game.SaveManager(state);
 assert.equal(aliceSaves.slotKey(1), "train-game-save-user-v1:Alice:slot-1");
-aliceSaves.save(1);
+aliceSaves.save(1, checkpointOf(state));
 Auth.logout();
 assert.equal(Auth.register("Bob", "secret3").ok, true);
 assert.equal(Auth.login("Bob", "secret3").ok, true);
@@ -339,7 +405,7 @@ assert.equal(Auth.login("LegacyCheck", "secret4").ok, true);
 assert.equal(new Game.SaveManager(createState()).listSlots().every((slot) => slot.empty), true, "旧共享存档与旧单槽存档都不应自动迁移");
 
 const unallocated = createState();
-assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1), /分配完成前/);
+assert.throws(() => new Game.SaveManager(unallocated, "unallocated-save").save(1, checkpointOf(unallocated)), /分配完成前/);
 
 const registeredAttributes = JSON.parse(await readFile("data/attributes.json", "utf8"));
 const registeredSkills = JSON.parse(await readFile("data/skills.json", "utf8"));
@@ -386,14 +452,12 @@ for (const eventId of ["E_011_S", "E_012_AFTER"]) {
     `${eventId} 结束后应停在5号车厢等待玩家点门`
   );
 }
-assert.deepEqual(
-  registeredEventsById.get("E_022_ITEM").actions.find((action) => action.type === "conditionalJump"),
-  {
-    type: "conditionalJump",
-    when: { hasItem: "flashlight" },
-    next: "E_022_ITEM_END"
-  },
-  "已从5号车厢工具背包获得手电筒时，E_022_ITEM 不应重复发放"
+assert.equal(
+  registeredEventsById.get("E_022_ITEM").actions.some((action) =>
+    action.item === "flashlight" || action.when?.hasItem === "flashlight"
+  ),
+  false,
+  "3号车厢黑包收尾不得检查或发放手电筒"
 );
 const registeredState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
 assert.equal(registeredState.getSkill("throwing"), false);
@@ -457,17 +521,17 @@ const inspectEngine = new Game.EventEngine({
 await inspectEngine.actions.get("inspect")({ type: "inspect", item: "phone" });
 assert.equal(inspectedItem.title, "手机", "物品调查应读取注册表中的名称");
 assert.equal(inspectedItem.text, "一部手机。", "物品调查应读取注册表中的说明");
-assert.equal(inspectedItem.image, "assets/Image/Item/phone.png", "物品调查应读取注册表中的图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/phone.webp", "物品调查应读取注册表中的图片");
 await inspectEngine.actions.get("inspect")({
   type: "inspect",
   item: "phone",
   title: "手机特写",
   text: "覆盖说明",
-  image: "assets/Image/Item/flashlight.png"
+  image: "assets/Image/Item/flashlight.webp"
 });
 assert.equal(inspectedItem.title, "手机特写", "物品调查应允许事件覆盖名称");
 assert.equal(inspectedItem.text, "覆盖说明", "物品调查应允许事件覆盖说明");
-assert.equal(inspectedItem.image, "assets/Image/Item/flashlight.png", "物品调查应允许事件覆盖图片");
+assert.equal(inspectedItem.image, "assets/Image/Item/flashlight.webp", "物品调查应允许事件覆盖图片");
 await inspectEngine.actions.get("inspect")({ type: "inspect", title: "场景线索", text: "仍使用普通窗口。" });
 assert.equal(inspectedScene.title, "场景线索", "不带物品 ID 的场景调查应继续使用普通调查窗口");
 
@@ -496,6 +560,71 @@ function createEngineUi() {
     setPaused: () => {},
     toast: () => {}
   };
+}
+
+// 6号车厢乘客消失后的刷新恢复只采用完整事件链的稳定快照。
+{
+  const disappearance = registeredEventsById.get("E_009").actions
+    .find((action) => action.type === "setFlag" && action.key === "carriage_06_people_reveal");
+  assert.deepEqual(disappearance, {
+    type: "setFlag",
+    key: "carriage_06_people_reveal",
+    value: false
+  });
+
+  const refreshState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  refreshState.completeAttributeAllocation({ constitution: 8, education: 8, insight: 8, san: 8 });
+  refreshState.sceneId = "carriage_06";
+  refreshState.flags.carriage_06_people_reveal = true;
+  let finishDialogue;
+  let dialogueStarted;
+  const dialogueStartedPromise = new Promise((resolve) => { dialogueStarted = resolve; });
+  const refreshEngine = new Game.EventEngine({
+    events: [{
+      id: "E_TEST_CARRIAGE_06_DISAPPEAR",
+      actions: [
+        disappearance,
+        { type: "dialogue", text: "等待玩家推进。" }
+      ]
+    }],
+    state: refreshState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      dialog: {
+        setFast: () => {},
+        showLine: async () => {
+          dialogueStarted();
+          await new Promise((resolve) => { finishDialogue = resolve; });
+        }
+      }
+    }
+  });
+
+  const playing = refreshEngine.play("E_TEST_CARRIAGE_06_DISAPPEAR");
+  await dialogueStartedPromise;
+  assert.equal(refreshState.flags.carriage_06_people_reveal, false, "事件内状态会立即更新画面");
+  assert.equal(
+    refreshEngine.getCheckpoint().state.flags.carriage_06_people_reveal,
+    true,
+    "未完成对白时刷新只能恢复事件前的稳定状态"
+  );
+  assert.deepEqual(
+    refreshEngine.getCheckpoint().resume,
+    { eventId: "E_TEST_CARRIAGE_06_DISAPPEAR", actionIndex: 0 },
+    "自由探索触发的事件应在执行前把入口写入检查点"
+  );
+
+  finishDialogue();
+  await playing;
+  const stableCheckpoint = refreshEngine.getCheckpoint();
+  assert.equal(stableCheckpoint.state.flags.carriage_06_people_reveal, false);
+  Game.PageFlow.setRefreshCheckpoint(1, stableCheckpoint);
+  const refreshedState = new Game.GameState(initialState, registeredAttributes, registeredSkills);
+  refreshedState.restore(Game.PageFlow.getRefreshCheckpoint(1).state);
+  assert.equal(refreshedState.flags.carriage_06_people_reveal, false, "刷新后应继续显示无乘客背景");
+  Game.PageFlow.clearRefreshSnapshot();
 }
 
 // 手机与手电筒仅在 2 号车厢尚未照明时优先进入使用选择；其他状态统一展示物品。
@@ -555,6 +684,113 @@ function createEngineScene() {
   };
 }
 
+// 连续事件在每个事件结束后提交检查点；后续事件未完成时应回到其入口。
+{
+  const checkpointState = createState();
+  checkpointState.completeAttributeAllocation({ strength: 4, insight: 1 });
+  let releaseDialogue;
+  let dialogueStarted;
+  const dialogueStartedPromise = new Promise((resolve) => { dialogueStarted = resolve; });
+  const engine = new Game.EventEngine({
+    events: [
+      { id: "E_CP_A", actions: [{ type: "setFlag", key: "event_a_done", value: true }], next: "E_CP_B" },
+      { id: "E_CP_B", actions: [{ type: "dialogue", text: "等待取消。" }] }
+    ],
+    state: checkpointState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      dialog: {
+        setFast: () => {},
+        showLine: async () => {
+          dialogueStarted();
+          await new Promise((resolve) => { releaseDialogue = resolve; });
+        }
+      },
+      cancelPending: () => releaseDialogue?.()
+    }
+  });
+  engine.adoptCheckpoint({ eventId: "E_CP_A", actionIndex: 0 });
+  const playing = engine.resumeCheckpoint();
+  await dialogueStartedPromise;
+  assert.deepEqual(engine.getCheckpoint().resume, { eventId: "E_CP_B", actionIndex: 0 });
+  assert.equal(engine.getCheckpoint().state.flags.event_a_done, true);
+  await engine.cancelToCheckpoint();
+  assert.equal(await playing, false);
+  assert.equal(checkpointState.flags.event_a_done, true, "取消后应保留已完成事件的状态");
+}
+
+// choice 等待前提交动作游标；恢复后直接重开选项，不重放前置动作。
+{
+  const events = [
+    {
+      id: "E_CP_CHOICE",
+      actions: [
+        { type: "custom", name: "incrementCheckpointCounter" },
+        { type: "choice", prompt: "请选择", options: [{ label: "继续", next: "E_CP_AFTER" }] }
+      ]
+    },
+    { id: "E_CP_AFTER", actions: [{ type: "setFlag", key: "choice_done", value: true }] }
+  ];
+  const firstState = createState();
+  firstState.completeAttributeAllocation({ strength: 4, insight: 1 });
+  let closeChoice;
+  let choiceShown;
+  const choiceShownPromise = new Promise((resolve) => { choiceShown = resolve; });
+  const firstEngine = new Game.EventEngine({
+    events,
+    state: firstState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      choice: {
+        choose: async () => {
+          choiceShown();
+          return new Promise((resolve) => { closeChoice = resolve; });
+        }
+      },
+      cancelPending: () => closeChoice?.(null)
+    }
+  });
+  firstEngine.registerCustomAction("incrementCheckpointCounter", async (_params, context) => {
+    context.state.flags.checkpoint_counter = (context.state.flags.checkpoint_counter || 0) + 1;
+  });
+  firstEngine.adoptCheckpoint({ eventId: "E_CP_CHOICE", actionIndex: 0 });
+  const firstRun = firstEngine.resumeCheckpoint();
+  await choiceShownPromise;
+  const choiceCheckpoint = firstEngine.getCheckpoint();
+  assert.deepEqual(choiceCheckpoint.resume, { eventId: "E_CP_CHOICE", actionIndex: 1 });
+  assert.equal(choiceCheckpoint.state.flags.checkpoint_counter, 1);
+  await firstEngine.cancelToCheckpoint();
+  await firstRun;
+
+  const resumedState = createState();
+  const resumedEngine = new Game.EventEngine({
+    events,
+    state: resumedState,
+    items: [],
+    scene: createEngineScene(),
+    ui: {
+      ...createEngineUi(),
+      choice: { choose: async (_prompt, options) => options[0] }
+    }
+  });
+  resumedEngine.registerCustomAction("incrementCheckpointCounter", async (_params, context) => {
+    context.state.flags.checkpoint_counter = (context.state.flags.checkpoint_counter || 0) + 1;
+  });
+  resumedEngine.restoreCheckpoint(choiceCheckpoint);
+  assert.equal(await resumedEngine.resumeCheckpoint(), true);
+  assert.equal(resumedState.flags.checkpoint_counter, 1, "恢复 choice 时不得重放前置动作");
+  assert.equal(resumedState.flags.choice_done, true);
+  assert.equal(resumedEngine.getCheckpoint().resume, null);
+  assert.throws(
+    () => resumedEngine.restoreCheckpoint({ state: choiceCheckpoint.state, resume: { eventId: "E_CP_CHOICE", actionIndex: 99 } }),
+    /动作下标越界/
+  );
+}
+
 // 对话动作按句拆分：同一段文本必须逐句等待玩家推进，不能挤进一个对话框。
 const dialogueCalls = [];
 const dialogueEngine = new Game.EventEngine({
@@ -563,7 +799,7 @@ const dialogueEngine = new Game.EventEngine({
     actions: [{
       type: "dialogue",
       speaker: "测试说话人",
-      portrait: "assets/Image/Portrait/player.png",
+      portrait: "assets/Image/Portrait/player.webp",
       speed: 12,
       text: "第一句。她说：“第二句？”真的吗？！\n\n第三段没有句号"
     }]
@@ -586,7 +822,7 @@ assert.deepEqual(
   "对话动作应按句末标点和空行拆成多个对话框"
 );
 assert.equal(dialogueCalls.every((action) => action.speaker === "测试说话人"), true);
-assert.equal(dialogueCalls.every((action) => action.portrait === "assets/Image/Portrait/player.png"), true);
+assert.equal(dialogueCalls.every((action) => action.portrait === "assets/Image/Portrait/player.webp"), true);
 assert.equal(dialogueCalls.every((action) => action.speed === 12), true);
 
 const originalRandom = sandbox.Math.random;
@@ -958,9 +1194,17 @@ try {
     }
   }
 
-  // Clicker 潜行每轮 SAN 检定均为 4~6 不扣、1~3 扣 1。
+  // Clicker 初见为 1~2 扣2、3~4 扣1、5~6 不扣。
+  for (const [face, expectedLoss] of [[1, 2], [3, 1], [5, 0]]) {
+    balanceState.setAttribute("san", 8);
+    sandbox.Math.random = () => (face - 0.5) / 6;
+    await Game.Dice.get("ev026_san_01")(balanceEngine.context(), []);
+    assert.equal(8 - balanceState.getAttribute("san"), expectedLoss, `ev026_san_01 的骰点${face}损失错误`);
+  }
+
+  // Clicker 潜行每轮 SAN 检定均为 1~3 扣2、4~5 扣1、6 不扣。
   for (const diceId of ["ev027_san_01", "ev027_san_02", "ev027_san_03"]) {
-    for (const [face, expectedLoss] of [[1, 1], [3, 1], [4, 0], [6, 0]]) {
+    for (const [face, expectedLoss] of [[1, 2], [4, 1], [6, 0]]) {
       balanceState.setAttribute("san", 8);
       sandbox.Math.random = () => (face - 0.5) / 6;
       await Game.Dice.get(diceId)(balanceEngine.context(), []);
@@ -991,7 +1235,6 @@ try {
     assert.equal(await Game.Dice.get("ev014_negotiation_final_01")(balanceEngine.context()), 1, `${rate + 1}% 应失败`);
   }
   assert.throws(() => Game.Dice.get("ev026_extra_san_01"), /未注册/);
-  assert.throws(() => Game.Dice.get("ev026_san_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev029_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_constitution_01"), /未注册/);
   assert.throws(() => Game.Dice.get("ev028_luck_01"), /未注册/);
@@ -1296,7 +1539,7 @@ registerStubMinigame("mg_test_jump", async () => [
   assert.equal(state.flags.mg_settled, true, "小游戏返回的结算动作列表应被顺序执行");
   assert.equal(state.getAttribute("strength"), 5, "结算中的属性修改应生效");
   assert.equal(state.flags.after_minigame, true, "小游戏动作之后的动作应继续执行");
-  assert.equal(engine.getStableSnapshot().flags.mg_settled, true, "事件链结束后结算应进入稳定快照");
+  assert.equal(engine.getCheckpoint().state.flags.mg_settled, true, "事件链结束后结算应进入稳定检查点");
 }
 
 // 2) 小游戏未返回结算（undefined/null/空数组）时不改动状态、事件照常继续。
@@ -1421,12 +1664,14 @@ const SOUND_TEST_REGISTRY = [
 // Audio 元素桩：readyState 为 1 时“元数据已就绪”，play() 立即开始；
 // 也可用 prepare() 模拟需要异步加载元数据的元素（先 play() 后 loadedmetadata）。
 class StubAudioElement {
-  constructor({ readyState = 1, duration = 0.35, failPlayback = false } = {}) {
+  constructor({ readyState = 1, duration = 0.35, failPlayback = false, resetPositionOnRateChange = false } = {}) {
     this.tagName = "AUDIO";
     this.readyState = readyState;
     this.duration = readyState >= 1 ? duration : NaN;
     this.plannedDuration = duration;
     this.currentTime = 0;
+    this.resetPositionOnRateChange = resetPositionOnRateChange;
+    this._playbackRate = 1;
     this.volume = 1;
     this.src = "";
     this.hidden = false;
@@ -1442,6 +1687,13 @@ class StubAudioElement {
   }
 
   setAttribute(name, value) { this.attributes[name] = value; }
+
+  get playbackRate() { return this._playbackRate; }
+
+  set playbackRate(value) {
+    this._playbackRate = value;
+    if (this.resetPositionOnRateChange && this.currentTime > 0) this.currentTime = 0;
+  }
 
   addEventListener(name, handler, options = {}) {
     if (!this.listeners.has(name)) this.listeners.set(name, []);
@@ -1682,7 +1934,7 @@ async function settleMicrotasks(count = 8) {
   const playback = engine.play("E_SFX_CANCEL");
   await settleMicrotasks();
   assert.equal(audio.voices.size, 1, "取消前音效应在播放中");
-  await engine.cancelToStable();
+  await engine.cancelToCheckpoint();
   assert.equal(await playback, false, "取消后事件应回滚结束");
   assert.equal(audio.voices.size, 0, "取消应掐断正在播放的音效");
   assert.equal(state.flags.after_cancelled_sound, undefined, "取消后不应继续执行后续动作");
@@ -1886,6 +2138,20 @@ async function settleMicrotasks(count = 8) {
   element.emit("ended");
   await new Promise((resolve) => setTimeout(resolve, 12));
   assert.equal(element.plays, 2, "背景音每轮结束后应按场景配置间隔重播");
+  audio.stopAll({ immediate: true });
+}
+
+// 18) 变调必须复用当前背景音并保留播放位置，即使浏览器赋值速率时意外归零。
+{
+  const audio = createBackgroundAudioStub(SOUND_TEST_REGISTRY, { resetPositionOnRateChange: true });
+  const voice = audio.setTrack("sfx_test_short");
+  const element = voice.element;
+  element.currentTime = 12;
+  audio.setPlaybackRate(0.68);
+  assert.equal(audio.current, voice, "背景音变调不得重建音源");
+  assert.equal(element.plays, 1, "背景音变调不得重新播放");
+  assert.equal(element.currentTime, 12, "背景音变调后应保留当前播放位置");
+  assert.equal(element.playbackRate, 0.68, "背景音应应用指定播放速度");
   audio.stopAll({ immediate: true });
 }
 

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
@@ -17,7 +17,7 @@
   <script src="src/bgm.js?v=profile-audio-20260916-1" defer></script>
 </head>
 <body>
-  <div id="home-op" class="home-op">
+  <div id="home-op" class="home-op" hidden>
   <div class="home-op-stage">
     <img class="home-op-frame" alt="">
     <img class="home-op-frame" alt="">
@@ -53,7 +53,7 @@
       <h1 id="game-title">常暗之厢</h1>
       <p class="auth-user-status">当前用户：<strong id="current-user"></strong></p>
       <nav class="home-actions" aria-label="主菜单">
-        <a class="home-action home-action-new-game" href="save-write.html?intent=new">新的游戏</a>
+        <a class="home-action home-action-new-game" href="save-manager.html?intent=new">新的游戏</a>
         <a class="home-action home-action-save-manager" href="save-manager.html">存档管理</a>
         <a class="home-action home-action-settings" href="settings.html">设置</a>
         <a class="home-action home-action-group-intro" href="GroupIntro/index.html">小组介绍</a>
@@ -63,12 +63,12 @@
 
   <script src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
-  <script src="src/page-flow.js?v=conductor-tug-20260915-10"></script>
+  <script src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   <script src="src/home.js"></script>
   <!-- 初始化主页数据渲染和当前用户展示。 -->
-  <script src="src/home-op.js?v=profile-audio-20260916-1"></script>
-  <!-- 登录进入主页后先播放四张开场图片，再开放主页交互。 -->
+  <script src="src/home-op.js?v=home-op-entry-20260917-1"></script>
+  <!-- 仅登录成功或从结局返回主页时播放开场图片，再开放主页交互。 -->
   <script src="src/page-button-sound.js?v=button04b-20260916-1"></script>
 
   <!-- CODEX ADD START -->

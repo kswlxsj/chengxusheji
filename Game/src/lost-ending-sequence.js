@@ -2,9 +2,9 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    state1: "assets/Image/Scene/Background/end-3-state1.png",
-    state2: "assets/Image/Scene/Background/end-3-state2.png",
-    state3: "assets/Image/Scene/Background/end-3-state3.png"
+    state1: "assets/Image/Scene/Background/end-3-state1.webp",
+    state2: "assets/Image/Scene/Background/end-3-state2.webp",
+    state3: "assets/Image/Scene/Background/end-3-state3.webp"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "lost")?.title || "失落";

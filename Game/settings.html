@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 设置</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
   <script src="src/namespace.js"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
   <script src="src/auth.js"></script>
@@ -45,6 +45,11 @@
             <input id="game-sfx-volume" type="range" min="0" max="100" step="5" data-audio-setting="gameSfx" aria-describedby="game-sfx-value">
             <output id="game-sfx-value" for="game-sfx-volume">100%</output>
           </label>
+          <label class="volume-setting" for="button-sfx-volume">
+            <span class="volume-setting-copy"><strong>点击音效</strong><small>游戏内按钮与各页面的按钮、链接点击声</small></span>
+            <input id="button-sfx-volume" type="range" min="0" max="100" step="5" data-audio-setting="buttonSfx" aria-describedby="button-sfx-value">
+            <output id="button-sfx-value" for="button-sfx-volume">100%</output>
+          </label>
         </div>
       </section>
 
@@ -54,6 +59,17 @@
           <span class="toggle-setting-copy"><strong>自动存档</strong><small>首次进入新车厢时，自动保存当前稳定进度到正在使用的存档槽位。</small></span>
           <input id="auto-save-enabled" type="checkbox" role="switch">
         </label>
+        <section class="shortcut-settings" aria-labelledby="shortcut-settings-title">
+          <div class="shortcut-settings-header">
+            <div>
+              <h2 id="shortcut-settings-title">快捷键</h2>
+              <p>点击按键后直接按下一个键。每项只能绑定一个按键，不能重复。</p>
+            </div>
+            <button id="reset-shortcuts" type="button">恢复默认快捷键</button>
+          </div>
+          <div id="shortcut-setting-list" class="shortcut-setting-list"></div>
+          <p id="shortcut-setting-message" class="shortcut-setting-message" role="status" aria-live="polite"></p>
+        </section>
       </section>
 
       <section id="endings-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="endings-tab" hidden>

@@ -197,8 +197,8 @@
     root.innerHTML = `<style>${STYLE_TEXT}</style>${TEMPLATE}`;
     const assetPath = (relativePath, filename) => context.assetBase
       ? `${context.assetBase}/${relativePath}` : `assets/ui/radio-tuning/${filename}`;
-    root.querySelector("[data-radio-art]").src = assetPath("ui/radio-tuning/radio-base.png", "radio-base.png");
-    root.querySelector("[data-dial-art]").src = assetPath("ui/radio-tuning/dashboard.png", "dashboard.png");
+    root.querySelector("[data-radio-art]").src = assetPath("ui/radio-tuning/radio-base.webp", "radio-base.webp");
+    root.querySelector("[data-dial-art]").src = assetPath("ui/radio-tuning/dashboard.webp", "dashboard.webp");
     context.stage.append(root);
 
     const dial = root.querySelector("[data-dial]");

@@ -2,7 +2,7 @@
    常暗之厢 全站样式表 main.css
    以下 8 个页面共用本文件：index.html（登录）、register.html（注册）、
    home.html（主页）、settings.html（设置）、ending.html（结束）、
-   save-manager.html（存档管理）、save-write.html（选择槽位）、game.html（游戏）。
+   save-manager.html（统一存档管理）、game.html（游戏）。
    样式按「页面 / 界面区域」分节，新增规则请就近加入对应分节；
    公共设计令牌与全局基础统一维护在第 1 节。
    ============================================================================ */
@@ -20,7 +20,8 @@
   color-scheme: dark;
   font-family: "Ark Pixel 12px", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --ink: #ece5d8;
-  --panel: rgba(16, 19, 24, 0.92);
+  --panel: #181010;
+  --panel-button-radius: 4px;
   --line: #8e7b5f;
   --accent: #d5ad6d;
 }
@@ -102,10 +103,15 @@ a { color: inherit; }
 .page-actions button,
 .page-footer a,
 .page-footer button,
-.slot-actions button {
+.slot-actions button,
+.home-action,
+.auth-form button,
+.shortcut-capture-button,
+#reset-shortcuts {
   padding: 12px 20px;
   color: var(--ink);
   border: 1px solid var(--line);
+  border-radius: var(--panel-button-radius);
   background: #272a2f;
   font: inherit;
   text-align: left;
@@ -127,13 +133,6 @@ a { color: inherit; }
 
 .home-action {
   padding: 12px 20px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  background: #272a2f;
-  font: inherit;
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .home-action:hover {
@@ -627,7 +626,7 @@ a { color: inherit; }
   display: grid;
   place-items: center;
   padding: clamp(20px, 5vw, 64px);
-  background: radial-gradient(circle at 70% 15%, #28241d, #0b0d11 58%);
+  background: radial-gradient(circle at 70% 15%, #28241d, #181010 58%);
 }
 
 .page-panel {
@@ -636,6 +635,7 @@ a { color: inherit; }
   overflow: auto;
   padding: clamp(22px, 4vw, 42px);
   border: 2px solid var(--line);
+  border-radius: 6px;
   background: var(--panel);
   box-shadow: 0 10px 36px rgba(0,0,0,.7);
 }
@@ -665,25 +665,61 @@ a { color: inherit; }
 }
 .ending-actions a { text-align: center; }
 
-.ending-page {
+#ending-video-stage {
   position: fixed;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100vh * var(--ending-video-ratio, 1.7777778)));
+  aspect-ratio: var(--ending-video-ratio, 1.7777778);
+  overflow: hidden;
+  background: #050607;
+  transform: translate(-50%, -50%);
+}
+
+#ending-video-stage .ending-page {
+  position: absolute;
   inset: 0;
   z-index: 1;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: none;
   aspect-ratio: auto;
-  overflow: hidden;
   display: block;
   padding: 0;
   background: transparent;
   box-shadow: none;
 }
 
+.ending-page-video,
+.ending-page-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#ending-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  background: #050607;
+}
+
+.ending-page-scrim {
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5, 7, 10, .76), rgba(5, 7, 10, .38)),
+    linear-gradient(0deg, rgba(5, 7, 10, .58), transparent 48%);
+}
+
 .ending-page-copy {
   position: absolute;
   top: 7%;
   left: 8%;
-  width: min(52vw, 920px);
+  width: min(52%, 920px);
   color: #fff;
   text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, .85);
 }
@@ -707,55 +743,100 @@ a { color: inherit; }
 .ending-page .ending-actions {
   position: absolute;
   inset: 0;
-  display: block;
   pointer-events: none;
 }
 
 .ending-page .ending-actions a {
   position: absolute;
   left: 50%;
-  width: min(560px, 34vw);
-  min-width: 280px;
-  padding: clamp(10px, 2vh, 18px) 24px;
+  width: 34%;
+  height: 7%;
+  padding: 0;
   color: transparent !important;
   font-size: 0;
   border: 0 !important;
   border-radius: 0;
-  background: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  backdrop-filter: none !important;
+  background: transparent !important;
   box-shadow: none !important;
   appearance: none;
-  -webkit-appearance: none;
   -webkit-text-fill-color: transparent;
   text-shadow: none !important;
-  line-height: 1.2;
+  line-height: 1;
   text-align: center;
   text-decoration: none !important;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   pointer-events: auto;
 }
 
-.ending-page .ending-actions a:first-child { top: 72%; }
-.ending-page .ending-actions a:last-child { top: 84%; }
-.ending-page .ending-actions a:hover,
-.ending-page .ending-actions a:focus,
-.ending-page .ending-actions a:focus-visible,
-.ending-page .ending-actions a:active {
-  color: transparent !important;
-  -webkit-text-fill-color: transparent;
-  background: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  text-decoration: none !important;
+.ending-page .ending-actions a:first-child { top: 78.5%; }
+.ending-page .ending-actions a:last-child { top: 86.1%; }
+
+.ending-page .ending-actions a:focus-visible {
+  outline: 2px solid rgba(255, 244, 213, .9);
+  outline-offset: -2px;
 }
 
-.ending-page .ending-actions a::before,
-.ending-page .ending-actions a::after {
-  content: none !important;
-  display: none !important;
+.ending-reveal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: clamp(28px, 7vw, 120px);
+  color: #fff;
+  background: #050607;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.ending-reveal.is-visible { opacity: 1; }
+.ending-reveal.is-leaving { opacity: 0; }
+
+.ending-reveal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(4, 6, 9, .92), rgba(4, 6, 9, .56)),
+    linear-gradient(0deg, rgba(4, 6, 9, .84), transparent 62%),
+    var(--ending-background-image) center / cover no-repeat;
+  filter: saturate(.72) contrast(1.08);
+  transform: scale(1.02);
+}
+
+.ending-reveal-copy {
+  width: min(100%, 920px);
+  text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, .85);
+}
+
+.ending-reveal-kicker {
+  margin: 0 0 12px;
+  color: rgba(255, 235, 196, .88);
+  font-size: clamp(14px, 1.3vw, 18px);
+  font-weight: 700;
+  letter-spacing: .28em;
+}
+
+.ending-reveal h1 {
+  margin: 0 0 20px;
+  color: #fff;
+  font-size: clamp(38px, 6vw, 92px);
+  line-height: 1.12;
+  letter-spacing: .08em;
+}
+
+.ending-reveal-copy > p:not(.ending-reveal-kicker):not(.ending-reveal-unlocked) {
+  max-width: 45ch;
+  margin: 0;
+  font-size: clamp(18px, 2vw, 32px);
+  line-height: 1.65;
+}
+
+.ending-reveal-unlocked {
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, .76);
+  font-size: clamp(13px, 1.2vw, 16px);
 }
 
 @media (max-width: 700px) {
@@ -764,33 +845,8 @@ a { color: inherit; }
     left: 7%;
     width: 86%;
   }
-  .ending-page .ending-actions a {
-    width: 86%;
-    min-width: 0;
-  }
-  .ending-page .ending-actions a:first-child { top: 72%; }
-  .ending-page .ending-actions a:last-child { top: 84%; }
-}
-
-.ending-page-video,
-.ending-page-scrim {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.ending-page-video {
-  z-index: 0;
-  object-fit: cover;
-  background: #050607;
-}
-
-.ending-page-scrim {
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgba(5, 7, 10, .76), rgba(5, 7, 10, .38)),
-    linear-gradient(0deg, rgba(5, 7, 10, .58), transparent 48%);
+  .ending-reveal { padding: 28px 22px; }
+  .ending-reveal h1 { font-size: clamp(34px, 10vw, 54px); }
 }
 
 /* 设置页：音频与结局收藏共用同一内容面板，通过页内标签切换。 */
@@ -865,6 +921,31 @@ a { color: inherit; }
   accent-color: var(--accent);
   cursor: pointer;
 }
+.shortcut-settings { margin-top: 22px; }
+.shortcut-settings-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+.shortcut-settings-header h2 { margin: 0 0 5px; color: var(--accent); font-size: 1.15em; }
+.shortcut-settings-header p, .shortcut-setting-message { margin: 0; color: rgba(236,229,216,.62); line-height: 1.45; }
+.shortcut-setting-list { display: grid; gap: 10px; }
+.shortcut-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+}
+.shortcut-setting-copy { display: grid; gap: 4px; }
+.shortcut-setting-copy strong { color: var(--ink); }
+.shortcut-setting-copy small { color: rgba(236,229,216,.62); line-height: 1.4; }
+.shortcut-capture-button { min-width: 92px; }
+.shortcut-setting-message { min-height: 1.45em; margin-top: 10px; }
 .ending-collection-header {
   display: flex;
   align-items: baseline;
@@ -923,6 +1004,8 @@ a { color: inherit; }
   .volume-setting { grid-template-columns: 1fr 52px; gap: 12px; }
   .volume-setting-copy { grid-column: 1 / -1; }
   .toggle-setting { align-items: start; }
+  .shortcut-settings-header, .shortcut-setting { align-items: stretch; flex-direction: column; }
+  .shortcut-capture-button, #reset-shortcuts { align-self: flex-start; }
   .ending-collection-header { display: block; }
   .ending-collection-header strong { display: block; margin: -10px 0 18px; }
   .ending-collection { grid-template-columns: 1fr; }
@@ -949,7 +1032,6 @@ a { color: inherit; }
   box-shadow: 0 0 0 2px rgba(213,173,109,.22);
 }
 .auth-form button {
-  padding: 12px 20px;
   color: #17130e;
   border: 1px solid var(--accent);
   background: var(--accent);
@@ -1118,6 +1200,7 @@ body.home-op-active .home-page .auth-user-status {
   font-size: clamp(15px, 1.4vw, 20px);
 }
 .save-page-panel .save-slot-card p {
+  min-height: 2.4em;
   font-size: clamp(11px, .85vw, 13px);
   line-height: 1.2;
 }
@@ -1391,7 +1474,7 @@ body.home-op-active .home-page .auth-user-status {
   color: var(--ink);
   border: 0;
   background-color: transparent;
-  background-image: url("../assets/Image/Ui/status-bar.png");
+  background-image: url("../assets/Image/Ui/status-bar.webp");
   background-position: center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -1429,7 +1512,7 @@ body.home-op-active .home-page .auth-user-status {
   grid-template-columns: repeat(10, minmax(0, 1fr));
   padding: 0;
   overflow: hidden;
-  background: url("../assets/Image/Ui/backpack-frame.png") left center / 10% 100% repeat-x;
+  background: url("../assets/Image/Ui/backpack-frame.webp") left center / 10% 100% repeat-x;
 }
 
 .inventory-slot {
@@ -1491,9 +1574,11 @@ body.home-op-active .home-page .auth-user-status {
 .inspect-close,
 .attribute-stepper button,
 .allocation-actions button,
-.menu-actions button {
+.menu-actions button,
+.minigame-exit {
   color: var(--ink);
   border: 1px solid var(--line);
+  border-radius: var(--panel-button-radius);
   background: #272a2f;
   cursor: pointer;
 }
@@ -1614,6 +1699,7 @@ body.home-op-active .home-page .auth-user-status {
 .game-window {
   pointer-events: auto;
   border: 2px solid var(--line);
+  border-radius: 6px;
   color: var(--ink);
   background: var(--panel);
   box-shadow: 0 10px 36px rgba(0,0,0,.7);
@@ -1628,8 +1714,10 @@ body.home-op-active .home-page .auth-user-status {
   min-height: 26%;
   padding: 4px 28px 50px;
   border: 20px solid transparent;
+  border-radius: 0;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
+  background-clip: padding-box;
   box-shadow: none;
   cursor: pointer;
 }
@@ -1708,9 +1796,15 @@ body.home-op-active .home-page .auth-user-status {
   background: rgba(0,0,0,.58);
 }
 
+/* 选项等待时场景与物品栏已由 engine.busy 禁用；让遮罩本身透传指针，
+   仅选项面板继续接收点击，使 HUD 暂停按钮仍可使用。 */
+.choice-backdrop { pointer-events: none; }
+.choice-backdrop .choice-window { pointer-events: auto; }
+
 .menu-backdrop,
 .main-menu-backdrop {
   position: absolute;
+  z-index: 130;
   inset: 0;
   display: grid;
   place-items: center;
@@ -2433,27 +2527,36 @@ body.home-op-active .home-page .auth-user-status {
 }
 .inspect-media { min-width: 0; }
 .inspect-content img { width: 100%; max-height: 220px; object-fit: contain; }
-.inspect-window.inspect-large { width: min(900px, 92vw); max-height: 90vh; }
+.inspect-window.inspect-large {
+  width: min(900px, 92vw);
+  height: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
 .inspect-window.inspect-large .inspect-content {
   display: flex;
   flex-direction: column;
-  max-height: 72vh;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
 }
 .inspect-window.inspect-large .inspect-media {
   display: grid;
   place-items: center;
   width: 100%;
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-height: 0;
 }
 .inspect-window.inspect-large .inspect-content img {
-  width: min(72vw, 680px);
-  max-width: 100%;
-  max-height: 58vh;
+  width: auto;
+  height: 100%;
+  max-width: min(72vw, 680px);
+  max-height: 100%;
   object-fit: contain;
   margin: 0 auto;
 }
 .inspect-window.inspect-large .inspect-text {
+  flex: 0 0 auto;
   width: min(680px, 100%);
   margin: 0 auto;
   line-height: 1.75;
@@ -2871,7 +2974,7 @@ body.home-op-active .home-page .auth-user-status {
   opacity: 0;
   border: 20px solid transparent;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -3630,7 +3733,7 @@ body.home-op-active .home-page .auth-user-status {
   opacity: 0;
   border: 20px solid transparent;
   border-width: 20px 30px;
-  border-image: url("../assets/Image/Ui/dialog-box.png") 40 54 fill / 20px 30px / 0 stretch;
+  border-image: url("../assets/Image/Ui/dialog-box.webp") 40 54 fill / 20px 30px / 0 stretch;
   box-shadow: none;
   transition: opacity 220ms ease;
 }
@@ -3878,74 +3981,6 @@ body.codex-start-video-ready #home-cover {
   opacity: 0;
 }
 
-#codex-ending-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  overflow: hidden;
-  background: #000;
-}
-
-#codex-ending-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  pointer-events: none;
-}
-
-#codex-ending-actions {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.codex-ending-button {
-  position: absolute;
-  left: 50%;
-  width: min(560px, 28vw);
-  min-width: 280px;
-  padding: clamp(10px, 2vh, 18px) 24px;
-  color: transparent !important;
-  border: 0;
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  appearance: none;
-  outline: none;
-  font-size: clamp(16px, 1.4vw, 24px);
-  line-height: 1.2;
-  text-align: center;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none !important;
-  text-decoration: none !important;
-  cursor: pointer;
-  pointer-events: auto;
-  transform: translate(-50%, -50%);
-}
-
-.codex-ending-button:hover,
-.codex-ending-button:focus,
-.codex-ending-button:active {
-  color: transparent !important;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none !important;
-  text-decoration: none !important;
-  background: transparent !important;
-}
-
-#codex-ending-load { top: 75.5%; }
-#codex-ending-home { top: 87.8%; }
-
-@media (max-height: 600px) {
-  #codex-ending-load { top: 74%; }
-  #codex-ending-home { top: 87%; }
-}
-
 .home-op-frame {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -4038,7 +4073,7 @@ body.codex-start-video-ready .home-page .home-action::after {
   top: 50%;
   width: var(--menu-marker-size);
   aspect-ratio: 1;
-  background: url("../assets/Image/Portrait/monster-pixel.png") center / contain no-repeat;
+  background: url("../assets/Image/Portrait/monster-pixel.webp") center / contain no-repeat;
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%) scale(.82);

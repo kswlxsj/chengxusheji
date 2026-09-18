@@ -177,7 +177,7 @@
           for (const line of ["怎么打不开！", "求求你了…快点开门！", "开门啊！"]) {
             await context.ui.dialog.showLine({
               speaker: "你",
-              portrait: "assets/Image/Portrait/player-scared.png",
+              portrait: "assets/Image/Portrait/player-scared.webp",
               text: line
             });
           }

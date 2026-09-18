@@ -7,31 +7,33 @@
   const MAX_PLAYER_HP = 10;
   const MAX_ENEMY_HP = 10;
   const MAX_ENERGY = 3;
-  const DESIGN_WIDTH = 1080;
-  const DESIGN_HEIGHT = 574;
+  const ULTIMATE_COOLDOWN = 4;
+  const DEFENSE_BLOCK = 2;
+  const COUNTER_CHANCE = 0.25;
+  const COUNTER_DAMAGE = 1;
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
   const cardDetails = {
     attack: "单出造成 2 点伤害",
-    heal: "单出恢复 3，受到攻击时回血不生效并直接失去 3 点生命；4 点伤害技能改为直接失去 4 点生命",
-    defend: "单出抵挡 1 点并反弹 1 点",
-    ultimate: "单出造成 3 点伤害，冷却 3 回合"
+    heal: "单出恢复 3；受到攻击时回血不生效并直接失去 3 点生命，破阵爆发改为失去 4 点；组合技中的回血只会被取消，不额外扣血",
+    defend: "单出抵挡 2 点，25% 概率反弹 1 点",
+    ultimate: "单出消耗 1 体力，造成 3 点伤害，冷却 4 回合"
   };
   const enemyActions = [
     { id: "attack", label: "攻击", cards: ["attack"], detail: "造成 2 点伤害 · 免费", cost: 0, damage: 2 },
-    { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 受到攻击时回血不生效并失去 3 点生命，4 伤害技能改为失去 4 点 · 免费", cost: 0, recovery: 3 },
-    { id: "defend", label: "防御", cards: ["defend"], detail: "抵挡 1＋反弹 1 · 免费", cost: 0, shield: 1, counter: 1 },
+    { id: "heal", label: "回血", cards: ["heal"], detail: "恢复 3 · 受到攻击时回血不生效并失去 3 点生命，破阵爆发改为失去 4 点 · 免费", cost: 0, recovery: 3 },
+    { id: "defend", label: "防御", cards: ["defend"], detail: "抵挡 2＋25% 概率反弹 1 · 免费", cost: 0, shield: DEFENSE_BLOCK, counter: COUNTER_DAMAGE },
     { id: "ultimate", label: "必杀", cards: ["ultimate"], detail: "造成 3 点伤害 · 消耗 1 体力", cost: 1, damage: 3, ultimate: true },
     { id: "attack+heal", label: "攻击＋回血", cards: ["attack", "heal"], detail: "吸血斩：2 伤害＋恢复 1", cost: 1, damage: 2, recovery: 1, combo: true },
-    { id: "attack+defend", label: "攻击＋防御", cards: ["attack", "defend"], detail: "盾击：2 伤害＋1 护盾＋反弹 1", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
-    { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：2 伤害＋1 护盾＋反弹 1（必杀按攻击处理）", cost: 1, damage: 2, shield: 1, counter: 1, combo: true },
-    { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "双斩：4 伤害（必杀按攻击处理）", cost: 1, damage: 4, combo: true },
-    { id: "defend+heal", label: "防御＋回血", cards: ["defend", "heal"], detail: "稳住阵脚：恢复 2＋1 护盾＋反弹 1", cost: 1, recovery: 2, shield: 1, counter: 1, combo: true },
-    { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "吸血斩：2 伤害＋恢复 1（必杀按攻击处理）", cost: 1, damage: 2, recovery: 1, combo: true }
+    { id: "attack+defend", label: "攻击＋防御", cards: ["attack", "defend"], detail: "盾击：2 伤害＋2 护盾＋25% 概率反弹 1", cost: 1, damage: 2, shield: DEFENSE_BLOCK, counter: COUNTER_DAMAGE, combo: true },
+    { id: "defend+ultimate", label: "防御＋必杀", cards: ["defend", "ultimate"], detail: "盾击：3 伤害＋2 护盾＋25% 概率反弹 1 · 消耗 2 体力并触发必杀冷却", cost: 2, damage: 3, shield: DEFENSE_BLOCK, counter: COUNTER_DAMAGE, combo: true },
+    { id: "attack+ultimate", label: "攻击＋必杀", cards: ["attack", "ultimate"], detail: "破阵爆发：4 伤害 · 消耗 2 体力并触发必杀冷却", cost: 2, damage: 4, combo: true },
+    { id: "defend+heal", label: "防御＋回血", cards: ["defend", "heal"], detail: "稳住阵脚：恢复 2＋2 护盾＋25% 概率反弹 1", cost: 1, recovery: 2, shield: DEFENSE_BLOCK, counter: COUNTER_DAMAGE, combo: true },
+    { id: "heal+ultimate", label: "回血＋必杀", cards: ["heal", "ultimate"], detail: "吸血斩：3 伤害＋恢复 1 · 触发必杀冷却", cost: 1, damage: 3, recovery: 1, combo: true }
   ];
 
   const styleText = `
-    .card-battle { position: absolute; top: 50%; left: 50%; box-sizing: border-box; width: 1080px; height: 574px; min-height: 0; padding: 14px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.png"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; transform: translate(-50%, -50%) scale(var(--cb-scale, 1)); transform-origin: center; }
-    .card-battle.is-responsive { position: relative; top: auto; left: auto; width: 100%; height: 100%; padding: 10px; overflow: auto; transform: none; }
+    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.webp"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle.is-responsive { padding: 10px; }
     .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
     .card-battle button { font: inherit; }
@@ -48,7 +50,7 @@
     .cb-fighter-name small { color: #9d8e78; font-size: 11px; }
     .cb-fighter-name strong { color: #f6ead5; font-size: 16px; }
     .cb-hp-line { display: grid; gap: 3px; color: #efb45f; font-size: 12px; }
-    .cb-hp-track { position: relative; height: 16px; padding: 0; border: 0; overflow: visible; background: url("assets/Image/Ui/CardBattle/hp-bar.png") center / 100% 100% no-repeat; }
+    .cb-hp-track { position: relative; height: 16px; padding: 0; border: 0; overflow: visible; background: url("assets/Image/Ui/CardBattle/hp-bar.webp") center / 100% 100% no-repeat; }
     .cb-hp-fill { position: absolute; left: 13px; top: 5px; display: block; height: 6px; background: linear-gradient(90deg, #b6372c, #efb45f); transition: width .2s ease; }
     .cb-resource { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: #9d8e78; font-size: 11px; }
     .cb-orbs { display: flex; gap: 3px; min-height: 17px; color: rgba(85, 208, 212, .22); font-size: 16px; }
@@ -73,15 +75,15 @@
     .cb-play, .cb-restart { padding: 8px 12px; border: 1px solid rgba(239, 180, 95, .65); color: #17100a; background: #efb45f; cursor: pointer; }
     .cb-play:disabled { cursor: not-allowed; opacity: .4; }
     .cb-cards { display: grid; grid-template-columns: repeat(4, 82px); justify-content: center; gap: 10px; }
-    .cb-card { position: relative; width: 82px; aspect-ratio: 3 / 4; min-height: 0; padding: 0; overflow: hidden; border: 0; color: #f6ead5; background-color: transparent; background-image: var(--card-art), url("assets/Image/Ui/CardBattle/card-base.png"); background-position: center; background-repeat: no-repeat; background-size: contain; cursor: pointer; text-align: left; transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease; }
-    .cb-card[data-card="attack"] { --card-art: url("assets/Image/Ui/CardBattle/attack.png"); }
+    .cb-card { position: relative; width: 82px; aspect-ratio: 3 / 4; min-height: 0; padding: 0; overflow: hidden; border: 0; color: #f6ead5; background-color: transparent; background-image: var(--card-art), url("assets/Image/Ui/CardBattle/card-base.webp"); background-position: center; background-repeat: no-repeat; background-size: contain; cursor: pointer; text-align: left; transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease; }
+    .cb-card[data-card="attack"] { --card-art: url("assets/Image/Ui/CardBattle/attack.webp"); }
     .cb-card[data-card="heal"] { --card-art: url("assets/Image/Ui/CardBattle/heal.png"); }
     .cb-card[data-card="defend"] { --card-art: url("assets/Image/Ui/CardBattle/defend.png"); }
     .cb-card[data-card="ultimate"] { --card-art: url("assets/Image/Ui/CardBattle/ultimate.png"); }
     .cb-card:hover:not(:disabled), .cb-card.selected { filter: brightness(1.14); transform: translateY(-3px); }
     .cb-card.selected { outline: 3px solid rgba(239, 180, 95, .8); outline-offset: 2px; }
     .cb-card:disabled { cursor: not-allowed; opacity: .4; }
-    .cb-card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/Image/Ui/CardBattle/card-base.png") center / contain no-repeat; opacity: .94; }
+    .cb-card.locked::after { content: ""; position: absolute; inset: 0; z-index: 1; background: url("assets/Image/Ui/CardBattle/card-base.webp") center / contain no-repeat; opacity: .94; }
     .cb-card .key { position: absolute; z-index: 2; top: 6px; right: 7px; display: grid; place-items: center; width: 18px; height: 18px; color: #17100a; background: rgba(239, 180, 95, .94); font-size: 10px; font-weight: 700; }
     .cb-card .symbol { display: none; }
     .cb-card .name { position: absolute; z-index: 2; right: 5px; bottom: 6px; left: 5px; color: #fff7e8; font-size: 11px; font-weight: 700; text-align: center; text-shadow: 0 1px 3px #000, 0 0 3px #000; }
@@ -97,14 +99,14 @@
   `;
 
   const template = `
-    <header class="cb-topbar"><strong>战斗轮 · 双牌试作</strong><span class="cb-round" data-round>回合 1</span></header>
+    <header class="cb-topbar"><strong>战斗轮 · 卡牌对决</strong><span class="cb-round" data-round>回合 1</span></header>
     <details class="cb-rules">
       <summary>规则说明</summary>
       <div class="cb-rule-body">
         <p><strong>目标：</strong>你的生命值为 10，敌人生命值为 10，把敌人击倒即可获胜；同一次结算中双方都倒下时，算你赢。</p>
-        <p><strong>出牌：</strong>选 1 张牌免费；选 2 张牌同时出牌，消耗 1 点体力。双方每 2 回合恢复 1 点体力。</p>
-        <p><strong>克制：</strong>只要对手出了任何攻击（普攻、必杀或组合技），回血不生效并直接失去 3 点生命；4 点伤害技能改为直接失去 4 点生命。防御抵挡 1 点并反弹 1 点。组合技伤害不会被防御挡住或反弹。</p>
-        <p><strong>组合：</strong>必杀单出才是必杀；放进组合技时按攻击处理，因此“回血＋必杀”=“回血＋攻击”，造成 2 点伤害并回复 1 点，且不进入必杀冷却。</p>
+        <p><strong>出牌：</strong>单出攻击、回血或防御免费，单出必杀消耗 1 点体力；通常双牌消耗 1 点体力，“攻击＋必杀”和“防御＋必杀”消耗 2 点。双方每 2 回合恢复 1 点体力。</p>
+        <p><strong>克制：</strong>单独回血遇到任何攻击时，回血不生效并直接失去 3 点生命；4 点破阵爆发改为失去 4 点。组合技中的回血被攻击时只取消回血，不额外扣血，另一张牌和对方攻击照常结算。防御对所有攻击伤害生效，抵挡 2 点，并有 25% 概率反弹 1 点。</p>
+        <p><strong>组合：</strong>必杀会强化组合技：“回血＋必杀”造成 3 点伤害并回复 1 点，“防御＋必杀”造成 3 点伤害并获得防御，“攻击＋必杀”造成 4 点伤害；所有含必杀的组合技都会触发 4 回合必杀冷却。</p>
         <p><strong>濒死：</strong><span data-infinite-rule></span></p>
       </div>
     </details>
@@ -113,7 +115,7 @@
         <div class="cb-fighter-name"><small>敌人</small><strong>无眼者</strong></div>
         <div class="cb-hp-line"><span data-enemy-hp>10 / 10</span><div class="cb-hp-track"><span class="cb-hp-fill" data-enemy-fill></span></div></div>
         <div class="cb-resource"><span>体力</span><span class="cb-orbs" data-enemy-orbs aria-label="敌人体力 0 / 3"></span></div>
-        <div class="cb-face cb-enemy-face" aria-hidden="true"><img src="assets/Image/Portrait/monster-pixel.png" alt=""></div>
+        <div class="cb-face cb-enemy-face" aria-hidden="true"><img src="assets/Image/Portrait/monster-pixel.webp" alt=""></div>
         <button class="cb-intent" type="button" data-intent aria-expanded="false">? 点击查看两张候选牌</button>
         <div class="cb-last-play" data-last-play hidden><span class="cb-last-kicker">上回合出牌</span><strong data-last-name></strong><span class="cb-last-detail" data-last-detail></span></div>
       </section>
@@ -134,15 +136,22 @@
       <div class="cb-hand-heading"><div><strong>选择 1 或 2 张牌</strong><span class="cb-selected" data-selected>已选 0 / 2</span></div><button class="cb-play" type="button" data-play disabled>出牌</button></div>
       <div class="cb-cards">
         <button class="cb-card" type="button" data-card="attack" aria-pressed="false"><span class="key">1</span><span class="symbol">斩</span><span class="name">攻击</span><span class="detail">单出造成 2 点伤害</span></button>
-        <button class="cb-card" type="button" data-card="heal" aria-pressed="false"><span class="key">2</span><span class="symbol">愈</span><span class="name">回血</span><span class="detail">单出恢复 3（受攻击：失去 3 点；4 伤害技能失去 4 点）</span></button>
-        <button class="cb-card" type="button" data-card="defend" aria-pressed="false"><span class="key">3</span><span class="symbol">防</span><span class="name">防御</span><span class="detail">单出抵挡 1 点并反弹 1 点</span></button>
-        <button class="cb-card" type="button" data-card="ultimate" aria-pressed="false"><span class="key">4</span><span class="symbol">必</span><span class="name">必杀</span><span class="detail">单出造成 3 点伤害，冷却 3 回合</span></button>
+        <button class="cb-card" type="button" data-card="heal" aria-pressed="false"><span class="key">2</span><span class="symbol">愈</span><span class="name">回血</span><span class="detail">单出恢复 3（受攻击：失去 3 点；破阵爆发失去 4 点；组合回血只取消恢复）</span></button>
+        <button class="cb-card" type="button" data-card="defend" aria-pressed="false"><span class="key">3</span><span class="symbol">防</span><span class="name">防御</span><span class="detail">单出抵挡 2 点，25% 概率反弹 1 点</span></button>
+        <button class="cb-card" type="button" data-card="ultimate" aria-pressed="false"><span class="key">4</span><span class="symbol">必</span><span class="name">必杀</span><span class="detail">单出消耗 1 体力，造成 3 点伤害，冷却 4 回合</span></button>
       </div>
     </section>
   `;
 
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+  }
+
+  function getPlayerActionCost(cards) {
+    if (cards.length === 1) return cards[0] === "ultimate" ? 1 : 0;
+    if (cards.length !== 2) return 0;
+    const key = [...cards].sort().join("+");
+    return key === "attack+ultimate" || key === "defend+ultimate" ? 2 : 1;
   }
 
   function hasInfiniteEnemyEnergy(enemyHp, threshold) {
@@ -153,41 +162,57 @@
     const infiniteEnergy = hasInfiniteEnemyEnergy(enemyHp, threshold);
     const available = enemyActions.filter((action) =>
       (infiniteEnergy || action.cost <= energy) &&
-      (!action.ultimate || ultimateCooldown === 0)
+      (!action.cards.includes("ultimate") || ultimateCooldown === 0) &&
+      (enemyHp < MAX_ENEMY_HP || !action.recovery)
     );
     return [...available].sort(() => Math.random() - 0.5).slice(0, 2);
   }
 
   function scoreEnemyAction(action, context) {
-    let score = Math.random() * 1.2;
+    // 候选牌仍然随机，但敌人会根据玩家已经选定的牌做更可靠的战术判断。
+    let score = Math.random() * 0.35;
     const selected = context.selected || [];
-    const playerThreatens = selected.includes("attack") || selected.includes("ultimate");
-    const playerHeals = selected.length === 1 && selected.includes("heal");
+    const playerThreatens = isAttackAction(selected);
+    const playerHeals = selected.includes("heal");
+    const playerUsesCombo = selected.length === 2;
     const has = (cardId) => action.cards.includes(cardId);
-    if (has("attack") || (has("ultimate") && action.combo)) {
-      score += !action.combo && playerHeals ? 7 : 2;
-      score += context.playerHp <= 3 ? 4 : 0;
+    const attacks = isAttackAction(action.cards);
+
+    if (action.combo) score += 5;
+    if (attacks) {
+      score += 3;
+      score += playerHeals ? 8 : 0;
+      score += context.playerHp <= 3 ? 8 : context.playerHp <= 5 ? 4 : 0;
     }
+
+    if (action.id === "attack+ultimate") score += 7;
+    if (action.ultimate && !action.combo) score += 6;
+
     if (has("heal")) {
-      score += context.enemyHp <= 3 ? 8 : context.enemyHp < MAX_ENEMY_HP ? 3 : -8;
-      score += context.enemyHp <= 5 ? 2 : 0;
+      score += context.enemyHp >= MAX_ENEMY_HP
+        ? -30
+        : context.enemyHp >= 8
+          ? -10
+          : context.enemyHp <= 3
+            ? 6
+            : context.enemyHp <= 5
+              ? 3
+              : -2;
+      score += playerThreatens ? -10 : 0;
     }
+
     if (has("defend")) {
+      score += playerThreatens ? 16 : 0;
+      score += playerThreatens && playerUsesCombo ? 3 : 0;
       score += context.enemyHp <= 4 ? 4 : 0;
-      score += context.energy >= 1 ? 2 : 0;
-      score += playerThreatens ? 7 : 0;
     }
-    if (has("ultimate") && !action.combo) {
-      score += context.playerHp <= 3 ? 10 : context.playerHp <= 5 ? 5 : 1;
-      score += !action.combo && playerHeals ? 4 : 0;
-    }
-    if (action.combo) score += 1.5;
+
     return score;
   }
 
   function chooseEnemyAction(candidates, context) {
     const ranked = [...candidates].sort((left, right) => scoreEnemyAction(right, context) - scoreEnemyAction(left, context));
-    return ranked.length < 2 || Math.random() < 0.6 ? ranked[0] : ranked[1];
+    return ranked.length < 2 || Math.random() < 0.85 ? ranked[0] : ranked[1];
   }
 
   function isAttackAction(cards) {
@@ -200,7 +225,7 @@
   }
 
   function recoveryCounterName(cards) {
-    if (cards.includes("attack") && cards.includes("ultimate")) return "4伤害技能";
+    if (cards.includes("attack") && cards.includes("ultimate")) return "破阵爆发";
     return cards.includes("ultimate") ? "必杀" : "攻击";
   }
 
@@ -214,30 +239,10 @@
     root.className = "card-battle";
     root.innerHTML = template;
     root.querySelector(".cb-rules").open = false;
-    root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 3 回合冷却。`;
+    root.querySelector("[data-infinite-rule]").textContent = `敌人生命值降到 ${enemyInfiniteEnergyHp} 或更低后体力变为无限，可连续使用组合技；单出必杀仍受 4 回合冷却。`;
     stage.append(style, root);
 
-    const resizeObserver = typeof ResizeObserver === "function"
-      ? new ResizeObserver(() => fitToStage())
-      : null;
-
-    function fitToStage() {
-      if (stage.clientWidth <= 700) {
-        root.classList.add("is-responsive");
-        root.style.removeProperty("--cb-scale");
-        return;
-      }
-      root.classList.remove("is-responsive");
-      const scale = Math.min(
-        stage.clientWidth / DESIGN_WIDTH,
-        stage.clientHeight / DESIGN_HEIGHT,
-        1
-      );
-      root.style.setProperty("--cb-scale", scale.toFixed(4));
-    }
-
-    resizeObserver?.observe(stage);
-    fitToStage();
+    root.classList.toggle("is-responsive", stage.clientWidth <= 700);
 
     const elements = {
       round: root.querySelector("[data-round]"),
@@ -326,7 +331,7 @@
       elements.playerHp.textContent = `${state.playerHp} / ${MAX_PLAYER_HP}`;
       elements.playerFill.style.width = `calc((100% - 26px) * ${state.playerHp / MAX_PLAYER_HP})`;
       elements.shield.hidden = state.shield <= 0;
-      elements.shield.textContent = `护盾 ${state.shield}${state.counter > 0 ? ` · 反击 ${state.counter}` : ""}`;
+      elements.shield.textContent = `护盾 ${state.shield}${state.counter > 0 ? " · 25% 反击 1" : ""}`;
       if (state.enemyPlayed) {
         elements.intent.textContent = `✓ 已出牌：${state.enemyPlayed.label}`;
       } else if (state.intentRevealed) {
@@ -343,8 +348,13 @@
       }
       const selectedNames = state.selected.map((id) => cardNames[id]).join("＋");
       elements.selected.textContent = selectedNames ? `已选 ${state.selected.length} / 2：${selectedNames}` : "已选 0 / 2";
-      elements.play.disabled = state.busy || state.ended || state.selected.length === 0 || (state.selected.length === 2 && state.energy < 1);
-      elements.play.textContent = state.selected.length === 2 ? "同时出牌（-1 体力）" : "出一张（免费）";
+      const actionCost = getPlayerActionCost(state.selected);
+      elements.play.disabled = state.busy || state.ended || state.selected.length === 0 || state.energy < actionCost;
+      elements.play.textContent = state.selected.length === 2
+        ? `同时出牌（-${actionCost} 体力）`
+        : actionCost > 0
+          ? `出一张（-${actionCost} 体力）`
+          : "出一张（免费）";
       elements.cards.forEach((button) => {
         const cardId = button.dataset.card;
         const locked = cardId === "ultimate" && state.ultimateCooldown > 0 && state.selected.length === 0;
@@ -353,22 +363,26 @@
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
         button.title = locked
-          ? `必杀单出冷却中，还剩 ${state.ultimateCooldown} 回合；可作为组合中的攻击使用`
+          ? `必杀冷却中，还剩 ${state.ultimateCooldown} 回合；冷却结束后才可选择`
           : `${cardNames[cardId]}：${cardDetails[cardId]}`;
       });
     }
 
     function damageEnemy(amount, messages, combo = false) {
       let damage = amount;
-      if (!combo && state.enemyShield > 0) {
+      if (state.enemyShield > 0) {
         const blocked = Math.min(state.enemyShield, damage);
         state.enemyShield -= blocked;
         damage -= blocked;
         messages.push(`敌人的防御挡住了 ${blocked} 点伤害`);
       }
-      if (!combo && amount > 0 && state.enemyCounter > 0) {
-        state.playerHp = clamp(state.playerHp - state.enemyCounter, 0, MAX_PLAYER_HP);
-        messages.push(`敌人的防御反弹了 ${state.enemyCounter} 点伤害`);
+      if (amount > 0 && state.enemyCounter > 0) {
+        if (Math.random() < COUNTER_CHANCE) {
+          state.playerHp = clamp(state.playerHp - state.enemyCounter, 0, MAX_PLAYER_HP);
+          messages.push(`敌人的防御反弹了 ${state.enemyCounter} 点伤害`);
+        } else {
+          messages.push("敌人的防御反击未触发");
+        }
         state.enemyCounter = 0;
       }
       const wasAboveThreshold = state.enemyHp > enemyInfiniteEnergyHp;
@@ -380,7 +394,7 @@
     }
 
     function damagePlayer(amount, messages, combo = false) {
-      const blocked = combo ? 0 : Math.min(state.shield, amount);
+      const blocked = Math.min(state.shield, amount);
       const actual = amount - blocked;
       if (blocked > 0) messages.push(`护盾抵挡了 ${blocked} 点伤害`);
       if (actual > 0) {
@@ -412,10 +426,18 @@
 
     function damageEnemyForAttack(amount, messages, combo = false) {
       // 攻击回血目标时，3/4 点反制伤害替代原本的攻击伤害，避免重复扣血。
-      if (state.enemyAction.recovery && isAttackAction(state.selected)) {
+      if (state.enemyAction.recovery && !state.enemyAction.combo && isAttackAction(state.selected)) {
         return damageEnemy(recoveryBacklash(state.selected), messages, true);
       }
       return damageEnemy(amount, messages, combo);
+    }
+
+    function healPlayerForCombo(amount, messages) {
+      if (isAttackAction(state.enemyAction.cards)) {
+        messages.push("组合技中的回血被攻击打断，不生效且不额外扣血");
+        return;
+      }
+      healPlayer(amount, messages);
     }
 
     function resolveSingle(cardId, messages) {
@@ -425,39 +447,41 @@
         return healPlayer(3, messages, penalty, recoveryCounterName(state.enemyAction.cards));
       }
       if (cardId === "defend") {
-        state.shield = 1;
-        state.counter = 1;
-        messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
+        state.shield = DEFENSE_BLOCK;
+        state.counter = COUNTER_DAMAGE;
+        messages.push("你获得了 2 点护盾，受到攻击时有 25% 概率反弹 1 点");
         return;
       }
       damageEnemyForAttack(3, messages);
-      state.ultimateCooldown = 3;
-      messages.push("必杀进入 3 回合冷却");
+      state.ultimateCooldown = ULTIMATE_COOLDOWN;
+      messages.push("必杀进入 4 回合冷却");
     }
 
     function resolveCombo(cardIds, messages) {
       const key = [...cardIds].sort().join("+");
       if (key === "attack+heal" || key === "heal+ultimate") {
         messages.push("组合技：吸血斩");
-        damageEnemyForAttack(2, messages, true);
-        const penalty = recoveryBacklash(state.enemyAction.cards);
-        healPlayer(1, messages, penalty, recoveryCounterName(state.enemyAction.cards));
+        damageEnemyForAttack(key === "heal+ultimate" ? 3 : 2, messages, true);
+        healPlayerForCombo(1, messages);
       } else if (key === "attack+defend" || key === "defend+ultimate") {
         messages.push("组合技：盾击");
-        damageEnemyForAttack(2, messages, true);
-        state.shield = 1;
-        state.counter = 1;
-        messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
+        damageEnemyForAttack(key === "defend+ultimate" ? 3 : 2, messages, true);
+        state.shield = DEFENSE_BLOCK;
+        state.counter = COUNTER_DAMAGE;
+        messages.push("你获得了 2 点护盾，受到攻击时有 25% 概率反弹 1 点");
       } else if (key === "attack+ultimate") {
         messages.push("组合技：破阵爆发");
         damageEnemyForAttack(4, messages, true);
       } else if (key === "defend+heal") {
         messages.push("组合技：稳住阵脚");
-        const penalty = recoveryBacklash(state.enemyAction.cards);
-        healPlayer(2, messages, penalty, recoveryCounterName(state.enemyAction.cards));
-        state.shield = 1;
-        state.counter = 1;
-        messages.push("你获得了 1 点护盾，受到攻击时反弹 1 点");
+        healPlayerForCombo(2, messages);
+        state.shield = DEFENSE_BLOCK;
+        state.counter = COUNTER_DAMAGE;
+        messages.push("你获得了 2 点护盾，受到攻击时有 25% 概率反弹 1 点");
+      }
+      if (cardIds.includes("ultimate")) {
+        state.ultimateCooldown = ULTIMATE_COOLDOWN;
+        messages.push("必杀进入 4 回合冷却");
       }
     }
 
@@ -480,19 +504,21 @@
       state.enemyPlayed = action;
       state.lastPlayed = action;
       messages.push(`敌人出牌：${action.label}（${action.detail}）`);
-      if (action.ultimate) {
-        state.enemyUltimateCooldown = 3;
-        messages.push("敌人的必杀进入 3 回合冷却");
+      if (action.cards.includes("ultimate")) {
+        state.enemyUltimateCooldown = ULTIMATE_COOLDOWN;
+        messages.push("敌人的必杀进入 4 回合冷却");
       }
-      if (state.counter > 0 && action.damage && !action.combo) {
-        state.enemyHp = clamp(state.enemyHp - state.counter, 0, MAX_ENEMY_HP);
-        messages.push(`反击造成 ${state.counter} 点伤害`);
-      } else if (state.counter > 0 && action.damage && action.combo) {
-        messages.push("敌人的组合技伤害不触发防御反弹");
+      if (state.counter > 0 && action.damage) {
+        if (Math.random() < COUNTER_CHANCE) {
+          state.enemyHp = clamp(state.enemyHp - state.counter, 0, MAX_ENEMY_HP);
+          messages.push(`反击造成 ${state.counter} 点伤害`);
+        } else {
+          messages.push("防御反击未触发");
+        }
       }
       if (state.enemyHp <= 0) return;
       if (action.damage) {
-        const playerRecoveryCountered = state.selected.includes("heal") && isAttackAction(action.cards);
+        const playerRecoveryCountered = state.selected.length === 1 && state.selected[0] === "heal" && isAttackAction(action.cards);
         if (!playerRecoveryCountered) damagePlayer(action.damage, messages, action.combo);
       }
       if (action.recovery) {
@@ -570,18 +596,18 @@
 
     function playSelected() {
       if (state.busy || state.ended || state.selected.length === 0) return;
-      if (state.selected.length === 2 && state.energy < 1) {
-        say(["双牌出牌需要 1 点体力，请等体力恢复。"]);
+      const actionCost = getPlayerActionCost(state.selected);
+      if (state.energy < actionCost) {
+        say([`这次出牌需要 ${actionCost} 点体力，请等体力恢复。`]);
         return;
       }
       state.busy = true;
       const selected = [...state.selected];
       const messages = [selected.length === 2 ? `你同时使用了${selected.map((id) => cardNames[id]).join("＋")}` : `你使用了${cardNames[selected[0]]}`];
       commitEnemyAction();
-      if (selected.length === 2) {
-        state.energy -= 1;
-        resolveCombo(selected, messages);
-      } else resolveSingle(selected[0], messages);
+      state.energy -= actionCost;
+      if (selected.length === 2) resolveCombo(selected, messages);
+      else resolveSingle(selected[0], messages);
       render();
       transitionTimer = schedule(() => finishTurn(messages), 180);
     }
@@ -591,7 +617,6 @@
       cleaned = true;
       if (transitionTimer !== null) window.clearTimeout(transitionTimer);
       if (resultTimer !== null) window.clearTimeout(resultTimer);
-      resizeObserver?.disconnect();
       elements.cards.forEach((button) => button.removeEventListener("click", onCardClick));
       elements.intent.removeEventListener("click", revealIntent);
       elements.play.removeEventListener("click", playSelected);
@@ -618,13 +643,13 @@
   }
 
   Game.Minigames.register("card_battle", {
-    title: "战斗轮 · 双牌试作（简单模式）",
+    title: "战斗轮 · 卡牌对决（简单模式）",
     allowQuit: false,
     run: createRun(3)
   });
 
   Game.Minigames.register("card_battle_hard", {
-    title: "战斗轮 · 双牌试作（困难模式）",
+    title: "战斗轮 · 卡牌对决（困难模式）",
     allowQuit: false,
     run: createRun(5)
   });

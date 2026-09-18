@@ -2,13 +2,13 @@
   "use strict";
 
   const DEFAULT_ASSETS = {
-    frontCarriage: "assets/Image/Scene/Background/front-carriage.png",
-    carriage06: "assets/Image/Scene/Background/carriage-06.png",
-    platform: "assets/Image/Scene/Background/sunny-platform.png",
-    moveBlur: "assets/Image/Scene/Background/move-blur.png",
-    move: "assets/Image/Scene/Background/move.png",
-    pcHappy: "assets/Image/Portrait/player-happy.png",
-    pcScared: "assets/Image/Portrait/player-scared.png"
+    frontCarriage: "assets/Image/Scene/Background/front-carriage.webp",
+    carriage06: "assets/Image/Scene/Background/carriage-06.webp",
+    platform: "assets/Image/Scene/Background/sunny-platform.webp",
+    moveBlur: "assets/Image/Scene/Background/move-blur.webp",
+    move: "assets/Image/Scene/Background/move.webp",
+    pcHappy: "assets/Image/Portrait/player-happy.webp",
+    pcScared: "assets/Image/Portrait/player-scared.webp"
   };
   const IMAGE_LOAD_TIMEOUT_MS = 12000;
   const ENDING_TITLE = Game.ENDING_CATALOG.find((ending) => ending.id === "fake_end")?.title || "伪结局";

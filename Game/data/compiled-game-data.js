@@ -20,7 +20,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_06",
       "name": "6 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-06.png",
+      "background": "assets/Image/Scene/Background/carriage-06.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -36,21 +36,21 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+          "image": "assets/Image/Scene/Background/carriage-06-eaten.webp",
           "visibleWhen": {
             "flag": "carriage_06_eaten",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-people.png",
+          "image": "assets/Image/Scene/Background/carriage-06-people.webp",
           "visibleWhen": {
             "flag": "carriage_06_people_reveal",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-06-note-removed.png",
+          "image": "assets/Image/Scene/Background/carriage-06-note-removed.webp",
           "visibleWhen": {
             "flag": "note_collected",
             "equals": true
@@ -61,7 +61,7 @@ window.GAME_DATA = {
         {
           "id": "note_06",
           "name": "门上的便签",
-          "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -238,7 +238,7 @@ window.GAME_DATA = {
         {
           "id": "note_back_06",
           "name": "便签背面",
-          "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -281,7 +281,7 @@ window.GAME_DATA = {
         {
           "id": "map_06",
           "name": "电车示意图",
-          "image": "assets/Image/Scene/StillLife/carriage-06-map.png",
+          "image": "assets/Image/Scene/StillLife/carriage-06-map.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -326,7 +326,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_07",
       "name": "7 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-07.png",
+      "background": "assets/Image/Scene/Background/carriage-07.webp",
       "backgroundSound": {
         "sound": "eating_crisps",
         "loopGapMs": 1600
@@ -335,7 +335,7 @@ window.GAME_DATA = {
         {
           "id": "radio_07",
           "name": "损坏的收音机",
-          "image": "assets/Image/Scene/StillLife/radio-07.png",
+          "image": "assets/Image/Scene/StillLife/radio-07.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -382,7 +382,7 @@ window.GAME_DATA = {
         {
           "id": "corpse_07",
           "name": "尸体",
-          "image": "assets/Image/Scene/StillLife/corpse-07.png",
+          "image": "assets/Image/Scene/StillLife/corpse-07.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -416,7 +416,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_05",
       "name": "5 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-05.png",
+      "background": "assets/Image/Scene/Background/carriage-05.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -490,7 +490,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_a",
           "name": "散落的行李",
-          "image": "assets/Image/Scene/StillLife/bag-05-a.png",
+          "image": "assets/Image/Scene/StillLife/bag-05-a.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -504,7 +504,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_b",
           "name": "遗落的提包",
-          "image": "assets/Image/Scene/StillLife/bag-05-b.png",
+          "image": "assets/Image/Scene/StillLife/bag-05-b.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -518,7 +518,7 @@ window.GAME_DATA = {
         {
           "id": "tool_clutter_05",
           "name": "倒下的背包",
-          "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -547,7 +547,7 @@ window.GAME_DATA = {
         {
           "id": "clue_clutter_05",
           "name": "可疑的纸堆",
-          "image": "assets/Image/Scene/StillLife/newspaper-05.png",
+          "image": "assets/Image/Scene/StillLife/newspaper-05.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -582,7 +582,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_c",
           "name": "堆叠的杂物",
-          "image": "assets/Image/Scene/StillLife/trash-05-b.png",
+          "image": "assets/Image/Scene/StillLife/trash-05-b.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -602,7 +602,7 @@ window.GAME_DATA = {
         {
           "id": "clutter_05_d",
           "name": "散落的垃圾袋",
-          "image": "assets/Image/Scene/StillLife/trash-05-a.png",
+          "image": "assets/Image/Scene/StillLife/trash-05-a.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -624,20 +624,20 @@ window.GAME_DATA = {
     {
       "id": "carriage_04",
       "name": "4 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-04.png",
+      "background": "assets/Image/Scene/Background/carriage-04.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
           "visibleWhen": {
             "flag": "carried_crew",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
           "visibleWhen": {
             "flag": "crew_04_left_seated",
             "equals": true
@@ -714,7 +714,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04",
           "name": "重伤的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -750,7 +750,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04_seated_left",
           "name": "坐在左侧座椅上的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -790,7 +790,7 @@ window.GAME_DATA = {
         {
           "id": "crew_04_seated_right",
           "name": "坐在右侧座椅上的乘务员",
-          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "all": [
@@ -828,7 +828,7 @@ window.GAME_DATA = {
         {
           "id": "employee_locker_04",
           "name": "员工柜",
-          "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.png",
+          "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.webp",
           "fullCanvas": true,
           "visibleWhen": {
             "not": {
@@ -857,27 +857,27 @@ window.GAME_DATA = {
     {
       "id": "carriage_03",
       "name": "3 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-03-full.png",
+      "background": "assets/Image/Scene/Background/carriage-03-full.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-03.png",
+          "image": "assets/Image/Scene/Background/carriage-03.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_resolved",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+          "image": "assets/Image/Scene/Background/carriage-03-onlybag.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_exposed",
             "equals": true
           }
         },
         {
-          "image": "assets/Image/Scene/Background/carriage-03-halffull.png",
+          "image": "assets/Image/Scene/Background/carriage-03-halffull.webp",
           "visibleWhen": {
             "flag": "carriage_03_bag_interacted",
             "equals": true
@@ -914,7 +914,7 @@ window.GAME_DATA = {
         {
           "id": "black_bag_03",
           "name": "黑色背包",
-          "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+          "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -941,7 +941,7 @@ window.GAME_DATA = {
         {
           "id": "phone_03",
           "name": "发光的手机",
-          "image": "assets/Image/Scene/StillLife/phone.png",
+          "image": "assets/Image/Scene/StillLife/phone.webp",
           "position": {
             "x": 34,
             "y": 57,
@@ -974,7 +974,7 @@ window.GAME_DATA = {
         {
           "id": "black_bag_03_foreground",
           "name": "椅面杂物前景",
-          "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+          "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1009,7 +1009,7 @@ window.GAME_DATA = {
         {
           "id": "forward_note_03",
           "name": "写着前进提示的便签",
-          "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+          "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1030,7 +1030,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_02",
       "name": "2 号车厢",
-      "background": "assets/Image/Scene/Background/carriage-02.png",
+      "background": "assets/Image/Scene/Background/carriage-02.webp",
       "backgroundSound": {
         "sound": "devil_scared"
       },
@@ -1070,7 +1070,7 @@ window.GAME_DATA = {
         {
           "id": "clicker_02",
           "name": "Clicker",
-          "image": "assets/Image/Scene/StillLife/clicker-02.png",
+          "image": "assets/Image/Scene/StillLife/clicker-02.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1119,7 +1119,7 @@ window.GAME_DATA = {
     {
       "id": "front_carriage",
       "name": "先头车厢",
-      "background": "assets/Image/Scene/Background/front-carriage.png",
+      "background": "assets/Image/Scene/Background/front-carriage.webp",
       "backgroundSound": {
         "sound": "train_ambient"
       },
@@ -1140,7 +1140,7 @@ window.GAME_DATA = {
         {
           "id": "control_27",
           "name": "前进与停车把手",
-          "image": "assets/Image/Scene/StillLife/control-lever.png",
+          "image": "assets/Image/Scene/StillLife/control-lever.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1148,10 +1148,17 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
+          "hitPosition": {
+            "x": 42,
+            "y": 52,
+            "width": 27,
+            "height": 30
+          },
           "zIndex": 12,
           "clickEvent": "E_032",
           "visibleWhen": {
-            "hasItem": "control_panel_key"
+            "flag": "front_carriage_entry_seen",
+            "equals": true
           }
         }
       ]
@@ -1159,7 +1166,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_inner_01",
       "name": "里世界·空车厢",
-      "background": "assets/Image/Scene/Background/carriage-inner-01.png",
+      "background": "assets/Image/Scene/Background/carriage-inner-01.webp",
       "objects": [
         {
           "id": "door_inner01_to_inner02",
@@ -1196,12 +1203,12 @@ window.GAME_DATA = {
     {
       "id": "carriage_inner_02",
       "name": "里世界·花草车厢",
-      "background": "assets/Image/Scene/Background/carriage-inner-02.png",
+      "background": "assets/Image/Scene/Background/carriage-inner-02.webp",
       "objects": [
         {
           "id": "window_inner",
           "name": "窗外",
-          "image": "assets/Image/Scene/StillLife/inner-02-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-02-window.webp",
           "fullCanvas": true,
           "hitPosition": {
             "x": 58,
@@ -1221,7 +1228,7 @@ window.GAME_DATA = {
         {
           "id": "bottle_inner",
           "name": "彩色玻璃瓶",
-          "image": "assets/Image/Scene/StillLife/inner-02-bottle.png",
+          "image": "assets/Image/Scene/StillLife/inner-02-bottle.webp",
           "fullCanvas": true,
           "hitPosition": {
             "x": 75,
@@ -1279,13 +1286,13 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_01",
       "name": "里世界·假1号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-01.webp",
       "backgroundSound": {
         "sound": "maze"
       },
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
+          "image": "assets/Image/Scene/Background/carriage-fake-01-crew.webp",
           "visibleWhen": {
             "flag": "ev_fake01_crew_seen",
             "equals": true
@@ -1328,12 +1335,12 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_02",
       "name": "里世界·假2号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-02.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-02.webp",
       "objects": [
         {
           "id": "fake02_blood_1",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1352,7 +1359,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_2",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1371,7 +1378,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_3",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1390,7 +1397,7 @@ window.GAME_DATA = {
         {
           "id": "fake02_blood_4",
           "name": "血手印",
-          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+          "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
           "fullCanvas": true,
           "visualOnly": true,
           "position": {
@@ -1478,7 +1485,7 @@ window.GAME_DATA = {
     {
       "id": "carriage_fake_04",
       "name": "里世界·伪4号车厢",
-      "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+      "background": "assets/Image/Scene/Background/carriage-fake-04-fog.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1516,7 +1523,7 @@ window.GAME_DATA = {
         {
           "id": "window_fake04_flower",
           "name": "车窗",
-          "image": "assets/Image/Scene/StillLife/inner-03-flower-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-03-flower-window.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1534,7 +1541,7 @@ window.GAME_DATA = {
         {
           "id": "window_fake04_fog",
           "name": "车窗",
-          "image": "assets/Image/Scene/StillLife/inner-03-fog-window.png",
+          "image": "assets/Image/Scene/StillLife/inner-03-fog-window.webp",
           "fullCanvas": true,
           "position": {
             "x": 0,
@@ -1554,7 +1561,7 @@ window.GAME_DATA = {
       ],
       "backgroundVariants": [
         {
-          "image": "assets/Image/Scene/Background/carriage-fake-04.png",
+          "image": "assets/Image/Scene/Background/carriage-fake-04.webp",
           "visibleWhen": {
             "flag": "ev517_flower_revealed",
             "equals": true
@@ -1565,7 +1572,7 @@ window.GAME_DATA = {
     {
       "id": "flower_sea",
       "name": "花海·车门外",
-      "background": "assets/Image/Scene/Background/flower-sea.png",
+      "background": "assets/Image/Scene/Background/flower-sea.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1574,7 +1581,7 @@ window.GAME_DATA = {
     {
       "id": "flower_sea_inside",
       "name": "花海·室内",
-      "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+      "background": "assets/Image/Scene/Background/flower-sea-inside.webp",
       "backgroundSound": {
         "sound": "fake"
       },
@@ -1660,27 +1667,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "像有人在很远的地方掰断什么东西。"
+          "text": "像有人在远处掰断什么东西。"
         },
         {
           "type": "dialogue",
-          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
-        },
-        {
-          "type": "dialogue",
-          "text": "周围乘客依旧沉睡着，没有人醒来。"
+          "text": "仔细辨别，你发现声音是从你的左边——7号车厢传来的。"
         }
       ]
     },
@@ -1709,7 +1712,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -1741,7 +1744,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -1773,7 +1776,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -1794,7 +1797,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "……啊？"
         },
         {
@@ -1825,6 +1828,19 @@ window.GAME_DATA = {
       "id": "E_005_STAY",
       "actions": [
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev005_stay_rewarded",
+            "equals": true
+          },
+          "next": "E_005_STAY_REVISIT"
+        },
+        {
+          "type": "setFlag",
+          "key": "ev005_stay_rewarded",
+          "value": true
+        },
+        {
           "type": "dialogue",
           "text": "你确认那就是血腥味无疑。你从门前退开，决定先留在6号车厢再作打算。"
         },
@@ -1843,6 +1859,10 @@ window.GAME_DATA = {
           "amount": 1
         }
       ]
+    },
+    {
+      "id": "E_005_STAY_REVISIT",
+      "actions": []
     },
     {
       "id": "E_005_F",
@@ -1968,7 +1988,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "啊！！！这是什么！"
         },
         {
@@ -1978,6 +1998,10 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "你痛苦地捂住双眼，但是为时已晚。"
+        },
+        {
+          "type": "dialogue",
+          "text": "脑海中，你仿佛看到了自己也被撕裂成这些碎块的样子。"
         },
         {
           "type": "check",
@@ -1994,7 +2018,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你的胃一阵痉挛，但还是咬紧牙关忍住了呕吐。你贴着门边站好，不让自己再看地面。"
+          "text": "你的胃一阵痉挛，但还是咬紧牙关忍住了呕吐。你死死抓住门框，勉强贴着门边站好，不让自己再看地面。"
         }
       ]
     },
@@ -2042,7 +2066,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "7月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
+          "text": "11月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
         },
         {
           "type": "dialogue",
@@ -2054,7 +2078,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔————咔————"
+          "text": "咔——咔——"
         }
       ],
       "next": "E_008"
@@ -2080,7 +2104,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔————咔————"
+          "text": "咔——咔——"
         }
       ],
       "next": "E_008"
@@ -2102,7 +2126,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你努力克制本能，试图用所学知识获得更多线索。"
+          "text": "你努力克制转身逃跑的冲动，试图先尽你所能获得更多线索。"
         },
         {
           "type": "setFlag",
@@ -2153,7 +2177,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "通往8号车厢的门不见了，取而代之的是黑暗。"
+          "text": "通往8号车厢的门早已被黑暗淹没。"
         },
         {
           "type": "dialogue",
@@ -2213,23 +2237,27 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "6号车厢空无一人。"
+          "text": "工作了一整天的疲惫让你难以集中注意力。"
         },
         {
           "type": "dialogue",
-          "text": "刚才那个男人坐过的位置，椅垫还微微凹陷着。"
+          "text": "再次回过神来的时候，你猛然发现其他的座椅已经空无一人。"
         },
         {
           "type": "dialogue",
-          "text": "女人的杂志摊在座位上，纸页摸上去竟然是温的。"
+          "text": "你左边一个男人坐过的位置，椅垫还微微凹陷着。"
         },
         {
           "type": "dialogue",
-          "text": "你瞥见车窗有什么一闪而过。"
+          "text": "右边一本杂志摊在座位上，纸页摸上去还是温的。"
         },
         {
           "type": "dialogue",
-          "text": "车窗里映出你苍白的脸——还有你身后的乘客们。"
+          "text": "你瞥见对面的车窗有什么一闪而过。"
+        },
+        {
+          "type": "dialogue",
+          "text": "只见车窗上映出你苍白的脸————还有你身后的乘客们。"
         },
         {
           "type": "dialogue",
@@ -2241,7 +2269,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "空无一人。"
+          "text": "依旧空无一人。"
         },
         {
           "type": "dialogue",
@@ -2249,11 +2277,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "这一次，连他们也不见了。"
+          "text": "这一次，车窗上只剩下你惊恐的面容，旁边空无一人。"
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "刚才的人，都去哪了？",
           "audio": {
             "sound": "bullying_e009",
@@ -2263,7 +2291,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "突然，广播再次响起："
+          "text": "突然，广播响起："
         },
         {
           "type": "dialogue",
@@ -2272,6 +2300,34 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "声音戛然而止，只剩下电流的嘶嘶声。"
+        },
+        {
+          "type": "dialogue",
+          "text": "几秒之后再次响起："
+        },
+        {
+          "type": "dialogue",
+          "text": "“下一站——”"
+        },
+        {
+          "type": "dialogue",
+          "text": "还是中断。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你屏息凝神，试图听清广播里断断续续的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "只听见第三次广播传来："
+        },
+        {
+          "type": "dialogue",
+          "text": "“终点站，到了————”"
+        },
+        {
+          "type": "dialogue",
+          "text": "你再次朝车窗外看去，电车还在飞速前进。"
         },
         {
           "type": "check",
@@ -2297,7 +2353,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你不敢再看车窗。即使转过身，那排沉睡的倒影仍黏在视野边缘，仿佛只要眨眼就会再次出现。"
+          "text": "你不敢再看车窗。即使转过身，那排沉睡的倒影仍黏在视野边缘，仿佛一眨眼就会再次出现。"
         }
       ]
     },
@@ -2306,7 +2362,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "6号车厢依旧空着。你刻意避开车窗，只看着通往5号车厢的门。"
+          "text": "6号车厢依旧空着。你的视线刻意避开车窗，只注视通往5号车厢的门。"
         }
       ]
     },
@@ -2405,8 +2461,8 @@ window.GAME_DATA = {
           "type": "inspect",
           "item": "note_06_item",
           "title": "便签",
-          "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
-          "image": "assets/Image/Item/note.png",
+          "text": "「PRYH IRUZDUG」，背面写着：第三个箱子里有藏着钥匙。",
+          "image": "assets/Image/Item/note.webp",
           "large": true
         }
       ]
@@ -2443,15 +2499,15 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "2013年7月15日，你搭乘了本日的1号线末班电车。"
+          "text": "2013年11月15日，你搭乘了本日的1号线末班电车，目的地是终点站。"
         },
         {
           "type": "dialogue",
-          "text": "目的地是终点站，车上的乘客无论是在加班后也好，还是参加了酒会后也好，都各自拖着疲累的身躯在车厢里陷入了深沉的睡眠。"
+          "text": "车上的乘客无论是忙了一天，还是刚参加完应酬，都各自拖着疲累的身躯在车厢里陷入了深沉的睡眠。"
         },
         {
           "type": "dialogue",
-          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里只剩自己和那几名沉睡的乘客。"
+          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里只剩自己和几名沉睡的乘客。"
         },
         {
           "type": "dialogue",
@@ -2494,7 +2550,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "或许只是白天太累了吧。还有几站到站？"
+          "text": "或许只是太累了吧。还有几站到站？"
         }
       ],
       "next": "E_OPENING_RETURN_06"
@@ -2527,9 +2583,9 @@ window.GAME_DATA = {
         },
         {
           "type": "inspect",
-          "title": "便签正面",
-          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
-          "image": "assets/Image/Ui/label-front.png",
+          "title": "便签",
+          "text": "「PRYH IRUZDUG」这是……什么意思？",
+          "image": "assets/Image/Ui/label-front.webp",
           "large": true
         },
         {
@@ -2547,7 +2603,20 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你莫名觉得有些眼熟，思索片刻，你想起来，这是凯撒密码，解谜方式就是往前推三个字母。"
+          "text": "你莫名觉得有些眼熟，思索片刻，你想起来这是凯撒密码。"
+        },
+        {
+          "type": "dialogue",
+          "text": "每个字母往前推三个的话，就是……"
+        },
+        {
+          "type": "dialogue",
+          "text": "「MOVE FORWARD」"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "你",
+          "text": "……"
         },
         {
           "type": "setFlag",
@@ -2561,7 +2630,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你盯着便签看了半天，没有丝毫头绪。"
+          "text": "你盯着便签看了半天，只是一堆混乱的字母，没有丝毫头绪。"
         },
         {
           "type": "setFlag",
@@ -2576,8 +2645,8 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "便签正面",
-          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
-          "image": "assets/Image/Ui/label-front.png",
+          "text": "「PRYH IRUZDUG」这是……什么意思？",
+          "image": "assets/Image/Ui/label-front.webp",
           "large": true
         }
       ]
@@ -2591,13 +2660,13 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把便签撕了下来"
+          "text": "你把便签撕了下来，发现背面居然还有字。"
         },
         {
           "type": "inspect",
           "title": "便签背面",
           "text": "「第三个箱子里藏着钥匙。」箱子？这里哪有箱子。",
-          "image": "assets/Image/Ui/label-back.png",
+          "image": "assets/Image/Ui/label-back.webp",
           "large": true
         },
         {
@@ -2657,7 +2726,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "车门上有一张不知谁贴上去的纸。好像是电车示意图。纸角有怪异的污渍。"
+          "text": "车门上有一张不知谁贴上去的纸。好像是电车车厢示意图。纸角有怪异的污渍。"
         },
         {
           "type": "check",
@@ -2676,7 +2745,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "title": "地图检定成功",
           "text": "你仔细查看地图，猛然发觉 7 号车厢以后的部分是被人蓄意涂掉的。",
-          "image": "assets/Image/Ui/map-success.png",
+          "image": "assets/Image/Ui/map-success.webp",
           "large": true
         },
         {
@@ -2721,8 +2790,8 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "地图检定失败",
-          "text": "你努力查看，但是 7 号车厢以后的部分被污染，看不清楚。",
-          "image": "assets/Image/Ui/map-failure.png",
+          "text": "你仔细查看，但是 7 号车厢以后的部分被染红，看不清楚。",
+          "image": "assets/Image/Ui/map-failure.webp",
           "large": true
         },
         {
@@ -2766,7 +2835,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你观察尸体，组织是有弹性的，血液也没有干透，有些部分还是鲜红色。"
+          "text": "你观察尸体，组织仍有弹性，血液也没有干透，有些部分还是鲜红色。"
         },
         {
           "type": "dialogue",
@@ -2775,12 +2844,12 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "这是否意味着这附近……"
         },
         {
           "type": "dialogue",
-          "text": "你突然注意到不远处，一台收音机发出嘶嘶的电流声。"
+          "text": "不远处，一台收音机发出嘶嘶的电流声，吸引了你的注意。"
         },
         {
           "type": "setFlag",
@@ -2800,16 +2869,16 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "天哪……还是不要继续看下去了。"
         },
         {
           "type": "dialogue",
-          "text": "它经历了什么？你只感觉脊背发凉。"
+          "text": "死者生前究竟经历了什么？你只感觉脊背发凉。"
         },
         {
           "type": "dialogue",
-          "text": "不远处，你突然注意到一台收音机发出嘶嘶的电流声。"
+          "text": "不远处，一台收音机发出嘶嘶的电流声，吸引了你的注意。"
         },
         {
           "type": "setFlag",
@@ -2840,7 +2909,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔————"
         },
         {
           "type": "dialogue",
@@ -2849,7 +2918,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "这……这是什么！"
         },
         {
@@ -2877,7 +2946,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你盯得双眼发酸，仍无法看清黑暗里究竟藏着什么。"
+          "text": "即使盯得双眼发酸，你仍无法看清黑暗里究竟藏着什么。"
         },
         {
           "type": "dialogue",
@@ -2885,11 +2954,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔————"
         },
         {
           "type": "dialogue",
-          "text": "你不知道那里是什么，但你真的不应该再靠近了。"
+          "text": "你不知道那里是什么，但你知道真的不应该再靠近了。"
         },
         {
           "type": "setFlag",
@@ -2965,7 +3034,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "5号车厢空无一人。报纸、背包和零散杂物落在座椅与过道间，像是乘客在同一瞬间凭空消失了。"
+          "text": "5号车厢同样空无一人。报纸、背包和零散杂物落在座椅与过道间。"
+        },
+        {
+          "type": "dialogue",
+          "text": "像是乘客在同一瞬间凭空消失了。"
         },
         {
           "type": "dialogue",
@@ -2988,7 +3061,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，身后6号车厢的灯灭了。"
+          "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，5号车厢的灯突然灭了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "回头望去，6号车厢同样一片黑暗。"
         },
         {
           "type": "conditionalJump",
@@ -3050,7 +3127,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你先检查报头和版次，日期清楚地印着“7月17日”。"
+          "text": "你先检查报头和版次，日期清楚地印着“11月17日”。"
         },
         {
           "type": "sound",
@@ -3113,7 +3190,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "DON'T STOP."
+          "text": "「DON'T STOP.」"
         },
         {
           "type": "dialogue",
@@ -3176,7 +3253,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "给后排的车厢增添了一层令人不安的阴影。"
+          "text": "后排车厢的阴影令人感到不安。"
         },
         {
           "type": "custom",
@@ -3302,7 +3379,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你听到背后传来一阵声响，好像是6号车厢的方向。"
+          "text": "你听到背后传来一阵声响，来自6号车厢的方向。"
         }
       ],
       "next": "E_012_AFTER"
@@ -3317,7 +3394,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "你跨进6号车厢，终于看清刚才那阵声响留下了什么。"
         },
         {
@@ -3405,7 +3482,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员仍然倒在这里，呼吸急促。你还没有处理她的伤口。"
+          "text": "乘务员仍然倒在这里，没有苏醒。你还没有处理她的伤口。"
         }
       ]
     },
@@ -3561,12 +3638,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "或许这就是逃离这里的钥匙。"
+          "text": "或许她是帮助你逃离这里的关键。"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "您还能说话吗？这里到底发生了什么？"
+          "text": "你还能说话吗？这里到底发生了什么？"
         },
         {
           "type": "dialogue",
@@ -3622,7 +3699,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "那些怪物是什么样的？您还能想起来吗？"
+          "text": "那些怪物具体是什么样的？你还能想起来吗？"
         },
         {
           "type": "dialogue",
@@ -3670,7 +3747,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "钥匙！？在哪里？"
+          "text": "钥匙？！在哪里？"
         },
         {
           "type": "dialogue",
@@ -3680,7 +3757,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "天呐...那大概掉在哪里您记得吗。"
+          "text": "天呐...那大概掉在哪里，你记得吗？"
         },
         {
           "type": "dialogue",
@@ -3718,15 +3795,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你点点头，不着痕迹地摸了摸口袋里那张泛黄的便签——「MOVE FORWARD」。"
+          "text": "你点点头，却控制不住想起报纸上那一行小字「DON'T STOP」。"
         },
         {
           "type": "dialogue",
-          "text": "你心下了然，生命的重量压得你有些喘不过气。"
+          "text": "生命的重量压得你有些喘不过气。"
         },
         {
           "type": "dialogue",
-          "text": "看来不得不去3号车厢找钥匙了。"
+          "text": "接下来得马上去3号车厢找钥匙了。"
         },
         {
           "type": "dialogue",
@@ -3779,7 +3856,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "焦虑席卷了你的心头。"
+          "text": "挥之不去的焦虑袭上你的心头。"
         },
         {
           "type": "setFlag",
@@ -3863,7 +3940,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "焦虑席卷了你的心头。"
+          "text": "挥之不去的焦虑袭上你的心头。"
         },
         {
           "type": "setFlag",
@@ -3991,15 +4068,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你背着她走进3号车厢。她忽然说：“......前面就是4号车厢了。”"
+          "text": "你背着她走进3号车厢。她忽然说：“......前面，就是4号车厢了。”"
         },
         {
           "type": "dialogue",
-          "text": "你停下：“这里是3号。”"
+          "text": "你停下：“这里是3号车厢。”"
         },
         {
           "type": "dialogue",
-          "text": "她抬头看了很久门上的编号，低声说：“......对。”"
+          "text": "她抬头看了看门上的编号，良久，低声说：“......对。”"
         },
         {
           "type": "dialogue",
@@ -4103,7 +4180,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "屏幕上赫然显示：2013年7月15日。"
+          "text": "屏幕上赫然显示：2013年11月15日。"
         },
         {
           "type": "conditionalJump",
@@ -4191,11 +4268,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "发送时间：2013/07/17 02:13"
+          "text": "发送时间：2013/11/17 02:13"
         },
         {
           "type": "dialogue",
-          "text": "现在是7月15日。这条短信却来自两天之后？！"
+          "text": "今天是11月15日。手机上却收到了来自两天之后的信息？！"
         },
         {
           "type": "dialogue",
@@ -4292,15 +4369,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "没有变化。"
-        },
-        {
-          "type": "dialogue",
-          "text": "名单里似乎有一个位置，写着某个与你相像的人；而她，也在。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你合上报纸，不知道自己刚才在期待什么。"
+          "text": "你合上报纸，若有所思。"
         }
       ]
     },
@@ -4333,12 +4402,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "报纸中段，关于“一名在3号车厢获救的乘客”的描述消失了。那一栏只剩下空白，仿佛有人用橡皮，把“你”从未来里擦掉了。"
+          "text": "报纸中段，关于“一名在3号车厢获救的乘客”的描述消失了。那一栏只剩下空白。"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "......我记得刚才不是这么写的。"
+          "text": "......我记得，刚才不是这么写的。"
         },
         {
           "type": "dialogue",
@@ -4346,12 +4415,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她还活着。可如果她不跟着你，谁会去救她？"
+          "text": "她还活着。可如果你没有选择带她走，谁会去救她？"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "如果我不回去......生还名单里，就再也不会有我了。"
+          "text": "或许如果我不回去......生还名单里，就再也不会有我了。"
         },
         {
           "type": "dialogue",
@@ -4449,7 +4518,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你翻了翻，没有找到有用的东西。"
+          "text": "你翻了翻，没有找到什么看起来有用的东西。"
         }
       ]
     },
@@ -4475,7 +4544,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "工具已经备齐。你可以带着她返回3号车厢。"
+          "text": "已经找到需要的工具。你们可以返回3号车厢了。"
         }
       ]
     },
@@ -4492,7 +4561,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你：“你怎么过去的？”"
+          "text": "你：“你怎么过去了？”"
         },
         {
           "type": "dialogue",
@@ -4504,16 +4573,16 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她顺着你指的方向看了看，又指指自己身下的座位："
+          "text": "她顺着你指的方向看了看，确定道："
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "我一直坐在这儿。"
+          "text": "没有啊，我一直坐在这儿。"
         },
         {
           "type": "dialogue",
-          "text": "你张了张嘴，什么也没问。"
+          "text": "你张了张嘴，最终没再问下去。"
         },
         {
           "type": "dialogue",
@@ -4526,7 +4595,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你从员工柜里找到应急割带器和撬杆。"
+          "text": "员工柜里能找到应急割带器和撬杆。"
         },
         {
           "type": "addItem",
@@ -4561,7 +4630,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她还在那里，但姿势像是被什么人挪动过。你蹲下来探她的鼻息——很弱，比离开时更弱了。"
+          "text": "她还在那里昏迷着，但姿势像是被什么人挪动过。你蹲下来探她的鼻息——很弱，比离开时更弱了。"
         },
         {
           "type": "check",
@@ -4615,11 +4684,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她可以跟着你走，但无法提供完整的对话情报。"
+          "text": "她可以跟着你走，但虚弱得说不了几句完整的话，也无法提供更多信息。"
         },
         {
           "type": "dialogue",
-          "text": "你从员工柜里找到应急割带器和撬杆，并扶起了她。"
+          "text": "员工柜……割带……撬杆。"
         },
         {
           "type": "addItem",
@@ -4731,7 +4800,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "......带子先割，箱子撬开。"
+          "text": "......先割带子，然后撬开箱子。"
         },
         {
           "type": "dialogue",
@@ -4761,11 +4830,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把黑包拿到她面前。她伸手进去翻找，却在摸到钥匙时停顿了一下。你注意到她先看了看驾驶室方向，又悄悄收紧了手指。"
+          "text": "你把黑包拿到她面前。她伸手进去翻找，却在摸到钥匙时停顿了一下。你注意到她犹豫的神色，以及悄悄握紧的手。"
         },
         {
           "type": "dialogue",
-          "text": "你回想她先前的说法和操作规程，试着判断她此刻是否真的愿意把列车交给你。"
+          "text": "你回想她先前的说法和操作规程，试着判断她此刻是否真的愿意把钥匙交给你。"
         },
         {
           "type": "check",
@@ -4787,7 +4856,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "拿着吧……我现在这个样子，确实保管不好。"
+          "text": "拿着吧……我现在的状态，确实保管不好。"
         },
         {
           "type": "addItem",
@@ -4868,7 +4937,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”。"
+          "text": "你取出两把钥匙。上面的标签分别写着“驾驶室”和“操作面板”。"
         },
         {
           "type": "addItem",
@@ -4929,7 +4998,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她低头看看手里的，又低头看看自己胸前的。两张工牌叠在一起，严丝合缝。"
+          "text": "她看看手里的，又低头看看自己胸前的。"
         },
         {
           "type": "dialogue",
@@ -4955,7 +5024,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n她看了很久，没有说话。"
+          "text": "你沉默着，把报纸递到她面前。\n\n她看了很久，没有说话。"
         },
         {
           "type": "setFlag",
@@ -4986,7 +5055,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把它和记忆里她胸前那张对照：一样的照片，一样的编号。\n\n没有人为你解释。"
+          "text": "你把它和记忆里她胸前那张对照：一样的照片和编号。\n\n但没有人为你解释。"
         },
         {
           "type": "setFlag",
@@ -4999,7 +5068,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "包里还有一张叠得整齐的便签：\n\n一个前进的箭头\n\n你翻出6号车厢的便签。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
+          "text": "包里还有一张叠得整齐的便签：\n\n展开，是一个前进的箭头。\n\n你回想起报纸上的字，「只管前进吧，已经没有退路了。」"
         },
         {
           "type": "setFlag",
@@ -5024,29 +5093,6 @@ window.GAME_DATA = {
         {
           "type": "custom",
           "name": "refreshScene"
-        },
-        {
-          "type": "conditionalJump",
-          "when": {
-            "hasItem": "flashlight"
-          },
-          "next": "E_022_ITEM_END"
-        },
-        {
-          "type": "sound",
-          "sound": "finding_in_papers"
-        },
-        {
-          "type": "dialogue",
-          "text": "你继续在行李间翻找，找到了一个手电筒。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你试了试，勉强能用。"
-        },
-        {
-          "type": "addItem",
-          "item": "flashlight"
         }
       ]
     },
@@ -5152,7 +5198,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你低头看了一眼手机。屏幕仍显示：2013年7月15日。"
+          "text": "你低头看了一眼手机。屏幕仍显示：2013年11月15日。"
         }
       ],
       "next": "E_023_LOOP"
@@ -5162,19 +5208,19 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "再抬头时，通往2号车厢的门上方，车厢编号变成了——\n\n3。"
+          "text": "再抬头时，通往2号车厢的门上方，车厢编号变成了——\n\n3号。"
         },
         {
           "type": "dialogue",
-          "text": "你愣了一下，以为自己看错了。你转头看向来路那一侧的车门。\n\n也是3。\n\n前后两边，都是3号车厢。"
+          "text": "你愣了一下，以为自己看错了。你转头看向来路那一侧的车门。\n\n也是3号。\n\n前后两边，都是3号车厢。"
         },
         {
           "type": "dialogue",
-          "text": "你猛地再回头。\n\n来路的方向，已经不再是4号——门消失了，取而代之的是一段被黑暗吞没的车厢。"
+          "text": "来路的方向，连接4号车厢的门消失了，取而代之的，是一段被黑暗吞没的车厢。"
         },
         {
           "type": "dialogue",
-          "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
+          "text": "这时，熟悉的广播声忽然再次响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
         },
         {
           "type": "sound",
@@ -5226,7 +5272,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "在一片漆黑中，你听到明显的喘息声。\n\n那不是人类的喘息。"
+          "text": "在一片漆黑中，你听到粗重的喘息声。\n\n那不是人类的喘息。"
         },
         {
           "type": "conditionalJump",
@@ -5241,6 +5287,10 @@ window.GAME_DATA = {
     {
       "id": "E_025_CARRIED",
       "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员伏在你的耳边，声音颤抖着低语："
+        },
         {
           "type": "dialogue",
           "speaker": "乘务员",
@@ -5270,8 +5320,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "portrait": "assets/Image/Portrait/monster.png",
-          "text": "借着应急灯微弱的红光，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
+          "portrait": "assets/Image/Portrait/monster.webp",
+          "text": "借着应急灯微弱的光芒，你终于看清喘息声的来源：一个没有眼睛、头部像裂口般张开的怪物正伏在尸体间。"
+        },
+        {
+          "type": "check",
+          "dice": "ev026_san_01"
         },
         {
           "type": "conditionalJump",
@@ -5308,7 +5362,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "它与你听到的描述完全一致——没有眼睛，却把耳朵转向你的方向，像在听。"
+          "text": "它与你听到的描述完全一致——没有眼睛，却把头部转向你的方向，像在听。"
         },
         {
           "type": "dialogue",
@@ -5389,7 +5443,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你压低身体，挑选没有碎玻璃和尸体的落脚点。接下来几步必须又慢又稳，不能让呼吸乱掉。"
+          "text": "你压低身体，小心翼翼地踩在没有碎玻璃和尸体的落脚点。\n\n接下来几步必须慎之又慎，否则...后果你不敢想象。"
         },
         {
           "type": "check",
@@ -6434,7 +6488,7 @@ window.GAME_DATA = {
           "text": "你摸出钥匙，插进锁孔。金属咬合的声音在安静中格外清晰。"
         }
       ],
-      "next": "E_032"
+      "next": "E_032_INTRO"
     },
     {
       "id": "E_031_CREW_KEY",
@@ -6452,14 +6506,14 @@ window.GAME_DATA = {
           "text": "你注意到，她看向驾驶室的目光里，有一种近乎执念的光。"
         }
       ],
-      "next": "E_032"
+      "next": "E_032_CREW_AUTO"
     },
     {
       "id": "E_031_NO_KEY_S",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是另一位乘务员留下的。"
+          "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是其他乘务员留下的。"
         },
         {
           "type": "sound",
@@ -6495,10 +6549,10 @@ window.GAME_DATA = {
           "value": false
         }
       ],
-      "next": "E_032"
+      "next": "E_032_INTRO"
     },
     {
-      "id": "E_032",
+      "id": "E_032_INTRO",
       "actions": [
         {
           "type": "dialogue",
@@ -6506,30 +6560,35 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆下拉加速，持续上拉则不断减速直至停车。"
+          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆上推加速，持续下拉则不断减速直至停车。"
         },
         {
           "type": "dialogue",
           "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**\n\n笔画很新，像是不久前才留下的。"
-        },
+        }
+      ]
+    },
+    {
+      "id": "E_032",
+      "actions": [
         {
           "type": "conditionalJump",
           "when": {
             "flag": "carried_crew",
             "equals": true
           },
-          "next": "E_032_WITH_CREW"
+          "next": "E_032_CREW_AUTO"
         },
         {
           "type": "choice",
           "prompt": "你要怎么操作拉杆？",
           "options": [
             {
-              "label": "右杆下拉——加速，继续前进",
+              "label": "右杆上推——加速，继续前进",
               "next": "E_034"
             },
             {
-              "label": "右杆上拉——减速，停车",
+              "label": "右杆下拉——减速，停车",
               "next": "E_035"
             }
           ]
@@ -6537,35 +6596,66 @@ window.GAME_DATA = {
       ]
     },
     {
-      "id": "E_032_WITH_CREW",
+      "id": "E_032_CREW_AUTO",
       "actions": [
         {
           "type": "dialogue",
-          "speaker": "乘务员",
-          "text": "拉它！停车！我们逃出去！"
+          "text": "操作面板的钥匙转动后，盖板向外弹开。你拂去薄灰，确认每个标识仍然清晰可读。"
         },
         {
-          "type": "choice",
-          "prompt": "你要怎么操作拉杆？",
-          "options": [
-            {
-              "label": "右杆下拉——加速，继续前进",
-              "next": "E_033"
-            },
-            {
-              "label": "右杆上拉——减速，停车",
-              "next": "E_035"
-            }
-          ]
+          "type": "dialogue",
+          "text": "两根拉杆并排立在你面前：左杆是刹车/起步装置，右杆是油门。右杆上推加速，持续下拉则不断减速直至停车。"
+        },
+        {
+          "type": "dialogue",
+          "text": "操作台边缘的灰尘里，有人用手指写了一行字：\n\n**MOVE FORWARD**\n\n笔画很新，像是不久前才留下的。"
+        },
+        {
+          "type": "dialogue",
+          "text": "乘务员没有看你，只是一瘸一拐地走到驾驶台前，伸手握住右杆。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "停车……我们得停车。"
+        },
+        {
+          "type": "custom",
+          "name": "timedStoryChoice",
+          "params": {
+            "prompt": "乘务员正要把右杆向下拉——",
+            "duration": 5000,
+            "flag": "ev032_take_lever",
+            "defaultValue": false,
+            "options": [
+              {
+                "label": "抢过把手，向上推——加速",
+                "value": true
+              },
+              {
+                "label": "让乘务员来操作",
+                "value": false
+              }
+            ]
+          }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "ev032_take_lever",
+            "equals": true
+          },
+          "next": "E_033"
         }
-      ]
+      ],
+      "next": "E_035"
     },
     {
       "id": "E_033",
       "actions": [
         {
           "type": "dialogue",
-          "text": "你选择继续前进，手指刚扣住右杆准备下压，乘务员就从身后扑来，死死抓住你的手腕。"
+          "text": "你猛地抢过右杆，向上推去。乘务员从身后扑来，死死抓住你的手腕。"
         },
         {
           "type": "dialogue",
@@ -6738,7 +6828,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你迈过门槛，身后的列车噪音骤然减弱。门还开着，3号车厢却像隔在很远的地方；这里安静得仿佛整个世界都睡着了。"
+          "text": "你迈过门槛，身后的列车噪音骤然减弱。"
+        },
+        {
+          "type": "dialogue",
+          "text": "门还开着，3号车厢却像隔在很远的地方。"
+        },
+        {
+          "type": "dialogue",
+          "text": "安静得仿佛整个世界都睡着了。"
         }
       ],
       "next": "E_502"
@@ -7115,7 +7213,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "窗外依旧白茫茫一片，什么也看不清。"
+          "text": "窗外依旧茫茫一片，什么也看不清。"
         }
       ]
     },
@@ -7784,26 +7882,26 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "……"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "这就是你的选择吗，亲爱的？"
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "portrait": "assets/Image/Portrait/conductor-crazy.png",
+          "portrait": "assets/Image/Portrait/conductor-crazy.webp",
           "text": "愚蠢。"
         },
         {
           "type": "custom",
           "name": "centeredCinematic",
           "params": {
-            "image": "assets/Image/Scene/Background/inner-refusal-crew-01.png",
+            "image": "assets/Image/Scene/Background/inner-refusal-crew-01.webp",
             "text": "你以为，不给我，你就能从这里出去吗？",
             "duration": 2400
           }
@@ -7812,7 +7910,7 @@ window.GAME_DATA = {
           "type": "custom",
           "name": "centeredCinematic",
           "params": {
-            "image": "assets/Image/Scene/Background/inner-refusal-crew-02.png",
+            "image": "assets/Image/Scene/Background/inner-refusal-crew-02.webp",
             "text": "把钥匙给我",
             "duration": 1600,
             "flash": true
@@ -7913,7 +8011,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "portrait": "assets/Image/Portrait/player-scared.png",
+          "portrait": "assets/Image/Portrait/player-scared.webp",
           "text": "放过我吧……"
         }
       ]
@@ -8515,77 +8613,77 @@ window.GAME_DATA = {
     {
       "id": "note_06_item",
       "name": "便签",
-      "image": "assets/Image/Item/note.png",
+      "image": "assets/Image/Item/note.webp",
       "description": "从 6 号车厢门上取下来的便签。",
       "inspectEvent": "E_NOTE_06_ITEM"
     },
     {
       "id": "bottle",
       "name": "彩色玻璃瓶",
-      "image": "assets/Image/Item/bottle.png",
+      "image": "assets/Image/Item/bottle.webp",
       "description": "从诡异的花草车厢里捡到的空瓶子，瓶身是粉红色的普通玻璃。",
       "inspectEvent": "E_023_BOTTLE"
     },
     {
       "id": "newspaper",
       "name": "报纸",
-      "image": "assets/Image/Item/newspaper.png",
+      "image": "assets/Image/Item/newspaper.webp",
       "description": "标题：昨晚1号线电车的末班车遭遇大规模恐怖事件，幸存者精神异常被送医，警方调查困难。",
       "inspectEvent": "E_ITEM_NEWSPAPER_INSPECT"
     },
     {
       "id": "driver_cab_key",
       "name": "驾驶室钥匙",
-      "image": "assets/Image/Item/driver-cab-key.png",
+      "image": "assets/Image/Item/driver-cab-key.webp",
       "description": "用于打开列车驾驶室门的钥匙。",
       "inspectEvent": "E_ITEM_DRIVER_CAB_KEY_INSPECT"
     },
     {
       "id": "control_panel_key",
       "name": "操作面板钥匙",
-      "image": "assets/Image/Item/control-panel-key.png",
+      "image": "assets/Image/Item/control-panel-key.webp",
       "description": "用于打开驾驶室操作面板的钥匙。",
       "inspectEvent": "E_ITEM_CONTROL_PANEL_KEY_INSPECT"
     },
     {
       "id": "phone",
       "name": "手机",
-      "image": "assets/Image/Item/phone.png",
+      "image": "assets/Image/Item/phone.webp",
       "description": "一部手机。",
       "inspectEvent": "E_ITEM_PHONE_INSPECT"
     },
     {
       "id": "flashlight",
       "name": "手电筒",
-      "image": "assets/Image/Item/flashlight.png",
+      "image": "assets/Image/Item/flashlight.webp",
       "description": "一支还能发光的手电筒。",
       "inspectEvent": "E_ITEM_FLASHLIGHT_INSPECT"
     },
     {
       "id": "drink",
       "name": "饮料",
-      "image": "assets/Image/Item/drink.png",
+      "image": "assets/Image/Item/drink.webp",
       "description": "一罐还未开封的饮料。",
       "inspectEvent": "E_ITEM_DRINK_INSPECT"
     },
     {
       "id": "drink_empty",
       "name": "空易拉罐",
-      "image": "assets/Image/Item/drink_empty.png",
+      "image": "assets/Image/Item/drink_empty.webp",
       "description": "喝完饮料后留下的空易拉罐。制造声响时，也许能派上用场。",
       "inspectEvent": "E_ITEM_DRINK_EMPTY_INSPECT"
     },
     {
       "id": "emergency_cutter",
       "name": "应急割带器",
-      "image": "assets/Image/Item/emergency-belt-cutter.png",
+      "image": "assets/Image/Item/emergency-belt-cutter.webp",
       "description": "可以割断黑色背包背带的应急工具。",
       "inspectEvent": "E_ITEM_EMERGENCY_CUTTER_INSPECT"
     },
     {
       "id": "pry_bar",
       "name": "撬杆",
-      "image": "assets/Image/Item/pry-bar.png",
+      "image": "assets/Image/Item/pry-bar.webp",
       "description": "可以撬开被行李压住的箱体。",
       "inspectEvent": "E_ITEM_PRY_BAR_INSPECT"
     }

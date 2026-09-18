@@ -2,7 +2,7 @@
   {
     "id": "carriage_06",
     "name": "6 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-06.png",
+    "background": "assets/Image/Scene/Background/carriage-06.webp",
     "backgroundSound": { "sound": "train_ambient" },
     "backgroundSoundVariants": [
       {
@@ -13,21 +13,21 @@
     ],
     "backgroundVariants": [
       {
-        "image": "assets/Image/Scene/Background/carriage-06-eaten.png",
+        "image": "assets/Image/Scene/Background/carriage-06-eaten.webp",
         "visibleWhen": {
           "flag": "carriage_06_eaten",
           "equals": true
         }
       },
       {
-        "image": "assets/Image/Scene/Background/carriage-06-people.png",
+        "image": "assets/Image/Scene/Background/carriage-06-people.webp",
         "visibleWhen": {
           "flag": "carriage_06_people_reveal",
           "equals": true
         }
       },
       {
-        "image": "assets/Image/Scene/Background/carriage-06-note-removed.png",
+        "image": "assets/Image/Scene/Background/carriage-06-note-removed.webp",
         "visibleWhen": {
           "flag": "note_collected",
           "equals": true
@@ -38,7 +38,7 @@
       {
         "id": "note_06",
         "name": "门上的便签",
-        "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+        "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -215,7 +215,7 @@
       {
         "id": "note_back_06",
         "name": "便签背面",
-        "image": "assets/Image/Scene/StillLife/carriage-06-note.png",
+        "image": "assets/Image/Scene/StillLife/carriage-06-note.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -258,7 +258,7 @@
       {
         "id": "map_06",
         "name": "电车示意图",
-        "image": "assets/Image/Scene/StillLife/carriage-06-map.png",
+        "image": "assets/Image/Scene/StillLife/carriage-06-map.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -303,13 +303,13 @@
   {
     "id": "carriage_07",
     "name": "7 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-07.png",
+    "background": "assets/Image/Scene/Background/carriage-07.webp",
     "backgroundSound": { "sound": "eating_crisps", "loopGapMs": 1600 },
     "objects": [
       {
         "id": "radio_07",
         "name": "损坏的收音机",
-        "image": "assets/Image/Scene/StillLife/radio-07.png",
+        "image": "assets/Image/Scene/StillLife/radio-07.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -356,7 +356,7 @@
       {
         "id": "corpse_07",
         "name": "尸体",
-        "image": "assets/Image/Scene/StillLife/corpse-07.png",
+        "image": "assets/Image/Scene/StillLife/corpse-07.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -390,7 +390,7 @@
   {
     "id": "carriage_05",
     "name": "5 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-05.png",
+    "background": "assets/Image/Scene/Background/carriage-05.webp",
     "backgroundSound": { "sound": "train_ambient" },
     "objects": [
       {
@@ -462,7 +462,7 @@
       {
         "id": "clutter_05_a",
         "name": "散落的行李",
-        "image": "assets/Image/Scene/StillLife/bag-05-a.png",
+        "image": "assets/Image/Scene/StillLife/bag-05-a.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -476,7 +476,7 @@
       {
         "id": "clutter_05_b",
         "name": "遗落的提包",
-        "image": "assets/Image/Scene/StillLife/bag-05-b.png",
+        "image": "assets/Image/Scene/StillLife/bag-05-b.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -490,7 +490,7 @@
       {
         "id": "tool_clutter_05",
         "name": "倒下的背包",
-        "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+        "image": "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -519,7 +519,7 @@
       {
         "id": "clue_clutter_05",
         "name": "可疑的纸堆",
-        "image": "assets/Image/Scene/StillLife/newspaper-05.png",
+        "image": "assets/Image/Scene/StillLife/newspaper-05.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -554,7 +554,7 @@
       {
         "id": "clutter_05_c",
         "name": "堆叠的杂物",
-        "image": "assets/Image/Scene/StillLife/trash-05-b.png",
+        "image": "assets/Image/Scene/StillLife/trash-05-b.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -574,7 +574,7 @@
       {
         "id": "clutter_05_d",
         "name": "散落的垃圾袋",
-        "image": "assets/Image/Scene/StillLife/trash-05-a.png",
+        "image": "assets/Image/Scene/StillLife/trash-05-a.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -596,18 +596,18 @@
   {
     "id": "carriage_04",
     "name": "4 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-04.png",
+    "background": "assets/Image/Scene/Background/carriage-04.webp",
     "backgroundSound": { "sound": "train_ambient" },
     "backgroundVariants": [
       {
-        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
         "visibleWhen": {
           "flag": "carried_crew",
           "equals": true
         }
       },
       {
-        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
         "visibleWhen": {
           "flag": "crew_04_left_seated",
           "equals": true
@@ -684,7 +684,7 @@
       {
         "id": "crew_04",
         "name": "重伤的乘务员",
-        "image": "assets/Image/Scene/StillLife/carriage-04-conductor.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor.webp",
         "fullCanvas": true,
         "visibleWhen": {
           "all": [
@@ -720,7 +720,7 @@
       {
         "id": "crew_04_seated_left",
         "name": "坐在左侧座椅上的乘务员",
-        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
         "fullCanvas": true,
         "visibleWhen": {
           "all": [
@@ -760,7 +760,7 @@
       {
         "id": "crew_04_seated_right",
         "name": "坐在右侧座椅上的乘务员",
-        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
         "fullCanvas": true,
         "visibleWhen": {
           "all": [
@@ -798,7 +798,7 @@
       {
         "id": "employee_locker_04",
         "name": "员工柜",
-        "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.png",
+        "image": "assets/Image/Scene/StillLife/carriage-04-employeelocker.webp",
         "fullCanvas": true,
         "visibleWhen": {
           "not": {
@@ -827,25 +827,25 @@
   {
     "id": "carriage_03",
     "name": "3 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-03-full.png",
+    "background": "assets/Image/Scene/Background/carriage-03-full.webp",
     "backgroundSound": { "sound": "train_ambient" },
     "backgroundVariants": [
       {
-        "image": "assets/Image/Scene/Background/carriage-03.png",
+        "image": "assets/Image/Scene/Background/carriage-03.webp",
         "visibleWhen": {
           "flag": "carriage_03_bag_resolved",
           "equals": true
         }
       },
       {
-        "image": "assets/Image/Scene/Background/carriage-03-onlybag.png",
+        "image": "assets/Image/Scene/Background/carriage-03-onlybag.webp",
         "visibleWhen": {
           "flag": "carriage_03_bag_exposed",
           "equals": true
         }
       },
       {
-        "image": "assets/Image/Scene/Background/carriage-03-halffull.png",
+        "image": "assets/Image/Scene/Background/carriage-03-halffull.webp",
         "visibleWhen": {
           "flag": "carriage_03_bag_interacted",
           "equals": true
@@ -882,7 +882,7 @@
       {
         "id": "black_bag_03",
         "name": "黑色背包",
-        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -909,7 +909,7 @@
       {
         "id": "phone_03",
         "name": "发光的手机",
-        "image": "assets/Image/Scene/StillLife/phone.png",
+        "image": "assets/Image/Scene/StillLife/phone.webp",
         "position": {
           "x": 34,
           "y": 57,
@@ -942,7 +942,7 @@
       {
         "id": "black_bag_03_foreground",
         "name": "椅面杂物前景",
-        "image": "assets/Image/Scene/StillLife/black-bag-03.png",
+        "image": "assets/Image/Scene/StillLife/black-bag-03.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": {
@@ -977,7 +977,7 @@
       {
         "id": "forward_note_03",
         "name": "写着前进提示的便签",
-        "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png",
+        "image": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": {
@@ -998,7 +998,7 @@
   {
     "id": "carriage_02",
     "name": "2 号车厢",
-    "background": "assets/Image/Scene/Background/carriage-02.png",
+    "background": "assets/Image/Scene/Background/carriage-02.webp",
     "backgroundSound": { "sound": "devil_scared" },
     "objects": [
       {
@@ -1036,7 +1036,7 @@
       {
         "id": "clicker_02",
         "name": "Clicker",
-        "image": "assets/Image/Scene/StillLife/clicker-02.png",
+        "image": "assets/Image/Scene/StillLife/clicker-02.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -1085,7 +1085,7 @@
   {
     "id": "front_carriage",
     "name": "先头车厢",
-    "background": "assets/Image/Scene/Background/front-carriage.png",
+    "background": "assets/Image/Scene/Background/front-carriage.webp",
     "backgroundSound": { "sound": "train_ambient" },
     "objects": [
       {
@@ -1104,7 +1104,7 @@
       {
         "id": "control_27",
         "name": "前进与停车把手",
-        "image": "assets/Image/Scene/StillLife/control-lever.png",
+        "image": "assets/Image/Scene/StillLife/control-lever.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -1112,10 +1112,17 @@
           "width": 100,
           "height": 100
         },
+        "hitPosition": {
+          "x": 42,
+          "y": 52,
+          "width": 27,
+          "height": 30
+        },
         "zIndex": 12,
         "clickEvent": "E_032",
         "visibleWhen": {
-          "hasItem": "control_panel_key"
+          "flag": "front_carriage_entry_seen",
+          "equals": true
         }
       }
     ]
@@ -1123,7 +1130,7 @@
   {
     "id": "carriage_inner_01",
     "name": "里世界·空车厢",
-    "background": "assets/Image/Scene/Background/carriage-inner-01.png",
+    "background": "assets/Image/Scene/Background/carriage-inner-01.webp",
     "objects": [
       {
         "id": "door_inner01_to_inner02",
@@ -1160,12 +1167,12 @@
   {
     "id": "carriage_inner_02",
     "name": "里世界·花草车厢",
-    "background": "assets/Image/Scene/Background/carriage-inner-02.png",
+    "background": "assets/Image/Scene/Background/carriage-inner-02.webp",
     "objects": [
       {
         "id": "window_inner",
         "name": "窗外",
-        "image": "assets/Image/Scene/StillLife/inner-02-window.png",
+        "image": "assets/Image/Scene/StillLife/inner-02-window.webp",
         "fullCanvas": true,
         "hitPosition": {
           "x": 58,
@@ -1185,7 +1192,7 @@
       {
         "id": "bottle_inner",
         "name": "彩色玻璃瓶",
-        "image": "assets/Image/Scene/StillLife/inner-02-bottle.png",
+        "image": "assets/Image/Scene/StillLife/inner-02-bottle.webp",
         "fullCanvas": true,
         "hitPosition": {
           "x": 75,
@@ -1243,11 +1250,11 @@
   {
     "id": "carriage_fake_01",
     "name": "里世界·假1号车厢",
-    "background": "assets/Image/Scene/Background/carriage-fake-01.png",
+    "background": "assets/Image/Scene/Background/carriage-fake-01.webp",
     "backgroundSound": { "sound": "maze" },
     "backgroundVariants": [
       {
-        "image": "assets/Image/Scene/Background/carriage-fake-01-crew.png",
+        "image": "assets/Image/Scene/Background/carriage-fake-01-crew.webp",
         "visibleWhen": { "flag": "ev_fake01_crew_seen", "equals": true }
       }
     ],
@@ -1277,12 +1284,12 @@
   {
     "id": "carriage_fake_02",
     "name": "里世界·假2号车厢",
-    "background": "assets/Image/Scene/Background/carriage-fake-02.png",
+    "background": "assets/Image/Scene/Background/carriage-fake-02.webp",
     "objects": [
       {
         "id": "fake02_blood_1",
         "name": "血手印",
-        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
@@ -1293,7 +1300,7 @@
       {
         "id": "fake02_blood_2",
         "name": "血手印",
-        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
@@ -1304,7 +1311,7 @@
       {
         "id": "fake02_blood_3",
         "name": "血手印",
-        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
@@ -1315,7 +1322,7 @@
       {
         "id": "fake02_blood_4",
         "name": "血手印",
-        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.png",
+        "image": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
         "fullCanvas": true,
         "visualOnly": true,
         "position": { "x": 0, "y": 0, "width": 100, "height": 100 },
@@ -1375,7 +1382,7 @@
   {
     "id": "carriage_fake_04",
     "name": "里世界·伪4号车厢",
-    "background": "assets/Image/Scene/Background/carriage-fake-04-fog.png",
+    "background": "assets/Image/Scene/Background/carriage-fake-04-fog.webp",
     "backgroundSound": { "sound": "fake" },
     "objects": [
       {
@@ -1411,7 +1418,7 @@
       {
         "id": "window_fake04_flower",
         "name": "车窗",
-        "image": "assets/Image/Scene/StillLife/inner-03-flower-window.png",
+        "image": "assets/Image/Scene/StillLife/inner-03-flower-window.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -1429,7 +1436,7 @@
       {
         "id": "window_fake04_fog",
         "name": "车窗",
-        "image": "assets/Image/Scene/StillLife/inner-03-fog-window.png",
+        "image": "assets/Image/Scene/StillLife/inner-03-fog-window.webp",
         "fullCanvas": true,
         "position": {
           "x": 0,
@@ -1449,7 +1456,7 @@
     ],
     "backgroundVariants": [
       {
-        "image": "assets/Image/Scene/Background/carriage-fake-04.png",
+        "image": "assets/Image/Scene/Background/carriage-fake-04.webp",
         "visibleWhen": {
           "flag": "ev517_flower_revealed",
           "equals": true
@@ -1460,14 +1467,14 @@
   {
     "id": "flower_sea",
     "name": "花海·车门外",
-    "background": "assets/Image/Scene/Background/flower-sea.png",
+    "background": "assets/Image/Scene/Background/flower-sea.webp",
     "backgroundSound": { "sound": "fake" },
     "objects": []
   },
   {
     "id": "flower_sea_inside",
     "name": "花海·室内",
-    "background": "assets/Image/Scene/Background/flower-sea-inside.png",
+    "background": "assets/Image/Scene/Background/flower-sea-inside.webp",
     "backgroundSound": { "sound": "fake" },
     "objects": []
   }

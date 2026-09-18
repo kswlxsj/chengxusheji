@@ -150,6 +150,17 @@
     };
   }
 
+  function sanLossByFace(attribute, losses) {
+    return async (context) => {
+      const roll = rollDie(6);
+      const loss = losses[roll - 1] || 0;
+      const detail = `${attributeName(context, attribute)}检定：掷出 ${roll}\n${loss ? `损失 ${loss} 点` : "没有损失"}。`;
+      await showDiceRollAnimation(context, roll, loss === 0, detail, null, loss ? `SAN -${loss}` : "SAN 未减少");
+      if (loss) context.modifyAttribute(attribute, -loss);
+      return loss === 0 ? 0 : 1;
+    };
+  }
+
   function innerExitSanLoss(attribute) {
     return async (context) => {
       const roll = rollDie(6);
@@ -180,9 +191,12 @@
   registerDice("ev027_constitution_01", attrCheck("constitution"));
   registerDice("ev027_constitution_02", attrCheck("constitution"));
   registerDice("ev027_constitution_03", attrCheck("constitution"));
-  registerDice("ev027_san_01", sanCheck("san", 0, 1));
-  registerDice("ev027_san_02", sanCheck("san", 0, 1));
-  registerDice("ev027_san_03", sanCheck("san", 0, 1));
+  // Clicker 初见：1~2 扣2、3~4 扣1、5~6 不扣。
+  registerDice("ev026_san_01", sanLossByFace("san", [2, 2, 1, 1, 0, 0]));
+  // Clicker 潜行：1~3 扣2、4~5 扣1、6 不扣；1/6 分别是大失败/大成功。
+  registerDice("ev027_san_01", sanLossByFace("san", [2, 2, 2, 1, 1, 0]));
+  registerDice("ev027_san_02", sanLossByFace("san", [2, 2, 2, 1, 1, 0]));
+  registerDice("ev027_san_03", sanLossByFace("san", [2, 2, 2, 1, 1, 0]));
   registerDice("ev028_throw_01", bottleThrowCheck());
 
   registerDice("ev008_san_01", sanCheck("san", 1, { count: 1, sides: 6 }));

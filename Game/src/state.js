@@ -1,8 +1,9 @@
 (function (Game) {
   "use strict";
 
-  // v4：属性点数、无上限 SAN 与检定结果协议改变，旧 v3 存档不兼容。
-  const SAVE_VERSION = 4;
+  // v5：正式存档持久化事件引擎检查点，并兼容读取旧 v4 裸状态存档。
+  const SAVE_VERSION = 5;
+  const LEGACY_SAVE_VERSION = 4;
   const operators = {
     eq: (left, right) => left === right,
     ne: (left, right) => left !== right,
@@ -296,6 +297,29 @@
       this.storageKeyPrefix = storageKeyPrefix ?? currentUserSaveKeyPrefix();
     }
 
+    normalizeCheckpoint(checkpoint) {
+      if (!isPlainObject(checkpoint) || !isPlainObject(checkpoint.state)) {
+        throw new TypeError("存档检查点格式无效");
+      }
+      const resume = checkpoint.resume;
+      if (
+        resume !== null
+        && (
+          !isPlainObject(resume)
+          || typeof resume.eventId !== "string"
+          || !resume.eventId
+          || !Number.isInteger(resume.actionIndex)
+          || resume.actionIndex < 0
+        )
+      ) {
+        throw new TypeError("存档检查点恢复游标无效");
+      }
+      if (checkpoint.state.attributeAllocationComplete !== true) {
+        throw new Error("属性分配完成前不能保存");
+      }
+      return Game.deepClone({ state: checkpoint.state, resume: resume || null });
+    }
+
     slotKey(slot) {
       if (!Number.isInteger(slot) || slot < 1 || slot > SAVE_SLOT_COUNT) {
         throw new RangeError(`存档槽位必须是 1 到 ${SAVE_SLOT_COUNT} 的整数`);
@@ -307,11 +331,21 @@
       const raw = localStorage.getItem(this.slotKey(slot));
       if (raw === null) return null;
       const save = JSON.parse(raw);
-      if (!isPlainObject(save) || save.saveVersion !== SAVE_VERSION || !isPlainObject(save.state)) {
+      if (!isPlainObject(save)) {
         throw new Error("存档版本不兼容，请开始新的游戏");
       }
-      if (save.state.attributeAllocationComplete !== true) throw new Error("存档尚未完成属性分配");
-      return save;
+      if (save.saveVersion === LEGACY_SAVE_VERSION && isPlainObject(save.state)) {
+        return {
+          saveVersion: SAVE_VERSION,
+          savedAt: save.savedAt,
+          checkpoint: this.normalizeCheckpoint({ state: save.state, resume: null }),
+          migrated: true
+        };
+      }
+      if (save.saveVersion !== SAVE_VERSION || !isPlainObject(save.checkpoint)) {
+        throw new Error("存档版本不兼容，请开始新的游戏");
+      }
+      return { ...save, checkpoint: this.normalizeCheckpoint(save.checkpoint) };
     }
 
     listSlots() {
@@ -322,7 +356,7 @@
           if (!save) return { slot, empty: true, compatible: true };
           const previousState = this.state.snapshot();
           try {
-            this.state.restore(save.state);
+            this.state.restore(save.checkpoint.state);
           } finally {
             this.state.restore(previousState);
           }
@@ -331,8 +365,8 @@
             empty: false,
             compatible: true,
             savedAt: typeof save.savedAt === "string" ? save.savedAt : null,
-            sceneId: typeof save.state.sceneId === "string" ? save.state.sceneId : null,
-            san: Number.isInteger(save.state.attributes?.san) ? save.state.attributes.san : null
+            sceneId: typeof save.checkpoint.state.sceneId === "string" ? save.checkpoint.state.sceneId : null,
+            san: Number.isInteger(save.checkpoint.state.attributes?.san) ? save.checkpoint.state.attributes.san : null
           };
         } catch (error) {
           return {
@@ -349,20 +383,24 @@
       return localStorage.getItem(this.slotKey(slot)) !== null;
     }
 
-    save(slot, snapshot = this.state.snapshot()) {
-      if (snapshot.attributeAllocationComplete !== true) throw new Error("属性分配完成前不能保存");
+    save(slot, checkpoint) {
+      const clean = this.normalizeCheckpoint(checkpoint);
+      const previousState = this.state.snapshot();
+      try {
+        this.state.restore(clean.state);
+      } finally {
+        this.state.restore(previousState);
+      }
       localStorage.setItem(this.slotKey(slot), JSON.stringify({
         saveVersion: SAVE_VERSION,
         savedAt: new Date().toISOString(),
-        state: Game.deepClone(snapshot)
+        checkpoint: clean
       }));
     }
 
     load(slot) {
       const save = this.readEnvelope(slot);
-      if (!save) return false;
-      this.state.restore(save.state);
-      return true;
+      return save ? Game.deepClone(save.checkpoint) : null;
     }
 
     delete(slot) {

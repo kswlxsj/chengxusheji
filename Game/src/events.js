@@ -120,8 +120,9 @@
       this.timers = new Set();
       this.pendingWaits = new Set();
       this.advanceBoundVoices = new Map();
-      this.stableSnapshot = state.snapshot();
+      this.checkpoint = { state: state.snapshot(), resume: null };
       this.onStateChanged = () => {};
+      this.onCheckpointChanged = () => {};
       this.shouldTerminate = shouldTerminate;
       this.onTerminate = onTerminate;
       this.onCheckCompleted = onCheckCompleted;
@@ -183,7 +184,7 @@
               && INNER_WORLD_LIVING_CONDUCTOR_EVENTS.has(this.state.currentEventId)
               && this.state.flags.crew_met === true
               && this.state.flags.crew_04_medical_success === true
-              ? "assets/Image/Portrait/conductor.png"
+              ? "assets/Image/Portrait/conductor.webp"
               : "");
           await this.ui.dialog.showLine({
             ...action,
@@ -504,8 +505,38 @@
       return result;
     }
 
-    getStableSnapshot() {
-      return Game.deepClone(this.stableSnapshot);
+    normalizeResume(resume) {
+      if (resume === null || resume === undefined) return null;
+      if (
+        !resume
+        || typeof resume !== "object"
+        || Array.isArray(resume)
+        || typeof resume.eventId !== "string"
+        || !resume.eventId
+        || !Number.isInteger(resume.actionIndex)
+        || resume.actionIndex < 0
+      ) {
+        throw new TypeError("检查点恢复游标无效");
+      }
+      const event = this.events.get(resume.eventId);
+      if (!event) throw new Error(`检查点引用了不存在的事件：${resume.eventId}`);
+      const actionCount = Array.isArray(event.actions) ? event.actions.length : 0;
+      if (resume.actionIndex > actionCount) {
+        throw new RangeError(`检查点动作下标越界：${resume.eventId}#${resume.actionIndex}`);
+      }
+      return { eventId: resume.eventId, actionIndex: resume.actionIndex };
+    }
+
+    notifyCheckpointChanged() {
+      try {
+        this.onCheckpointChanged(this.getCheckpoint());
+      } catch (error) {
+        console.warn("检查点变更通知失败：", error);
+      }
+    }
+
+    getCheckpoint() {
+      return Game.deepClone(this.checkpoint);
     }
 
     async loadScene(sceneId) {
@@ -553,14 +584,25 @@
       }
     }
 
-    adoptStableState() {
-      this.stableSnapshot = this.state.snapshot();
+    adoptCheckpoint(resume = null) {
+      this.checkpoint = {
+        state: this.state.snapshot(),
+        resume: this.normalizeResume(resume)
+      };
+      this.notifyCheckpointChanged();
     }
 
-    restoreStableState() {
-      this.state.restore(this.stableSnapshot);
+    restoreCheckpoint(checkpoint = this.checkpoint) {
+      if (!checkpoint || typeof checkpoint !== "object" || Array.isArray(checkpoint)) {
+        throw new TypeError("检查点格式无效");
+      }
+      const resume = this.normalizeResume(checkpoint.resume);
+      this.state.restore(checkpoint.state);
+      this.checkpoint = { state: this.state.snapshot(), resume };
       if (this.state.sceneId) this.scene.load(this.state.sceneId);
       this.onStateChanged();
+      this.notifyCheckpointChanged();
+      return this.getCheckpoint();
     }
 
     setPaused(value) {
@@ -634,7 +676,7 @@
       if (!run || run.cancelled || this.activeRun !== run) throw new EventCancelled();
     }
 
-    async cancelToStable() {
+    async cancelToCheckpoint() {
       const run = this.activeRun;
       if (run) {
         run.cancelled = true;
@@ -646,10 +688,16 @@
         this.ui.cancelPending();
         await run.finished;
       }
-      this.restoreStableState();
+      this.restoreCheckpoint();
     }
 
-    async play(eventId) {
+    resumeCheckpoint() {
+      const resume = this.checkpoint.resume;
+      if (!resume) return Promise.resolve(false);
+      return this.play(resume.eventId, resume.actionIndex);
+    }
+
+    async play(eventId, actionIndex = 0) {
       if (this.busy) return false;
       const run = { id: ++this.runSerial, cancelled: false, finished: null, finish: null };
       run.finished = new Promise((resolve) => { run.finish = resolve; });
@@ -661,22 +709,35 @@
       try {
         // 事件启动阶段也必须放在 try/finally 内：如果 HUD、音效或自动存档刷新
         // 在这里同步抛错，finally 仍要负责解除 busy 与场景交互锁，避免整页只能刷新恢复。
+        // 玩家从自由探索触发事件时，此刻才知道待执行入口；先补全检查点游标，
+        // 这样事件中保存或刷新能从本事件开头恢复，而不会停在无法再次触发的场景状态。
+        this.adoptCheckpoint({ eventId, actionIndex });
         this.scene.setInteractionEnabled(false);
         this.onStateChanged();
         let nextId = eventId;
+        let nextActionIndex = actionIndex;
         let guard = 0;
         while (nextId) {
           await this.waitWhilePaused(run);
           if (++guard > 100) throw new Error("连续事件超过 100 个，可能存在无输入死循环");
           const event = this.events.get(nextId);
           if (!event) throw new Error(`事件不存在：${nextId}`);
+          const actions = Array.isArray(event.actions) ? event.actions : [];
+          if (!Number.isInteger(nextActionIndex) || nextActionIndex < 0 || nextActionIndex > actions.length) {
+            throw new RangeError(`事件动作下标越界：${nextId}#${nextActionIndex}`);
+          }
           this.state.currentEventId = nextId;
           // 每个事件开始时把“快进”重置为关闭，开关状态不跨事件记忆：
           // 避免上一事件遗留的快进让新事件自动连跳，玩家来不及关闭。
           this.ui.dialog.setFast(false);
           nextId = null;
 
-          for (const action of event.actions || []) {
+          for (let index = nextActionIndex; index < actions.length; index += 1) {
+            const action = actions[index];
+            // 选项等待本身是稳定边界：恢复时直接重新打开该选项，不重放前置动作。
+            if (action.type === "choice") {
+              this.adoptCheckpoint({ eventId: event.id, actionIndex: index });
+            }
             const result = await this.runAction(action);
             if (result && result.stop) {
               nextId = result.next || null;
@@ -684,9 +745,11 @@
             }
           }
           if (!nextId && event.next) nextId = event.next;
+          nextActionIndex = 0;
+          // 每个完整事件结束后都形成检查点；连续事件保存下一事件的入口游标。
+          this.adoptCheckpoint(nextId ? { eventId: nextId, actionIndex: 0 } : null);
         }
         completed = true;
-        this.adoptStableState();
         return true;
       } catch (error) {
         terminated = error instanceof TerminalStateReached;
@@ -698,7 +761,7 @@
           }
         } else {
           try {
-            this.restoreStableState();
+            this.restoreCheckpoint();
           } catch (restoreError) {
             // 回滚只负责尽力恢复；即使状态刷新再次出错，也不能阻断 finally 解锁。
             console.error("事件失败后的状态回滚失败：", restoreError);

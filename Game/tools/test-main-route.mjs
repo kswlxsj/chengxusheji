@@ -116,14 +116,15 @@ assert.equal(
 );
 
 const itemById = new Map(items.map((item) => [item.id, item]));
-assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.png");
-assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.png");
-assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.png");
-assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.png");
-assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.png", "手电筒应使用无版本后缀的正式贴图");
-assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.png", "饮料应使用正式贴图");
-assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.png", "空易拉罐应使用正式贴图");
-assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { hasItem: "control_panel_key" });
+assert.equal(itemById.get("driver_cab_key").image, "assets/Image/Item/driver-cab-key.webp");
+assert.equal(itemById.get("control_panel_key").image, "assets/Image/Item/control-panel-key.webp");
+assert.equal(itemById.get("emergency_cutter").image, "assets/Image/Item/emergency-belt-cutter.webp");
+assert.equal(itemById.get("pry_bar").image, "assets/Image/Item/pry-bar.webp");
+assert.equal(itemById.get("flashlight").image, "assets/Image/Item/flashlight.webp", "手电筒应使用无版本后缀的正式贴图");
+assert.equal(itemById.get("drink").image, "assets/Image/Item/drink.webp", "饮料应使用正式贴图");
+assert.equal(itemById.get("drink_empty").image, "assets/Image/Item/drink_empty.webp", "空易拉罐应使用正式贴图");
+assert.deepEqual(objectOf("front_carriage", "control_27").visibleWhen, { flag: "front_carriage_entry_seen", equals: true });
+assert.deepEqual(objectOf("front_carriage", "control_27").hitPosition, { x: 42, y: 52, width: 27, height: 30 });
 const driverDoorGate = actionsOf("E_031").find((action) => action.next === "E_031_PLAYER_KEY");
 assert.deepEqual(driverDoorGate.when.any[1], { hasItem: "driver_cab_key" });
 
@@ -163,11 +164,11 @@ assert.deepEqual(objectOf("carriage_05", "window_05_right").position, { x: 61, y
 assert.equal(objectOf("carriage_05", "clutter_05_a").clickEvent, "E_05_JUNK_A");
 assert.equal(objectOf("carriage_05", "clutter_05_b").clickEvent, "E_05_JUNK_B");
 const carriage05LeftJunk = objectOf("carriage_05", "clutter_05_c");
-assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.png", "5号左侧杂物应对应左边的白色袋堆");
+assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.webp", "5号左侧杂物应对应左边的白色袋堆");
 assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物应使用独立随机对白");
 assert.deepEqual(carriage05LeftJunk.hitPosition, { x: 32, y: 65, width: 6, height: 7 }, "5号左侧杂物热点应只覆盖袋子主体");
 const carriage05RightJunk = objectOf("carriage_05", "clutter_05_d");
-assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.png", "5号右侧杂物应对应右边的白色袋堆");
+assert.equal(carriage05RightJunk.image, "assets/Image/Scene/StillLife/trash-05-a.webp", "5号右侧杂物应对应右边的白色袋堆");
 assert.equal(carriage05RightJunk.clickEvent, "E_05_JUNK_RIGHT", "5号右侧杂物应提供饮料获取事件");
 assert.deepEqual(carriage05RightJunk.hitPosition, { x: 62, y: 65, width: 6, height: 7 }, "5号右侧杂物热点应只覆盖袋子主体");
 const carriage06CenterDoor = objectOf("carriage_06", "door_06_center");
@@ -197,7 +198,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_004_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应。",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]],
   ["E_005_WINDOW", [
@@ -207,7 +208,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_005_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应。",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]],
   ["E_05_JUNK_LEFT", [
@@ -227,7 +228,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_006_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应。",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]]
 ]) {
@@ -264,53 +265,53 @@ assert.equal(objectOf("carriage_04", "crew_04").clickEvent, "E_013", "乘务员�
 assert.match(diceSource, /registerDice\("ev013_education_01", attrCheck\("education", 17\)\)/, "乘务员前两次救治应使用阈值 17");
 assert.match(diceSource, /registerDice\("ev020_education_01", attrCheck\("education", 16\)\)/, "乘务员第三次救治应使用阈值 16");
 const carriage03 = sceneById.get("carriage_03");
-assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.png");
+assert.equal(carriage03.background, "assets/Image/Scene/Background/carriage-03-full.webp");
 assert.deepEqual(carriage03.backgroundVariants, [
   {
-    image: "assets/Image/Scene/Background/carriage-03.png",
+    image: "assets/Image/Scene/Background/carriage-03.webp",
     visibleWhen: { flag: "carriage_03_bag_resolved", equals: true }
   },
   {
-    image: "assets/Image/Scene/Background/carriage-03-onlybag.png",
+    image: "assets/Image/Scene/Background/carriage-03-onlybag.webp",
     visibleWhen: { flag: "carriage_03_bag_exposed", equals: true }
   },
   {
-    image: "assets/Image/Scene/Background/carriage-03-halffull.png",
+    image: "assets/Image/Scene/Background/carriage-03-halffull.webp",
     visibleWhen: { flag: "carriage_03_bag_interacted", equals: true }
   }
 ], "3号背景应按清空、黑包露出、半清理的优先级覆盖满载底图");
 const blackBag03 = objectOf("carriage_03", "black_bag_03");
-assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.png");
+assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.webp");
 assert.deepEqual(blackBag03.hitPosition, { x: 63, y: 50.8, width: 7.7, height: 10.3 });
 assert.deepEqual(blackBag03.visibleWhen, {
   not: { flag: "carriage_03_bag_exposed", equals: true }
 }, "没工具时点击背包不得将其隐藏");
 assert.equal(
   objectOf("carriage_03", "forward_note_03").image,
-  "assets/Image/Scene/StillLife/carriage-05-03-forward-note.png"
+  "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp"
 );
 assert.equal(
   objectOf("carriage_05", "tool_clutter_05").image,
-  "assets/Image/Scene/StillLife/carriage-05-03-clutter.png",
+  "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
   "5号倒下的背包不得继续复用3号黑包"
 );
-assert.equal(objectOf("carriage_07", "corpse_07").image, "assets/Image/Scene/StillLife/corpse-07.png");
-assert.equal(objectOf("carriage_07", "radio_07").image, "assets/Image/Scene/StillLife/radio-07.png");
+assert.equal(objectOf("carriage_07", "corpse_07").image, "assets/Image/Scene/StillLife/corpse-07.webp");
+assert.equal(objectOf("carriage_07", "radio_07").image, "assets/Image/Scene/StillLife/radio-07.webp");
 
 for (const asset of [
-  "carriage-03-full.png",
-  "carriage-03-halffull.png",
-  "carriage-03-onlybag.png",
-  "carriage-03.png"
+  "carriage-03-full.webp",
+  "carriage-03-halffull.webp",
+  "carriage-03-onlybag.webp",
+  "carriage-03.webp"
 ]) {
   assert.ok((await stat(new URL(`../assets/Image/Scene/Background/${asset}`, import.meta.url))).size > 0);
 }
 for (const asset of [
-  "black-bag-03.png",
-  "carriage-05-03-clutter.png",
-  "carriage-05-03-forward-note.png",
-  "corpse-07.png",
-  "radio-07.png"
+  "black-bag-03.webp",
+  "carriage-05-03-clutter.webp",
+  "carriage-05-03-forward-note.webp",
+  "corpse-07.webp",
+  "radio-07.webp"
 ]) {
   assert.ok((await stat(new URL(`../assets/Image/Scene/StillLife/${asset}`, import.meta.url))).size > 0);
 }
@@ -335,7 +336,7 @@ assertFlagImmediatelyRefreshes("E_022_ALONE", "carriage_03_forward_note_visible"
 assertFlagImmediatelyRefreshes("E_022_ITEM", "carriage_03_bag_resolved");
 const seatedCrewLeft = objectOf("carriage_04", "crew_04_seated_left");
 const seatedCrewRight = objectOf("carriage_04", "crew_04_seated_right");
-assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.png");
+assert.equal(seatedCrewLeft.image, "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp");
 assert.equal(seatedCrewRight.image, seatedCrewLeft.image, "左右座位应复用同一张坐姿乘务员图层");
 assert.equal(seatedCrewLeft.clickEvent, "E_013", "左侧坐姿应承接原乘务员热点");
 assert.equal(seatedCrewRight.clickEvent, "E_013", "右侧坐姿应承接原乘务员热点");
@@ -355,7 +356,7 @@ assert.deepEqual(seatedCrewRight.visibleWhen, {
 });
 assert.equal(
   sceneById.get("carriage_04").backgroundVariants.some((variant) => (
-    variant.image === "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.png"
+    variant.image === "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp"
       && variant.visibleWhen?.flag === "crew_04_left_seated"
   )),
   true,
@@ -383,7 +384,7 @@ assert.deepEqual(
   { not: { flag: "carriage_06_eaten", equals: true } },
   "6号车厢被啃食后不得再显示或点击通往7号车厢的门"
 );
-assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，好像是6号车厢的方向。");
+assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，来自6号车厢的方向。");
 assert.equal(actionsOf("E_012").some((action) => action.type === "check"), false, "隔门时不应检定或看见6号车厢");
 const eatenRevealActions = actionsOf("E_012_S");
 assert.equal(
@@ -420,6 +421,15 @@ assert.equal(
 assert.equal(eventById.get("E_005_F").next, "E_005_DEPARTURE_B", "6号失败分支应直接进入7号流程");
 assert.equal(actionsOf("E_005_F").some((action) => action.type === "choice"), false, "6号失败分支不应再弹出选择");
 assert.equal(actionsOf("E_005")[1].next, "E_005_LOCKED", "6号调查未完成时应锁住7号门");
+assert.deepEqual(actionsOf("E_005_STAY").slice(0, 2), [
+  {
+    type: "conditionalJump",
+    when: { flag: "ev005_stay_rewarded", equals: true },
+    next: "E_005_STAY_REVISIT"
+  },
+  { type: "setFlag", key: "ev005_stay_rewarded", value: true }
+], "6号留守奖励应先检查并记录一次性完成状态");
+assert.deepEqual(actionsOf("E_005_STAY_REVISIT"), [], "6号留守重访应静默结束");
 assert.deepEqual(
   actionsOf("E_GO_06_05")[0],
   {
@@ -442,7 +452,11 @@ assert.deepEqual(
   "实际呕吐才应扣除 1 点体质"
 );
 assert.deepEqual(actionsOf("E_008").find((action) => action.dice === "ev008_insight_01").outcomes, ["E_008_S", "E_008_F"]);
-assert.equal(actionsOf("E_026").some((action) => action.type === "check"), false, "Clicker 初见不应再进行 SAN 检定");
+assert.deepEqual(
+  actionsOf("E_026").filter((action) => action.type === "check"),
+  [{ type: "check", dice: "ev026_san_01" }],
+  "Clicker 初见应进行一次 SAN 检定"
+);
 assert.equal(actionsOf("E_026_BOTTLE_HINT")[0].text, "你摸了摸口袋里的瓶子。");
 for (const removed of [
   "E_026_SAN_S", "E_026_SAN_F", "E_026_AFTER_SAN", "E_029_CARD_EASY",
@@ -554,7 +568,7 @@ assert.deepEqual(door04[1], { type: "sound", sound: "door_open" });
 assert.deepEqual(door04[2], { type: "changeScene", scene: "carriage_03" });
 assert.match(door04.find((action) => action.type === "dialogue").text, /返回3号车厢/);
 
-// 3号→2号不再由剧情自动进车：E_022_ITEM 拿完手电即停，E_023 末段直接接里世界入口；
+// 3号→2号不再由剧情自动进车：E_022_ITEM 完成黑包流程即停，E_023 末段直接接里世界入口；
 // 进车只能由玩家点 door_03_to_02（E_023 门前认知崩塌 → E_501）。E_024 光源侦查旧线已删除（见 docs/main-route-wiring.md）。
 assert.equal(eventById.get("E_022_ITEM").next, undefined);
 assert.equal(eventById.get("E_023_LOOP").next, "E_501");
@@ -593,6 +607,24 @@ for (const sceneId of ["carriage_inner_01", "carriage_inner_02", "carriage_fake_
 assert.match(mainSource, /backgroundSoundVariants[\s\S]*backgroundAudio\?\.setTrack/);
 assert.match(bgmSource, /pageFile === "ending\.html"[\s\S]*assets\/Audio\/Bgm\/op-v2\.mp3/);
 assert.match(bgmSource, /home\.html", "settings\.html", "ending\.html/);
+const pageFlowSource = await read("src/page-flow.js");
+const loginSource = await read("src/login.js");
+const endingPageSource = await read("ending.html");
+const endingRevealSource = await read("ending-reveal.html");
+assert.match(loginSource, /markHomeOpIntent\("login"\)/, "登录成功进入主页前应请求 OP");
+assert.match(endingPageSource, /markHomeOpIntent\("ending"\)/, "视频结局页返回主页前应请求 OP");
+assert.match(endingPageSource, /ending-video-stage[\s\S]*ending-video-ratio/, "视频结局页的热区应与视频舞台共用比例");
+assert.match(endingPageSource, /videoWidth[\s\S]*videoHeight[\s\S]*loadedmetadata/, "视频结局页应读取素材原始比例");
+assert.doesNotMatch(endingPageSource, /ending-title|ending-description/, "视频结局页不应重复渲染结局文案");
+assert.match(endingRevealSource, /ending-reveal[\s\S]*ending-reveal-unlocked/, "过渡页应提供统一的达成展示");
+assert.match(endingRevealSource, /--ending-background-image[\s\S]*navigate\("ending"/, "过渡页应展示结局背景后进入视频结局页");
+assert.match(endingRevealSource, /600[\s\S]*3400/, "过渡页应按既定时长自动淡出");
+assert.doesNotMatch(mainSource, /codex-ending-overlay/, "游戏页不应保留视频透明热区");
+assert.match(mainSource, /reason === "true_end"[\s\S]*reason === "fake_end"[\s\S]*reason === "bad_end"[\s\S]*reason === "san"[\s\S]*reason === "lost"[\s\S]*navigateToEnding\(reason\)/, "所有结局 OP 后都应进入过渡页");
+assert.match(mainSource, /navigate\("endingReveal"/, "游戏终局应跳转结局达成过渡页");
+assert.match(pageFlowSource, /endingReveal: "ending-reveal\.html"[\s\S]*ending: "ending\.html"/, "路由应区分过渡页与视频结局页");
+assert.match(homeOpSource, /consumeHomeOpIntent/, "主页 OP 应消费一次性入口标记");
+assert.match(pageFlowSource, /source !== "login" && source !== "ending"/, "OP 标记只允许登录与结局来源");
 assert.match(bgmSource, /BASE_VOLUME \* userGain/);
 assert.match(homeOpSource, /AUDIO_SILENCE_MS = 250/);
 assert.match(homeOpSource, /AUDIO_FADE_IN_MS = 2000/);
@@ -654,7 +686,6 @@ for (const id of [
   "E_021_CARRIED",
   "E_021_ALONE",
   "E_022_ALONE",
-  "E_022_ITEM",
   "E_05_SEARCH_TOOLS"
 ]) {
   assert.equal(
@@ -743,6 +774,16 @@ assert.equal(game.trace.some((entry) => entry.text?.includes("一名重伤昏迷
 assert.equal(game.trace.some((entry) => entry.text?.includes("还没有处理她的伤口")), true, "未交互时重复到达不得误报已处理伤口");
 assert.notEqual(game.state.flags.crew_04_interacted, true, "重复进入车厢不得把乘务员标记为已交互");
 assert.deepEqual(game.diceCalls, []);
+
+// 6号车厢的冷静段落只结算一次；旧存档没有旗标时仍能正常获得首次奖励。
+game = fixture({ sceneId: "carriage_06" });
+await game.play("E_005_STAY");
+assert.equal(game.state.flags.ev005_stay_rewarded, true, "首次留在6号车厢应记录已获得冷静奖励");
+assert.equal(game.attributeChanges.filter(({ name, requested }) => name === "SAN" && requested === 1).length, 1, "首次留守应只奖励 1 点 SAN");
+game.trace.length = 0;
+await game.play("E_005_STAY");
+assert.equal(game.attributeChanges.filter(({ name, requested }) => name === "SAN" && requested === 1).length, 1, "再次留守不得重复奖励 SAN");
+assert.deepEqual(game.trace, [], "再次留在6号车厢不得重播冷静段落");
 
 // 点击乘务员：直接教育检定；失败后允许再试一次，成功或第二次失败后结束。
 game = fixture({ sceneId: "carriage_04", dice: { ev013_education_01: [1, 0] } });
@@ -860,17 +901,17 @@ await game.play("TEST_KEY_HOPE_NORMAL");
 assert.equal(game.state.getAttribute("san"), 6);
 assert.equal(game.trace.some((entry) => entry.text === "看着乘务员手中的钥匙，你觉得又有了活下去的希望。"), true);
 
-// 初见只做演出；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
-game = fixture({ sceneId: "carriage_02", flags: { light_used: true } });
+// 初见进行一次 SAN 检定；持瓶时追加模糊提示，Clicker 本体仍只提供潜行/正面对抗。
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, dice: { ev026_san_01: 0 } });
 await game.play("E_026");
 assert.equal(scenesOf(game)[0], "carriage_02");
 assert.match(game.trace[0].text, /怪物/);
-assert.equal(game.diceCalls.length, 0, "Clicker 初见不得掷 SAN");
+assert.deepEqual(game.diceCalls, ["ev026_san_01"], "Clicker 初见应掷一次 SAN");
 assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), false);
 assert.equal(game.trace.some((entry) => entry.text.includes("回到3号车厢")), false, "Clicker 不得触发3号车厢内容");
 assert.equal(game.trace.some((entry) => entry.text.includes("你取出工具")), false);
 assert.equal(game.trace.some((entry) => entry.event === "E_026_ACTION"), false, "发现对白结束前不应弹通过方式");
-game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, inventory: ["bottle"] });
+game = fixture({ sceneId: "carriage_02", flags: { light_used: true }, inventory: ["bottle"], dice: { ev026_san_01: 0 } });
 await game.play("E_026");
 assert.equal(game.trace.some((entry) => entry.text === "你摸了摸口袋里的瓶子。"), true, "持瓶初见应给出模糊提示");
 
@@ -933,16 +974,52 @@ game = fixture({
 await game.play("E_GO_02_FRONT_DOOR");
 assert.equal(game.state.sceneId, "front_carriage", "玩家点安全门后才进入先头车厢");
 
-// 先头车厢点控制把手：打开操作面板，不再触发2号车厢的体质检定。
+// 首次打开驾驶室只播放操作台说明；结局操作必须由玩家另行点击控制把手。
 game = fixture({
-  sceneId: "front_carriage",
+  sceneId: "carriage_02",
+  flags: { carriage_02_passed: true },
   inventory: ["driver_cab_key", "control_panel_key"],
-  choiceLabels: ["右杆下拉——加速，继续前进"]
+  choiceLabels: ["右杆上推——加速，继续前进"]
 });
-await game.play("E_032");
+await game.play("E_GO_02_FRONT_DOOR");
 assert.deepEqual([...new Set(scenesOf(game))], ["front_carriage"]);
-assert.match(game.trace[0].text, /操作面板/);
+assert.equal(game.trace.some((entry) => /操作面板/.test(entry.text)), true, "首次进入驾驶室应播放操作台说明");
+assert.equal(game.state.flags.ending_reason, undefined, "进入驾驶室后不应自动弹出把手操作选择");
+
+// 点击把手才进入操作选择；单人加速直达真结局，且不触发2号车厢检定。
+await game.play("E_032");
 assert.equal(game.diceCalls.includes("ev027_constitution_01"), false, "控制把手不得触发体质检定");
 assert.equal(game.state.flags.ending_reason, "true_end");
+
+// 乘务员持钥匙时自动操作把手：限时抢夺才进入拉杆争夺，超时或放手则停车。
+assert.equal(eventById.get("E_031_CREW_KEY").next, "E_032_CREW_AUTO");
+const crewAutoChoice = actionsOf("E_032_CREW_AUTO").find((action) => action.name === "timedStoryChoice");
+assert.deepEqual(crewAutoChoice.params, {
+  prompt: "乘务员正要把右杆向下拉——",
+  duration: 5000,
+  flag: "ev032_take_lever",
+  defaultValue: false,
+  options: [
+    { label: "抢过把手，向上推——加速", value: true },
+    { label: "让乘务员来操作", value: false }
+  ]
+});
+assert.equal(actionsOf("E_032_CREW_AUTO").find((action) => action.type === "conditionalJump").next, "E_033");
+assert.equal(eventById.get("E_032_CREW_AUTO").next, "E_035");
+assert.equal(actionsOf("E_033").some((action) => action.type === "minigame" && action.game === "conductor_tug"), true);
+game = fixture({
+  sceneId: "front_carriage",
+  flags: { carried_crew: true, keys_crew: true },
+  choiceLabels: ["让乘务员来操作"]
+});
+await game.play("E_031_CREW_KEY");
+assert.equal(game.state.flags.ending_reason, "bad_end", "让乘务员操作应进入停车坏结局");
+game = fixture({
+  sceneId: "front_carriage",
+  flags: { carried_crew: true, keys_crew: true },
+  choiceLabels: ["抢过把手，向上推——加速"]
+});
+await game.play("E_031_CREW_KEY");
+assert.equal(game.trace.some((entry) => entry.text?.includes("猛地抢过右杆")), true, "抢夺把手应进入控制杆争夺前的剧情");
 
 console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
