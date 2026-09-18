@@ -671,6 +671,7 @@ registerDice("my_custom_roll_01", async (context, outcomes) => {
 | `setMasterVolume(value)` | 更新管理器及当前活动音源的用户总倍率，不覆盖资源默认音量或剧情单次倍率。 |
 | `new BackgroundAudioManager(root, registry, options)` | 场景唯一背景音管理器，由 `UIManager` 暴露为 `ui.backgroundAudio`；同样接受 `options.masterVolume`。 |
 | `setTrack(soundId, options)` | 选择场景背景音。相同编号保持进度，淡出中再次选择会恢复；新编号与旧编号交叉淡化；`null` 淡出到静音。 |
+| `setPlaybackRate(value)` | 即时调整当前背景音的播放速度和音高；复用当前音源并保留其播放进度。 |
 
 语义与边界：
 

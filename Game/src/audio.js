@@ -235,7 +235,17 @@
 
     setPlaybackRate(value) {
       this.playbackRate = clamp(Number(value) || 1, 0.25, 4);
-      if (this.element) this.element.playbackRate = this.playbackRate;
+      if (!this.element) return;
+      // 少数浏览器在循环音播放中修改速率时会意外回到开头；变调必须延续当前段落。
+      const currentTime = Number(this.element.currentTime);
+      this.element.playbackRate = this.playbackRate;
+      if (Number.isFinite(currentTime) && currentTime >= 0 && this.element.currentTime !== currentTime) {
+        try {
+          this.element.currentTime = currentTime;
+        } catch (_error) {
+          // 浏览器暂时拒绝定位时保留已设置的变调，不让演出链中断。
+        }
+      }
     }
 
     applyTargetVolume() {

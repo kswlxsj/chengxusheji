@@ -1649,12 +1649,14 @@ const SOUND_TEST_REGISTRY = [
 // Audio 元素桩：readyState 为 1 时“元数据已就绪”，play() 立即开始；
 // 也可用 prepare() 模拟需要异步加载元数据的元素（先 play() 后 loadedmetadata）。
 class StubAudioElement {
-  constructor({ readyState = 1, duration = 0.35, failPlayback = false } = {}) {
+  constructor({ readyState = 1, duration = 0.35, failPlayback = false, resetPositionOnRateChange = false } = {}) {
     this.tagName = "AUDIO";
     this.readyState = readyState;
     this.duration = readyState >= 1 ? duration : NaN;
     this.plannedDuration = duration;
     this.currentTime = 0;
+    this.resetPositionOnRateChange = resetPositionOnRateChange;
+    this._playbackRate = 1;
     this.volume = 1;
     this.src = "";
     this.hidden = false;
@@ -1670,6 +1672,13 @@ class StubAudioElement {
   }
 
   setAttribute(name, value) { this.attributes[name] = value; }
+
+  get playbackRate() { return this._playbackRate; }
+
+  set playbackRate(value) {
+    this._playbackRate = value;
+    if (this.resetPositionOnRateChange && this.currentTime > 0) this.currentTime = 0;
+  }
 
   addEventListener(name, handler, options = {}) {
     if (!this.listeners.has(name)) this.listeners.set(name, []);
@@ -2114,6 +2123,20 @@ async function settleMicrotasks(count = 8) {
   element.emit("ended");
   await new Promise((resolve) => setTimeout(resolve, 12));
   assert.equal(element.plays, 2, "背景音每轮结束后应按场景配置间隔重播");
+  audio.stopAll({ immediate: true });
+}
+
+// 18) 变调必须复用当前背景音并保留播放位置，即使浏览器赋值速率时意外归零。
+{
+  const audio = createBackgroundAudioStub(SOUND_TEST_REGISTRY, { resetPositionOnRateChange: true });
+  const voice = audio.setTrack("sfx_test_short");
+  const element = voice.element;
+  element.currentTime = 12;
+  audio.setPlaybackRate(0.68);
+  assert.equal(audio.current, voice, "背景音变调不得重建音源");
+  assert.equal(element.plays, 1, "背景音变调不得重新播放");
+  assert.equal(element.currentTime, 12, "背景音变调后应保留当前播放位置");
+  assert.equal(element.playbackRate, 0.68, "背景音应应用指定播放速度");
   audio.stopAll({ immediate: true });
 }
 
