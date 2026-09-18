@@ -594,6 +594,7 @@ assert.match(loginSource, /markHomeOpIntent\("login"\)/, "登录成功进入主�
 assert.match(endingPageSource, /markHomeOpIntent\("ending"\)/, "视频结局页返回主页前应请求 OP");
 assert.match(endingPageSource, /ending-video-stage[\s\S]*ending-video-ratio/, "视频结局页的热区应与视频舞台共用比例");
 assert.match(endingPageSource, /videoWidth[\s\S]*videoHeight[\s\S]*loadedmetadata/, "视频结局页应读取素材原始比例");
+assert.doesNotMatch(endingPageSource, /ending-title|ending-description/, "视频结局页不应重复渲染结局文案");
 assert.match(endingRevealSource, /ending-reveal[\s\S]*ending-reveal-unlocked/, "过渡页应提供统一的达成展示");
 assert.match(endingRevealSource, /--ending-background-image[\s\S]*navigate\("ending"/, "过渡页应展示结局背景后进入视频结局页");
 assert.match(endingRevealSource, /600[\s\S]*3400/, "过渡页应按既定时长自动淡出");

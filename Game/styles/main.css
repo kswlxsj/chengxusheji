@@ -676,10 +676,15 @@ a { color: inherit; }
   transform: translate(-50%, -50%);
 }
 
-.ending-page {
+#ending-video-stage .ending-page {
   position: absolute;
   inset: 0;
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: none;
+  aspect-ratio: auto;
   display: block;
   padding: 0;
   background: transparent;
@@ -744,8 +749,8 @@ a { color: inherit; }
 .ending-page .ending-actions a {
   position: absolute;
   left: 50%;
-  width: 30%;
-  height: 8%;
+  width: 34%;
+  height: 7%;
   padding: 0;
   color: transparent !important;
   font-size: 0;
@@ -763,8 +768,8 @@ a { color: inherit; }
   pointer-events: auto;
 }
 
-.ending-page .ending-actions a:first-child { top: 75.5%; }
-.ending-page .ending-actions a:last-child { top: 87.8%; }
+.ending-page .ending-actions a:first-child { top: 80%; }
+.ending-page .ending-actions a:last-child { top: 87.6%; }
 
 .ending-page .ending-actions a:focus-visible {
   outline: 2px solid rgba(255, 244, 213, .9);
