@@ -168,7 +168,8 @@ assert.throws(() => Game.PlayerProfile.setAudioSetting("unknown", 0.5), /未知�
 for (const ending of Game.ENDING_CATALOG) assert.equal(Game.PlayerProfile.unlockEnding(ending.id), true);
 assert.equal(Game.PlayerProfile.unlockEnding("true_end"), false, "重复结局不应重复写入");
 assert.equal(Game.PlayerProfile.unlockEnding("unknown"), false, "未知终局不应进入收藏");
-assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "fake_end", "lost", "bad_end", "san"]);
+assert.deepEqual([...Game.PlayerProfile.getUnlockedEndings()], ["true_end", "cry_end", "fake_end", "lost", "bad_end", "san"]);
+assert.equal(Game.ENDING_CATALOG.find((ending) => ending.id === "cry_end")?.title, "那半梦半醒中入耳穿骨的哭泣");
 assert.equal(Game.PlayerProfile.setAutoSaveEnabled(false), false);
 assert.equal(Game.PlayerProfile.getAutoSaveEnabled(), false, "关闭自动存档后应保留设置");
 assert.equal(Game.PlayerProfile.setShortcutSetting("advance", "Enter"), "Enter");

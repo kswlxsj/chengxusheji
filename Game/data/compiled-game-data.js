@@ -6680,10 +6680,38 @@ window.GAME_DATA = {
           "next": "E_515"
         },
         {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_dead",
+            "equals": true
+          },
+          "next": "E_034_CRY_END"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_04_medical_failed",
+            "equals": true
+          },
+          "next": "E_034_CRY_END"
+        },
+        {
           "type": "custom",
           "name": "endGame",
           "params": {
             "reason": "true_end"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E_034_CRY_END",
+      "actions": [
+        {
+          "type": "custom",
+          "name": "endGame",
+          "params": {
+            "reason": "cry_end"
           }
         }
       ]
@@ -8849,6 +8877,13 @@ window.GAME_DATA = {
       "file": "assets/Audio/SoundEffect/finding-in-papers.mp3",
       "volume": 0.6,
       "description": "翻找背包、行李或杂物时播放。"
+    },
+    {
+      "id": "cry_of_despair_girls",
+      "name": "乘务员绝望的哭喊",
+      "file": "assets/Audio/SoundEffect/cry-of-despair-girls.mp3",
+      "volume": 0.9,
+      "description": "未能救活乘务员的加速结局尾声中播放。"
     },
     {
       "id": "locker_open",

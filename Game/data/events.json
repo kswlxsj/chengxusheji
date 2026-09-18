@@ -4747,11 +4747,31 @@
         "next": "E_515"
       },
       {
+        "type": "conditionalJump",
+        "when": { "flag": "crew_04_dead", "equals": true },
+        "next": "E_034_CRY_END"
+      },
+      {
+        "type": "conditionalJump",
+        "when": { "flag": "crew_04_medical_failed", "equals": true },
+        "next": "E_034_CRY_END"
+      },
+      {
         "type": "custom",
         "name": "endGame",
         "params": {
           "reason": "true_end"
         }
+      }
+    ]
+  },
+  {
+    "id": "E_034_CRY_END",
+    "actions": [
+      {
+        "type": "custom",
+        "name": "endGame",
+        "params": { "reason": "cry_end" }
       }
     ]
   },

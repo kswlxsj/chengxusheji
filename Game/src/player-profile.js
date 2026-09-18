@@ -24,6 +24,12 @@
       image: "assets/Image/Scene/Background/true-end-platform.webp"
     }),
     Object.freeze({
+      id: "cry_end",
+      title: "那半梦半醒中入耳穿骨的哭泣",
+      description: "你醒了过来，活着回到家中；那场列车上的哭喊却仍在耳边回荡。",
+      image: "assets/Image/Scene/Background/chengwuyuan-dead.png"
+    }),
+    Object.freeze({
       id: "fake_end",
       title: "你所说的曙光究竟是什么意思",
       description: "目睹那些东西之后，回归现实生活……大概吧。",

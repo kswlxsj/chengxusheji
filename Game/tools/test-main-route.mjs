@@ -620,7 +620,7 @@ assert.match(endingRevealSource, /ending-reveal[\s\S]*ending-reveal-unlocked/, "
 assert.match(endingRevealSource, /--ending-background-image[\s\S]*navigate\("ending"/, "过渡页应展示结局背景后进入视频结局页");
 assert.match(endingRevealSource, /600[\s\S]*3400/, "过渡页应按既定时长自动淡出");
 assert.doesNotMatch(mainSource, /codex-ending-overlay/, "游戏页不应保留视频透明热区");
-assert.match(mainSource, /reason === "true_end"[\s\S]*reason === "fake_end"[\s\S]*reason === "bad_end"[\s\S]*reason === "san"[\s\S]*reason === "lost"[\s\S]*navigateToEnding\(reason\)/, "所有结局 OP 后都应进入过渡页");
+assert.match(mainSource, /reason === "true_end"[\s\S]*reason === "cry_end"[\s\S]*reason === "fake_end"[\s\S]*reason === "bad_end"[\s\S]*reason === "san"[\s\S]*reason === "lost"[\s\S]*navigateToEnding\(reason\)/, "所有结局 OP 后都应进入过渡页");
 assert.match(mainSource, /navigate\("endingReveal"/, "游戏终局应跳转结局达成过渡页");
 assert.match(pageFlowSource, /endingReveal: "ending-reveal\.html"[\s\S]*ending: "ending\.html"/, "路由应区分过渡页与视频结局页");
 assert.match(homeOpSource, /consumeHomeOpIntent/, "主页 OP 应消费一次性入口标记");
@@ -650,7 +650,10 @@ assert.deepEqual(actionsOf("E_034")[0], {
   when: { flag: "ev510_flower_sea", equals: true },
   next: "E_515"
 });
-assert.deepEqual(actionsOf("E_034")[1], { type: "custom", name: "endGame", params: { reason: "true_end" } });
+assert.deepEqual(actionsOf("E_034")[1], { type: "conditionalJump", when: { flag: "crew_04_dead", equals: true }, next: "E_034_CRY_END" });
+assert.deepEqual(actionsOf("E_034")[2], { type: "conditionalJump", when: { flag: "crew_04_medical_failed", equals: true }, next: "E_034_CRY_END" });
+assert.deepEqual(actionsOf("E_034")[3], { type: "custom", name: "endGame", params: { reason: "true_end" } });
+assert.deepEqual(actionsOf("E_034_CRY_END"), [{ type: "custom", name: "endGame", params: { reason: "cry_end" } }]);
 assert.deepEqual(actionsOf("E_515"), [
   { type: "custom", name: "endGame", params: { reason: "fake_end" } }
 ]);

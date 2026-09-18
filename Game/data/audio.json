@@ -116,6 +116,13 @@
     "description": "翻找背包、行李或杂物时播放。"
   },
   {
+    "id": "cry_of_despair_girls",
+    "name": "乘务员绝望的哭喊",
+    "file": "assets/Audio/SoundEffect/cry-of-despair-girls.mp3",
+    "volume": 0.9,
+    "description": "未能救活乘务员的加速结局尾声中播放。"
+  },
+  {
     "id": "locker_open",
     "name": "员工柜开门",
     "file": "assets/Audio/SoundEffect/locker_O.mp3",

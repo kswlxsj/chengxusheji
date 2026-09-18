@@ -48,6 +48,13 @@
             backgroundAudio: ui.backgroundAudio
           });
         }
+        if (reason === "cry_end" && typeof Game.playCryEndingSequence === "function") {
+          await Game.playCryEndingSequence({
+            root: gameShell,
+            audio: ui.audio,
+            backgroundAudio: ui.backgroundAudio
+          });
+        }
         if (reason === "fake_end" && typeof Game.playFakeEndingSequence === "function") {
           await Game.playFakeEndingSequence({
             root: gameShell,

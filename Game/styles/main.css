@@ -3216,6 +3216,61 @@ body.home-op-active .home-page .auth-user-status {
 }
 
 /* 真结局：加速、记忆、影片与终点站苏醒的专用过场。 */
+.cry-ending {
+  position: absolute;
+  inset: 0;
+  z-index: 190;
+  overflow: hidden;
+  opacity: 0;
+  color: #f7f2ed;
+  background: #000;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 500ms ease;
+}
+.cry-ending.is-visible { opacity: 1; }
+.cry-ending-stage, .cry-ending-image, .cry-ending-video, .cry-ending-white, .cry-ending-black {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cry-ending-stage { overflow: hidden; background: #000; }
+.cry-ending-image, .cry-ending-video {
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 900ms ease, filter 1500ms ease, transform 2200ms ease;
+}
+.cry-ending-image.is-active, .cry-ending-video.is-visible { opacity: 1; }
+.cry-ending-video { z-index: 2; filter: brightness(.72); transform: scale(1.035); }
+.cry-ending-video.is-visible { transform: scale(1); }
+.cry-ending.is-memory-blurred .cry-ending-image.is-active { filter: blur(19px) brightness(.7); transform: scale(1.08); }
+.cry-ending.is-memory-clear .cry-ending-image.is-active { filter: blur(0) brightness(.96); transform: scale(1); }
+.cry-ending.is-accelerating .cry-ending-stage { animation: cry-ending-rattle 110ms steps(2,end) infinite; }
+.cry-ending-white, .cry-ending-black { z-index: 4; pointer-events: none; opacity: 0; transition: opacity 1.4s ease; }
+.cry-ending-white { background: #fff; }
+.cry-ending-black { background: #000; }
+.cry-ending-white.is-visible, .cry-ending-black.is-visible { opacity: 1; }
+.cry-ending-copy {
+  position: absolute;
+  z-index: 5;
+  inset: auto 7% 5%;
+  min-height: 17%;
+  display: grid;
+  align-content: center;
+  padding: 22px 34px;
+  background: linear-gradient(90deg, rgba(5,7,10,.82), rgba(5,7,10,.56));
+  border: 1px solid rgba(255,255,255,.15);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+.cry-ending-copy.is-visible { opacity: 1; transform: translateY(0); }
+.cry-ending-line { margin: 0; font-size: clamp(18px, 2.1vw, 29px); line-height: 1.8; text-shadow: 0 2px 8px #000; }
+.cry-ending-hint { position: absolute; right: 20px; bottom: 10px; font-size: 12px; color: rgba(255,255,255,.65); }
+.cry-ending.is-memory-blurred .cry-ending-copy, .cry-ending.is-memory-clear .cry-ending-copy { background: rgba(0,0,0,.35); }
+@keyframes cry-ending-rattle { 0% { transform: translate(0); } 25% { transform: translate(-2px,1px); } 50% { transform: translate(2px,-1px); } 75% { transform: translate(-1px,-2px); } }
+
 .ending-a-sequence {
   position: absolute;
   inset: 0;
