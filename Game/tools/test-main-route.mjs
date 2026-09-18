@@ -198,7 +198,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_004_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应。",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]],
   ["E_005_WINDOW", [
@@ -208,7 +208,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_005_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]],
   ["E_05_JUNK_LEFT", [
@@ -228,7 +228,7 @@ for (const [eventId, expectedTexts] of [
   ]],
   ["E_006_CENTER_DOOR", [
     "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-    "车门紧闭着，你试着怎么用力都没有反应。",
+    "车门紧闭着，不管你怎么用力它都没有反应。",
     "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
   ]]
 ]) {
@@ -381,7 +381,7 @@ assert.deepEqual(
   { not: { flag: "carriage_06_eaten", equals: true } },
   "6号车厢被啃食后不得再显示或点击通往7号车厢的门"
 );
-assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，好像是6号车厢的方向。");
+assert.equal(actionsOf("E_012")[0].text, "你听到背后传来一阵声响，来自6号车厢的方向。");
 assert.equal(actionsOf("E_012").some((action) => action.type === "check"), false, "隔门时不应检定或看见6号车厢");
 const eatenRevealActions = actionsOf("E_012_S");
 assert.equal(
