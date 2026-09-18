@@ -1201,6 +1201,7 @@ body.home-op-active .home-page .auth-user-status {
   font-size: clamp(15px, 1.4vw, 20px);
 }
 .save-page-panel .save-slot-card p {
+  min-height: 2.4em;
   font-size: clamp(11px, .85vw, 13px);
   line-height: 1.2;
 }
