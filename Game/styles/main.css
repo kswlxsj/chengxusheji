@@ -626,7 +626,7 @@ a { color: inherit; }
   display: grid;
   place-items: center;
   padding: clamp(20px, 5vw, 64px);
-  background: radial-gradient(circle at 70% 15%, #28241d, #0b0d11 58%);
+  background: radial-gradient(circle at 70% 15%, #28241d, #181010 58%);
 }
 
 .page-panel {
