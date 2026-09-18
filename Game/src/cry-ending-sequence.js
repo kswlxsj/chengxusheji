@@ -109,10 +109,10 @@
       await this.show("新鲜空气涌入肺中的感觉前所未有的好。你心有余悸，不敢多停留，冲回家中。", 3600);
       await this.show("你活下来了。", 1800);
       await this.show("你几乎要喜极而泣，发誓要好好生活。", 2600);
-      this.backgroundAudio?.current?.setPlaybackRate?.(0.78);
+      this.backgroundAudio?.current?.setPlaybackRate?.(0.58);
       this.overlay.classList.add("is-home-flash");
       await this.setImage(0, true, ASSETS.homeFlash);
-      await this.delay(260);
+      await this.delay(420);
       await this.setImage(1, true, ASSETS.home);
       this.overlay.classList.remove("is-home-flash");
       this.backgroundAudio?.current?.setPlaybackRate?.(1);
@@ -120,6 +120,7 @@
       await this.show("你不愿多想，也不敢多想。", 2100);
       await this.show("都过去了，都过去了。", 1900);
       await this.show("你安慰着自己。", 1800);
+      await this.setImage(0, true, ASSETS.homeFlash);
       this.audio?.play?.("cry_of_despair_girls", { volume: 1 });
       await this.show("除了耳边依然回荡着的，乘务员撕心裂肺的哭喊。", 4200);
       this.black.classList.add("is-visible");

@@ -670,6 +670,11 @@ assert.ok(
     && cryEndingSource.indexOf('this.overlay.classList.add("is-home-flash")') < cryEndingSource.indexOf('this.audio?.play?.("cry_of_despair_girls"'),
   "回家、短闪与乘务员哭声应按分镜顺序出现"
 );
+assert.match(cryEndingSource, /setPlaybackRate\?\.\(0\.58\)/, "home2 闪现时音乐降调应明显可辨");
+assert.ok(
+  cryEndingSource.lastIndexOf("await this.setImage(0, true, ASSETS.homeFlash)") < cryEndingSource.indexOf('this.audio?.play?.("cry_of_despair_girls"'),
+  "乘务员哭喊响起时应切至 home2 画面"
+);
 assert.deepEqual(actionsOf("E_515"), [
   { type: "custom", name: "endGame", params: { reason: "fake_end" } }
 ]);
