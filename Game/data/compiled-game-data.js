@@ -1667,27 +1667,23 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔——"
         },
         {
           "type": "dialogue",
-          "text": "像有人在很远的地方掰断什么东西。"
+          "text": "像有人在远处掰断什么东西。"
         },
         {
           "type": "dialogue",
-          "text": "仔细辨别，你发现声音是从你的左边————7号车厢传来的。"
-        },
-        {
-          "type": "dialogue",
-          "text": "周围乘客依旧沉睡着，没有人醒来。"
+          "text": "仔细辨别，你发现声音是从你的左边——7号车厢传来的。"
         }
       ]
     },
@@ -1716,7 +1712,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -1748,7 +1744,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -1780,7 +1776,7 @@ window.GAME_DATA = {
           "params": {
             "texts": [
               "你试着拉动车门，但它纹丝不动，似乎已经锈蚀锁死了。",
-              "车门紧闭着，你试着怎么用力都没有反应。",
+              "车门紧闭着，不管你怎么用力它都没有反应。",
               "你抓住门缝试着将它拉开，但车门没有丝毫松动。"
             ]
           }
@@ -2004,6 +2000,10 @@ window.GAME_DATA = {
           "text": "你痛苦地捂住双眼，但是为时已晚。"
         },
         {
+          "type": "dialogue",
+          "text": "脑海中，你仿佛看到了自己也被撕裂成这些碎块的样子。"
+        },
+        {
           "type": "check",
           "dice": "ev006b_san_01",
           "outcomes": [
@@ -2018,7 +2018,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你的胃一阵痉挛，但还是咬紧牙关忍住了呕吐。你贴着门边站好，不让自己再看地面。"
+          "text": "你的胃一阵痉挛，但还是咬紧牙关忍住了呕吐。你死死抓住门框，勉强贴着门边站好，不让自己再看地面。"
         }
       ]
     },
@@ -2066,7 +2066,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "7月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
+          "text": "11月15日，1号末班车发生的重大事故还在调查中.....嘶嘶"
         },
         {
           "type": "dialogue",
@@ -2078,7 +2078,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔————咔————"
+          "text": "咔——咔——"
         }
       ],
       "next": "E_008"
@@ -2104,7 +2104,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔————咔————"
+          "text": "咔——咔——"
         }
       ],
       "next": "E_008"
@@ -2126,7 +2126,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你努力克制本能，试图用所学知识获得更多线索。"
+          "text": "你努力克制转身逃跑的冲动，试图先尽你所能获得更多线索。"
         },
         {
           "type": "setFlag",
@@ -2177,7 +2177,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "通往8号车厢的门不见了，取而代之的是黑暗。"
+          "text": "通往8号车厢的门早已被黑暗淹没。"
         },
         {
           "type": "dialogue",
@@ -2237,27 +2237,27 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "白天的疲惫让你难以集中注意力。"
+          "text": "工作了一整天的疲惫让你难以集中注意力。"
         },
         {
           "type": "dialogue",
-          "text": "再次回过神来的时候，你猛然发现对面的座椅已经空无一人。"
+          "text": "再次回过神来的时候，你猛然发现其他的座椅已经空无一人。"
         },
         {
           "type": "dialogue",
-          "text": "刚才那个男人坐过的位置，椅垫还微微凹陷着。"
+          "text": "你左边一个男人坐过的位置，椅垫还微微凹陷着。"
         },
         {
           "type": "dialogue",
-          "text": "女人的杂志摊在座位上，纸页摸上去竟然是温的。"
+          "text": "右边一本杂志摊在座位上，纸页摸上去还是温的。"
         },
         {
           "type": "dialogue",
-          "text": "你瞥见车窗有什么一闪而过。"
+          "text": "你瞥见对面的车窗有什么一闪而过。"
         },
         {
           "type": "dialogue",
-          "text": "车窗里映出你苍白的脸——还有你身后的乘客们。"
+          "text": "只见车窗上映出你苍白的脸————还有你身后的乘客们。"
         },
         {
           "type": "dialogue",
@@ -2269,7 +2269,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "又是空无一人。"
+          "text": "依旧空无一人。"
         },
         {
           "type": "dialogue",
@@ -2277,7 +2277,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "这一次，连他们也不见了。"
+          "text": "这一次，车窗上只剩下你惊恐的面容，旁边空无一人。"
         },
         {
           "type": "dialogue",
@@ -2291,7 +2291,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "突然，广播再次响起："
+          "text": "突然，广播响起："
         },
         {
           "type": "dialogue",
@@ -2300,6 +2300,34 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "声音戛然而止，只剩下电流的嘶嘶声。"
+        },
+        {
+          "type": "dialogue",
+          "text": "几秒之后再次响起："
+        },
+        {
+          "type": "dialogue",
+          "text": "“下一站——”"
+        },
+        {
+          "type": "dialogue",
+          "text": "还是中断。"
+        },
+        {
+          "type": "dialogue",
+          "text": "你屏息凝神，试图听清广播里断断续续的声音。"
+        },
+        {
+          "type": "dialogue",
+          "text": "只听见第三次广播传来："
+        },
+        {
+          "type": "dialogue",
+          "text": "“终点站，到了————”"
+        },
+        {
+          "type": "dialogue",
+          "text": "你再次朝车窗外看去，电车还在飞速前进。"
         },
         {
           "type": "check",
@@ -2325,7 +2353,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你不敢再看车窗。即使转过身，那排沉睡的倒影仍黏在视野边缘，仿佛只要眨眼就会再次出现。"
+          "text": "你不敢再看车窗。即使转过身，那排沉睡的倒影仍黏在视野边缘，仿佛一眨眼就会再次出现。"
         }
       ]
     },
@@ -2334,7 +2362,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "6号车厢依旧空着。你刻意避开车窗，只看着通往5号车厢的门。"
+          "text": "6号车厢依旧空着。你的视线刻意避开车窗，只注视通往5号车厢的门。"
         }
       ]
     },
@@ -2433,7 +2461,7 @@ window.GAME_DATA = {
           "type": "inspect",
           "item": "note_06_item",
           "title": "便签",
-          "text": "「只管前进吧，已经没有退路了。」背面写着：第三个箱子里有藏着钥匙。",
+          "text": "「PRYH IRUZDUG」，背面写着：第三个箱子里有藏着钥匙。",
           "image": "assets/Image/Item/note.webp",
           "large": true
         }
@@ -2471,15 +2499,15 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "2013年7月15日，你搭乘了本日的1号线末班电车。"
+          "text": "2013年11月15日，你搭乘了本日的1号线末班电车，目的地是终点站。"
         },
         {
           "type": "dialogue",
-          "text": "目的地是终点站，车上的乘客无论是在加班后也好，还是参加了酒会后也好，都各自拖着疲累的身躯在车厢里陷入了深沉的睡眠。"
+          "text": "车上的乘客无论是忙了一天，还是刚参加完应酬，都各自拖着疲累的身躯在车厢里陷入了深沉的睡眠。"
         },
         {
           "type": "dialogue",
-          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里只剩自己和那几名沉睡的乘客。"
+          "text": "由于睡得太熟，直到现在才醒来的你发现车厢里只剩自己和几名沉睡的乘客。"
         },
         {
           "type": "dialogue",
@@ -2522,7 +2550,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "或许只是白天太累了吧。还有几站到站？"
+          "text": "或许只是太累了吧。还有几站到站？"
         }
       ],
       "next": "E_OPENING_RETURN_06"
@@ -2556,7 +2584,7 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "便签",
-          "text": "「只管前进吧，已经没有退路了。」\n这是……什么意思？",
+          "text": "「PRYH IRUZDUG」这是……什么意思？",
           "image": "assets/Image/Ui/label-front.webp",
           "large": true
         },
@@ -2617,7 +2645,7 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "便签正面",
-          "text": "「只管前进吧，已经没有退路了。」这是……什么意思？",
+          "text": "「PRYH IRUZDUG」这是……什么意思？",
           "image": "assets/Image/Ui/label-front.webp",
           "large": true
         }
@@ -2698,7 +2726,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "车门上有一张不知谁贴上去的纸。好像是电车示意图。纸角有怪异的污渍。"
+          "text": "车门上有一张不知谁贴上去的纸。好像是电车车厢示意图。纸角有怪异的污渍。"
         },
         {
           "type": "check",
@@ -2762,7 +2790,7 @@ window.GAME_DATA = {
         {
           "type": "inspect",
           "title": "地图检定失败",
-          "text": "你努力查看，但是 7 号车厢以后的部分被污染，看不清楚。",
+          "text": "你仔细查看，但是 7 号车厢以后的部分被染红，看不清楚。",
           "image": "assets/Image/Ui/map-failure.webp",
           "large": true
         },
@@ -2807,7 +2835,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你观察尸体，组织是有弹性的，血液也没有干透，有些部分还是鲜红色。"
+          "text": "你观察尸体，组织仍有弹性，血液也没有干透，有些部分还是鲜红色。"
         },
         {
           "type": "dialogue",
@@ -2821,7 +2849,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你突然注意到不远处，一台收音机发出嘶嘶的电流声。"
+          "text": "不远处，一台收音机发出嘶嘶的电流声，吸引了你的注意。"
         },
         {
           "type": "setFlag",
@@ -2846,11 +2874,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "它经历了什么？你只感觉脊背发凉。"
+          "text": "死者生前究竟经历了什么？你只感觉脊背发凉。"
         },
         {
           "type": "dialogue",
-          "text": "不远处，你突然注意到一台收音机发出嘶嘶的电流声。"
+          "text": "不远处，一台收音机发出嘶嘶的电流声，吸引了你的注意。"
         },
         {
           "type": "setFlag",
@@ -2881,7 +2909,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔————"
         },
         {
           "type": "dialogue",
@@ -2926,11 +2954,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "咔。"
+          "text": "咔————"
         },
         {
           "type": "dialogue",
-          "text": "你不知道那里是什么，但你真的不应该再靠近了。"
+          "text": "你不知道那里是什么，但你知道真的不应该再靠近了。"
         },
         {
           "type": "setFlag",
@@ -3033,7 +3061,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，身后6号车厢的灯灭了。"
+          "text": "你从座椅下抽出报纸，抖掉沾在纸角的灰。展开它的瞬间，5号车厢的灯突然灭了。"
+        },
+        {
+          "type": "dialogue",
+          "text": "回头望去，6号车厢同样一片黑暗。"
         },
         {
           "type": "conditionalJump",
@@ -3095,7 +3127,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你先检查报头和版次，日期清楚地印着“7月17日”。"
+          "text": "你先检查报头和版次，日期清楚地印着“11月17日”。"
         },
         {
           "type": "sound",
@@ -3158,7 +3190,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "DON'T STOP."
+          "text": "「DON'T STOP.」"
         },
         {
           "type": "dialogue",
@@ -3221,7 +3253,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "给后排的车厢增添了一层令人不安的阴影。"
+          "text": "后排车厢的阴影令人感到不安。"
         },
         {
           "type": "custom",
@@ -3347,7 +3379,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你听到背后传来一阵声响，好像是6号车厢的方向。"
+          "text": "你听到背后传来一阵声响，来自6号车厢的方向。"
         }
       ],
       "next": "E_012_AFTER"
@@ -3450,7 +3482,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "乘务员仍然倒在这里，呼吸急促。你还没有处理她的伤口。"
+          "text": "乘务员仍然倒在这里，没有苏醒。你还没有处理她的伤口。"
         }
       ]
     },
@@ -3606,12 +3638,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "或许这就是逃离这里的钥匙。"
+          "text": "或许她是帮助你逃离这里的关键。"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "您还能说话吗？这里到底发生了什么？"
+          "text": "你还能说话吗？这里到底发生了什么？"
         },
         {
           "type": "dialogue",
@@ -3667,7 +3699,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "那些怪物是什么样的？您还能想起来吗？"
+          "text": "那些怪物具体是什么样的？你还能想起来吗？"
         },
         {
           "type": "dialogue",
@@ -3715,7 +3747,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "钥匙！？在哪里？"
+          "text": "钥匙？！在哪里？"
         },
         {
           "type": "dialogue",
@@ -3725,7 +3757,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "天呐...那大概掉在哪里您记得吗。"
+          "text": "天呐...那大概掉在哪里，你记得吗？"
         },
         {
           "type": "dialogue",
@@ -3763,15 +3795,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你点点头，不着痕迹地摸了摸口袋里那张泛黄的便签——「MOVE FORWARD」。"
+          "text": "你点点头，却控制不住想起报纸上那一行小字「DON'T STOP」。"
         },
         {
           "type": "dialogue",
-          "text": "你心下了然，生命的重量压得你有些喘不过气。"
+          "text": "生命的重量压得你有些喘不过气。"
         },
         {
           "type": "dialogue",
-          "text": "看来不得不去3号车厢找钥匙了。"
+          "text": "接下来得马上去3号车厢找钥匙了。"
         },
         {
           "type": "dialogue",
@@ -3824,7 +3856,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "焦虑席卷了你的心头。"
+          "text": "挥之不去的焦虑袭上你的心头。"
         },
         {
           "type": "setFlag",
@@ -3908,7 +3940,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "焦虑席卷了你的心头。"
+          "text": "挥之不去的焦虑袭上你的心头。"
         },
         {
           "type": "setFlag",
@@ -4031,15 +4063,15 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你背着她走进3号车厢。她忽然说：“......前面就是4号车厢了。”"
+          "text": "你背着她走进3号车厢。她忽然说：“......前面，就是4号车厢了。”"
         },
         {
           "type": "dialogue",
-          "text": "你停下：“这里是3号。”"
+          "text": "你停下：“这里是3号车厢。”"
         },
         {
           "type": "dialogue",
-          "text": "她抬头看了很久门上的编号，低声说：“......对。”"
+          "text": "她抬头看了看门上的编号，良久，低声说：“......对。”"
         },
         {
           "type": "dialogue",
@@ -4143,7 +4175,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "屏幕上赫然显示：2013年7月15日。"
+          "text": "屏幕上赫然显示：2013年11月15日。"
         },
         {
           "type": "conditionalJump",
@@ -4231,11 +4263,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "发送时间：2013/07/17 02:13"
+          "text": "发送时间：2013/11/17 02:13"
         },
         {
           "type": "dialogue",
-          "text": "现在是7月15日。这条短信却来自两天之后？！"
+          "text": "今天是11月15日。手机上却收到了来自两天之后的信息？！"
         },
         {
           "type": "dialogue",
@@ -4332,15 +4364,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "没有变化。"
-        },
-        {
-          "type": "dialogue",
-          "text": "名单里似乎有一个位置，写着某个与你相像的人；而她，也在。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你合上报纸，不知道自己刚才在期待什么。"
+          "text": "你合上报纸，若有所思。"
         }
       ]
     },
@@ -4373,12 +4397,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "报纸中段，关于“一名在3号车厢获救的乘客”的描述消失了。那一栏只剩下空白，仿佛有人用橡皮，把“你”从未来里擦掉了。"
+          "text": "报纸中段，关于“一名在3号车厢获救的乘客”的描述消失了。那一栏只剩下空白。"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "......我记得刚才不是这么写的。"
+          "text": "......我记得，刚才不是这么写的。"
         },
         {
           "type": "dialogue",
@@ -4386,12 +4410,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她还活着。可如果她不跟着你，谁会去救她？"
+          "text": "她还活着。可如果你没有选择带她走，谁会去救她？"
         },
         {
           "type": "dialogue",
           "speaker": "你",
-          "text": "如果我不回去......生还名单里，就再也不会有我了。"
+          "text": "或许如果我不回去......生还名单里，就再也不会有我了。"
         },
         {
           "type": "dialogue",
@@ -4489,7 +4513,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你翻了翻，没有找到有用的东西。"
+          "text": "你翻了翻，没有找到什么看起来有用的东西。"
         }
       ]
     },
@@ -4515,7 +4539,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "工具已经备齐。你可以带着她返回3号车厢。"
+          "text": "已经找到需要的工具。你们可以返回3号车厢了。"
         }
       ]
     },
@@ -4532,7 +4556,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你：“你怎么过去的？”"
+          "text": "你：“你怎么过去了？”"
         },
         {
           "type": "dialogue",
@@ -4544,16 +4568,16 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她顺着你指的方向看了看，又指指自己身下的座位："
+          "text": "她顺着你指的方向看了看，确定道："
         },
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "我一直坐在这儿。"
+          "text": "没有啊，我一直坐在这儿。"
         },
         {
           "type": "dialogue",
-          "text": "你张了张嘴，什么也没问。"
+          "text": "你张了张嘴，最终没再问下去。"
         },
         {
           "type": "dialogue",
@@ -4566,7 +4590,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你从员工柜里找到应急割带器和撬杆。"
+          "text": "员工柜里能找到应急割带器和撬杆。"
         },
         {
           "type": "addItem",
@@ -4601,7 +4625,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她还在那里，但姿势像是被什么人挪动过。你蹲下来探她的鼻息——很弱，比离开时更弱了。"
+          "text": "她还在那里昏迷着，但姿势像是被什么人挪动过。你蹲下来探她的鼻息——很弱，比离开时更弱了。"
         },
         {
           "type": "check",
@@ -4655,11 +4679,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她可以跟着你走，但无法提供完整的对话情报。"
+          "text": "她可以跟着你走，但虚弱得说不了几句完整的话，也无法提供更多信息。"
         },
         {
           "type": "dialogue",
-          "text": "你从员工柜里找到应急割带器和撬杆，并扶起了她。"
+          "text": "员工柜……割带……撬杆。"
         },
         {
           "type": "addItem",
@@ -4771,7 +4795,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "......带子先割，箱子撬开。"
+          "text": "......先割带子，然后撬开箱子。"
         },
         {
           "type": "dialogue",
@@ -4801,11 +4825,11 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把黑包拿到她面前。她伸手进去翻找，却在摸到钥匙时停顿了一下。你注意到她先看了看驾驶室方向，又悄悄收紧了手指。"
+          "text": "你把黑包拿到她面前。她伸手进去翻找，却在摸到钥匙时停顿了一下。你注意到她犹豫的神色，以及悄悄握紧的手。"
         },
         {
           "type": "dialogue",
-          "text": "你回想她先前的说法和操作规程，试着判断她此刻是否真的愿意把列车交给你。"
+          "text": "你回想她先前的说法和操作规程，试着判断她此刻是否真的愿意把钥匙交给你。"
         },
         {
           "type": "check",
@@ -4827,7 +4851,7 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "speaker": "乘务员",
-          "text": "拿着吧……我现在这个样子，确实保管不好。"
+          "text": "拿着吧……我现在的状态，确实保管不好。"
         },
         {
           "type": "addItem",
@@ -4908,7 +4932,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你取出两把钥匙。标签分别写着“驾驶室”和“操作面板”。"
+          "text": "你取出两把钥匙。上面的标签分别写着“驾驶室”和“操作面板”。"
         },
         {
           "type": "addItem",
@@ -4969,7 +4993,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她低头看看手里的，又低头看看自己胸前的。两张工牌叠在一起，严丝合缝。"
+          "text": "她看看手里的，又低头看看自己胸前的。"
         },
         {
           "type": "dialogue",
@@ -4995,7 +5019,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你沉默着，把6号车厢揭下来的那张便签递到她面前。\n\n她看了很久，没有说话。"
+          "text": "你沉默着，把报纸递到她面前。\n\n她看了很久，没有说话。"
         },
         {
           "type": "setFlag",
@@ -5026,7 +5050,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "你把它和记忆里她胸前那张对照：一样的照片，一样的编号。\n\n没有人为你解释。"
+          "text": "你把它和记忆里她胸前那张对照：一样的照片和编号。\n\n但没有人为你解释。"
         },
         {
           "type": "setFlag",
@@ -5039,7 +5063,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "包里还有一张叠得整齐的便签：\n\n一个前进的箭头\n\n你翻出6号车厢的便签。\n\n你握着便签站在原地。\n\n是谁在一切发生之前，就写好了答案？"
+          "text": "包里还有一张叠得整齐的便签：\n\n展开，是一个前进的箭头。\n\n你回想起报纸上的字，「只管前进吧，已经没有退路了。」"
         },
         {
           "type": "setFlag",
@@ -5169,7 +5193,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你低头看了一眼手机。屏幕仍显示：2013年7月15日。"
+          "text": "你低头看了一眼手机。屏幕仍显示：2013年11月15日。"
         }
       ],
       "next": "E_023_LOOP"
@@ -5179,19 +5203,19 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "再抬头时，通往2号车厢的门上方，车厢编号变成了——\n\n3。"
+          "text": "再抬头时，通往2号车厢的门上方，车厢编号变成了——\n\n3号。"
         },
         {
           "type": "dialogue",
-          "text": "你愣了一下，以为自己看错了。你转头看向来路那一侧的车门。\n\n也是3。\n\n前后两边，都是3号车厢。"
+          "text": "你愣了一下，以为自己看错了。你转头看向来路那一侧的车门。\n\n也是3号。\n\n前后两边，都是3号车厢。"
         },
         {
           "type": "dialogue",
-          "text": "你猛地再回头。\n\n来路的方向，已经不再是4号——门消失了，取而代之的是一段被黑暗吞没的车厢。"
+          "text": "来路的方向，连接4号车厢的门消失了，取而代之的，是一段被黑暗吞没的车厢。"
         },
         {
           "type": "dialogue",
-          "text": "广播忽然响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
+          "text": "这时，熟悉的广播声忽然再次响起：\n\n“下一站——”\n\n停顿了很久。\n\n“下一站——”\n\n还是没有站名。"
         },
         {
           "type": "sound",
@@ -5243,7 +5267,7 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "在一片漆黑中，你听到明显的喘息声。\n\n那不是人类的喘息。"
+          "text": "在一片漆黑中，你听到粗重的喘息声。\n\n那不是人类的喘息。"
         },
         {
           "type": "conditionalJump",
@@ -5258,6 +5282,10 @@ window.GAME_DATA = {
     {
       "id": "E_025_CARRIED",
       "actions": [
+        {
+          "type": "dialogue",
+          "text": "乘务员伏在你的耳边，声音颤抖着低语："
+        },
         {
           "type": "dialogue",
           "speaker": "乘务员",
@@ -5329,7 +5357,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "它与你听到的描述完全一致——没有眼睛，却把耳朵转向你的方向，像在听。"
+          "text": "它与你听到的描述完全一致——没有眼睛，却把头部转向你的方向，像在听。"
         },
         {
           "type": "dialogue",
@@ -5410,7 +5438,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你压低身体，挑选没有碎玻璃和尸体的落脚点。接下来几步必须又慢又稳，不能让呼吸乱掉。"
+          "text": "你压低身体，小心翼翼地踩在没有碎玻璃和尸体的落脚点。\n\n接下来几步必须慎之又慎，否则...后果你不敢想象。"
         },
         {
           "type": "check",
@@ -6480,7 +6508,7 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是另一位乘务员留下的。"
+          "text": "你在门边的消防柜夹层里摸到了两把钥匙，也许是其他乘务员留下的。"
         },
         {
           "type": "sound",
