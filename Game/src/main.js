@@ -121,10 +121,10 @@
   ];
   function navigateToEnding(reason) {
     try {
-      flow.navigate("ending", { reason }, true);
+      flow.navigate("endingReveal", { reason }, true);
     } catch (error) {
       console.error("结局页面跳转失败：", error);
-      window.location.replace(flow.url("ending", { reason }));
+      window.location.replace(flow.url("endingReveal", { reason }));
     }
   }
 
@@ -548,7 +548,7 @@
       if (flow.isReloadNavigation() && restoreRefreshCheckpoint(requestedSlot)) {
         if (state.getAttribute("san") <= 0) {
           flow.clearRefreshSnapshot();
-          flow.navigate("ending", { reason: "san" }, true);
+          flow.navigate("endingReveal", { reason: "san" }, true);
           return;
         }
         activateGame();
@@ -570,7 +570,7 @@
         restoreTransfer(requestedSlot);
       }
       if (state.getAttribute("san") <= 0) {
-        flow.navigate("ending", { reason: "san" }, true);
+        flow.navigate("endingReveal", { reason: "san" }, true);
         return;
       }
       activateGame();

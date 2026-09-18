@@ -449,7 +449,7 @@ const state = new TrainGame.GameState(
 | `getUnlockedEndings()` | 返回已解锁终局编号副本。 |
 | `unlockEnding(id)` | 对五类登记终局做幂等解锁；首次成功写入返回 `true`，重复或未知编号返回 `false`。 |
 
-只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡与统一结局达成页均据此显示。终局原因一经确定就立即解锁；游戏页随后完成该结局专属 OP（如有），无论 OP 正常结束还是资源失败，都会跳转 `ending.html?reason=<结局编号>`。结局页使用目录中的代表画面、标题和说明，并提供读取存档及返回主页操作；旧版本已经达成的结局没有可靠记录，不做推测性补发。
+只读 `TrainGame.ENDING_CATALOG` 是五类结局（`true_end`、`fake_end`、`lost`、`bad_end`、`san`）名称、说明与卡面路径的唯一来源：Options 收藏卡与结局达成过渡页均据此显示。终局原因一经确定就立即解锁；游戏页随后完成该结局专属 OP（如有），无论 OP 正常结束还是资源失败，都会跳转 `ending-reveal.html?reason=<结局编号>`。过渡页以 0.6 秒淡入、展示至第 3.4 秒后再以 0.6 秒淡出，随后替换导航至 `ending.html?reason=<结局编号>`；后者保留旧视频结局画面，并提供读取存档及返回主页操作。旧版本已经达成的结局没有可靠记录，不做推测性补发。
 
 ### SaveManager（三槽存档）
 
