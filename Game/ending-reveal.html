@@ -33,7 +33,11 @@
       "--ending-background-image",
       `url("${new URL(ending.image, window.location.href).href}")`
     );
-    requestAnimationFrame(() => reveal.classList.add("is-visible"));
+    // 首个动画帧可能仍发生在页面首次绘制之前；跨两个帧后再改变透明度，
+    // 才能保证浏览器已提交 opacity: 0 的初态并触发 CSS 淡入。
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => reveal.classList.add("is-visible"));
+    });
     window.setTimeout(() => {
       reveal.classList.add("is-leaving");
       window.setTimeout(() => TrainGame.PageFlow.navigate("ending", { reason }, true), 600);
