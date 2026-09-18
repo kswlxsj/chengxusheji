@@ -2527,27 +2527,36 @@ body.home-op-active .home-page .auth-user-status {
 }
 .inspect-media { min-width: 0; }
 .inspect-content img { width: 100%; max-height: 220px; object-fit: contain; }
-.inspect-window.inspect-large { width: min(900px, 92vw); max-height: 90vh; }
+.inspect-window.inspect-large {
+  width: min(900px, 92vw);
+  height: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
 .inspect-window.inspect-large .inspect-content {
   display: flex;
   flex-direction: column;
-  max-height: 72vh;
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
 }
 .inspect-window.inspect-large .inspect-media {
   display: grid;
   place-items: center;
   width: 100%;
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-height: 0;
 }
 .inspect-window.inspect-large .inspect-content img {
-  width: min(72vw, 680px);
-  max-width: 100%;
-  max-height: 58vh;
+  width: auto;
+  height: 100%;
+  max-width: min(72vw, 680px);
+  max-height: 100%;
   object-fit: contain;
   margin: 0 auto;
 }
 .inspect-window.inspect-large .inspect-text {
+  flex: 0 0 auto;
   width: min(680px, 100%);
   margin: 0 auto;
   line-height: 1.75;
