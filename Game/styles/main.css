@@ -3242,6 +3242,7 @@ body.home-op-active .home-page .auth-user-status {
   transition: opacity 900ms ease, filter 1500ms ease, transform 2200ms ease;
 }
 .cry-ending-image.is-active, .cry-ending-video.is-visible { opacity: 1; }
+.cry-ending.is-home-flash .cry-ending-image.is-active { opacity: 1; filter: brightness(1.28); transition-duration: 80ms; }
 .cry-ending-video { z-index: 2; filter: brightness(.72); transform: scale(1.035); }
 .cry-ending-video.is-visible { transform: scale(1); }
 .cry-ending.is-memory-blurred .cry-ending-image.is-active { filter: blur(19px) brightness(.7); transform: scale(1.08); }

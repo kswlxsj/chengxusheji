@@ -64,10 +64,11 @@
       this.overlay.classList.remove("is-loading");
       this.overlay.classList.add("is-visible");
       this.backgroundAudio?.setTrack?.("ending_he", { fadeMs: 2400 });
-      await this.show("你毅然决然向上拉了拉杆。", 1900, "is-accelerating");
       this.audio?.play?.("metro_speed_up", { volume: 0.95 });
+      this.overlay.classList.add("is-accelerating");
       this.white.classList.add("is-visible");
-      await this.delay(1000);
+      await this.show("你毅然决然向上拉了拉杆。", 2200);
+      this.overlay.classList.remove("is-accelerating");
       await this.show("你听到了列车加速的声音，震动着五脏六腑。", 2700);
       await this.show("陡然增加的加速度让你喘不过气，意识恍惚之际，脑海中突然闪过一些模糊的片段。", 3300);
 
@@ -92,24 +93,28 @@
       await this.show("所有的神，鬼，恶心的东西，或者美好的幻象，", 2600);
       await this.show("都去他的吧。", 1900);
       await this.show("不去试一下，怎么知道。", 2400);
+      await this.fadeVideoOut();
       await this.setImage(1, true);
       await this.show("弥留之际，不知为何，你的眼前闪过乘务员痛苦扭曲的样子。", 2900);
       this.black.classList.add("is-visible");
       await this.delay(1000);
       this.video.pause();
-      await this.setImage(0, false, ASSETS.wake);
+      await this.setImage(0, true, ASSETS.wake);
       this.backgroundAudio?.setTrack?.("ending_he2", { fadeMs: 2800 });
       this.black.classList.remove("is-visible");
       await this.show("你猛地惊醒。这是哪？", 2300);
       await this.show("无人回应你，列车空空荡荡。", 2200);
       await this.show("你来不及多想，连滚带爬出了车厢。", 2400);
+      await this.setImage(1, false, ASSETS.home);
       await this.show("新鲜空气涌入肺中的感觉前所未有的好。你心有余悸，不敢多停留，冲回家中。", 3600);
       await this.show("你活下来了。", 1800);
       await this.show("你几乎要喜极而泣，发誓要好好生活。", 2600);
       this.backgroundAudio?.current?.setPlaybackRate?.(0.78);
-      await this.setImage(1, true, ASSETS.homeFlash);
-      await this.delay(220);
-      await this.setImage(0, true, ASSETS.home);
+      this.overlay.classList.add("is-home-flash");
+      await this.setImage(0, true, ASSETS.homeFlash);
+      await this.delay(260);
+      await this.setImage(1, true, ASSETS.home);
+      this.overlay.classList.remove("is-home-flash");
       this.backgroundAudio?.current?.setPlaybackRate?.(1);
       await this.show("刚刚那是什么？", 1500);
       await this.show("你不愿多想，也不敢多想。", 2100);
@@ -153,6 +158,12 @@
       }
       this.video.classList.add("is-visible");
       await this.delay(900);
+    }
+
+    async fadeVideoOut() {
+      this.video.classList.remove("is-visible");
+      await this.delay(900);
+      this.video.pause();
     }
 
     show(text, duration, stageClass = "") {

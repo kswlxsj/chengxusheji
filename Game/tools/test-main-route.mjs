@@ -25,6 +25,7 @@ const [mainSource, diceSource, bgmSource, homeOpSource, settingsSource, cardBatt
   read("src/minigame-games/card-battle.js"),
   read("src/minigame-games/crew-negotiation.js")
 ]);
+const cryEndingSource = await read("src/cry-ending-sequence.js");
 const sandbox = { window: {}, console, performance, setTimeout, clearTimeout, Math: Object.create(Math) };
 vm.createContext(sandbox);
 for (const name of ["namespace", "state", "scene", "events", "custom-actions"]) {
@@ -654,6 +655,21 @@ assert.deepEqual(actionsOf("E_034")[1], { type: "conditionalJump", when: { flag:
 assert.deepEqual(actionsOf("E_034")[2], { type: "conditionalJump", when: { flag: "crew_04_medical_failed", equals: true }, next: "E_034_CRY_END" });
 assert.deepEqual(actionsOf("E_034")[3], { type: "custom", name: "endGame", params: { reason: "true_end" } });
 assert.deepEqual(actionsOf("E_034_CRY_END"), [{ type: "custom", name: "endGame", params: { reason: "cry_end" } }]);
+assert.match(cryEndingSource, /wake: "assets\/Image\/Scene\/Background\/carriage-03\.webp"/);
+assert.ok(
+  cryEndingSource.indexOf('this.audio?.play?.("metro_speed_up"') < cryEndingSource.indexOf('this.show("你毅然决然向上拉了拉杆。"'),
+  "加速音应和拉杆动作同步开始"
+);
+assert.ok(
+  cryEndingSource.indexOf("await this.playVideo()") < cryEndingSource.indexOf('await this.fadeVideoOut()')
+    && cryEndingSource.indexOf('await this.fadeVideoOut()') < cryEndingSource.indexOf('await this.setImage(1, true)'),
+  "真结局视频应在乘务员闪回画面前淡出"
+);
+assert.ok(
+  cryEndingSource.indexOf("await this.setImage(1, false, ASSETS.home)") < cryEndingSource.indexOf('this.overlay.classList.add("is-home-flash")')
+    && cryEndingSource.indexOf('this.overlay.classList.add("is-home-flash")') < cryEndingSource.indexOf('this.audio?.play?.("cry_of_despair_girls"'),
+  "回家、短闪与乘务员哭声应按分镜顺序出现"
+);
 assert.deepEqual(actionsOf("E_515"), [
   { type: "custom", name: "endGame", params: { reason: "fake_end" } }
 ]);
