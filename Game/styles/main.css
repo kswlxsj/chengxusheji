@@ -768,8 +768,8 @@ a { color: inherit; }
   pointer-events: auto;
 }
 
-.ending-page .ending-actions a:first-child { top: 80%; }
-.ending-page .ending-actions a:last-child { top: 87.6%; }
+.ending-page .ending-actions a:first-child { top: 78.5%; }
+.ending-page .ending-actions a:last-child { top: 86.1%; }
 
 .ending-page .ending-actions a:focus-visible {
   outline: 2px solid rgba(255, 244, 213, .9);
