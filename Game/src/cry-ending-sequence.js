@@ -5,6 +5,7 @@
     memory: "assets/Image/Scene/Background/op-01.webp",
     trueEndVideo: "assets/video/trueend.mp4",
     crewDead: "assets/Image/Scene/Background/chengwuyuan-dead.png",
+    wake: "assets/Image/Scene/Background/carriage-03.webp",
     home: "assets/Image/Scene/Background/home1.png",
     homeFlash: "assets/Image/Scene/Background/home2.png"
   };
@@ -96,7 +97,7 @@
       this.black.classList.add("is-visible");
       await this.delay(1000);
       this.video.pause();
-      await this.setImage(0, false, ASSETS.home);
+      await this.setImage(0, false, ASSETS.wake);
       this.backgroundAudio?.setTrack?.("ending_he2", { fadeMs: 2800 });
       this.black.classList.remove("is-visible");
       await this.show("你猛地惊醒。这是哪？", 2300);
@@ -121,7 +122,7 @@
     }
 
     async preload() {
-      await Promise.all([ASSETS.memory, ASSETS.crewDead, ASSETS.home, ASSETS.homeFlash].map((src) => new Promise((resolve) => {
+      await Promise.all([ASSETS.memory, ASSETS.crewDead, ASSETS.wake, ASSETS.home, ASSETS.homeFlash].map((src) => new Promise((resolve) => {
         const image = new Image();
         image.onload = resolve;
         image.onerror = resolve;
