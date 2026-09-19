@@ -11,6 +11,7 @@
   const DEFENSE_BLOCK = 2;
   const COUNTER_CHANCE = 0.25;
   const COUNTER_DAMAGE = 1;
+  const ENEMY_PLAY_DISPLAY_MS = 1500;
   const cardNames = { attack: "攻击", heal: "回血", defend: "防御", ultimate: "必杀" };
   const cardDetails = {
     attack: "单出造成 2 点伤害",
@@ -32,7 +33,7 @@
   ];
 
   const styleText = `
-    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.webp"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: Georgia, "Microsoft YaHei", serif; }
+    .card-battle { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-height: 0; padding: clamp(10px, 1.3vw, 16px); display: flex; flex-direction: column; gap: 6px; overflow: auto; color: #f6ead5; background-color: #17100d; background-image: linear-gradient(rgba(8, 7, 8, .56), rgba(8, 7, 8, .68)), url("assets/Image/Scene/Background/card-battle.webp"); background-position: center; background-repeat: no-repeat; background-size: cover; font-family: "Ark Pixel 12px", "Microsoft YaHei", sans-serif; font-synthesis: none; }
     .card-battle.is-responsive { padding: 10px; }
     .card-battle::-webkit-scrollbar { width: 0; height: 0; }
     .card-battle * { box-sizing: border-box; }
@@ -62,7 +63,8 @@
     .cb-vs { color: #efb45f; font-size: 22px; letter-spacing: .12em; }
     .cb-intent { width: 100%; flex: 0 0 auto; margin-top: auto; padding: 5px 8px; border: 1px solid rgba(85, 208, 212, .5); color: #bceff0; background: rgba(22, 63, 66, .42); cursor: pointer; font-size: 10px; }
     .cb-intent:disabled { cursor: not-allowed; opacity: .65; }
-    .cb-last-play { display: none; }
+    .cb-last-play { display: block; margin-top: 8px; padding: 7px 8px; border: 1px solid rgba(239, 180, 95, .3); background: rgba(53, 37, 26, .52); }
+    .cb-last-play[hidden] { display: none; }
     .cb-last-play strong, .cb-last-play span { display: block; }
     .cb-last-kicker { color: #9d8e78; font-size: 10px; }
     .cb-last-detail { margin-top: 2px; color: #bba98f; }
@@ -577,7 +579,7 @@
         state.busy = false;
         say([state.round % 2 === 1 ? "双方恢复 1 点体力。" : "本回合不恢复体力。"]);
         render();
-      }, 420);
+      }, ENEMY_PLAY_DISPLAY_MS);
     }
 
     function selectCard(cardId) {
