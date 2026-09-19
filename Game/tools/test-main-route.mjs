@@ -257,6 +257,8 @@ assert.match(mainSource, /getClickerItemEvent/, "背包应有 Clicker 场景下�
 assert.match(mainSource, /E_028_THROW_FIRST/, "玻璃瓶在 Clicker 场景下应直通投掷事件");
 assert.match(mainSource, /E_028_THROW_CAN_FIRST/, "空易拉罐在 Clicker 场景下应直通投掷事件");
 assert.match(mainSource, /E_ITEM_DRINK_CLICKER_INSPECT/, "Clicker 面前使用饮料应进入专属确认流程");
+assert.match(mainSource, /getUnlitCarriage02ItemEvent/, "未照明的2号车厢应优先处理饮料使用");
+assert.match(mainSource, /E_ITEM_DRINK_DARK_INSPECT/, "未照明的2号车厢饮用饮料应进入专属剧情");
 assert.doesNotMatch(mainSource, /点击投掷并直接通过/, "物品栏不得明示隐藏的投瓶捷径");
 assert.match(crewNegotiationSource, /return 15 \* correctCount;/, "交涉小游戏每个正确回应应提供15%加成");
 assert.match(mainSource, /maybeTriggerClickerReveal/, "进入2号并照明后应自动播放 Clicker 发现对白");
@@ -749,6 +751,14 @@ assert.equal(drinkUseGame.state.inventory.includes("drink"), false, "饮用后�
 assert.equal(drinkUseGame.state.getAttribute("san"), 3, "饮用后应回复 SAN +2");
 assert.equal(actionsOf("E_ITEM_DRINK_CLICKER_USE").at(-1).amount, 2, "Clicker 面前饮用同样应回复 SAN +2");
 assert.equal(eventById.get("E_ITEM_DRINK_CLICKER_USE").next, "E_029_CARD_HARD", "Clicker 面前饮用后应直接进入困难战斗");
+const darkDrinkUseActions = actionsOf("E_ITEM_DRINK_DARK_USE");
+assert.equal(eventById.get("E_ITEM_DRINK_DARK_INSPECT").next, "E_ITEM_DRINK_DARK_CONFIRM", "未照明饮用应先保留物品调查与确认");
+assert.equal(darkDrinkUseActions.some((action) => action.type === "sound" && action.sound === "drinking"), true, "未照明饮用应以开罐声惊动怪物");
+assert.equal(darkDrinkUseActions.some((action) => action.type === "sound" && action.sound === "can_striking"), true, "未照明饮用应播放攻击撞击声");
+assert.deepEqual(darkDrinkUseActions.at(-1), { type: "modifyAttribute", attribute: "san", amount: -9999 }, "未照明饮用应使 SAN 归零并进入患者结局");
+const darkDrinkGame = fixture({ sceneId: "carriage_02", inventory: ["drink"] });
+await darkDrinkGame.play("E_ITEM_DRINK_DARK_USE");
+assert.equal(darkDrinkGame.state.getAttribute("san"), 0, "未照明饮用后 SAN 应归零");
 assert.equal(actionsOf("E_028_THROW_CAN_FIRST").find((action) => action.type === "check")?.dice, "ev028_throw_01", "空易拉罐应复用玻璃瓶投掷检定");
 assert.equal(actionsOf("E_028_THROW_CAN_SUCCESS").some((action) => action.type === "sound" && action.sound === "breaking_glass"), true, "空易拉罐投掷应暂时复用玻璃瓶音效");
 let rewardGame = fixture({ sceneId: "carriage_05", flags: allCarriage05Inspected });

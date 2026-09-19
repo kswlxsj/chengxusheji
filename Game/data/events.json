@@ -4040,6 +4040,65 @@
     "next": "E_029_CARD_HARD"
   },
   {
+    "id": "E_ITEM_DRINK_DARK_INSPECT",
+    "actions": [
+      {
+        "type": "inspect",
+        "item": "drink"
+      }
+    ],
+    "next": "E_ITEM_DRINK_DARK_CONFIRM"
+  },
+  {
+    "id": "E_ITEM_DRINK_DARK_CONFIRM",
+    "actions": [
+      {
+        "type": "choice",
+        "prompt": "四周一片漆黑。要饮用这罐饮料吗？",
+        "options": [
+          {
+            "label": "饮用",
+            "next": "E_ITEM_DRINK_DARK_USE"
+          },
+          {
+            "label": "暂时保留",
+            "next": "E_ITEM_DRINK_KEEP"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "E_ITEM_DRINK_DARK_USE",
+    "actions": [
+      {
+        "type": "sound",
+        "sound": "drinking"
+      },
+      {
+        "type": "dialogue",
+        "text": "拉环弹开的清脆声在死寂的车厢里炸开。黑暗深处的喘息声骤然停了。"
+      },
+      {
+        "type": "dialogue",
+        "text": "有什么东西被惊动了。你慌忙去摸手机和手电筒，却在混乱中什么也抓不住。"
+      },
+      {
+        "type": "sound",
+        "sound": "can_striking"
+      },
+      {
+        "type": "dialogue",
+        "text": "尖锐的撞击声贴着耳边响起。下一秒，冰冷的利爪从黑暗中扑来。"
+      },
+      {
+        "type": "modifyAttribute",
+        "attribute": "san",
+        "amount": -9999
+      }
+    ]
+  },
+  {
     "id": "E_028_THROW_CAN_SUCCESS",
     "actions": [
       {

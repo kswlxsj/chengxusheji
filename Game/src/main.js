@@ -155,6 +155,11 @@
     return null;
   }
 
+  function getUnlitCarriage02ItemEvent(item) {
+    if (state.sceneId !== "carriage_02" || state.flags.light_used === true) return null;
+    return item?.id === "drink" ? "E_ITEM_DRINK_DARK_INSPECT" : null;
+  }
+
   function maybeTriggerClickerReveal() {
     if (
       startupLocked
@@ -171,7 +176,7 @@
 
   function inspectInventoryItem(item) {
     if (!item || startupLocked || paused || engine.busy) return;
-    const eventId = getClickerItemEvent(item) || item.inspectEvent;
+    const eventId = getUnlitCarriage02ItemEvent(item) || getClickerItemEvent(item) || item.inspectEvent;
     void engine.play(eventId);
   }
 
