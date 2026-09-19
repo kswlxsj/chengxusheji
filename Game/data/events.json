@@ -1896,6 +1896,10 @@
         "value": false
       },
       {
+        "type": "custom",
+        "name": "startInnerWorldLaugh"
+      },
+      {
         "type": "dialogue",
         "speaker": "乘务员",
         "text": "啊……呃……天哪……"
@@ -5934,6 +5938,10 @@
         "speaker": "乘务员",
         "portrait": "assets/Image/Portrait/conductor-crazy.webp",
         "text": "这就是你的选择吗，亲爱的？"
+      },
+      {
+        "type": "custom",
+        "name": "startInnerWorldLaugh"
       },
       {
         "type": "dialogue",

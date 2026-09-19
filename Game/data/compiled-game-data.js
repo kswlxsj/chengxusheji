@@ -3581,6 +3581,10 @@ window.GAME_DATA = {
           "value": false
         },
         {
+          "type": "custom",
+          "name": "startInnerWorldLaugh"
+        },
+        {
           "type": "dialogue",
           "speaker": "乘务员",
           "text": "啊……呃……天哪……"
@@ -7920,6 +7924,10 @@ window.GAME_DATA = {
           "text": "这就是你的选择吗，亲爱的？"
         },
         {
+          "type": "custom",
+          "name": "startInnerWorldLaugh"
+        },
+        {
           "type": "dialogue",
           "speaker": "乘务员",
           "portrait": "assets/Image/Portrait/conductor-crazy.webp",
@@ -8954,6 +8962,13 @@ window.GAME_DATA = {
       "file": "assets/Audio/SoundEffect/fake.mp3",
       "volume": 0.7,
       "description": "停留在伪4号车厢或花海场景时连续循环播放，跨场景不重置进度。"
+    },
+    {
+      "id": "woman_laughing",
+      "name": "乘务员讥笑",
+      "file": "assets/Audio/SoundEffect/woman-laughing.mp3",
+      "volume": 0.8,
+      "description": "里世界拒绝交出钥匙后循环播放；进入花海车厢时让位给花海场景音乐。"
     },
     {
       "id": "ghost_calling",

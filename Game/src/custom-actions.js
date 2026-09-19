@@ -21,6 +21,12 @@
       await context.engine.loadScene(context.state.sceneId);
     });
 
+    // 拒绝交钥匙后，笑声作为里世界的连续背景音接管当前音乐；具体是否播放
+    // 由 main.js 按场景决定，进入花海车厢时会自动让位给花海音乐。
+    engine.registerCustomAction("startInnerWorldLaugh", async (_params, context) => {
+      context.state.flags.inner_world_laughing = true;
+    });
+
     // 普通环境调查只显示一条随机文案，不改变任何剧情状态或事件分支。
     engine.registerCustomAction("randomDialogue", async (params, context) => {
       const texts = Array.isArray(params.texts)
