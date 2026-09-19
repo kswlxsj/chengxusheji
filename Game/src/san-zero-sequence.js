@@ -146,7 +146,6 @@
           background: "closeup"
         },
         {
-          speaker: "PC",
           text: "别过来！别过来……啊！",
           background: "closeup",
           portrait: "pcScared",
@@ -164,7 +163,6 @@
 
       await this.showScream();
       await this.showLine({
-        speaker: "PC",
         text: "放过我吧！谁来救救我！",
         background: "closeup",
         portrait: "pcScared",
@@ -180,7 +178,6 @@
         background: "closeupSmile"
       });
       await this.showLine({
-        speaker: "PC",
         text: "……找到了。",
         background: "closeupSmile",
         portrait: "pcCrazy",
