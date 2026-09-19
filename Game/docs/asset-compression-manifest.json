@@ -895,9 +895,9 @@
     "sourcePath": "assets/Image/Ui/ConductorTug/track.png",
     "sourceFormat": "png",
     "runtimeFormat": "webp",
-    "sourceBytes": 1081787,
-    "runtimeBytes": 488492,
-    "runtimeSha256": "EB77ECF4B017281398287885B8A11C25AD71FB98B8B29993EF6147ACCF921A54"
+    "sourceBytes": 589469,
+    "runtimeBytes": 392080,
+    "runtimeSha256": "7B5F51AE171A7D6AE50FF4BC6C63964E98A5F1A1035D7A83BEC704DA8A4AD8CA"
   },
   {
     "runtimePath": "assets/Image/Ui/dialog-box.webp",

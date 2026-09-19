@@ -2318,6 +2318,22 @@ body.home-op-active .home-page .auth-user-status {
   font-size: clamp(10px, .95vw, 13px);
 }
 
+/* 结算提示不能跟随窄轨道列收缩，否则长句会换行并被挤出可视区域。 */
+.mg-tug-caption {
+  width: max(100%, 170px);
+  min-height: 42px;
+  margin-inline: auto;
+  line-height: 1.35;
+  overflow: visible;
+}
+
+.mg-tug-caption strong {
+  white-space: nowrap;
+  line-height: 1.35;
+}
+
+.mg-tug-caption span { line-height: 1.35; }
+
 .mg-tug-status,
 .mg-tug-control {
   margin: 0;
