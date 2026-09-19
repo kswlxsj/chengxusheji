@@ -49,6 +49,7 @@
       this.root = options.root || document.querySelector("#game-shell") || document.body;
       this.audio = options.audio || null;
       this.backgroundAudio = options.backgroundAudio || null;
+      this.preserveBackgroundAudio = options.preserveBackgroundAudio === true;
       this.assets = { ...DEFAULT_ASSETS, ...(options.assets || {}) };
       this.timers = new Set();
       this.resolveAdvance = null;
@@ -350,8 +351,12 @@
       this.speedVoice?.stop?.();
       this.speedVoice = null;
       this.video.pause();
-      this.stopEndingMusic(1400);
-      this.stopAudio();
+      if (this.preserveBackgroundAudio) {
+        this.audio?.stopAll?.();
+      } else {
+        this.stopEndingMusic(1400);
+        this.stopAudio();
+      }
       this.overlay.remove();
       this.running = null;
     }

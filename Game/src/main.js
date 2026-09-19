@@ -45,7 +45,8 @@
           await Game.playEndingASequence({
             root: gameShell,
             audio: ui.audio,
-            backgroundAudio: ui.backgroundAudio
+            backgroundAudio: ui.backgroundAudio,
+            preserveBackgroundAudio: true
           });
           if (typeof Game.playThanksEndingSequence === "function") {
             await Game.playThanksEndingSequence({ root: gameShell });
@@ -223,7 +224,7 @@
     const definition = sceneDefinitions.get(state.sceneId);
     const variant = (definition?.backgroundSoundVariants || [])
       .find((entry) => Game.evaluateCondition(entry.visibleWhen, state));
-    const innerWorldLaughing = state.flags.inner_world_laughing === true
+    const innerWorldLaughing = state.flags.ev519_laugh_started === true
       && innerWorld
       && !INNER_WORLD_FLOWER_SEA_SCENES.has(state.sceneId);
     const track = sceneAudioEnabled

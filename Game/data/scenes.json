@@ -900,10 +900,20 @@
         "clickEvent": "E_017",
         "glow": true,
         "visibleWhen": {
-          "not": {
-            "flag": "carriage_03_bag_exposed",
-            "equals": true
-          }
+          "all": [
+            {
+              "not": {
+                "flag": "carriage_03_bag_exposed",
+                "equals": true
+              }
+            },
+            {
+              "not": {
+                "flag": "carriage_03_phone_collected",
+                "equals": true
+              }
+            }
+          ]
         }
       },
       {

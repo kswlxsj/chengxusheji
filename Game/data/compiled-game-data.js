@@ -932,10 +932,20 @@ window.GAME_DATA = {
           "clickEvent": "E_017",
           "glow": true,
           "visibleWhen": {
-            "not": {
-              "flag": "carriage_03_bag_exposed",
-              "equals": true
-            }
+            "all": [
+              {
+                "not": {
+                  "flag": "carriage_03_bag_exposed",
+                  "equals": true
+                }
+              },
+              {
+                "not": {
+                  "flag": "carriage_03_phone_collected",
+                  "equals": true
+                }
+              }
+            ]
           }
         },
         {
@@ -3581,10 +3591,6 @@ window.GAME_DATA = {
           "value": false
         },
         {
-          "type": "custom",
-          "name": "startInnerWorldLaugh"
-        },
-        {
           "type": "dialogue",
           "speaker": "乘务员",
           "text": "啊……呃……天哪……"
@@ -4068,11 +4074,17 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "她在你背上轻声说：“...前门，就在前面。”"
+          "speaker": "乘务员",
+          "text": "...前门，就在前面。"
         },
         {
           "type": "dialogue",
-          "text": "你背着她走进3号车厢。她忽然说：“......前面，就是4号车厢了。”"
+          "text": "你背着她走进3号车厢。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......前面，就是4号车厢了。"
         },
         {
           "type": "dialogue",
@@ -4080,7 +4092,12 @@ window.GAME_DATA = {
         },
         {
           "type": "dialogue",
-          "text": "她抬头看了看门上的编号，良久，低声说：“......对。”"
+          "text": "她抬头看了看门上的编号，良久，沉默下来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "乘务员",
+          "text": "......对。"
         },
         {
           "type": "dialogue",
@@ -4128,7 +4145,8 @@ window.GAME_DATA = {
       "actions": [
         {
           "type": "dialogue",
-          "text": "她低声说：“......得先清开这些行李。靠手是扯不断的。”"
+          "speaker": "乘务员",
+          "text": "......得先清开这些行李。靠手是扯不断的。"
         }
       ],
       "next": "E_018_SEARCH_PHONE"
