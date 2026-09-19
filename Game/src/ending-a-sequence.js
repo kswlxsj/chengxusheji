@@ -166,8 +166,11 @@
       await this.showLine({ text: "新鲜空气涌入肺中的感觉前所未有的好。", auto: 3300 });
 
       await this.setBackground("welcome");
-      await this.showLine({ text: "你活下来了，明天依旧是无聊的一天。", auto: 3600 });
-      await this.showLine({ text: "崭新的一天。", auto: 3600, stageClass: "is-final" });
+      await this.showLine({ text: "你活下来了。", auto: 2200 });
+      await this.showLine({ text: "生活或许依旧没有什么改变，一样的无聊，重复，", auto: 3600 });
+      await this.showLine({ text: "但你不讨厌。", auto: 2200 });
+      await this.showLine({ text: "也许有什么东西悄悄地发生了变化，", auto: 3200 });
+      await this.showLine({ text: "不管怎样，明天是崭新的一天。", auto: 3800, stageClass: "is-final" });
       await this.fadeToBlack(1100);
     }
 

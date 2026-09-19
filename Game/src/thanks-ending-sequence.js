@@ -76,8 +76,9 @@
 
     async run() {
       this.root.append(this.overlay);
-      await Promise.all([waitForImage(this.background), waitForVideo(this.video)]);
+      // 先用感谢页自身的黑底盖住旧场景，避免真结局切换期间闪出头车画面。
       this.overlay.classList.add("is-visible");
+      await Promise.all([waitForImage(this.background), waitForVideo(this.video)]);
       await this.waitForCredits();
       await this.playVideo();
     }
