@@ -3467,6 +3467,89 @@ body.home-op-active .home-page .auth-user-status {
   to { transform: scale(1.045); }
 }
 
+/* 真结局结束后的制作人员致谢：背景、滚动字幕与感谢视频。 */
+.thanks-ending-sequence {
+  position: absolute;
+  inset: 0;
+  z-index: 220;
+  overflow: hidden;
+  opacity: 0;
+  color: #f7f2e8;
+  background: #000;
+  transition: opacity 900ms ease;
+}
+
+.thanks-ending-sequence.is-visible { opacity: 1; }
+
+.thanks-ending-background,
+.thanks-ending-scrim,
+.thanks-ending-credits,
+.thanks-ending-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.thanks-ending-background {
+  z-index: 0;
+  object-fit: cover;
+  filter: brightness(.62);
+}
+
+.thanks-ending-scrim {
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .52), rgba(0, 0, 0, .18) 45%, rgba(0, 0, 0, .68));
+}
+
+.thanks-ending-credits {
+  z-index: 2;
+  inset: 0 0 auto;
+  height: auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(34px, 6vh, 72px);
+  padding: 100vh 7vw 100vh;
+  text-align: center;
+  transform: translateY(0);
+}
+
+.thanks-ending-credits.is-scrolling {
+  animation: thanks-ending-credits-scroll 17s linear forwards;
+}
+
+.thanks-ending-line {
+  max-width: min(86vw, 1100px);
+  margin: 0;
+  font-size: clamp(20px, 2.45vw, 36px);
+  line-height: 1.7;
+  letter-spacing: .12em;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, .92);
+}
+
+.thanks-ending-video {
+  z-index: 3;
+  object-fit: contain;
+  background: #000;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.thanks-ending-video.is-visible { opacity: 1; }
+
+@keyframes thanks-ending-credits-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(-100% + 100vh)); }
+}
+
+@media (max-width: 600px) {
+  .thanks-ending-credits { gap: 30px; padding-inline: 5vw; }
+  .thanks-ending-line { font-size: clamp(17px, 4.7vw, 25px); letter-spacing: .06em; }
+}
+
 /* 停车结局：减速、熄灯、吞噬与惊醒的专用过场。 */
 .parking-ending-sequence {
   position: absolute;

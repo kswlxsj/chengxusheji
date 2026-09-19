@@ -47,6 +47,9 @@
             audio: ui.audio,
             backgroundAudio: ui.backgroundAudio
           });
+          if (typeof Game.playThanksEndingSequence === "function") {
+            await Game.playThanksEndingSequence({ root: gameShell });
+          }
         }
         if (reason === "cry_end" && typeof Game.playCryEndingSequence === "function") {
           await Game.playCryEndingSequence({
