@@ -3,8 +3,12 @@
 
   const ASSETS = {
     background: "assets/Image/Scene/Background/thanks.jpg",
-    video: "assets/video/thanks.mp4"
+    videos: [
+      { src: "assets/Video/thanks-h264.mp4", type: 'video/mp4; codecs="avc1.640028"' },
+      { src: "assets/Video/thanks.mp4", type: 'video/mp4; codecs="hvc1"' }
+    ]
   };
+  const VIDEO_LOAD_TIMEOUT_MS = 12000;
   const THANKS_LINES = [
     "感谢终末列车组的所有成员",
     "是大家无私的精诚合作造就了《常暗之厢》这一奇迹",
@@ -36,11 +40,16 @@
   function waitForVideo(video) {
     if (video.readyState >= 2) return Promise.resolve();
     return new Promise((resolve) => {
+      let settled = false;
       const finish = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
         video.removeEventListener("loadeddata", finish);
         video.removeEventListener("error", finish);
         resolve();
       };
+      const timeout = setTimeout(finish, VIDEO_LOAD_TIMEOUT_MS);
       video.addEventListener("loadeddata", finish, { once: true });
       video.addEventListener("error", finish, { once: true });
     });
@@ -61,7 +70,12 @@
       this.credits = createElement("div", "thanks-ending-credits");
       THANKS_LINES.forEach((line) => this.credits.append(createElement("p", "thanks-ending-line", line)));
       this.video = createElement("video", "thanks-ending-video");
-      this.video.src = ASSETS.video;
+      ASSETS.videos.forEach(({ src, type }) => {
+        const source = createElement("source", "");
+        source.src = src;
+        source.type = type;
+        this.video.append(source);
+      });
       this.video.preload = "auto";
       this.video.playsInline = true;
       this.video.setAttribute("aria-label", "感谢视频");

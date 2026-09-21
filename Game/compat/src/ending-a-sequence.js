@@ -20,7 +20,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   var DEFAULT_ASSETS = {
     frontCarriage: "assets/Image/Scene/Background/front-carriage.ie.jpg",
     memory: "assets/Image/Scene/Background/op-01.ie.jpg",
-    trueEndVideo: "assets/video/trueend.mp4",
+    trueEndVideo: "assets/Video/trueend.mp4",
     terminalPlatform: "assets/Image/Scene/Background/true-end-platform.ie.jpg",
     welcome: "assets/Image/Scene/Background/welcome.ie.jpg",
     conductorSmile: "assets/Image/Portrait/conductor.ie.png",

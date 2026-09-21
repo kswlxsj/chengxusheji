@@ -3,7 +3,7 @@
 
   const ASSETS = {
     memory: "assets/Image/Scene/Background/op-01.webp",
-    trueEndVideo: "assets/video/trueend.mp4",
+    trueEndVideo: "assets/Video/trueend.mp4",
     crewDead: "assets/Image/Scene/Background/chengwuyuan-dead.png",
     wake: "assets/Image/Scene/Background/carriage-03.webp",
     home: "assets/Image/Scene/Background/home1.png",

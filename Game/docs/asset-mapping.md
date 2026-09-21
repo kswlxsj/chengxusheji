@@ -191,9 +191,12 @@
 | — | `Game/assets/save-silhouettes/save-silhouette-flower-sea.png` | `Assets/Image/Ui/Save/save-silhouette-flower-sea.png`<br>`Game/assets/Image/Ui/Save/save-silhouette-flower-sea.png` | `77a42a5f6af207bd139a67d1e5659e7eaecd70d1ea9e606c049a7ff93a386036` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
 | — | `Game/assets/save-silhouettes/save-silhouette-front-carriage.png` | `Assets/Image/Ui/Save/save-silhouette-front-carriage.png`<br>`Game/assets/Image/Ui/Save/save-silhouette-front-carriage.png` | `2f6e3cb67274379c0308e1cbc6a0f6cefbb3561089c305e75e300026be970cb6` | Game 补入 Assets | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/状态条.png` | `Game/assets/ui/hp-bar.png` | `Assets/Image/Ui/status-bar.png`<br>`Game/assets/Image/Ui/status-bar.png` | `aa44b49f11cf52c3e473df451dceb3374976ea2f8a3456649a0fdca9788fc8af` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| `Assets/Image/UI/end.mp4` | `Game/assets/video/end.mp4` | `Assets/Video/end.mp4`<br>`Game/assets/Video/end.mp4` | `9044f1e6a6c098905712587653684e5e0c879ca79050257e6da0401cfce8a6c3` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| `Assets/Image/UI/start.mp4` | `Game/assets/video/start.mp4` | `Assets/Video/start.mp4`<br>`Game/assets/Video/start.mp4` | `af0a8dcd476dcadeae3c7ed862a3e7349c3a529c54f751b586914ea515de8124` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| `Assets/Image/Scene/Background/吞噬.mp4` | `Game/assets/swallowed.mp4` | `Assets/Video/swallowed.mp4`<br>`Game/assets/Video/swallowed.mp4` | `709f5a9ac66c0d66629c6b811f997a4bfd7170552fecc5e296e2290acf6c6327` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
+| `Assets/Image/UI/end.mp4` | `Game/assets/Video/end.mp4` | `Assets/Video/end.mp4`<br>`Game/assets/Video/end.mp4` | `0e557f25f96adbfd6201d7a8b2e7043ff9a78481358cf7e6f564be077b4304af` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
+| `Assets/Image/UI/start.mp4` | `Game/assets/Video/start.mp4` | `Assets/Video/start.mp4`<br>`Game/assets/Video/start.mp4` | `5188726652661c1b12875835b27bd2e0ba25f96773c5e11c2c5ff32b7f2a79bb` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
+| `Assets/Image/Scene/Background/吞噬.mp4` | `Game/assets/Video/swallowed.mp4` | `Assets/Video/swallowed.mp4`<br>`Game/assets/Video/swallowed.mp4` | `19e1fc7cdda1a8d17c7207196faeda90aa34e921d469d4a1f82f5469bb92fbb9` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
+| — | — | `Assets/Video/trueend.mp4`<br>`Game/assets/Video/trueend.mp4` | `6b3fb70ef1f674cb5d4b5c026d89848af2ebd20a17e14da3ea7451cc6676cf6c` | SHA-256 相同 | 正式游戏使用 | 真结局视频 |
+| — | — | `Assets/Video/thanks.mp4`<br>`Game/assets/Video/thanks.mp4` | `cb8ff264e4bc9a1738164987385814ae053534e457e138064be7e6fe7cd92a68` | SHA-256 相同 | 编辑源/HEVC 后备 | 感谢视频原片 |
+| — | — | `Assets/Video/thanks-h264.mp4`<br>`Game/assets/Video/thanks-h264.mp4` | `56e83829d4be6e1f9931b79afcc11979ced2ead4a75b05ada2b317480f65d27c` | SHA-256 相同 | 正式游戏优先使用 | H.264 High@4.0、yuv420p、faststart，无音轨 |
 
 ## 重复文件归并
 

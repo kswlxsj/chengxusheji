@@ -16,8 +16,15 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
   var ASSETS = {
     background: "assets/Image/Scene/Background/thanks.jpg",
-    video: "assets/video/thanks.mp4"
+    videos: [{
+      src: "assets/Video/thanks-h264.mp4",
+      type: 'video/mp4; codecs="avc1.640028"'
+    }, {
+      src: "assets/Video/thanks.mp4",
+      type: 'video/mp4; codecs="hvc1"'
+    }]
   };
+  var VIDEO_LOAD_TIMEOUT_MS = 12000;
   var THANKS_LINES = ["感谢终末列车组的所有成员", "是大家无私的精诚合作造就了《常暗之厢》这一奇迹", "感谢在屏幕前游玩的您", "即使在列车上共度的时间非常短暂", "我们仍然希望为您带来一段难忘的时光"];
   function createElement(tagName, className) {
     var textContent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
@@ -45,11 +52,16 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   function waitForVideo(video) {
     if (video.readyState >= 2) return Promise.resolve();
     return new Promise(function (resolve) {
+      var settled = false;
       var _finish2 = function finish() {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
         video.removeEventListener("loadeddata", _finish2);
         video.removeEventListener("error", _finish2);
         resolve();
       };
+      var timeout = setTimeout(_finish2, VIDEO_LOAD_TIMEOUT_MS);
       video.addEventListener("loadeddata", _finish2, {
         once: true
       });
@@ -78,7 +90,14 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         return _this.credits.append(createElement("p", "thanks-ending-line", line));
       });
       this.video = createElement("video", "thanks-ending-video");
-      this.video.src = ASSETS.video;
+      ASSETS.videos.forEach(function (_ref) {
+        var src = _ref.src,
+          type = _ref.type;
+        var source = createElement("source", "");
+        source.src = src;
+        source.type = type;
+        _this.video.append(source);
+      });
       this.video.preload = "auto";
       this.video.playsInline = true;
       this.video.setAttribute("aria-label", "感谢视频");

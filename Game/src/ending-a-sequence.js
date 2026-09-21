@@ -4,7 +4,7 @@
   const DEFAULT_ASSETS = {
     frontCarriage: "assets/Image/Scene/Background/front-carriage.webp",
     memory: "assets/Image/Scene/Background/op-01.webp",
-    trueEndVideo: "assets/video/trueend.mp4",
+    trueEndVideo: "assets/Video/trueend.mp4",
     terminalPlatform: "assets/Image/Scene/Background/true-end-platform.webp",
     welcome: "assets/Image/Scene/Background/welcome.webp",
     conductorSmile: "assets/Image/Portrait/conductor.webp",
