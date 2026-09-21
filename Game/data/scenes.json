@@ -464,6 +464,12 @@
         "name": "散落的行李",
         "image": "assets/Image/Scene/StillLife/bag-05-a.webp",
         "fullCanvas": true,
+        "hitPosition": {
+          "x": 16,
+          "y": 39,
+          "width": 14,
+          "height": 11
+        },
         "position": {
           "x": 0,
           "y": 0,
@@ -478,6 +484,12 @@
         "name": "遗落的提包",
         "image": "assets/Image/Scene/StillLife/bag-05-b.webp",
         "fullCanvas": true,
+        "hitPosition": {
+          "x": 65,
+          "y": 36,
+          "width": 11,
+          "height": 11
+        },
         "position": {
           "x": 0,
           "y": 0,
