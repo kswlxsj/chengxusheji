@@ -2,7 +2,7 @@ window.GAME_DATA = {
   "meta": {
     "formatVersion": 4,
     "title": "常暗之厢",
-    "coverImage": "assets/Image/Ui/cover-placeholder.svg",
+    "coverImage": "assets/Image/Scene/Background/op-01.webp",
     "startEvent": "E_001",
     "initialScene": "carriage_06",
     "initialState": {

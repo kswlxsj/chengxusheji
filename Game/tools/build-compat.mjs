@@ -46,12 +46,21 @@ async function ensureWrite(filename, content) {
   if (!current || !current.equals(bytes)) await writeFile(filename, bytes);
 }
 
+async function directoryExists(directory) {
+  try {
+    return (await stat(directory)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 const webpFiles = [
   ...await filesBelow(path.join(gameDirectory, "assets"), (file) => /\.webp$/i.test(file)),
   ...await filesBelow(path.join(gameDirectory, "GroupIntro"), (file) => /\.webp$/i.test(file))
 ];
 const assetMap = {};
 const assetManifest = [];
+const mirrorSourceAssets = await directoryExists(sourceAssetsDirectory);
 
 for (const source of webpFiles) {
   const relative = slash(path.relative(gameDirectory, source));
@@ -67,7 +76,7 @@ for (const source of webpFiles) {
   assetMap[relative] = outputRelative;
   assetManifest.push({ source: relative, sourceSha256: hash(sourceBytes), fallback: outputRelative, fallbackSha256: hash(generated) });
 
-  if (relative.startsWith("assets/")) {
+  if (mirrorSourceAssets && relative.startsWith("assets/")) {
     const mirror = path.join(sourceAssetsDirectory, ...outputRelative.slice("assets/".length).split("/"));
     await ensureWrite(mirror, generated);
   }

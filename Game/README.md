@@ -56,8 +56,8 @@
 - 技能按属性自动触发，以及手动永久覆盖自动触发。
 - 可暂停、可取消的自定义异步演出。
 - 以小游戏注册表（`TrainGame.Minigames`，仿 dice.js 的“JSON 只写编号”分离架构）接入“事件内小游戏”：事件用 `{ "type": "minigame", "game": "<编号>" }` 触发，小游戏模块结束时可返回**结算动作列表**，由事件引擎按当前事件普通动作的语义顺序执行；宿主窗口 `MinigameWindow`（模态居中近满屏、游戏画面变暗、标题栏含“退出小游戏”）内可自绘任意 DOM/canvas/WebGL 画面，小游戏进行中游戏本体冻结、系统暂停与 Esc 被屏蔽。
-- 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；演示触发物 `mg3d_demo_spot_06` 默认隐藏（验收与删除方法见 `docs/API使用说明.md` 示例九）。
-- 终局控制杆争夺小游戏 `conductor_tug`（`src/minigame-games/conductor-tug.js`）：乘务员持钥匙进入驾驶室后会自动准备下拉右杆停车；玩家在 5 秒内选择「抢过把手，向上推——加速」才触发争夺。超时或选择让乘务员操作均进入停车结局。小游戏使用竖直抓握条让玩家与列车员争夺控制杆，并用 `Assets/Image/Scene/Background/ConductorTug` 的仪表盘与指针显示控制权倾向；按住空格/W/↑或鼠标左键把绿色区推向红色控制杆，控制权完全偏向一侧即判定该方获胜，成功跳 `E_034`、失败跳 `E_035`。
+- 原生 WebGL 3D 技术演示小游戏 `webgl3d_demo`（`src/minigame-games/`，零第三方库），验证“触发→独立 3D 画面交互→完成/退出两条结算路径→结算动作列表执行”全链路；它作为课程开发成果有意保留，演示触发物 `mg3d_demo_spot_06` 默认隐藏，手动验收方法见 `docs/API使用说明.md` 示例九。
+- 终局控制杆争夺小游戏 `conductor_tug`（`src/minigame-games/conductor-tug.js`）：乘务员持钥匙进入驾驶室后会自动准备下拉右杆停车；玩家在 5 秒内选择「抢过把手，向上推——加速」才触发争夺。超时或选择让乘务员操作均进入停车结局。小游戏使用竖直抓握条让玩家与列车员争夺控制杆，并用 `assets/Image/Scene/Background/ConductorTug` 的仪表盘与指针显示控制权倾向；按住空格/W/↑或鼠标左键把绿色区推向红色控制杆，控制权完全偏向一侧即判定该方获胜，成功跳 `E_034`、失败跳 `E_035`。
 - 独立登录、注册、标题主页、游戏、统一存档管理、结局达成过渡页、视频结局页及 Options 页面；六类结局均先播放各自 OP（如有），再展示带淡入淡出的结局达成页，最后进入旧视频结局页操作读取存档或返回主页；存档管理页会按入口提供主页读取/删除、游戏内存档/读取/删除或新游戏选槽；Options 以页内标签提供四类账号级音量设置、游戏设置（自动存档与可配置快捷键）、六类结局收藏和九项成就收藏。
 - 浏览器本地账号注册、严格键值对登录、标签页会话和受保护页面守卫。
 - 浏览器本地三个存档槽位，支持读取、覆盖和删除。
@@ -388,7 +388,7 @@ Game/
 
 运行素材按类型存放在 `Audio/`、`Fonts/`、`Image/` 与 `Video/`。目录使用英文 PascalCase；媒体文件使用小写英文 kebab-case，扩展名小写。图片继续细分为物品栏图标、人物立绘、场景背景、场景静物和 UI，小游戏专属资源放在对应子目录。
 
-仓库根 `Assets/` 保存正式美术源素材：除临时 SVG 占位符外，每个 `Game/assets/<相对路径>` 都必须存在同路径、同 SHA-256 的 `Assets/<相对路径>`；SVG 占位符只保留在运行目录。游戏只能引用本目录，不得使用 `../Assets`；源素材库可以额外保存新版候选和未接入内容。同步、版本及命名细则见 [`Assets/README.md`](../Assets/README.md)，本次迁移记录见 [`docs/asset-mapping.md`](docs/asset-mapping.md)。
+原始课程总仓库还在本目录上一级提供可选的 `Assets/` 美术源素材库；独立发布的 `Game/` 不附带该目录，运行和维护均只依赖本目录的 `assets/`。当上级源素材库存在时，`npm run verify:asset-sync` 会逐项核对 SHA-256；独立布局下该命令会明确提示并跳过。游戏代码不得引用 `../Assets`。历史同步、版本及命名记录见 [`docs/asset-mapping.md`](docs/asset-mapping.md)。
 
 背景采用正方形画布、内容居中排版（16:9 舞台会裁去上下边）；普通物件使用边界裁紧的透明 PNG、WebP 或 SVG，整幅蒙版素材配合 `fullCanvas: true` 使用。音频由 `data/audio.json` 集中登记后经 `sound` 动作播放；BGM 与 OP 位于 `assets/Audio/Bgm/`。
 
@@ -489,6 +489,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 | `index.html` / `register.html` | 公共登录入口和独立注册页。 |
 | `home.html` | 登录后显示的游戏标题主页；主页菜单含新的游戏、存档管理、设置、小组介绍与退出登录；其余 HTML 分别承载游戏、存档写入/管理、Options 音量、结局及成就收藏、结束页。 |
 | `package.json` | 项目信息及 `compile`、`test`、`check` 命令。 |
+| `.gitignore` / `.gitattributes` | 独立发布时的忽略规则、文本换行与二进制媒体属性。 |
 | `README.md` | 项目总览与协作者入口；细分接口手册见 `docs/API使用说明.md`。 |
 | `AGENTS.md` | 仓库协作与提交约束。 |
 
@@ -500,7 +501,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 - **内容怎么改**：素材放 `assets/` → 修改 `data/*.json`（编辑器有 Schema 补全提示）→ `npm run compile` → 静态服务器刷新验证 → `npm run check`。全部字段与动作规则见[接口手册：数据接口参考](docs/API使用说明.md#数据接口参考)，维护工作流与 ID/路径约定见[接口手册：维护工作流与约定](docs/API使用说明.md#维护工作流与约定)。
 - **红线**：只编辑源 JSON，不碰 `data/compiled-game-data.js`（由 `npm run compile` 生成，但必须随游戏交付）；JSON 不能执行 JavaScript，自定义演出只能引用程序员白名单动作。
-- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md` 为入口与唯一事实源，`conversion-rules.md` 为规则手册，空白清单模板在 `templates/review-checklist-template.md`），手把手教程见 `docs/skill-tutorials/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/conversion-reviews/`，文件名 `review-checklist-<时间戳>.md`）面向你呈现**人话提问 + 素材指定区**（技术细节封装在文末执行台账，供 agent 用）——由你逐条勾选答复（同意 / 需要调整 / 本次跳过）、逐行指定素材（沿用 / 新建 / 委托占位补位 / 暂缓并注明影响），agent 校验全部完成后才继续；skill 不替编剧设计数值、不自行选定既有 `assets/` 素材——素材盘点时 agent 会先从仓库根 `Assets/` 源目录按文件名检索现成图片（只看命名；源目录严格只读），命中则复制到运行目录 `assets/` 并自行改名复用；仅在你勾选「委托占位补位」时才生成占位 SVG，新增文件均经闸门 2 diff 确认。
+- **剧本转换**：仓库内置“剧本 → 游戏 JSON”转换 skill，执行规范见 `skills/script-to-game-data/`（`SKILL.md` 为入口与唯一事实源，`conversion-rules.md` 为规则手册，空白清单模板在 `templates/review-checklist-template.md`），手把手教程见 `docs/skill-tutorials/script-to-game-data.md`。skill 执行三段强制闸门：**审查清单**（落在 `docs/conversion-reviews/`，文件名 `review-checklist-<时间戳>.md`）面向你呈现**人话提问 + 素材指定区**（技术细节封装在文末执行台账，供 agent 用）——由你逐条勾选答复（同意 / 需要调整 / 本次跳过）、逐行指定素材（沿用 / 新建 / 委托占位补位 / 暂缓并注明影响），agent 校验全部完成后才继续；skill 不替编剧设计数值、不自行选定既有 `assets/` 素材。原始总仓库若存在上级 `Assets/`，盘点可按文件名检索并复制命中素材；独立发布布局则只盘点运行目录 `assets/`，缺失项交由审阅者处理。
 - **练手**：按[接口手册：复杂维护工作示例](docs/API使用说明.md#复杂维护工作示例)的示例一至示例四各做一遍，即可覆盖新增场景物件、条件选项、物品拾取与属性技能的最常见任务。
 
 ### 游戏框架维护者：从这里开始
@@ -546,12 +547,15 @@ git diff --check
 
 并手动验证新游戏、属性分配、新增入口和分支、暂停/恢复/保存/返回、刷新后读取，以及取消后无残留窗口或动画。
 
-交付时保留整个目录及全部 HTML，尤其不能遗漏 `data/compiled-game-data.js`、`compat/`、`assets/`、`styles/`、所有 `*.ie.*` 后备文件和 `src/`。玩家不需要 `node_modules`。压缩前应从干净副本通过同源静态服务器验证完整导航和存档流程。
+交付时保留整个目录及全部 HTML，尤其不能遗漏 `data/compiled-game-data.js`、`compat/`、`assets/`、`styles/`、所有 `*.ie.*` 后备文件和 `src/`。玩家不需要 `node_modules`。压缩前应从干净副本通过同源静态服务器验证完整导航和存档流程，逐项执行 [`docs/release-checklist.md`](docs/release-checklist.md)。
+
+本项目当前仅供课程作业的私下交付与展示，不声明开源许可，也不授权将代码或媒体素材另作公开复用。随成员介绍页内置的 Marked 保留其原始许可证文件。
 
 ## 进一步阅读与外部依据
 
 - `docs/README.md`：docs 目录索引与归档说明。
 - `docs/API使用说明.md`：数据接口与运行时接口的最详细维护手册。
+- `docs/release-checklist.md`：独立发布前的自动检查、浏览器验收与交付目录清单。
 - `docs/skill-tutorials/script-to-game-data.md`：剧本转换 skill 手把手教程。
 - `docs/_Archived/`：已归档历史文档（`架构设计.md`、`三天计划.md`），归档后不再更新。
 - [MDN：Window.localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)：来源隔离、持久化及 `file:` URL 行为。

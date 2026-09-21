@@ -1,0 +1,33 @@
+* text=auto
+
+*.js text
+*.mjs text
+*.json text
+*.html text
+*.css text
+*.md text
+*.svg text
+*.txt text
+*.cmd text eol=crlf
+*.ps1 text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.bmp binary
+*.ico binary
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.flac binary
+*.mp4 binary
+*.webm binary
+*.mov binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+*.7z binary
+*.rar binary

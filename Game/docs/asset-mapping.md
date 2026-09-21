@@ -1,6 +1,6 @@
 # 素材映射表
 
-本表保留 2026-09-16 的素材整理基线与历史路径。2026-09-17 完成运行期压缩后，当前 `Game/assets/` 有 189 个文件；其中 5 个运行期 SVG 占位符不进入美术源库，其余 184 个文件均由 `npm run verify:asset-sync` 验证为与 `Assets/` 同路径、同字节。
+本表保留 2026-09-16 的素材整理基线与历史路径。发布前清理后，当前 `Game/assets/` 有 335 个文件；其中 3 个运行期 SVG 不进入美术源库，其余 332 个文件在原课程仓库布局中由 `npm run verify:asset-sync` 验证为与 `Assets/` 同路径、同字节。独立发布布局不附带上级 `Assets/` 时，该检查会明确跳过。
 
 本次 144 个 PNG 的当前运行版本改为无损 WebP：原 PNG 保留在 `Assets/` 作为编辑源，运行 WebP 同时存在于 `Assets/` 和 `Game/assets/` 的相同路径。每项的旧路径、字节数、新 SHA-256 与压缩结果见 [`asset-compression-manifest.json`](asset-compression-manifest.json)。四个运行 MP4 重编码后也已同步至 `Assets/Video/`；原始 MOV 已替换为 `Game/GroupIntro/lty/video/Timeline 1.mp4`。
 
@@ -65,7 +65,7 @@
 | `Assets/Image/Item/drink_empty.png` | — | `Assets/Image/Item/drink_empty.png`<br>`Game/assets/Image/Item/drink_empty.png` | `08c8b3bc9eadd631ba848b6cd624a97af10c5116bfe12e278ef974e18a1a2b67` | Assets 接入 Game | 正式游戏使用 | 饮用后获得的空易拉罐 |
 | `Assets/Image/UI/便签.png` | `Game/assets/note.png` | `Assets/Image/Item/note.png`<br>`Game/assets/Image/Item/note.png` | `3352c0ef8c11ad12b9bd0270fd7a0e9a81e525a1a4ad8f665752a6e6a48ccf43` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/Item/手机.png` | `Game/assets/phone.png` | `Assets/Image/Item/phone.png`<br>`Game/assets/Image/Item/phone.png` | `a034070fb75ee3350b7d98eae80ff15b9da69f255e3bc8d41a3c0c495a7d6774` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/placeholder-key.svg` | `Game/assets/Image/Item/placeholder-key.svg` | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | 运行目录独有 | 当前未引用 | SVG 占位符按约定仅保留在 Game |
+| — | `Game/assets/Image/Item/placeholder-key.svg` | —（已删除） | `af35efd3667e1b83d69f3218ebd8c74172e3ebf2a1eb977c8d9b121b891dbf99` | 已清理 | 不再使用 | 发布前删除未引用钥匙占位符 |
 | `Assets/Image/Item/撬棍.png` | — | `Assets/Image/Item/pry-bar.png`<br>`Game/assets/Image/Item/pry-bar.png` | `6f3d9b3a5b8d9e62d8be6cd248f49f2989d6115e80f4c91e4c7705579eaa0bc2` | Assets 接入 Game | 正式游戏使用 | 已替换通用钥匙占位符 |
 | `Assets/Image/Portrait/乘务员-crazy.png` | — | `Assets/Image/Portrait/conductor-crazy.png` | `c1dfe99d4a06575bf79776b299778394aa643e4b0aa44cdb655fb21161385acc` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
 | `Assets/Image/Portrait/乘务员-cry.png` | — | `Assets/Image/Portrait/conductor-crying.png` | `af4d7fc969fc80e4db5039878ddc2bc383ae690030b454e88e2f3be86038d88d` | Assets 独有 | 仅源素材库 | 尚未进入游戏 |
@@ -161,7 +161,7 @@
 | `Assets/Image/UI/必杀.png` | `Game/assets/ui/card-battle/ultimate.png` | `Assets/Image/Ui/CardBattle/ultimate.png`<br>`Game/assets/Image/Ui/CardBattle/ultimate.png` | `01208200233cac67c78cccd950f90b9d0ee375b638348a026000f05be667fbe1` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/钓鱼条_浮块.png` | `Game/assets/ui/conductor-tug/target.png` | `Assets/Image/Ui/ConductorTug/target.png`<br>`Game/assets/Image/Ui/ConductorTug/target.png` | `4b55099bb769243eaca8321ff8d52198e80f7cb7147cb7fa608b0b50abd697e2` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/钓鱼条.png` | `Game/assets/ui/conductor-tug/track.png` | `Assets/Image/Ui/ConductorTug/track.png`<br>`Game/assets/Image/Ui/ConductorTug/track.png` | `995FBDD638A7D4E288A4E9DA616B1DF0727E7B1E7E5AD969A2C34F608124FF6B` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
-| — | `Game/assets/cover-placeholder.svg` | `Game/assets/Image/Ui/cover-placeholder.svg` | `e929e6b62e2e06bf4a5837ec556944abe6395c989c26a283ca60b4bb19fe4223` | 运行目录独有 | 正式游戏使用 | SVG 占位符按约定仅保留在 Game |
+| — | `Game/assets/Image/Ui/cover-placeholder.svg` | —（已删除） | `e929e6b62e2e06bf4a5837ec556944abe6395c989c26a283ca60b4bb19fe4223` | 已清理 | 不再使用 | 主页正常显示启动视频，加载失败时改用既有 `op-01.webp` 静态后备 |
 | `Assets/Image/UI/对话框.png` | `Game/assets/ui/dialog-box.png` | `Assets/Image/Ui/dialog-box.png`<br>`Game/assets/Image/Ui/dialog-box.png` | `f2fb974ba961b6e853577731bc0c5af3278696e264b537a88311df9b511eddea` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/骰子.png` | `Game/assets/ui/dice_00.png` | `Assets/Image/Ui/dice-00.png`<br>`Game/assets/Image/Ui/dice-00.png` | `b5205efef6929f00ce31809de33b343ed3bfc67da51b3cf9f5b8db1fab395a28` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |
 | `Assets/Image/UI/骰子1.png` | `Game/assets/ui/dice_01.png` | `Assets/Image/Ui/dice-01.png`<br>`Game/assets/Image/Ui/dice-01.png` | `26fd1dac6f3d83c60ca4458e876de2f9871de172b38a35615cc672ef59054f07` | SHA-256 相同 | 正式游戏使用 | 当前运行内容 |

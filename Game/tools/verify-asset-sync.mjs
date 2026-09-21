@@ -7,6 +7,14 @@ const gameDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const runtimeDirectory = path.join(gameDirectory, "assets");
 const sourceDirectory = path.resolve(gameDirectory, "..", "Assets");
 
+async function directoryExists(directory) {
+  try {
+    return (await stat(directory)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 async function collectFiles(directory, relativeDirectory = "") {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
@@ -26,10 +34,14 @@ async function sha256(filePath) {
   return createHash("sha256").update(await readFile(filePath)).digest("hex");
 }
 
+if (!(await directoryExists(sourceDirectory))) {
+  console.log("素材同步校验已跳过：独立发布目录未附带可选的上级 Assets 源素材库。");
+  process.exit(0);
+}
+
 const runtimeFiles = await collectFiles(runtimeDirectory);
 const failures = [];
 let verified = 0;
-
 for (const relativePath of runtimeFiles) {
   // Runtime-only SVG placeholders are intentionally not copied into the art source library.
   if (path.extname(relativePath).toLowerCase() === ".svg") continue;

@@ -1,0 +1,20 @@
+# Dependencies and package-manager caches
+node_modules/
+.pnpm-store/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~
+
+# Local browser/test artifacts
+.playwright-cli/
+.dice-check-profile/
+output/playwright/
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
