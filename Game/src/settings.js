@@ -171,6 +171,7 @@
   const unlockedCount = Game.ENDING_CATALOG.filter((ending) => unlockedEndings.has(ending.id)).length;
   if (unlockedCount === Game.ENDING_CATALOG.length) Game.PlayerProfile.unlockAchievement("all_endings");
   endingProgress.textContent = `已收集 ${unlockedCount} / ${Game.ENDING_CATALOG.length}`;
+  endingList.replaceChildren();
   for (const ending of Game.ENDING_CATALOG) {
     endingList.append(createEndingCard(ending, unlockedEndings.has(ending.id)));
   }
@@ -209,6 +210,7 @@
   const unlockedAchievementCount = Game.ACHIEVEMENT_CATALOG
     .filter((achievement) => unlockedAchievements.has(achievement.id)).length;
   achievementProgress.textContent = `已解锁 ${unlockedAchievementCount} / ${Game.ACHIEVEMENT_CATALOG.length}`;
+  achievementList.replaceChildren();
   for (const achievement of Game.ACHIEVEMENT_CATALOG) {
     achievementList.append(createAchievementCard(achievement, unlockedAchievements.has(achievement.id)));
   }

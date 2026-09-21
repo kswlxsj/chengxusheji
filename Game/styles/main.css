@@ -1015,7 +1015,6 @@ a { color: inherit; }
   place-items: center;
   aspect-ratio: 1;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255,255,255,.14);
   background: #0d0b0b;
 }
 .achievement-card-preview img {
