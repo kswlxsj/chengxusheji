@@ -290,8 +290,12 @@ assert.equal(blackBag03.image, "assets/Image/Scene/StillLife/black-bag-03.webp")
 assert.deepEqual(blackBag03.hitPosition, { x: 63, y: 50.8, width: 7.7, height: 10.3 });
 assert.deepEqual(blackBag03.visibleWhen, {
   all: [
-    { not: { flag: "carriage_03_bag_exposed", equals: true } },
-    { not: { flag: "carriage_03_phone_collected", equals: true } }
+    {
+      not: { flag: "carriage_03_bag_exposed", equals: true }
+    },
+    {
+      not: { flag: "carriage_03_phone_collected", equals: true }
+    }
   ]
 }, "没工具时点击背包不得将其隐藏");
 assert.equal(
