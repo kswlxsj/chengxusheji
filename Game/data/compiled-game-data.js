@@ -504,7 +504,7 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
-          "zIndex": 12,
+          "zIndex": 9,
           "clickEvent": "E_05_JUNK_A"
         },
         {
@@ -524,7 +524,7 @@ window.GAME_DATA = {
             "width": 100,
             "height": 100
           },
-          "zIndex": 12,
+          "zIndex": 9,
           "clickEvent": "E_05_JUNK_B"
         },
         {
@@ -6321,12 +6321,14 @@ window.GAME_DATA = {
       "id": "E_05_JUNK_A",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你伸手翻动散落的行李和衣物。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你仔细翻过，仍然只是一堆普通杂物。"
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你拨开散落的行李，衣物和空袋子交叠在一起，没找到有用的东西。",
+              "行李箱和外套都被胡乱翻过，夹层里只剩车票碎片和灰尘。"
+            ]
+          }
         },
         {
           "type": "setFlag",
@@ -6340,12 +6342,14 @@ window.GAME_DATA = {
       "id": "E_05_JUNK_B",
       "actions": [
         {
-          "type": "dialogue",
-          "text": "你伸手翻动另一边散落的提包和衣物。"
-        },
-        {
-          "type": "dialogue",
-          "text": "你逐层检查过，里面同样没有值得带走的东西。"
+          "type": "custom",
+          "name": "randomDialogue",
+          "params": {
+            "texts": [
+              "你打开遗落的提包，里面只有零钱、纸巾和一支没水的笔。",
+              "提包的夹层已经被人掏空，只留下几张皱掉的收据。"
+            ]
+          }
         },
         {
           "type": "setFlag",

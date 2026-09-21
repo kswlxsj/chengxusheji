@@ -476,7 +476,7 @@
           "width": 100,
           "height": 100
         },
-        "zIndex": 12,
+        "zIndex": 9,
         "clickEvent": "E_05_JUNK_A"
       },
       {
@@ -496,7 +496,7 @@
           "width": 100,
           "height": 100
         },
-        "zIndex": 12,
+        "zIndex": 9,
         "clickEvent": "E_05_JUNK_B"
       },
       {
