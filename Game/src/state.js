@@ -56,6 +56,7 @@
       this.objectStates = source.objectStates || {};
       this.checkResults = source.checkResults || {};
       this.checkAttempts = source.checkAttempts || {};
+      this.runStats = source.runStats || { sanLost: 0, minigamesStarted: {} };
     }
 
     snapshot() {
@@ -70,7 +71,8 @@
         inventory: this.inventory,
         objectStates: this.objectStates,
         checkResults: this.checkResults,
-        checkAttempts: this.checkAttempts
+        checkAttempts: this.checkAttempts,
+        runStats: this.runStats
       });
     }
 
@@ -78,10 +80,20 @@
       if (!isPlainObject(snapshot)) throw new TypeError("存档状态格式无效");
       const clean = Game.deepClone(snapshot);
       if (clean.checkAttempts === undefined) clean.checkAttempts = {};
+      if (clean.runStats === undefined) clean.runStats = { sanLost: 0, minigamesStarted: {} };
       if (clean.sceneId != null && typeof clean.sceneId !== "string") throw new TypeError("存档场景 ID 无效");
       if (clean.currentEventId != null && typeof clean.currentEventId !== "string") throw new TypeError("存档事件 ID 无效");
       for (const key of ["attributes", "skills", "skillOverrides", "flags", "objectStates", "checkResults", "checkAttempts"]) {
         if (!isPlainObject(clean[key])) throw new TypeError(`存档字段 ${key} 格式无效`);
+      }
+      if (!isPlainObject(clean.runStats) || !isPlainObject(clean.runStats.minigamesStarted)) {
+        throw new TypeError("存档运行统计格式无效");
+      }
+      if (!Number.isInteger(clean.runStats.sanLost) || clean.runStats.sanLost < 0) {
+        throw new TypeError("存档 SAN 损失统计无效");
+      }
+      for (const [gameId, count] of Object.entries(clean.runStats.minigamesStarted)) {
+        if (!gameId || !Number.isInteger(count) || count < 0) throw new TypeError("存档小游戏统计无效");
       }
 
       // 旧存档迁移：力量、敏捷和幸运已从当前属性表删除；新的体质是独立属性，
@@ -136,6 +148,7 @@
       this.objectStates = clean.objectStates;
       this.checkResults = clean.checkResults;
       this.checkAttempts = clean.checkAttempts;
+      this.runStats = clean.runStats;
 
       // 旧存档将驾驶室钥匙和操作面板钥匙合并为 crew_keys；恢复时拆成两个正式物品。
       if (this.inventory.includes("crew_keys")) {

@@ -11,7 +11,7 @@
   <script src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
   <script src="src/player-profile.js"></script>
-  <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
+  <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好、结局收藏与成就。 -->
   <script src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
   <script src="src/page-button-sound.js?v=button04b-20260916-2"></script>
@@ -25,6 +25,7 @@
         <button id="audio-tab" type="button" role="tab" aria-selected="true" aria-controls="audio-panel">音频</button>
         <button id="game-tab" type="button" role="tab" aria-selected="false" aria-controls="game-panel" tabindex="-1">游戏</button>
         <button id="endings-tab" type="button" role="tab" aria-selected="false" aria-controls="endings-panel" tabindex="-1">结局收集</button>
+        <button id="achievements-tab" type="button" role="tab" aria-selected="false" aria-controls="achievements-panel" tabindex="-1">成就</button>
       </div>
 
       <section id="audio-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="audio-tab">
@@ -75,14 +76,25 @@
       <section id="endings-panel" class="settings-tab-panel" role="tabpanel" aria-labelledby="endings-tab" hidden>
         <div class="ending-collection-header">
           <p class="page-introduction">到达结局后，对应记录会永久保存在当前账号中。</p>
-          <strong id="ending-progress" aria-live="polite">已收集 0 / 5</strong>
+          <strong id="ending-progress" aria-live="polite">已收集 0 / 6</strong>
         </div>
         <div id="ending-collection" class="ending-collection" aria-label="结局收藏"></div>
+      </section>
+
+      <section id="achievements-panel" class="settings-tab-panel achievement-section" role="tabpanel" aria-labelledby="achievements-tab" hidden>
+        <div class="achievement-collection-header">
+          <div>
+            <h2 id="achievement-title">成就</h2>
+            <p class="page-introduction">满足条件后，成就会永久保存在当前账号中。</p>
+          </div>
+          <strong id="achievement-progress" aria-live="polite">已解锁 0 / 9</strong>
+        </div>
+        <div id="achievement-collection" class="achievement-collection" aria-label="成就收藏"></div>
       </section>
       <nav class="page-footer"><a href="home.html">返回主页</a></nav>
     </section>
   </main>
   <script src="src/settings.js"></script>
-  <!-- 初始化设置标签、音量滑杆和结局收藏卡片。 -->
+  <!-- 初始化设置标签、音量滑杆、结局收藏与成就九宫格。 -->
 </body>
 </html>

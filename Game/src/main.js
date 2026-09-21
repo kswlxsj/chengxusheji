@@ -31,6 +31,7 @@
       flow.clearRefreshSnapshot();
       const reason = state.flags.ending_reason || "san";
       Game.PlayerProfile?.unlockEnding?.(reason);
+      Game.PlayerProfile?.evaluateAchievements?.(state);
       // 预加载结局素材期间也不能继续播放旧场景音频。
       ui.audio?.stopAll?.({ immediate: true });
       ui.backgroundAudio?.stopAll?.({ immediate: true });
@@ -308,7 +309,13 @@
     void engine.play("E_005_GUIDE");
   }
 
-  engine.onStateChanged = updateHud;
+  function handleStateChanged() {
+    const unlocked = Game.PlayerProfile?.evaluateAchievements?.(state) || [];
+    for (const achievement of unlocked) ui.toast(`成就解锁：${achievement.title}`);
+    updateHud();
+  }
+
+  engine.onStateChanged = handleStateChanged;
   engine.onCheckpointChanged = rememberRefreshCheckpoint;
 
   function errorMessage(error) {

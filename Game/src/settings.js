@@ -10,6 +10,8 @@
   const shortcutSettingMessage = document.querySelector("#shortcut-setting-message");
   const endingList = document.querySelector("#ending-collection");
   const endingProgress = document.querySelector("#ending-progress");
+  const achievementList = document.querySelector("#achievement-collection");
+  const achievementProgress = document.querySelector("#achievement-progress");
 
   function selectTab(tab) {
     for (const candidate of tabs) {
@@ -167,8 +169,47 @@
 
   const unlockedEndings = new Set(Game.PlayerProfile.getUnlockedEndings());
   const unlockedCount = Game.ENDING_CATALOG.filter((ending) => unlockedEndings.has(ending.id)).length;
+  if (unlockedCount === Game.ENDING_CATALOG.length) Game.PlayerProfile.unlockAchievement("all_endings");
   endingProgress.textContent = `已收集 ${unlockedCount} / ${Game.ENDING_CATALOG.length}`;
   for (const ending of Game.ENDING_CATALOG) {
     endingList.append(createEndingCard(ending, unlockedEndings.has(ending.id)));
+  }
+
+  function createAchievementCard(achievement, unlocked) {
+    const card = document.createElement("article");
+    card.className = `achievement-card${unlocked ? " is-unlocked" : " is-locked"}`;
+
+    const preview = document.createElement("div");
+    preview.className = "achievement-card-preview";
+    if (unlocked) {
+      const image = document.createElement("img");
+      image.src = achievement.image;
+      image.alt = `${achievement.title}成就图标`;
+      preview.append(image);
+    } else {
+      const placeholder = document.createElement("span");
+      placeholder.className = "achievement-card-lock";
+      placeholder.textContent = "？";
+      placeholder.setAttribute("aria-hidden", "true");
+      preview.append(placeholder);
+    }
+
+    const content = document.createElement("div");
+    content.className = "achievement-card-content";
+    const heading = document.createElement("h3");
+    heading.textContent = unlocked ? achievement.title : "？？？";
+    const description = document.createElement("p");
+    description.textContent = unlocked ? achievement.description : "未解锁";
+    content.append(heading, description);
+    card.append(preview, content);
+    return card;
+  }
+
+  const unlockedAchievements = new Set(Game.PlayerProfile.getUnlockedAchievements());
+  const unlockedAchievementCount = Game.ACHIEVEMENT_CATALOG
+    .filter((achievement) => unlockedAchievements.has(achievement.id)).length;
+  achievementProgress.textContent = `已解锁 ${unlockedAchievementCount} / ${Game.ACHIEVEMENT_CATALOG.length}`;
+  for (const achievement of Game.ACHIEVEMENT_CATALOG) {
+    achievementList.append(createAchievementCard(achievement, unlockedAchievements.has(achievement.id)));
   }
 })(window.TrainGame);
