@@ -29,8 +29,8 @@
       config.zoneHeight = config.keyGivenZoneHeight;
     }
     // 独立预览仍可指定源资产目录；正式游戏只依赖 Game/assets。
-    const assetPath = (relativePath) => context.assetBase
-      ? `${context.assetBase}/${relativePath}` : `assets/${relativePath}`;
+    const assetPath = (relativePath) => Game.assetUrl(context.assetBase
+      ? `${context.assetBase}/${relativePath}` : `assets/${relativePath}`);
     const root = document.createElement("section");
     root.className = "mg-tug";
     root.setAttribute("aria-label", "控制杆争夺小游戏");
@@ -152,6 +152,7 @@
       target.style.top = `${targetY * 100}%`;
       zone.classList.toggle("is-inside", inside);
       pointer.style.setProperty("--mg-tug-pointer-rotation", `${rotation.toFixed(2)}deg`);
+      if (document.documentMode) pointer.style.transform = `rotate(${rotation.toFixed(2)}deg)`;
       tiltText.textContent = progress > 55 ? "倾向我方" : progress < 45 ? "倾向列车员" : "倾向居中";
       tiltText.classList.toggle("is-player", progress > 55);
       tiltText.classList.toggle("is-conductor", progress < 45);

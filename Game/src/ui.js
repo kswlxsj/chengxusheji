@@ -752,6 +752,7 @@
       for (let index = 0; index < rollValues.length; index += 1) {
         const diceBox = document.createElement("div");
         diceBox.className = "dice-box dice-rolling";
+        if (document.documentMode) diceBox.style.animationDuration = `${0.42 / CHECK_ANIMATION_SPEED}s`;
         const image = document.createElement("img");
         image.src = "assets/Image/Ui/dice-00.webp";
         image.alt = `骰子 ${index + 1}`;
@@ -804,7 +805,7 @@
           const face = Number.isInteger(rollValue) && rollValue >= 1 && rollValue <= 6
             ? `assets/Image/Ui/dice-0${rollValue}.webp`
             : "assets/Image/Ui/dice-00.webp";
-          this.images[index].src = face;
+          this.images[index].src = Game.assetUrl(face);
           this.diceBoxes[index].classList.remove("dice-rolling");
           this.diceBoxes[index].classList.add("dice-result-static");
         });

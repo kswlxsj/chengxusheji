@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="一名计算机专业大二学生的个人主页" />
   <title>夏雨煊的个人主页 · 程序设计小组</title>
@@ -275,8 +276,8 @@
     }
   </style>
   <link rel="stylesheet" href="../back-button.css" />
-  <script src="../../src/bgm.js" defer></script>
-  <script src="../back-button.js" defer></script>
+  <script src="../../src/compat-loader.js" data-src="src/bgm.js" data-defer="true" data-ie-css="inline.ie.css|../back-button.ie.css|../../styles/ie-overrides.css"></script>
+  <script src="../../src/compat-loader.js" data-src="GroupIntro/back-button.js" data-defer="true"></script>
 </head>
 <body>
 
@@ -358,7 +359,7 @@
 
   </div>
 
-  <script>
+  <script type="module">
     // ============ 天气：晴云 ↔ 乌云下雨 ============
     const root = document.documentElement;
 
@@ -578,5 +579,6 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script src="../../src/compat-loader.js" data-src="GroupIntro/xyx/script.js" data-ie-only="true"></script>
 </body>
 </html>

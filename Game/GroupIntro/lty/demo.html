@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>个人介绍</title>
     <style>
@@ -110,8 +111,8 @@
         }
     </style>
     <link rel="stylesheet" href="../back-button.css" />
-    <script src="../../src/bgm.js" defer></script>
-    <script src="../back-button.js" defer></script>
+    <script src="../../src/compat-loader.js" data-src="src/bgm.js" data-defer="true" data-ie-css="inline.ie.css|../back-button.ie.css|../../styles/ie-overrides.css"></script>
+    <script src="../../src/compat-loader.js" data-src="GroupIntro/back-button.js" data-defer="true"></script>
 </head>
 <body>
 
@@ -154,65 +155,6 @@
         </div>
     </div>
 
-    <script>
-        const c = document.getElementById('waveCanvas'),
-              x = c.getContext('2d');
-
-        let W, H,
-            by,
-            t = 0,
-            bs = [];
-
-        const w = {
-            a: 22,
-            f: 0.015,
-            s: 0.3
-        };
-
-        (function resize() {
-            W = c.width = innerWidth;
-            H = c.height = innerHeight;
-            by = H * 0.5;
-        })();
-
-        function waveY(x) {
-            return by + w.a * Math.sin(w.f * x + t * w.s);
-        }
-
-        (function draw() {
-            x.clearRect(0, 0, W, H);
-
-            x.beginPath();
-            x.moveTo(0, H);
-            for (let i = 0; i <= W; i++) {
-                x.lineTo(i, waveY(i));
-            }
-            x.lineTo(W, H);
-            x.closePath();
-            x.fillStyle = '#D4E9FF';
-            x.fill();
-
-            for ( const b of bs) {
-                b.y -= .8;
-
-                if (b.y > waveY(b.x)) {
-                    x.beginPath();
-                    x.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                    x.fillStyle = 'rgba(255,255,255,0.6)';
-                    x.fill();
-                }
-            }
-
-            t += .02;
-
-            requestAnimationFrame(draw);
-        })();
-
-        onmousedown = e => bs.push({
-            x: e.clientX,
-            y: e.clientY,
-            r: 4 + Math.random() * 8
-        });
-    </script>
+    <script src="../../src/compat-loader.js" data-src="GroupIntro/lty/script.js"></script>
 </body>
 </html>

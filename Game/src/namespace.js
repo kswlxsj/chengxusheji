@@ -8,6 +8,11 @@
     },
     delay(milliseconds) {
       return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    },
+    assetUrl(path) {
+      return typeof window.TrainGameCompatAssetUrl === "function"
+        ? window.TrainGameCompatAssetUrl(path)
+        : path;
     }
   };
 })();

@@ -195,13 +195,18 @@
     const root = document.createElement("div");
     root.className = "radio-tuning";
     root.innerHTML = `<style>${STYLE_TEXT}</style>${TEMPLATE}`;
-    const assetPath = (relativePath, filename) => context.assetBase
-      ? `${context.assetBase}/${relativePath}` : `assets/ui/radio-tuning/${filename}`;
+    const assetPath = (relativePath, filename) => Game.assetUrl(context.assetBase
+      ? `${context.assetBase}/${relativePath}` : `assets/ui/radio-tuning/${filename}`);
     root.querySelector("[data-radio-art]").src = assetPath("ui/radio-tuning/radio-base.webp", "radio-base.webp");
     root.querySelector("[data-dial-art]").src = assetPath("ui/radio-tuning/dashboard.webp", "dashboard.webp");
     context.stage.append(root);
 
     const dial = root.querySelector("[data-dial]");
+    if (document.documentMode) {
+      dial.style.width = "330px";
+      dial.style.height = "330px";
+      root.querySelector(".rt-radio-top").style.display = "flex";
+    }
     const screen = root.querySelector("[data-screen]");
     const frequencyReadout = root.querySelector("[data-frequency]");
     const holdTime = root.querySelector("[data-hold-time]");
@@ -237,6 +242,10 @@
       dial.style.setProperty("--needle-angle", `${pointerDisplayAngle}deg`);
       dial.style.setProperty("--range-start", `${rangeStart}deg`);
       dial.style.setProperty("--range-span", `${RANGE_SPAN}deg`);
+      if (document.documentMode) {
+        const needle = dial.querySelector(".rt-needle");
+        if (needle) needle.style.transform = `rotate(${180 + pointerDisplayAngle}deg)`;
+      }
       dial.classList.toggle("in-range", inside);
       frequencyReadout.textContent = formatFrequency(pointerAngle);
       const progress = Math.min(1, heldFor / HOLD_DURATION);

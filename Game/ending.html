@@ -2,22 +2,23 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏结束</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
-  <script src="src/namespace.js"></script>
+  <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/ie-overrides.css"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
-  <script src="src/auth.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
-  <script src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
   <!-- TrainGame.PageFlow，提供主页 OP 入口标记与页面跳转。 -->
-  <script src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
-  <script src="src/auth-guard.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
-  <script src="src/bgm.js?v=profile-audio-20260916-1" defer></script>
-  <script src="src/page-button-sound.js?v=button04b-20260916-1"></script>
+  <script src="src/compat-loader.js" data-src="src/bgm.js?v=profile-audio-20260916-1" data-defer="true"></script>
+  <script src="src/compat-loader.js" data-src="src/page-button-sound.js?v=button04b-20260916-1"></script>
 </head>
 <body>
   <div id="ending-video-stage">
@@ -30,22 +31,6 @@
       </nav>
     </main>
   </div>
-  <script>
-    const reason = new URLSearchParams(window.location.search).get("reason") || "san";
-    const video = document.querySelector("#ending-video");
-    const stage = document.querySelector("#ending-video-stage");
-    const syncVideoStage = () => {
-      if (!video?.videoWidth || !video?.videoHeight) return;
-      stage.style.setProperty("--ending-video-ratio", video.videoWidth / video.videoHeight);
-    };
-    video?.addEventListener("loadedmetadata", syncVideoStage, { once: true });
-    syncVideoStage();
-    video?.play().catch(() => {});
-    document.querySelector("#ending-home")?.addEventListener("click", (event) => {
-      event.preventDefault();
-      TrainGame.PageFlow.markHomeOpIntent("ending");
-      TrainGame.PageFlow.navigate("home", {}, true);
-    });
-  </script>
+  <script src="src/compat-loader.js" data-src="src/ending-page.js"></script>
 </body>
 </html>

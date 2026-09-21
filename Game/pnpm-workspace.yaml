@@ -1,0 +1,5 @@
+allowBuilds:
+  core-js-bundle: set this to true or false
+onlyBuiltDependencies:
+  - core-js-bundle
+  - sharp

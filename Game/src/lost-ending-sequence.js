@@ -102,6 +102,7 @@
       this.wordWall.replaceChildren(...words.map((word, index) => {
         const span = createElement("span", "lost-ending-word", word);
         span.style.setProperty("--lost-word-delay", `${(index % 17) * -95}ms`);
+        if (document.documentMode) span.style.animationDelay = `${(index % 17) * -95}ms`;
         return span;
       }));
     }

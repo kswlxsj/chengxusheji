@@ -2,19 +2,20 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
-  <script src="src/namespace.js"></script>
+  <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/ie-overrides.css"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
-  <script src="src/auth.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
-  <script src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
-  <script src="src/auth-guard.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
-  <script src="src/bgm.js?v=profile-audio-20260916-1" defer></script>
+  <script src="src/compat-loader.js" data-src="src/bgm.js?v=profile-audio-20260916-1" data-defer="true"></script>
 </head>
 <body>
   <div id="home-op" class="home-op" hidden>
@@ -61,56 +62,18 @@
     </section>
   </main>
 
-  <script src="data/compiled-game-data.js"></script>
+  <script src="src/compat-loader.js" data-src="data/compiled-game-data.js"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
-  <script src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/page-flow.js?v=home-op-entry-20260917-1"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
-  <script src="src/home.js"></script>
+  <script src="src/compat-loader.js" data-src="src/home.js"></script>
   <!-- 初始化主页数据渲染和当前用户展示。 -->
-  <script src="src/home-op.js?v=home-op-entry-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/home-op.js?v=home-op-entry-20260917-1"></script>
   <!-- 仅登录成功或从结局返回主页时播放开场图片，再开放主页交互。 -->
-  <script src="src/page-button-sound.js?v=button04b-20260916-1"></script>
+  <script src="src/compat-loader.js" data-src="src/page-button-sound.js?v=button04b-20260916-1"></script>
 
   <!-- CODEX ADD START -->
-  <script>
-    (function () {
-      "use strict";
-
-      const video = document.getElementById("start-video");
-      if (!video) return;
-
-      function tryPlay() {
-        video.muted = true;
-        video.loop = true;
-        video.setAttribute("muted", "");
-        video.setAttribute("loop", "");
-        const playPromise = video.play();
-        if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(function () {});
-        }
-      }
-
-      function reveal() {
-        document.body.classList.add("codex-start-video-ready");
-        tryPlay();
-      }
-
-      if (video.readyState >= 2) {
-        reveal();
-      } else {
-        video.addEventListener("canplay", reveal, { once: true });
-        video.addEventListener("loadeddata", reveal, { once: true });
-      }
-
-      video.addEventListener("ended", function () {
-        video.currentTime = 0;
-        tryPlay();
-      });
-
-      document.addEventListener("pointerdown", reveal, { once: true });
-      document.addEventListener("keydown", reveal, { once: true });
-    })();
-  </script>
+  <script src="src/compat-loader.js" data-src="src/home-video.js"></script>
   <!-- CODEX ADD END -->
 </body>
 </html>

@@ -137,11 +137,15 @@ python -m http.server 8000 --bind 127.0.0.1
 
 ### 内容或框架维护者
 
-需要 Node.js 与 npm。当前 `package.json` 没有依赖，无需执行 `npm install`。
+需要 Node.js、pnpm 与 npm。首次维护先执行 `pnpm install --frozen-lockfile` 安装锁定的构建依赖；玩家不需要安装这些工具。
 
 ```powershell
 # 校验七份内容数据并重新生成浏览器数据包
 npm run compile
+
+# 生成并校验随玩家版本交付的 IE11 后备产物
+npm run compat:build
+npm run compat:check
 
 # 运行不依赖 DOM 的运行时测试
 npm test
@@ -510,7 +514,7 @@ Schema 提供编辑提示，`compile-data.mjs` 负责跨文件引用和业务校
 
 ### 编译器覆盖范围
 
-`npm run compile` 会检查 JSON 结构、部分未知字段、ID 格式和唯一性、初始入口、跨文件引用、属性边界与分配容量、技能条件、显示/选项条件以及动作关键类型和值。
+`npm run compile` 会检查 JSON 结构、部分未知字段、ID 格式和唯一性、初始入口、跨文件引用、属性边界与分配容量、技能条件、显示/选项条件以及动作关键类型和值。浏览器兼容构建和 IE 模式验收方式见[浏览器兼容与 IE 模式维护](docs/browser-compatibility.md)。
 
 它目前**不会**检查图片素材文件是否存在、旗标是否声明、自定义动作是否注册，也不会证明所有分支可达或检定函数返回的下标总是落在列表内，因此仍需实际游玩。唯一的例外是 `audio.json` 的音效路径：编译器会校验音频文件真实存在且非空。
 
@@ -541,7 +545,7 @@ git diff --check
 
 并手动验证新游戏、属性分配、新增入口和分支、暂停/恢复/保存/返回、刷新后读取，以及取消后无残留窗口或动画。
 
-交付时保留整个目录及全部 HTML，尤其不能遗漏 `data/compiled-game-data.js`、`assets/`、`styles/` 和 `src/`。玩家不需要 `node_modules`。压缩前应从干净副本通过同源静态服务器验证完整导航和存档流程。
+交付时保留整个目录及全部 HTML，尤其不能遗漏 `data/compiled-game-data.js`、`compat/`、`assets/`、`styles/`、所有 `*.ie.*` 后备文件和 `src/`。玩家不需要 `node_modules`。压缩前应从干净副本通过同源静态服务器验证完整导航和存档流程。
 
 ## 进一步阅读与外部依据
 

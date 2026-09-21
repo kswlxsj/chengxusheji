@@ -34,5 +34,6 @@ Assets/
 - 不同格式的有效版本可以同名主体、保留不同扩展名，例如 `scene.jpg` 与 `scene.png`。
 - 移动或改名后必须同步更新游戏引用、重新生成编译数据，并验证除 SVG 占位符外，`Game/assets/` 是 `Assets/` 的同路径同字节子集。
 - 不得为了目录整理而重编码图片、音频或视频；需要更换内容时另开内容变更。
+- `*.ie.png` 与 `*.ie.jpg` 是 `npm run compat:build` 从正式 WebP 生成的 IE11 后备素材；不要手工编辑。`Game/assets/` 中的对应文件必须与这里同路径、同字节。
 
 本次整理的逐项旧路径、哈希、匹配方式及版本关系见 [`Game/docs/asset-mapping.md`](../Game/docs/asset-mapping.md)。

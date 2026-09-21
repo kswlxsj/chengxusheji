@@ -1,0 +1,924 @@
+{
+  "version": 1,
+  "generatedAt": "deterministic",
+  "scripts": [
+    "src/audio.js",
+    "src/auth-guard.js",
+    "src/auth.js",
+    "src/bgm.js",
+    "src/confirm-dialog.js",
+    "src/cry-ending-sequence.js",
+    "src/custom-actions.js",
+    "src/dice.js",
+    "src/ending-a-sequence.js",
+    "src/ending-page.js",
+    "src/ending-reveal-page.js",
+    "src/events.js",
+    "src/fake-ending-sequence.js",
+    "src/home-op.js",
+    "src/home-video.js",
+    "src/home.js",
+    "src/image-hit-worker.js",
+    "src/login.js",
+    "src/lost-ending-sequence.js",
+    "src/main.js",
+    "src/minigame-games/card-battle.js",
+    "src/minigame-games/conductor-tug.js",
+    "src/minigame-games/crew-negotiation.js",
+    "src/minigame-games/radio-tuning.js",
+    "src/minigame-games/webgl3d-demo.js",
+    "src/minigames.js",
+    "src/namespace.js",
+    "src/page-button-sound.js",
+    "src/page-flow.js",
+    "src/parking-ending-sequence.js",
+    "src/player-profile.js",
+    "src/register.js",
+    "src/san-zero-sequence.js",
+    "src/save-art.js",
+    "src/save-manager.js",
+    "src/scene.js",
+    "src/settings.js",
+    "src/state.js",
+    "src/thanks-ending-sequence.js",
+    "src/ui.js",
+    "GroupIntro/back-button.js",
+    "GroupIntro/dxh/script.js",
+    "GroupIntro/dxh/vendor/marked/marked.umd.js",
+    "GroupIntro/lty/script.js",
+    "GroupIntro/xyx/script.js"
+  ],
+  "styles": [
+    "styles/carriage-02-darkness.css",
+    "styles/main.css",
+    "GroupIntro/back-button.css",
+    "GroupIntro/cr/style.css",
+    "GroupIntro/dxh/styles.css"
+  ],
+  "assets": [
+    {
+      "source": "assets/Image/Item/bottle.webp",
+      "sourceSha256": "774c68e3dc7e4f4aca88136f9da58ccaefcdb1798cfbe897f1c3919eb826d1b1",
+      "fallback": "assets/Image/Item/bottle.ie.png",
+      "fallbackSha256": "a66272279bbac919aca5fec282ca8e32248027046f2e1d3128e9f346a1e07d85"
+    },
+    {
+      "source": "assets/Image/Item/control-panel-key.webp",
+      "sourceSha256": "ed52742824a7c7ee659acb6ba7888f2b71f98cff647b369d25c276316599b343",
+      "fallback": "assets/Image/Item/control-panel-key.ie.png",
+      "fallbackSha256": "c82241c7789b5110bb302d3131519da51135cd968a19f8751dd7fb69582124e7"
+    },
+    {
+      "source": "assets/Image/Item/drink_empty.webp",
+      "sourceSha256": "feb7430d04d24e00351f641614a31ae6b67a1b37f9a43e6576951888086d86af",
+      "fallback": "assets/Image/Item/drink_empty.ie.png",
+      "fallbackSha256": "ebefb68fa6f6d6a7adb70219f4061343928b79641cfa2f46e90815c6c86dbda1"
+    },
+    {
+      "source": "assets/Image/Item/drink.webp",
+      "sourceSha256": "b10d94eccf2e1fea50080f31b19845b733adf0a898d711600ac3e9853a41932b",
+      "fallback": "assets/Image/Item/drink.ie.png",
+      "fallbackSha256": "56f347c519fcc8967c56f4fe40da24e5cb42a61ac8fef046d90408c061a74ee5"
+    },
+    {
+      "source": "assets/Image/Item/driver-cab-key.webp",
+      "sourceSha256": "63c71576d7816e8c99d50f0d8ee326504b76342f4da2794babb47df5536c17e8",
+      "fallback": "assets/Image/Item/driver-cab-key.ie.png",
+      "fallbackSha256": "6dd2041bff14344c25fc1468c1243af28bac29cfd73b15ffec505c12763b4447"
+    },
+    {
+      "source": "assets/Image/Item/emergency-belt-cutter.webp",
+      "sourceSha256": "ee38ac83048336394aead84190be1a26acdbe848c3d59164eb7ae99cf433dd61",
+      "fallback": "assets/Image/Item/emergency-belt-cutter.ie.png",
+      "fallbackSha256": "70543b1b0ac03d25ef666547c5f0aa7eaecaa0c63c3c3c6c18defdb82d2a201c"
+    },
+    {
+      "source": "assets/Image/Item/flashlight.webp",
+      "sourceSha256": "d6b02a5ebce309bf51a47a5d58a209400c9cd3f1b0bba060167e964eda150a6a",
+      "fallback": "assets/Image/Item/flashlight.ie.png",
+      "fallbackSha256": "67e28487c329b3e60d8d1ba443c92a6ed0fec4758f0f05187701fa47c08e6d8e"
+    },
+    {
+      "source": "assets/Image/Item/newspaper.webp",
+      "sourceSha256": "14f802fb21d5fe872cbd438a481a3cf097feebc8bf34c66f2d9a1fae1ef35b5f",
+      "fallback": "assets/Image/Item/newspaper.ie.png",
+      "fallbackSha256": "d403041db5c77723173035394376fd7a6e15645a2f7128274686e66d3e045921"
+    },
+    {
+      "source": "assets/Image/Item/note.webp",
+      "sourceSha256": "5e110f0187da6144b8d97d7e0cd7119dd992fc6549b58fc12aabdc9dc63f9514",
+      "fallback": "assets/Image/Item/note.ie.png",
+      "fallbackSha256": "51b20433d1ae6b8f1ba53d2f39e6e270ab6752ff9787909217139809f2cc3f8b"
+    },
+    {
+      "source": "assets/Image/Item/phone.webp",
+      "sourceSha256": "8f3f0a83410e40562560fc3302a19aef982d6e0070a8b0e01ed752c0c39c23f8",
+      "fallback": "assets/Image/Item/phone.ie.png",
+      "fallbackSha256": "064c804b8c04b84398e8658feac6f1aad73c16b54f90617c514c6f791eddcccf"
+    },
+    {
+      "source": "assets/Image/Item/pry-bar.webp",
+      "sourceSha256": "64fa0f18699ee60bbf96c712035606e2834168c9121f3596c85cdeafa578a539",
+      "fallback": "assets/Image/Item/pry-bar.ie.png",
+      "fallbackSha256": "f2459dff8d4e5f7cfba8ec9e47b4ced55be1f74592bdb003cb0b4eaf1fc10bf5"
+    },
+    {
+      "source": "assets/Image/Portrait/conductor-crazy.webp",
+      "sourceSha256": "68c17643b1c5f638a2fd4862a5cdea55918754a8b9a61ceb5bab61d838fed2d5",
+      "fallback": "assets/Image/Portrait/conductor-crazy.ie.png",
+      "fallbackSha256": "32d9b1c44c6a90160f40d2339ef6630c287025be98613f195d70b18561504c39"
+    },
+    {
+      "source": "assets/Image/Portrait/conductor-crying.webp",
+      "sourceSha256": "0662c9a0fd7d256997b832a342bb14b181e2f5d9ea55f288cac997d6f2d20d3f",
+      "fallback": "assets/Image/Portrait/conductor-crying.ie.png",
+      "fallbackSha256": "2d1aea698b764c85f75796e047d220517743992a0e51e82c9956f97a4bef66fb"
+    },
+    {
+      "source": "assets/Image/Portrait/conductor.webp",
+      "sourceSha256": "ef5c4f8c8f3b158cc62d87e0c590e83e19107797a41403b4b199c116a35a1675",
+      "fallback": "assets/Image/Portrait/conductor.ie.png",
+      "fallbackSha256": "75d478aef3532af448b1607a00695c204ef23845a6ad648b61a7c8b50dade26f"
+    },
+    {
+      "source": "assets/Image/Portrait/doctor.webp",
+      "sourceSha256": "cef54c8a62de972f4823504ba503b72cce853e2fa19b0bead58eb29c5615f0af",
+      "fallback": "assets/Image/Portrait/doctor.ie.png",
+      "fallbackSha256": "c47c58a3b6c4783e279c1eacf1bc7d5e2657cb461cf5acb8681822d030170df8"
+    },
+    {
+      "source": "assets/Image/Portrait/monster-pixel.webp",
+      "sourceSha256": "431440988f52aee0a98eda8c98a2475068f6e9aed15ff83a1e2fe5510ecef5ca",
+      "fallback": "assets/Image/Portrait/monster-pixel.ie.png",
+      "fallbackSha256": "a463ce1000e7fd1fcd8abd4d821a291e17247158b1e2b6d4acb74a8e34275a9b"
+    },
+    {
+      "source": "assets/Image/Portrait/monster.webp",
+      "sourceSha256": "53b19c8c45ff2922b0da42f2eecf5f1de2e86d49206f783fee9ad30e6e2b3958",
+      "fallback": "assets/Image/Portrait/monster.ie.png",
+      "fallbackSha256": "bd74f3b2fb71ea57dfc17b2df41842400db4b065a93b314a394e60220cf4260f"
+    },
+    {
+      "source": "assets/Image/Portrait/player-crazy.webp",
+      "sourceSha256": "3b5371e5ea82d9a3eadd26832eb940b0e5dad8154bec2b0d3033e20d1fa0414b",
+      "fallback": "assets/Image/Portrait/player-crazy.ie.png",
+      "fallbackSha256": "1e0c6d6eeb51cabc7ff6cf5c05f64360f34151abd05b04856f633a53b09ed8fe"
+    },
+    {
+      "source": "assets/Image/Portrait/player-happy.webp",
+      "sourceSha256": "b099eebca0c744e502a72ba0641d80a5552a6488475340ef73c2af0058a00f0f",
+      "fallback": "assets/Image/Portrait/player-happy.ie.png",
+      "fallbackSha256": "492847426f7cb7960d40e748b8a914d24b280a13b69493652c50a588b1e67d77"
+    },
+    {
+      "source": "assets/Image/Portrait/player-scared.webp",
+      "sourceSha256": "d05a841504293b317e5deda2951262b3b91a8c82736f6f600e6fc8fbc2936201",
+      "fallback": "assets/Image/Portrait/player-scared.ie.png",
+      "fallbackSha256": "9825847e563087ca2de4fe5328feb3c78990d3f07b23fea2a78407a891caedf5"
+    },
+    {
+      "source": "assets/Image/Portrait/player.webp",
+      "sourceSha256": "9ee01bb30ae6928a667196f04e93fc3a9fb50353050d1e9d91d36e6bf905a9b1",
+      "fallback": "assets/Image/Portrait/player.ie.png",
+      "fallbackSha256": "0fd50ddd7be326daa35852cc66e2fcf548980f20803e4e38c6086c76748955cf"
+    },
+    {
+      "source": "assets/Image/Scene/Background/card-battle.webp",
+      "sourceSha256": "6f0834a35e937c3b6fd67b6fba88ec6071bbc4b87923401df311fcc473189c62",
+      "fallback": "assets/Image/Scene/Background/card-battle.ie.jpg",
+      "fallbackSha256": "98051f88bbb3e5d81ca4ce62ac82001dcfe78ad4fef8b8504f53995db47918d1"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-02.webp",
+      "sourceSha256": "b85b1ec50a8574b0df57ae8350ddb9ce975875bec19c7a75c8e278f7972f15df",
+      "fallback": "assets/Image/Scene/Background/carriage-02.ie.jpg",
+      "fallbackSha256": "450de32dbb30c6cbde81b6bb68c6d0a16a57891df4340f5fca3c6e88c3e16381"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-03-full.webp",
+      "sourceSha256": "a1f233298c60f227c9190cc632684365c329ed730c1710bbbe4d35e2117a7125",
+      "fallback": "assets/Image/Scene/Background/carriage-03-full.ie.jpg",
+      "fallbackSha256": "9b547e31899a7f4484cd7b57c42735f63f0ef560945e0eb3ca57f7c3e994bd35"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-03-halffull.webp",
+      "sourceSha256": "6f89d52f9a75d910484f3a2b14b5e8e8078e02841e544bd131940971b04ffec2",
+      "fallback": "assets/Image/Scene/Background/carriage-03-halffull.ie.jpg",
+      "fallbackSha256": "27c61dd927de3396d103ad6db8597776bd3ab60b7df37079d60de850f23f5d43"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-03-onlybag.webp",
+      "sourceSha256": "a5292887a75e5accc55e2bdb9767634debf535a45d111d8c630fe6250408f59c",
+      "fallback": "assets/Image/Scene/Background/carriage-03-onlybag.ie.jpg",
+      "fallbackSha256": "766538372cea11c56f4d822bcc9d0de4b4e784f96cfc28629069bd2b445b7284"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-03.webp",
+      "sourceSha256": "9591f1c1a6404af4c5d7915a4a092e326cb6c26b541b21dd77a30ec6b206f8b5",
+      "fallback": "assets/Image/Scene/Background/carriage-03.ie.jpg",
+      "fallbackSha256": "69a034bab9a9f021ab6e8dce0c666f5de4d96bd4bc59737e0b8aeb0aefa438ad"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-04.webp",
+      "sourceSha256": "545aefac7d1ca1623f794ddc48023b2c9c422fe1526f866ddd3e19640b789914",
+      "fallback": "assets/Image/Scene/Background/carriage-04.ie.jpg",
+      "fallbackSha256": "304aa027fe4fa4e1f6d8c50247da2930ed53a43f57ebd1e9800e8b8b474de909"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-05.webp",
+      "sourceSha256": "202d4bf62622f359260ed162d9597c44c656195f9c62402a869e6419ed8382b2",
+      "fallback": "assets/Image/Scene/Background/carriage-05.ie.jpg",
+      "fallbackSha256": "354ee9b8d96501ad21429c6015d8e968857062e293e0c9f42c0f0424eaf5d039"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-06-eaten.webp",
+      "sourceSha256": "e60be36642be4dea98578bb01baa2d182ce4469f8e841fb0e9f872358201daaa",
+      "fallback": "assets/Image/Scene/Background/carriage-06-eaten.ie.jpg",
+      "fallbackSha256": "173b764bbe9459f9836e75e593d3a2095df3a9b32acd6002f295def30708a8a6"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-06-note-removed.webp",
+      "sourceSha256": "b01789a21fe81385610b32590f93e5a8153f40f4ff21e647ebd7f52a5951418d",
+      "fallback": "assets/Image/Scene/Background/carriage-06-note-removed.ie.jpg",
+      "fallbackSha256": "204c9ffe10e7d54a9cce8836d93bedf7ecd0c5bc09c0b6446fc5fab62e537471"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-06-people.webp",
+      "sourceSha256": "fe58772518f9d115caa74595f1dc8a4c4be9f44b495ecde534585e63dfbfadc3",
+      "fallback": "assets/Image/Scene/Background/carriage-06-people.ie.jpg",
+      "fallbackSha256": "41f87071cbfdc05e761bf5c3d29c0bb4fecf1b1ca6b5e76cdd97fef63df74ab3"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-06.webp",
+      "sourceSha256": "636659be4080fb3307b519eb8d98b6c2b2ab837c0cc84c52e02d95c87ca26f9d",
+      "fallback": "assets/Image/Scene/Background/carriage-06.ie.jpg",
+      "fallbackSha256": "62158ad17938b489c1a2718590d22f7f02ea9992b6d682f814c715a7a2ef9536"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-07.webp",
+      "sourceSha256": "381f9d4ab5c7729f21dcf3c76f3541c9b39ae3a21ba29a0245fdb83ac1508dbb",
+      "fallback": "assets/Image/Scene/Background/carriage-07.ie.jpg",
+      "fallbackSha256": "fa759372f0f00cd5f405f766d5384ff2f747138aea4dc03e8f232c6a9a996d45"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-fake-01-crew.webp",
+      "sourceSha256": "9d519876d7176ad45797fc87268290baa9966e0bed19d8ea777126f45fd63e2f",
+      "fallback": "assets/Image/Scene/Background/carriage-fake-01-crew.ie.jpg",
+      "fallbackSha256": "2f0f8729d114069c19f722f3181ef83b0cfce227f8d86027302193d1d5629adf"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-fake-01.webp",
+      "sourceSha256": "5313d146d875c68b8656bb2de35c7bec1e9f48c79db02d143d943bb782f027c1",
+      "fallback": "assets/Image/Scene/Background/carriage-fake-01.ie.jpg",
+      "fallbackSha256": "24715dade9a44bba60628f39ad1ed9e507059547184fa46367855c71dfe82694"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-fake-02.webp",
+      "sourceSha256": "c9ee97c9dfc5ed3278c300099d2e3edbca6e4840403ab0b08996a3bc8a0786a8",
+      "fallback": "assets/Image/Scene/Background/carriage-fake-02.ie.jpg",
+      "fallbackSha256": "546c27176bc7a1462d0ba9ba85fcf639a54d023ee93ebcbac3be45e4451ff5db"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-fake-04-fog.webp",
+      "sourceSha256": "ad9702c40cef8bc52d3a6df90532284a47db8f6a33e83b22c146701f355fa91f",
+      "fallback": "assets/Image/Scene/Background/carriage-fake-04-fog.ie.jpg",
+      "fallbackSha256": "4c8305962f671435b7eed47539fbd9c498cb86ddf957fca34e2cd027c629ed58"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-fake-04.webp",
+      "sourceSha256": "858fb9229696f1e7386863ae36943bf79327f1fc0f7497f46ebb129aaee31a73",
+      "fallback": "assets/Image/Scene/Background/carriage-fake-04.ie.jpg",
+      "fallbackSha256": "3fa2e5ec245779ec086ac3f835624f351c27ad3aa382d5440cd786643355fbde"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-inner-01.webp",
+      "sourceSha256": "e1be3d5a00fdc86df7efe3b21420e9df4714255c3ffe4f73970b3da4ee74fd33",
+      "fallback": "assets/Image/Scene/Background/carriage-inner-01.ie.jpg",
+      "fallbackSha256": "afc84c5e857807a9a595629a0786b07baf5b2f984aa4c1070b8758ce14a5e4ec"
+    },
+    {
+      "source": "assets/Image/Scene/Background/carriage-inner-02.webp",
+      "sourceSha256": "be69cbbc93860412f9cb84092307501ef3555e1e4580b9f1933c3af85544f796",
+      "fallback": "assets/Image/Scene/Background/carriage-inner-02.ie.jpg",
+      "fallbackSha256": "6a916a2bf63a2fd980052dcc2f55f2df8af35142b2cde89f769bd5fc006c3911"
+    },
+    {
+      "source": "assets/Image/Scene/Background/ConductorTug/dashboard.webp",
+      "sourceSha256": "a8ed47893bcba2f07311f5be4d6ea4d66b5e83d6d44c671f98f47b0378c4c6b0",
+      "fallback": "assets/Image/Scene/Background/ConductorTug/dashboard.ie.png",
+      "fallbackSha256": "50f3252e0267b73436f8cf7444b93ff4133671a00d0f6a8fb58cc0ec2955814d"
+    },
+    {
+      "source": "assets/Image/Scene/Background/ConductorTug/fishing-rod.webp",
+      "sourceSha256": "22401169dcfcf7a90145dc53bf7f2465fb543199cdccae9e1413381105c5aff5",
+      "fallback": "assets/Image/Scene/Background/ConductorTug/fishing-rod.ie.png",
+      "fallbackSha256": "18f971342d95410915f94b71b0d37cf3cfd4e60b8ed1fb011d122a15c4a75c45"
+    },
+    {
+      "source": "assets/Image/Scene/Background/ConductorTug/player.webp",
+      "sourceSha256": "72715a5ddd16c29b3ba061b55b3d1130c30b4f28fc379fcb06050e8ebbd8b3e3",
+      "fallback": "assets/Image/Scene/Background/ConductorTug/player.ie.png",
+      "fallbackSha256": "f795742433a11820c657090f7bcb5aa4d8ce1b1091f106ece4c84e9196392ba1"
+    },
+    {
+      "source": "assets/Image/Scene/Background/ConductorTug/pointer.webp",
+      "sourceSha256": "3422465b25e3944250d460524bc3521e3b38ebe1579b2c2691b2efd51bf01a49",
+      "fallback": "assets/Image/Scene/Background/ConductorTug/pointer.ie.png",
+      "fallbackSha256": "23865840552980008175025e647f596dd2cf81b1188d7d428144451fba51d116"
+    },
+    {
+      "source": "assets/Image/Scene/Background/crew-negotiation.webp",
+      "sourceSha256": "25e736c26bf6f6dd7c7919a5aa658b19a52f774c334dff4c4807e615585bc61b",
+      "fallback": "assets/Image/Scene/Background/crew-negotiation.ie.jpg",
+      "fallbackSha256": "3be4729454d9984629cbe16f2710c5f98240d4965ec874b3b7651a178eabd97a"
+    },
+    {
+      "source": "assets/Image/Scene/Background/end-3-state1.webp",
+      "sourceSha256": "91e0b39af19f087c0a60929df152534841106f51d80b9a20e5adbf275bcf289a",
+      "fallback": "assets/Image/Scene/Background/end-3-state1.ie.jpg",
+      "fallbackSha256": "7e22da6b30a04495dfec1f9e18b2fbde34a2819f2976076ebe9e74c0a9b41fd4"
+    },
+    {
+      "source": "assets/Image/Scene/Background/end-3-state2.webp",
+      "sourceSha256": "d3f90cd6ff7d94caf429f2595ed6062b002d554fbf47e33b11f43bf82aac8bbc",
+      "fallback": "assets/Image/Scene/Background/end-3-state2.ie.jpg",
+      "fallbackSha256": "ea63fd7b87d69559a44b8bb69d3d4a95be6e03e30cd3ae9a79c8cc4d6da01c65"
+    },
+    {
+      "source": "assets/Image/Scene/Background/end-3-state3.webp",
+      "sourceSha256": "76b79b224e46a150acac0fc8fb138ca53db40d311169aa48af58fba32fd46430",
+      "fallback": "assets/Image/Scene/Background/end-3-state3.ie.jpg",
+      "fallbackSha256": "b033ab8f4d1e335d6aa1f8e98524bbe011df1bf70e99a5003074f519cea3a711"
+    },
+    {
+      "source": "assets/Image/Scene/Background/flower-sea-inside.webp",
+      "sourceSha256": "5ea154a3ae1608a8623b4ef23ed53dbf6a341150626025aa390f65e1ab87c11d",
+      "fallback": "assets/Image/Scene/Background/flower-sea-inside.ie.jpg",
+      "fallbackSha256": "26c06f711f6f416cda33bc961fc4c628e8965c109476eb7411a6446567af6183"
+    },
+    {
+      "source": "assets/Image/Scene/Background/flower-sea.webp",
+      "sourceSha256": "3bb5ac70a329ec7ab4929f24177316014ee998f1fa8e9ad4701a8fbb6d172d09",
+      "fallback": "assets/Image/Scene/Background/flower-sea.ie.jpg",
+      "fallbackSha256": "6f53f2456e6e58cdf5b97d3e85b65c5ba88d8f75bb7e87a6c6b53febca9a5a5d"
+    },
+    {
+      "source": "assets/Image/Scene/Background/front-carriage.webp",
+      "sourceSha256": "283a5234af6c1fdb2c5512da1bd235634358f7087b73e97d25f2143937413b39",
+      "fallback": "assets/Image/Scene/Background/front-carriage.ie.jpg",
+      "fallbackSha256": "c2ee2db9524d1e74d17195141ab692d8f1848549c28c6f862f873df62e69aad2"
+    },
+    {
+      "source": "assets/Image/Scene/Background/inner-refusal-crew-01.webp",
+      "sourceSha256": "7a062be29cf4dfeff35448b9cefec0c8af8a0fb75662df3600f5752b284bb755",
+      "fallback": "assets/Image/Scene/Background/inner-refusal-crew-01.ie.jpg",
+      "fallbackSha256": "b03a4e41ccfce589e1ee465514e48b4ab1204a4add48b48060904e6ee0a89bc0"
+    },
+    {
+      "source": "assets/Image/Scene/Background/inner-refusal-crew-02.webp",
+      "sourceSha256": "d41e75cd8d1f5b327fc516440cf09a769f6e709db807d6b20dc35415e9aa5e4d",
+      "fallback": "assets/Image/Scene/Background/inner-refusal-crew-02.ie.jpg",
+      "fallbackSha256": "223a963a7abb829d0cbf215664d6ddce84870528d140b0c65abeaf2ffbeb9de9"
+    },
+    {
+      "source": "assets/Image/Scene/Background/move-blur.webp",
+      "sourceSha256": "06a1be1b46655fdc5c87fa963b24d4ab4ba613e3d647bf5549df0ffcc950009b",
+      "fallback": "assets/Image/Scene/Background/move-blur.ie.jpg",
+      "fallbackSha256": "3a6452fee2508fda46e96ccb02a75765cc22ef1e26735c62f447f6ca0ad79fdf"
+    },
+    {
+      "source": "assets/Image/Scene/Background/move.webp",
+      "sourceSha256": "ab782fda2ef287d6c9d57af6d87f9bdab1ef70d95a83e33ace6ed40ca3b8f281",
+      "fallback": "assets/Image/Scene/Background/move.ie.jpg",
+      "fallbackSha256": "107ff9308df9a6f9273229d2d541f021ea59974204a66c6c6f71e5cee2ebbc0f"
+    },
+    {
+      "source": "assets/Image/Scene/Background/op-01.webp",
+      "sourceSha256": "d212d0cc6c942dc98a6167d847d18db812ba80eb25968c05981ef3312b2c705f",
+      "fallback": "assets/Image/Scene/Background/op-01.ie.jpg",
+      "fallbackSha256": "aa2b4d2a8a99b5e8fb4a1c28bd41ea7bd2d467a3867b558da0abeab964efaf42"
+    },
+    {
+      "source": "assets/Image/Scene/Background/op-02.webp",
+      "sourceSha256": "a68ec869378714a6e222f081cfad1b7af853b4211f592c1af517c1296be9903e",
+      "fallback": "assets/Image/Scene/Background/op-02.ie.jpg",
+      "fallbackSha256": "2399393c5044fd20d122bbeab3df2997411abbd6c5814e65a30d39c8dc27227f"
+    },
+    {
+      "source": "assets/Image/Scene/Background/op-03.webp",
+      "sourceSha256": "3b6abc1503752b7a1f88f51c1355ce30828b477ab30da6170afce28eac3bfee4",
+      "fallback": "assets/Image/Scene/Background/op-03.ie.jpg",
+      "fallbackSha256": "cff38adeb6267bea0172ed5e98bad543cc42d815fac892ade421095104d907bf"
+    },
+    {
+      "source": "assets/Image/Scene/Background/op-04.webp",
+      "sourceSha256": "0d4ef57b96875c05f778b9c212bd8e61a1a480e102f1a61b47609fb6bec55392",
+      "fallback": "assets/Image/Scene/Background/op-04.ie.jpg",
+      "fallbackSha256": "3aa56e4f00afb96f8dd6dc944915a976264d14d8062afbd845784b1eddccb3cf"
+    },
+    {
+      "source": "assets/Image/Scene/Background/op-05.webp",
+      "sourceSha256": "9578974228e72c9c78d7fb49c336fd9120e5a556659a36110d3582d3703daa9e",
+      "fallback": "assets/Image/Scene/Background/op-05.ie.jpg",
+      "fallbackSha256": "b726930919575f7a02d78696a3d908778725798a3f181fbf0cb0972774e8bfa3"
+    },
+    {
+      "source": "assets/Image/Scene/Background/san-zero-broadcast.webp",
+      "sourceSha256": "a3d6207f01efa74453084cb0e73d0154330e4f20b98ba6b047a88fb2746f3a05",
+      "fallback": "assets/Image/Scene/Background/san-zero-broadcast.ie.jpg",
+      "fallbackSha256": "c2bc19dd2e498ea218ce2f75faa09f8b24c0dbd781749aecc572d98d00a41082"
+    },
+    {
+      "source": "assets/Image/Scene/Background/san-zero-closeup-smile.webp",
+      "sourceSha256": "0590915266b00cfa842f0e7ae14cabb04fc423c27d4d6abe77e166a33292aa88",
+      "fallback": "assets/Image/Scene/Background/san-zero-closeup-smile.ie.jpg",
+      "fallbackSha256": "09eee3c35bdc2eea6434450055d015e2791242389e537c4a03dc46c17d06247a"
+    },
+    {
+      "source": "assets/Image/Scene/Background/san-zero-closeup.webp",
+      "sourceSha256": "be5745436beaed42ff495d93ef5cf5f27eb5250c6ea6c8ed3e4684adc051cd82",
+      "fallback": "assets/Image/Scene/Background/san-zero-closeup.ie.jpg",
+      "fallbackSha256": "1076b08a92dfa431649a699572dc70b588a9a765f81db2ebb22ec6c09045cca6"
+    },
+    {
+      "source": "assets/Image/Scene/Background/san-zero-hospital.webp",
+      "sourceSha256": "a5c2c97312cbe33e1fd28fdebe5f0fe01824009c76e96b9fa108540cdd00d217",
+      "fallback": "assets/Image/Scene/Background/san-zero-hospital.ie.jpg",
+      "fallbackSha256": "8df328f8fea807c936edb376c910715b8665fae50042b5881b8d92b9c8f58c47"
+    },
+    {
+      "source": "assets/Image/Scene/Background/sunny-platform.webp",
+      "sourceSha256": "7825dbf51a5d5febf0853f3153b81ee3e8ac3e770513e4b912dfb4503b903f01",
+      "fallback": "assets/Image/Scene/Background/sunny-platform.ie.jpg",
+      "fallbackSha256": "f9c1bd978979800c4a173c5362b902d5fb7cc3a294491db08486fcf1bf4401e1"
+    },
+    {
+      "source": "assets/Image/Scene/Background/true-end-platform.webp",
+      "sourceSha256": "dfc7db8ea1fe517222a40f7c48f5ef2a16c406602bab585b585cae1b97a12644",
+      "fallback": "assets/Image/Scene/Background/true-end-platform.ie.jpg",
+      "fallbackSha256": "88a14747fa99357b01aecad8cbc955646176271fc19b332a50f0c2a111093c7a"
+    },
+    {
+      "source": "assets/Image/Scene/Background/welcome.webp",
+      "sourceSha256": "abbaabb2483e0d65a0329086c12ef1a8cfe3acc49d97256d4f86283b4a42f16f",
+      "fallback": "assets/Image/Scene/Background/welcome.ie.jpg",
+      "fallbackSha256": "e52192abe82a7096f18d5dc8dcb87633eb948886dea2ff87bc4dd8cfcbbd312e"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/bag-05-a.webp",
+      "sourceSha256": "5889bdc10e815600cf827ebbb67866c5057eab4e02c9f96c54bd363d8593f7f4",
+      "fallback": "assets/Image/Scene/StillLife/bag-05-a.ie.png",
+      "fallbackSha256": "26d9bae59a27b34c4a8750f52e0b7ddf0ff0ec94c3821e5cd1faae64d7214ff5"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/bag-05-b.webp",
+      "sourceSha256": "c5f66f09193bc529757ae13d47817e71811f37374bdd9721aa458d67345d8963",
+      "fallback": "assets/Image/Scene/StillLife/bag-05-b.ie.png",
+      "fallbackSha256": "e5483e032f2df3c575c7a6bf7716cc95a0b330a8e66cc7c966e7b9294f20a70c"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/black-bag-03.webp",
+      "sourceSha256": "4dbf3f54157e5c5c85352db42af72158e89be566362dd196351ebb745bd189be",
+      "fallback": "assets/Image/Scene/StillLife/black-bag-03.ie.png",
+      "fallbackSha256": "6948984c181605692dce6a30a6b9953c7cb7e495ff45358d2a1b3f51c51e8565"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.webp",
+      "sourceSha256": "555b9ea07b0453b882bdc99dc125a4cbefd692d2ddf79769540e071fb4887159",
+      "fallback": "assets/Image/Scene/StillLife/carriage-04-conductor-carried-away.ie.jpg",
+      "fallbackSha256": "fb745421dcd8292372e5482789b28147fb5b1214ebb382619317cc427b799ca3"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.webp",
+      "sourceSha256": "9ec01ffcdc0733b4e622c987b3cc4adc9ee035d60018df1fefd954c7be773e1d",
+      "fallback": "assets/Image/Scene/StillLife/carriage-04-conductor-seated.ie.png",
+      "fallbackSha256": "f29abee385ca62fd26fb7c28dc5547e5a7e9b547d8b55ee569466b3bdfec675b"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-04-conductor.webp",
+      "sourceSha256": "c9f6084adfc5414c826018af3420ebf69959b191f5ac284ff8d3bdc2316ddb30",
+      "fallback": "assets/Image/Scene/StillLife/carriage-04-conductor.ie.png",
+      "fallbackSha256": "e4ad26c6f58c22584220f58da64254e95d3a2f778a762f05749fc07330fa7494"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-04-employeelocker.webp",
+      "sourceSha256": "507316b66a64b8a84733358a9632c123eb46c143d792767043ab3cb3493b4c61",
+      "fallback": "assets/Image/Scene/StillLife/carriage-04-employeelocker.ie.png",
+      "fallbackSha256": "c70eb9ac808c21a3fd64e495e1868aaeb0c1c5b963e2be93910daf2db22af420"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-05-03-clutter.webp",
+      "sourceSha256": "6fc3d180dd015200cc58ccdde8a29d04dfb3231375e858d7817447b9fd048ceb",
+      "fallback": "assets/Image/Scene/StillLife/carriage-05-03-clutter.ie.png",
+      "fallbackSha256": "2d64d29d1b1c742cd8ddfbf70f9e214231d41b8e117c0879a2a5327e6d6f745c"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.webp",
+      "sourceSha256": "8e7fb715cb82a60fe1aa14aadae8b9d28b7c991c8a9f05538b065fcf3d5c4b07",
+      "fallback": "assets/Image/Scene/StillLife/carriage-05-03-forward-note.ie.png",
+      "fallbackSha256": "4815566c4e3f9995661f9f53feb20b3bd13a29416ccd7b6596ce52eb9cf21761"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-06-map.webp",
+      "sourceSha256": "9e5ab4d5072364b198a91bfa38a9d7404eefde3e1d8444443b3298e616936e1b",
+      "fallback": "assets/Image/Scene/StillLife/carriage-06-map.ie.png",
+      "fallbackSha256": "4179ea7c3a786f795f74522fb9972ef391cca44cc92593f546d8ea2a2d7f09fe"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/carriage-06-note.webp",
+      "sourceSha256": "5c257d3be78c461190977d55f770189843d430e335ac864fccdbc58529d34cd5",
+      "fallback": "assets/Image/Scene/StillLife/carriage-06-note.ie.png",
+      "fallbackSha256": "84b405ed7bbabdaa19f6f292659a883510a7712fdc5d7a14e3420418e90bf85d"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/clicker-02.webp",
+      "sourceSha256": "d58cc9aaf9559d8e3a67dd3c76b3c742d363836b60e4ee9d46bd8f289acd4232",
+      "fallback": "assets/Image/Scene/StillLife/clicker-02.ie.png",
+      "fallbackSha256": "3c1a23f261e1c6626de00285a7a8fc2ff88ec2dda8121e276bc32058d5788c87"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/control-lever.webp",
+      "sourceSha256": "767740a842438af99f27c305aafbbad4d4770fa818713c6e7af5c6352708d722",
+      "fallback": "assets/Image/Scene/StillLife/control-lever.ie.png",
+      "fallbackSha256": "e525522f071f72e0bb3513e9851c13f38ca74c9bd18fdbc50a004a2da6da3fdc"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/corpse-07.webp",
+      "sourceSha256": "0295e0e7fd993f21fa25902a65a3785fe4e9bbcef8bc4b29c478851fd8535b6a",
+      "fallback": "assets/Image/Scene/StillLife/corpse-07.ie.png",
+      "fallbackSha256": "ccfcaf82f85de24558dc5a40189108d81b429bf933d192c69f436a2c6e527496"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/inner-02-bottle.webp",
+      "sourceSha256": "ddf72816d8e39bcabefff3e9d1f697db5d830838618526dedfabdcba05f5f6b0",
+      "fallback": "assets/Image/Scene/StillLife/inner-02-bottle.ie.png",
+      "fallbackSha256": "a6dd779bb63c03d291a731a9725cde599b443cdc080a5d5dc1fa9cfe77ada5f0"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/inner-02-window.webp",
+      "sourceSha256": "5b1bf7b8a339a81f829ac7f9b7d1c7b8c2b3bebafbc620b8c5212f046fd192dc",
+      "fallback": "assets/Image/Scene/StillLife/inner-02-window.ie.png",
+      "fallbackSha256": "a08b35fc4cf8dff05d93786f378170fdf94837bd64b87aa536d473758dfd486d"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/inner-03-flower-window.webp",
+      "sourceSha256": "35ed2db07fc0fd731bc6700f276a76041234c5bdda90668f5a8018d695c93b15",
+      "fallback": "assets/Image/Scene/StillLife/inner-03-flower-window.ie.png",
+      "fallbackSha256": "c5108d180b398a34dcf0ff969318e203a506337dfb0f281aa0b1fcafe6b8ed67"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/inner-03-fog-window.webp",
+      "sourceSha256": "6c1bde594a1d938a2a314e273acaa5cde1f9e17efd8a8ebe0e5f81f1207521fc",
+      "fallback": "assets/Image/Scene/StillLife/inner-03-fog-window.ie.png",
+      "fallbackSha256": "10a0f10774e9c49e954a6927196a6db1d22afa46bcd7e613dac0a57168d892a3"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/inner-blood-handprint.webp",
+      "sourceSha256": "61e83fb6e4be02c905221bbbc1518e4301c5ed287745c2f4e6c573da92554971",
+      "fallback": "assets/Image/Scene/StillLife/inner-blood-handprint.ie.png",
+      "fallbackSha256": "c00cc33fda5034ba2ad50d7bcd173dae6113acf61886416f33651d18b804d440"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/newspaper-05.webp",
+      "sourceSha256": "7aa7d8ccd2553d6352384ce897179b4f7047d35db89c4583d77b71d03800b0b4",
+      "fallback": "assets/Image/Scene/StillLife/newspaper-05.ie.png",
+      "fallbackSha256": "36765ea7235737278960d434b9e4939d703c5ab61971990bf31dc1ee4ebad14b"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/phone.webp",
+      "sourceSha256": "0c22ebf75c5c6b704127a1e6aef8aea2563fcf683a9262ffd229bc9490cf142d",
+      "fallback": "assets/Image/Scene/StillLife/phone.ie.png",
+      "fallbackSha256": "72a59e6a646d2b00bd49b7a230c2cd58368830f079f4e2037f15dba48b2633f1"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/radio-07.webp",
+      "sourceSha256": "3b4cb5e9dee33fd7302fb415f45e4686dd69dd5793f0ef8ad91fe95ea17ff517",
+      "fallback": "assets/Image/Scene/StillLife/radio-07.ie.png",
+      "fallbackSha256": "d0ac2ae7307d6fa844c9c31d0f7119aa65c3b4f5a5251ef6310385384bb927d6"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/trash-05-a.webp",
+      "sourceSha256": "dcdfda06b1c21f746d4b4c12c392662a5ec4e04be606a0e12a8f860d12262e8a",
+      "fallback": "assets/Image/Scene/StillLife/trash-05-a.ie.png",
+      "fallbackSha256": "1bb4c7c8cb2469a3a6b95f1ad3543450b75bec9f5713e6b185b0f352803cd30b"
+    },
+    {
+      "source": "assets/Image/Scene/StillLife/trash-05-b.webp",
+      "sourceSha256": "1383b47099783bd2ef2ac6af78ab85c9618b0519ae7cd87f406877251a24d458",
+      "fallback": "assets/Image/Scene/StillLife/trash-05-b.ie.png",
+      "fallbackSha256": "1b1cd711a9dc2693ad7dd292c18c44a912faeb882edf6ac8affa79ac119a51b1"
+    },
+    {
+      "source": "assets/Image/Ui/attribute-minus.webp",
+      "sourceSha256": "9496bdd8fdc44e0cf53ba9e00ebfc6bac344a33151b2144ebe839048284ad851",
+      "fallback": "assets/Image/Ui/attribute-minus.ie.png",
+      "fallbackSha256": "b266d330ca10cd03cb2a44c7363fe86c0ec57f51c478e3427f97a827475f5062"
+    },
+    {
+      "source": "assets/Image/Ui/attribute-plus.webp",
+      "sourceSha256": "862b4a09c2ac7ec06094ab1900562b79912e47868591f103738a6c2bdcf40291",
+      "fallback": "assets/Image/Ui/attribute-plus.ie.png",
+      "fallbackSha256": "a136d85896013f6665b9d70486e6dd2bb748cc26666b4b717454d0c3fa6f969e"
+    },
+    {
+      "source": "assets/Image/Ui/backpack-frame.webp",
+      "sourceSha256": "f993cbaab84b49ed458a0c97f29b539ebf74782ec37cc2f82824eeb5286d2d81",
+      "fallback": "assets/Image/Ui/backpack-frame.ie.png",
+      "fallbackSha256": "02b4335b431857cddc87f999a9a3864b47282e8bb0d0dc409594c846d8f42714"
+    },
+    {
+      "source": "assets/Image/Ui/CardBattle/attack.webp",
+      "sourceSha256": "392af540d3710330b0de16551a8c19b745a802ecc139a3ef9389e9777798cadb",
+      "fallback": "assets/Image/Ui/CardBattle/attack.ie.png",
+      "fallbackSha256": "0b604b0e03bcb9f9c3d12ee6011da7ee4b0898692a6853d0b8121f6a0daeb8e0"
+    },
+    {
+      "source": "assets/Image/Ui/CardBattle/card-base.webp",
+      "sourceSha256": "82263a4b2a9fb4a3770d856771100bd839f1fdd6afc044f8481fcfd54b60431a",
+      "fallback": "assets/Image/Ui/CardBattle/card-base.ie.png",
+      "fallbackSha256": "5ffbdef7c5855b6e65d4717b62a05363844ddddaffe8116858217d504776f4d5"
+    },
+    {
+      "source": "assets/Image/Ui/CardBattle/hp-bar.webp",
+      "sourceSha256": "ec5b5631c75b18646e2051f5c0f794ec3d5de9130c22ad4595bcdc718a2ab685",
+      "fallback": "assets/Image/Ui/CardBattle/hp-bar.ie.png",
+      "fallbackSha256": "19239aaa27524772dd0d4fc08ee788f3671e06597b749e45f54477ac23e4cc7b"
+    },
+    {
+      "source": "assets/Image/Ui/ConductorTug/target.webp",
+      "sourceSha256": "2aa8299ef8a28f827f247aaaf7a15f9f8a2d1a46fc22162c5a873fa0bfede615",
+      "fallback": "assets/Image/Ui/ConductorTug/target.ie.png",
+      "fallbackSha256": "b164acfb80fc00632c660e22c26a516291ceec870cfecefd0e9e0dd21f23eee1"
+    },
+    {
+      "source": "assets/Image/Ui/ConductorTug/track.webp",
+      "sourceSha256": "7b5f51ae171a7d6ae50ff4bc6c63964e98a5f1a1035d7a83bec704da8a4ad8ca",
+      "fallback": "assets/Image/Ui/ConductorTug/track.ie.png",
+      "fallbackSha256": "51ab11d861082b74b996a5484ac4793c05631683e16cff12662e73d6dac94f1d"
+    },
+    {
+      "source": "assets/Image/Ui/dialog-box.webp",
+      "sourceSha256": "203bb58e5f7fad708b8856f260deec8d7612cc9e51eb47fcc42fbd45069a2d3e",
+      "fallback": "assets/Image/Ui/dialog-box.ie.png",
+      "fallbackSha256": "4707ea480ab0f24373159d4022ad3f44bb5ff3cde92e2133ecf4d025afcc14cd"
+    },
+    {
+      "source": "assets/Image/Ui/dice-00.webp",
+      "sourceSha256": "2793fef0f556563de03e50f4d9979c4c70dac5bf3a5601cf5e5edac14a5463cf",
+      "fallback": "assets/Image/Ui/dice-00.ie.png",
+      "fallbackSha256": "988869594c3ffd2f3b89449970b0c01295391de8cc950f89682c7523418019cd"
+    },
+    {
+      "source": "assets/Image/Ui/dice-01.webp",
+      "sourceSha256": "cae4cd063287c202f6837978f3c9c6c4e67f076d8f0ece11054c4f1b88ba3c57",
+      "fallback": "assets/Image/Ui/dice-01.ie.png",
+      "fallbackSha256": "b03efa51c186a85fd11c4c820e8945c354a24c8e562c6d1734f0dadfa115210b"
+    },
+    {
+      "source": "assets/Image/Ui/dice-02.webp",
+      "sourceSha256": "7fe5e9baa6d0d20932fe88b6736f9af376c80b7b91a0d2c17d7c6cb6a8566475",
+      "fallback": "assets/Image/Ui/dice-02.ie.png",
+      "fallbackSha256": "97069e2c82a31cb9c495a35e65f8ea252ed0b021df9a1ffbf5f1b3b14d22c01f"
+    },
+    {
+      "source": "assets/Image/Ui/dice-03.webp",
+      "sourceSha256": "5932d9445a9b1439a8ae48993e0268ba8777f8c673978c312c3ecd3f78e39b76",
+      "fallback": "assets/Image/Ui/dice-03.ie.png",
+      "fallbackSha256": "8d2c2939c16604d67b3c7f8ca9842ce8576020774d8a1ff98d7e41728e1a5c5b"
+    },
+    {
+      "source": "assets/Image/Ui/dice-04.webp",
+      "sourceSha256": "76343855a83560208ed43195f200f9f7a4cafd9f901ac7c355866dffe933a171",
+      "fallback": "assets/Image/Ui/dice-04.ie.png",
+      "fallbackSha256": "216acf74066cfdb75d29ed3d800dc0fd42934a68bb499decf4ef0e711c3f8996"
+    },
+    {
+      "source": "assets/Image/Ui/dice-05.webp",
+      "sourceSha256": "67868fc197f18424f57ae688712c467869df5a92649b4eb9917abc3484a8cf8e",
+      "fallback": "assets/Image/Ui/dice-05.ie.png",
+      "fallbackSha256": "727e00b3956d641ee3e1b2dca1a2a82ac670fc1a6573c5088b1512c12b7b98b9"
+    },
+    {
+      "source": "assets/Image/Ui/dice-06.webp",
+      "sourceSha256": "1a052f99cd5596f770f4de36fe32d07dfa04cdea24e747a68dc1d05be1e0bf79",
+      "fallback": "assets/Image/Ui/dice-06.ie.png",
+      "fallbackSha256": "d384fb0220b0d001306ca81a55ff3a7ceb2f3c994760e8d5f887ca5fa3fccd51"
+    },
+    {
+      "source": "assets/Image/Ui/label-back.webp",
+      "sourceSha256": "3d0a113ac75c24ee5da0d747528fcf9b68769f805cc699459a81019fc9340670",
+      "fallback": "assets/Image/Ui/label-back.ie.png",
+      "fallbackSha256": "0e5b303210d4cf1ca3a292f8f73597dccb346c3606b271c72f60dceaf77d6ddc"
+    },
+    {
+      "source": "assets/Image/Ui/label-front.webp",
+      "sourceSha256": "cc6e2b79d5ea2edb03135ee1d117f604bf5b06f485562e97fc97cae34ebe89a5",
+      "fallback": "assets/Image/Ui/label-front.ie.png",
+      "fallbackSha256": "5e8169d36c357297ca83156928a25bf82a0867979dfbe10eb46be80695ba6449"
+    },
+    {
+      "source": "assets/Image/Ui/map-failure.webp",
+      "sourceSha256": "25816dc490f9573bfa7560b79c058b2f0da2345f8b34f5a90e93496bb203cbeb",
+      "fallback": "assets/Image/Ui/map-failure.ie.png",
+      "fallbackSha256": "bb7ed197fd3b7a8bc980f87d7c3a2fb93132cf6eb04b2ccd5aadb39f63356a67"
+    },
+    {
+      "source": "assets/Image/Ui/map-success.webp",
+      "sourceSha256": "26fc27626ee7484c305ffd7d3b7849b758a1ff647d70a8e1bc40951ca102f6a7",
+      "fallback": "assets/Image/Ui/map-success.ie.png",
+      "fallbackSha256": "22fe0d9d6f5ccec4f2437cfb76da3887a9a29b2b301274b979303616d2f92d0e"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-02.webp",
+      "sourceSha256": "59bb5154f3d0659137c649d02dca1578324bd61c94df0e8224d37d4a9104500e",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-02.ie.jpg",
+      "fallbackSha256": "8f78f352f392cf3b6eeb7c4de7555370bd7dedf0bc403db0aad8d23ffb1983d8"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-03.webp",
+      "sourceSha256": "4ed7fcced9f97e82a7634b16a87ca2044956b04525b704a34d3719e9502b144d",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-03.ie.jpg",
+      "fallbackSha256": "aa2b35407b46ceaf5404e383bb2760d6b38e537c2b7fdd39a66118af9028e635"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-04.webp",
+      "sourceSha256": "7cee629e350b5660aadbca83c93023fe80b03dcee42634187159a92ba5b6ce3d",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-04.ie.jpg",
+      "fallbackSha256": "3bbbe13c60e89dcf13058730724210139a243900b358e601b7e4e647b7226f8b"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-05.webp",
+      "sourceSha256": "db64697457f6055526b0c61f8a684c39745e08c08020d5e67e62bdd9ddb0bea3",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-05.ie.jpg",
+      "fallbackSha256": "aba26f1cc5904a97416c10cae26f3c268c3085797f7fa51935485f51d4a4ade3"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-06.webp",
+      "sourceSha256": "eef1f1ebd29a3df48a33f16171728c35ea55ac293980617f72c9d9dba43ab4ff",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-06.ie.jpg",
+      "fallbackSha256": "82ed271b4632564b3b72c329f73a07127586583699998e9f540d330afdb37bed"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-07.webp",
+      "sourceSha256": "36f5c90c982d28be15856ca34ee3565d12e707f93484124e86d2f9bd0f4ed3d5",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-07.ie.jpg",
+      "fallbackSha256": "567edb00becc587483687573d9a090ce40f695936f296113dcd83ebe3b1947ac"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-fake-01.webp",
+      "sourceSha256": "61e1b04e43010aa09ed7973e1ef38fcd061549b5bb846d82a9e1421cb09f7c8c",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-fake-01.ie.jpg",
+      "fallbackSha256": "8a91375e31c096c20defde7dbb71089d22390052d82ac3b800eae304536a5889"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-fake-02.webp",
+      "sourceSha256": "48d9f19fa171231e7fe82c3babf165b8bfe9e249472b51d3ca3eecf5629051ad",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-fake-02.ie.jpg",
+      "fallbackSha256": "8c24df4e87496cad353fbd6bc0a038c30059df8f56900e780be4ca7a5e57f119"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-fake-03.webp",
+      "sourceSha256": "4d1e901ca3f1a613b7fcdb0395cca95ab38c599e12d92b90c0a304fe09618eba",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-fake-03.ie.jpg",
+      "fallbackSha256": "fcb53bdef79b120d6a0ff95c203f799405f783ee739c987ed721a4ff7ed2b741"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-fake-04.webp",
+      "sourceSha256": "998aa8794c7aa423036ca833054d850add0899fb53a7b1bcccf604c698d77ab6",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-fake-04.ie.jpg",
+      "fallbackSha256": "bf774c63e3e62347da1a5ae8de2c999afcf2dabda3b4ecd362f19a425f587c5f"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-inner-01.webp",
+      "sourceSha256": "e4c005d55f8db2dfee4d7f62fcd739a8a10f7d10b7da0abac464614e9cb472ab",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-inner-01.ie.jpg",
+      "fallbackSha256": "d4a452b64fa40f5c6062bd578f678d666c27e655487cc4c0bbca4fac60356fc5"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-carriage-inner-02.webp",
+      "sourceSha256": "073c1d4bde4989c6b746a863ecf662defeeea29aef74d82ac88f45e90623848e",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-carriage-inner-02.ie.jpg",
+      "fallbackSha256": "73c19a62864705d5967b681829770fadd203f111421aa5f1c56a024d7e217e7b"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-flower-sea-inside.webp",
+      "sourceSha256": "0489485afe0ea625253578a94dbb16114eefe35a1ae28d2c98a9387f73ba8cc1",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-flower-sea-inside.ie.jpg",
+      "fallbackSha256": "ea3b24b8fb48d6f6ff841ba517cdaf2d59b0b55335c695a031507a7b386695df"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-flower-sea.webp",
+      "sourceSha256": "b8c78fd9067b5ce7ece0c1057c0f48aa401e68a7a1b84f7a955ee49214e296d4",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-flower-sea.ie.jpg",
+      "fallbackSha256": "dc4878dbaaafb878dafd02b89ab2d5d1aa80dfc3b9cd00504d11f7b06a444610"
+    },
+    {
+      "source": "assets/Image/Ui/Save/save-silhouette-front-carriage.webp",
+      "sourceSha256": "a5f44473c2a7e35a8f59f676bdfe151d071db7c7c5d8727b27c01fa216a2a459",
+      "fallback": "assets/Image/Ui/Save/save-silhouette-front-carriage.ie.jpg",
+      "fallbackSha256": "e38effe4a9e6e499dab69d923cecb3cacd46d896732b1bcacbb56f2bd887b27d"
+    },
+    {
+      "source": "assets/Image/Ui/status-bar.webp",
+      "sourceSha256": "6212e39262d821d271a7f357b7ae8a6ad19e1be527c6f362f0250c3c863f8ca3",
+      "fallback": "assets/Image/Ui/status-bar.ie.png",
+      "fallbackSha256": "cb321595f38afcf314f02031c6bb99a27c8c89447f640a385dfa1aef6a39492f"
+    },
+    {
+      "source": "assets/ui/radio-tuning/dashboard.webp",
+      "sourceSha256": "3bf7fdd4089ec01151ed4ebf8f350944086db66c6722bd8ad69324989465f68d",
+      "fallback": "assets/ui/radio-tuning/dashboard.ie.png",
+      "fallbackSha256": "94129d96c6af740d6c413d9d84ee957ce2ec6bfd5cb8c8ab5ee16b2b7583dec3"
+    },
+    {
+      "source": "assets/ui/radio-tuning/radio-base.webp",
+      "sourceSha256": "e3c4ee997b3b5aa2962a2bdfb023523ecd9fe0b79a14ae7bb8d9a96e1e132803",
+      "fallback": "assets/ui/radio-tuning/radio-base.ie.png",
+      "fallbackSha256": "bf0d7997106cbc6f2c70cd696f4683face80b3e66e522587a34a72c2969e5142"
+    },
+    {
+      "source": "assets/ui/radio-tuning/radio.webp",
+      "sourceSha256": "c01666e0e4fc477e3882851ac7bcd83124891ea30b1896c76ff7f6f3b4cae665",
+      "fallback": "assets/ui/radio-tuning/radio.ie.png",
+      "fallbackSha256": "1a5064d7def488c421a440a9c2b860c7171263415e0c832117db82632b70e136"
+    },
+    {
+      "source": "GroupIntro/background.webp",
+      "sourceSha256": "4d6e9a86c354e8545a6064f8d7ecf1a6c14fbb1563c1364d6e2d2c1e0927be33",
+      "fallback": "GroupIntro/background.ie.jpg",
+      "fallbackSha256": "c06eaf1e927157f953260dfc8a4e76203644addccba979a3d1adb1c0e7f446cd"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/1_1.webp",
+      "sourceSha256": "4bbad7a7921185ff3fd5515f6a858589a731bafdbd1c4161c82c1a923299dc88",
+      "fallback": "GroupIntro/dxh/assets/1_1.ie.jpg",
+      "fallbackSha256": "931c4f3afbab53e4f58e7977f84f11aa14fe3b56f9e00e05ae9e5d8301b949a8"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/20260427_fin.webp",
+      "sourceSha256": "36397e8cfb8cdd0874766478affefd69ffbc7c7239dc5130fe9639b1349b40e2",
+      "fallback": "GroupIntro/dxh/assets/20260427_fin.ie.jpg",
+      "fallbackSha256": "6612816a986a953efc83f7050d3edac71deaef70fb620cfcb5a02c4fe1bdbfa5"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/20260615.webp",
+      "sourceSha256": "d4b0674659434912c5dcb1dfdef52910f8d5e4b131fca7b6a50668024b605bac",
+      "fallback": "GroupIntro/dxh/assets/20260615.ie.jpg",
+      "fallbackSha256": "27a76c5c686d5171b7df05aa43ac2737954eba511fd49e30d6a5c8b9807fd5ae"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/20260717.webp",
+      "sourceSha256": "fda4a627ebcd41865cb6239917975c45321250c3408589e4d5921ee3d867c3d6",
+      "fallback": "GroupIntro/dxh/assets/20260717.ie.jpg",
+      "fallbackSha256": "2036a126aab4f8c5f1680d01639b6597126161b8d956feaaf788e4327bfca6b1"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/20260722.webp",
+      "sourceSha256": "ad288108d5a284c2b36df503a8d8e97ce88ef3472faf3d4e6364d929d632a95b",
+      "fallback": "GroupIntro/dxh/assets/20260722.ie.jpg",
+      "fallbackSha256": "f7814967d499b5ac9b31f797de2a310ca705159dcaad6c81cba718de8d149a57"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/bottom.webp",
+      "sourceSha256": "7c6a16d1f8b3759058853e7ea4d3d014a5928764982468917656b649b82b2c81",
+      "fallback": "GroupIntro/dxh/assets/bottom.ie.png",
+      "fallbackSha256": "5be9eec41f336d52b6c19079497c462b6b72be758a2574743de7a2ee9bc4c79f"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/profile.webp",
+      "sourceSha256": "1372e44e0f33f549f2b4d690e2c80a7a1fc0db1c62f08263f64533cdc29b6f3f",
+      "fallback": "GroupIntro/dxh/assets/profile.ie.jpg",
+      "fallbackSha256": "0dc6adb0d5d324fac987498d3784449a4d5968615b7730c72dbe4535fa801462"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/screen2_1.webp",
+      "sourceSha256": "b43dff18c10a276955bcaf06f4d5eb5a971d24a6a62813a41a56b30c6a350128",
+      "fallback": "GroupIntro/dxh/assets/screen2_1.ie.jpg",
+      "fallbackSha256": "2e9dda6c1e4cda5706ce6db788cde69e507022b4c1287587462b46230ef8ea01"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/screen2_2.webp",
+      "sourceSha256": "beaaf2ceb60932a71c9ab9eb0d8949dcc0b08de8afe714311f6b30851d87f746",
+      "fallback": "GroupIntro/dxh/assets/screen2_2.ie.png",
+      "fallbackSha256": "9f34e3c13c7e569cfc375db5ce4a3e879d6437184a0626872b20a8abfe92844b"
+    },
+    {
+      "source": "GroupIntro/dxh/assets/screen2_3.webp",
+      "sourceSha256": "36397e8cfb8cdd0874766478affefd69ffbc7c7239dc5130fe9639b1349b40e2",
+      "fallback": "GroupIntro/dxh/assets/screen2_3.ie.jpg",
+      "fallbackSha256": "6612816a986a953efc83f7050d3edac71deaef70fb620cfcb5a02c4fe1bdbfa5"
+    },
+    {
+      "source": "GroupIntro/zxy/image/p1.webp",
+      "sourceSha256": "497052847b51bc2e3d1182ff306658e07ee106477ac171932802ed75fd4fa939",
+      "fallback": "GroupIntro/zxy/image/p1.ie.png",
+      "fallbackSha256": "95175f713b7f97b18582d5f1ca202ebd4f8baa9c597e016f4ffb09fc5553baed"
+    },
+    {
+      "source": "GroupIntro/zxy/image/p2.webp",
+      "sourceSha256": "6fbe52d2b44fb9f0d60d1bd6438339d038de0512a343f4f6ea7cfff5a40609a3",
+      "fallback": "GroupIntro/zxy/image/p2.ie.jpg",
+      "fallbackSha256": "2b080ae58121f71e7ecddde668b65d87bf728430f97e96da2724be672a5350b3"
+    }
+  ]
+}

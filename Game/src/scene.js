@@ -28,6 +28,7 @@
   }
 
   function getHitMaskWorker() {
+    if (typeof document !== "undefined" && document.documentMode) return null;
     if (hitMaskWorkerUnavailable || !hitMaskWorkerUrl || typeof Worker === "undefined") return null;
     if (hitMaskWorker) return hitMaskWorker;
     try {
@@ -685,7 +686,9 @@
       }
       // 只在键盘等 :focus-visible 聚焦时显示高亮，鼠标点击留下的普通焦点不残留光效。
       requestAnimationFrame(() => {
-        if (document.activeElement === entry.button && entry.button.matches(":focus-visible")) {
+        if (document.activeElement === entry.button && (
+          document.documentMode || entry.button.matches(":focus-visible")
+        )) {
           entry.art.classList.add("is-focused");
         }
       });

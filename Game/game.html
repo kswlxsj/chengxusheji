@@ -2,20 +2,21 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
   <link rel="stylesheet" href="styles/carriage-02-darkness.css?v=carriage05-half-dark-20260916-2">
-  <script src="src/namespace.js"></script>
+  <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/carriage-02-darkness.ie.css|styles/ie-overrides.css"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
 
-  <script src="src/auth.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
-  <script src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
    
-  <script src="src/auth-guard.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
 </head>
 <body>
@@ -42,71 +43,71 @@
   </main>
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="data/compiled-game-data.js?v=carriage06-investigation-gate-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="data/compiled-game-data.js?v=carriage06-investigation-gate-20260917-1"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
-  <script src="src/page-flow.js?v=save-manager-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/page-flow.js?v=save-manager-20260918-1"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   
-  <script src="src/state.js?v=checkpoint-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/state.js?v=checkpoint-20260917-1"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
-  <script src="src/ui.js?v=checkpoint-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/ui.js?v=checkpoint-20260917-1"></script>
   <!-- TrainGame.GameWindow、TrainGame.TextPlayer、TrainGame.UIManager，提供窗口、文本和 UI 管理接口。 -->
 
-  <script src="src/audio.js?v=preserve-rate-position-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/audio.js?v=preserve-rate-position-20260918-1"></script>
   <!-- TrainGame.AudioManager 与 BackgroundAudioManager，共用淡化音源生命周期。 -->
   
-  <script src="src/scene.js?v=carriage05-half-dark-click-through-20260916-3"></script>
+  <script src="src/compat-loader.js" data-src="src/scene.js?v=carriage05-half-dark-click-through-20260916-3"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
-  <script src="src/events.js?v=checkpoint-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/events.js?v=checkpoint-20260917-1"></script>
   <!-- TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
   
-  <script src="src/dice.js?v=attribute-balance-20260916-1"></script>
+  <script src="src/compat-loader.js" data-src="src/dice.js?v=attribute-balance-20260916-1"></script>
   <!-- TrainGame.Dice，提供检定注册、查询和执行接口。 -->
   
-  <script src="src/custom-actions.js?v=carriage05-half-dark-20260916-2"></script>
+  <script src="src/compat-loader.js" data-src="src/custom-actions.js?v=carriage05-half-dark-20260916-2"></script>
   <!-- TrainGame.registerProjectActions，用于向事件引擎注册项目自定义动作。 -->
 
-  <script src="src/san-zero-sequence.js?v=san-zero-load-timeout-20260913-2"></script>
+  <script src="src/compat-loader.js" data-src="src/san-zero-sequence.js?v=san-zero-load-timeout-20260913-2"></script>
   <!-- SAN 归零后的记者采访与 PC 失控演出。 -->
 
-  <script src="src/ending-a-sequence.js?v=true-ending-20260915-1"></script>
-  <script src="src/thanks-ending-sequence.js?v=true-ending-thanks-20260919-1"></script>
+  <script src="src/compat-loader.js" data-src="src/ending-a-sequence.js?v=true-ending-20260915-1"></script>
+  <script src="src/compat-loader.js" data-src="src/thanks-ending-sequence.js?v=true-ending-thanks-20260919-1"></script>
   <!-- 真结局：极限加速、记忆闪回、终点站苏醒与崭新一天的完整过场。 -->
 
-  <script src="src/cry-ending-sequence.js?v=cry-ending-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/cry-ending-sequence.js?v=cry-ending-20260918-1"></script>
   <!-- 未能救活乘务员、选择加速后的半梦半醒结局演出。 -->
 
-  <script src="src/fake-ending-sequence.js?v=fake-ending-20260916-1"></script>
+  <script src="src/compat-loader.js" data-src="src/fake-ending-sequence.js?v=fake-ending-20260916-1"></script>
   <!-- 伪结局：看似抵达终点并成功下车，最终再次看见 MOVE FORWARD。 -->
 
-  <script src="src/parking-ending-sequence.js?v=scene-audio-20260915-1"></script>
+  <script src="src/compat-loader.js" data-src="src/parking-ending-sequence.js?v=scene-audio-20260915-1"></script>
   <!-- 停车结局：减速停车、黑暗吞噬、血水与啃食声的完整过场演出。 -->
 
-  <script src="src/lost-ending-sequence.js?v=lost-ending-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/lost-ending-sequence.js?v=lost-ending-20260917-1"></script>
   <!-- 失落结局：三段天堂画面、失真文字与 lost BGM 的完整过场演出。 -->
   
-  <script src="src/minigames.js"></script>
+  <script src="src/compat-loader.js" data-src="src/minigames.js"></script>
   <!-- TrainGame.Minigames，小游戏注册表：JSON 的 minigame 动作只引用这里的编号。 -->
 
-  <script src="src/minigame-games/webgl3d-demo.js"></script>
+  <script src="src/compat-loader.js" data-src="src/minigame-games/webgl3d-demo.js"></script>
   <!-- 项目小游戏模块（src/minigame-games/*.js）：注册表条目，顶层只注册、运行期再碰 DOM。 -->
 
-  <script src="src/minigame-games/card-battle.js?v=enemy-play-preview-20260919-1"></script>
+  <script src="src/compat-loader.js" data-src="src/minigame-games/card-battle.js?v=enemy-play-preview-20260919-1"></script>
   <!-- 战斗轮卡牌小游戏：四张牌单出/双出、敌人候选牌与濒死无限体力。 -->
 
-    <script src="src/minigame-games/radio-tuning.js?v=frequency-readout-20260916-1"></script>
+    <script src="src/compat-loader.js" data-src="src/minigame-games/radio-tuning.js?v=frequency-readout-20260916-1"></script>
   <!-- E-0008 收音机调频小游戏：追踪移动频段并稳定解码广播。 -->
 
-  <script src="src/minigame-games/crew-negotiation.js"></script>
+  <script src="src/compat-loader.js" data-src="src/minigame-games/crew-negotiation.js"></script>
   <!-- 乘务员安抚与交涉小游戏模块（属于 src/minigame-games/*.js）：顶层只注册、运行期再碰 DOM。 -->
 
-    <script src="src/minigame-games/conductor-tug.js?v=scene-stability-20260913-1"></script>
+    <script src="src/compat-loader.js" data-src="src/minigame-games/conductor-tug.js?v=scene-stability-20260913-1"></script>
   <!-- 终局控制杆争夺小游戏：进入先头车厢后触发，抓握区大小读取里世界交钥匙历史。 -->
 
-  <script src="src/main.js?v=save-manager-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/main.js?v=save-manager-20260918-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

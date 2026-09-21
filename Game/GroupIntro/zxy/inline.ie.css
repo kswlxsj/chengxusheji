@@ -1,0 +1,48 @@
+
+		body
+		{
+			background-image: url(image/p2.ie.jpg);
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		}
+		div.transbox
+		{
+		  width: 90%;
+		  max-width: 1100px;
+		  margin: 90px auto;
+		  background-color: #ffffff;
+		  border: 1px solid #FFFFFF;
+		  opacity:0.9;
+		  padding: 20px;
+		  border-radius: 10px;
+		}
+		.wrap{
+			margin:0 auto;
+			width:80%;
+		}
+		#left{
+			width: 25%;
+			float:left;
+			box-sizing: border-box;
+			margin-left: 5%;
+			margin-top: 3%;
+		}
+		#right{
+			width: 65%;
+			float: right;
+			box-sizing: border-box;
+		}
+
+		h1 {text-align: center;}
+		h2.ex1 {margin-left:30px;}
+		h3.ex1 {margin-left:30px;}
+		img.ex1{margin-left:30px;}
+		p {text-align: left; line-height: 1.8;}
+		p {color:#555555;}
+
+		.clearfix::after {
+			content: "";
+			display: table;
+			clear: both;
+		}

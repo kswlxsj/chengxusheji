@@ -2,15 +2,16 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 结局达成</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
-  <script src="src/namespace.js"></script>
-  <script src="src/auth.js"></script>
-  <script src="src/page-flow.js?v=ending-reveal-20260918-1"></script>
-  <script src="src/player-profile.js"></script>
-  <script src="src/auth-guard.js"></script>
+  <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/ie-overrides.css"></script>
+  <script src="src/compat-loader.js" data-src="src/auth.js"></script>
+  <script src="src/compat-loader.js" data-src="src/page-flow.js?v=ending-reveal-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
 </head>
 <body>
   <main class="ending-reveal" aria-labelledby="ending-title">
@@ -22,26 +23,6 @@
       <p class="ending-reveal-unlocked" role="status">该结局已收录至结局收藏。</p>
     </section>
   </main>
-  <script>
-    const reason = new URLSearchParams(window.location.search).get("reason") || "san";
-    const ending = TrainGame.ENDING_CATALOG.find((entry) => entry.id === reason)
-      || TrainGame.ENDING_CATALOG.find((entry) => entry.id === "san");
-    const reveal = document.querySelector(".ending-reveal");
-    document.querySelector("#ending-title").textContent = ending.title;
-    document.querySelector("#ending-description").textContent = ending.description;
-    reveal.style.setProperty(
-      "--ending-background-image",
-      `url("${new URL(ending.image, window.location.href).href}")`
-    );
-    // 首个动画帧可能仍发生在页面首次绘制之前；跨两个帧后再改变透明度，
-    // 才能保证浏览器已提交 opacity: 0 的初态并触发 CSS 淡入。
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => reveal.classList.add("is-visible"));
-    });
-    window.setTimeout(() => {
-      reveal.classList.add("is-leaving");
-      window.setTimeout(() => TrainGame.PageFlow.navigate("ending", { reason }, true), 600);
-    }, 3400);
-  </script>
+  <script src="src/compat-loader.js" data-src="src/ending-reveal-page.js"></script>
 </body>
 </html>

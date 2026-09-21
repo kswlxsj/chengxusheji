@@ -1,0 +1,91 @@
+/* IE11/Edge IE 模式专用：只处理会影响阅读或操作的布局，装饰效果允许降级。 */
+html.ie11 body {
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+html.ie11 .site-shell,
+html.ie11 .game-shell,
+html.ie11 .modal-card,
+html.ie11 .settings-panel,
+html.ie11 .save-manager-panel {
+  background-color: rgba(9, 12, 18, .94);
+}
+
+html.ie11 .scene-stage,
+html.ie11 .home-page,
+html.ie11 .ending-page,
+html.ie11 .minigame-stage {
+  position: relative;
+}
+
+html.ie11 .scene-background,
+html.ie11 .scene-object-art,
+html.ie11 .page-cover,
+html.ie11 .ending-a-background,
+html.ie11 .ending-a-video,
+html.ie11 .thanks-ending-background,
+html.ie11 .thanks-ending-video {
+  width: 100%;
+  height: 100%;
+}
+
+html.ie11 .home-actions > *,
+html.ie11 .ending-actions > *,
+html.ie11 .settings-tabs > *,
+html.ie11 .dialog-actions > *,
+html.ie11 .save-slot-actions > * {
+  margin: 4px;
+}
+
+html.ie11 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+html.ie11 .mg-tug-pointer {
+  transform: rotate(0deg);
+}
+
+html.ie11 .radio-dial::after {
+  transform: rotate(0deg);
+}
+
+html.ie11 .ending-reveal,
+html.ie11 .ending-reveal-backdrop,
+html.ie11 .home-op,
+html.ie11 .home-op-stage,
+html.ie11 .ending-a-sequence,
+html.ie11 .thanks-ending-sequence,
+html.ie11 .cry-ending-sequence,
+html.ie11 .fake-ending-sequence,
+html.ie11 .parking-ending-sequence,
+html.ie11 .lost-ending-sequence,
+html.ie11 .check-roll-modal,
+html.ie11 .minigame-window {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+html.ie11 .dialog-frame {
+  bottom: 100%;
+}
+
+html.ie11 .home-action::before,
+html.ie11 .home-action::after {
+  width: 52px;
+}
+
+html.ie11 .lost-ending-word {
+  animation-delay: 0ms;
+}
+
+html.ie11 .card-battle .cb-card {
+  width: 82px;
+  height: 110px;
+}
+
+html.ie11 * {
+  scroll-behavior: auto;
+}

@@ -1,0 +1,56 @@
+
+    :root {
+      --background: #ffffff;
+      --foreground: #17191c;
+      --font-ui: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --muted: #73777c;
+      --light: #a8adb3;
+      --line: #e6e7e9;
+      --accent: #4d8fd0;
+      --accent-soft: #eef5fb;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 320px; scroll-behavior: smooth; }
+    body { margin: 0; background: #ffffff; color: #17191c; font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    a { color: inherit; text-decoration: none; }
+
+    .intro-page { min-height: 100vh; background: #fff; }
+    .site-header { display: -ms-grid; display: grid; -ms-grid-columns: 1fr auto 1fr; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; padding: 0 clamp(24px, 5vw, 72px); border-bottom: 1px solid #e6e7e9; }
+    .header-title { display: flex; align-items: center; gap: 12px; font-size: 19px; }
+    .header-avatar { width: 32px; height: 32px; overflow: hidden; border-radius: 50%; background: #eef5fb; }
+    .header-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 46%; }
+    .header-number { -ms-grid-column-align: end; justify-self: end; color: #a8adb3; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 10px; letter-spacing: .1em; }
+
+    .intro-layout { display: -ms-grid; display: grid; -ms-grid-columns: minmax(300px, .84fr) clamp(56px, 8vw, 130px) minmax(360px, 1fr); grid-template-columns: minmax(300px, .84fr) minmax(360px, 1fr); align-items: center; gap: clamp(56px, 8vw, 130px); width: min(1080px, calc(100% - 120px)); min-height: 650px; margin: 0 auto; padding: 74px 0 68px; }
+    .section-label { margin: 0; color: #a8adb3; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
+    .intro-copy h1 { margin: 21px 0 23px; font-size: clamp(48px, 6vw, 76px); font-weight: 700; letter-spacing: -.08em; line-height: .95; }
+    .basic-info { padding: 17px 0 18px; border-top: 1px solid #e6e7e9; border-bottom: 1px solid #e6e7e9; }
+    .basic-info p { display: -ms-grid; display: grid; -ms-grid-columns: 43px 13px minmax(0, 1fr); grid-template-columns: 43px minmax(0, 1fr); gap: 13px; margin: 9px 0; color: #484c51; font-size: 13px; line-height: 1.5; }
+    .basic-info p span { color: #a8adb3; }
+    .basic-info a { color: #4d8fd0; word-break: break-word; }
+    .intro-copy h2 { margin: 33px 0 14px; font-size: 22px; font-weight: 600; letter-spacing: -.04em; }
+    .intro-text { margin: 0; color: #5c6065; font-size: 13px; line-height: 2; text-align: justify; }
+
+    .photo-block { position: relative; width: 100%; margin: 0; }
+    .photo-block::before { content: ''; position: absolute; z-index: -1; top: 18px; right: -17px; bottom: -17px; left: 17px; background: #eef5fb; }
+    .photo-block img { display: block; width: 100%; aspect-ratio: 1 / 1.18; object-fit: cover; object-position: center 46%; }
+
+    @media (max-width: 900px) {
+      .intro-layout { -ms-grid-columns: minmax(0, .95fr) 45px minmax(250px, 1fr); grid-template-columns: minmax(0, .95fr) minmax(250px, 1fr); gap: 45px; width: min(100% - 64px, 700px); min-height: auto; padding: 60px 0 54px; }
+      .photo-block { -ms-grid-column: 2; grid-column: 2; -ms-grid-row: 1; grid-row: 1; }
+      .intro-copy { -ms-grid-column: 1; grid-column: 1; -ms-grid-row: 1; grid-row: 1; }
+    }
+
+    @media (max-width: 620px) {
+      .site-header { height: 64px; padding: 0 17px; }
+      .header-title { font-size: 16px; }
+      .header-number { display: none; }
+      .intro-layout { display: flex; flex-direction: column; align-items: stretch; gap: 37px; width: calc(100% - 38px); padding: 42px 0 45px; }
+      .photo-block { order: -1; width: min(100%, 440px); margin: 0 auto; }
+      .photo-block img { aspect-ratio: 1 / .95; }
+      .intro-copy h1 { font-size: 57px; }
+      .intro-copy h2 { margin-top: 29px; }
+      .intro-text { font-size: 13px; line-height: 1.9; text-align: left; }
+    }

@@ -2,20 +2,21 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 设置</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
-  <script src="src/namespace.js"></script>
+  <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/ie-overrides.css"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
-  <script src="src/auth.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
-  <script src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
-  <script src="src/auth-guard.js"></script>
+  <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
   <!-- 调用 TrainGame.Auth.requireAuth，并注册 pageshow 登录校验；不新增主要公开接口。 -->
-  <script src="src/page-button-sound.js?v=button04b-20260916-2"></script>
-  <script src="src/bgm.js" defer></script>
+  <script src="src/compat-loader.js" data-src="src/page-button-sound.js?v=button04b-20260916-2"></script>
+  <script src="src/compat-loader.js" data-src="src/bgm.js" data-defer="true"></script>
 </head>
 <body>
   <main class="site-shell content-page settings-page">
@@ -82,7 +83,7 @@
       <nav class="page-footer"><a href="home.html">返回主页</a></nav>
     </section>
   </main>
-  <script src="src/settings.js"></script>
+  <script src="src/compat-loader.js" data-src="src/settings.js"></script>
   <!-- 初始化设置标签、音量滑杆和结局收藏卡片。 -->
 </body>
 </html>
