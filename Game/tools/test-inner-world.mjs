@@ -131,6 +131,24 @@ assert.equal(game.state.flags.carried_crew, true);
 assert.equal(game.state.flags.crew_waiting_outside_inner_world, false);
 assert.equal(game.trace.some(t => t.text === "你身旁的乘务员似乎并不知道这一切。"), true);
 
+// 所有返回现实的非终局出口都必须恢复同行乘务员；无乘务员时不得凭空生成。
+for (const [eventId, expectedScene] of [
+  ["E_525", "carriage_06"],
+  ["E_FAKE01_EXIT", "carriage_03"]
+]) {
+  game = fixture({ crew_waiting_outside_inner_world: true }, [], "carriage_inner_01");
+  await game.play(eventId);
+  assert.equal(game.state.sceneId, expectedScene, `${eventId} 应保持既有现实出口落点`);
+  assert.equal(game.state.flags.carried_crew, true, `${eventId} 应恢复同行乘务员`);
+  assert.equal(game.state.flags.crew_waiting_outside_inner_world, false, `${eventId} 应清除里世界外等候标记`);
+  assert.equal(game.trace.some(t => t.text === "你身旁的乘务员似乎并不知道这一切。"), true);
+
+  game = fixture({}, [], "carriage_inner_01");
+  await game.play(eventId);
+  assert.equal(game.state.sceneId, expectedScene, `${eventId} 的单人路线应保持既有现实出口落点`);
+  assert.notEqual(game.state.flags.carried_crew, true, `${eventId} 不得凭空生成乘务员`);
+}
+
 // 空车厢左门：首次点击做一次 10%/60%/30% 静默判定，此后重复调查一律被锁上并留在空车厢；
 // 到过伪4（inner_world_entered）后该门解锁，改为磨损门描写 → 真实2号车厢。
 for (const [roll, destination] of [[0.05, "carriage_06"], [0.4, "carriage_inner_01"], [0.9, "carriage_03"]]) {

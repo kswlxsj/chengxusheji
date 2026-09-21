@@ -8291,6 +8291,14 @@ window.GAME_DATA = {
             "hold": 550,
             "fadeOut": 900
           }
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_waiting_outside_inner_world",
+            "equals": true
+          },
+          "next": "E_502_CARRIAGE03_CREW"
         }
       ]
     },
@@ -8442,6 +8450,14 @@ window.GAME_DATA = {
         {
           "type": "dialogue",
           "text": "此时的车厢已经被啃食。座椅东倒西歪，墙壁与地板布满撕咬的痕迹，空气中残留着潮湿的铁锈味。"
+        },
+        {
+          "type": "conditionalJump",
+          "when": {
+            "flag": "crew_waiting_outside_inner_world",
+            "equals": true
+          },
+          "next": "E_502_CARRIAGE03_CREW"
         }
       ]
     },

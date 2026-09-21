@@ -1068,4 +1068,23 @@ game = fixture({
 await game.play("E_031_CREW_KEY");
 assert.equal(game.trace.some((entry) => entry.text?.includes("猛地抢过右杆")), true, "抢夺把手应进入控制杆争夺前的剧情");
 
+// 玩家持钥匙以及两个里世界旁路出口恢复同行后，点击把手也必须进入抢夺路线。
+for (const exitEvent of [null, "E_525", "E_FAKE01_EXIT"]) {
+  game = fixture({
+    sceneId: exitEvent ? "carriage_inner_01" : "front_carriage",
+    flags: exitEvent
+      ? { carried_crew: false, crew_waiting_outside_inner_world: true, keys_player: true }
+      : { carried_crew: true, keys_player: true },
+    inventory: ["driver_cab_key", "control_panel_key"],
+    choiceLabels: ["抢过把手，向上推——加速"]
+  });
+  if (exitEvent) await game.play(exitEvent);
+  await game.play("E_032");
+  assert.equal(
+    game.trace.some((entry) => entry.text?.includes("猛地抢过右杆")),
+    true,
+    `${exitEvent || "玩家持钥匙"} 的同行路线应进入控制杆争夺`
+  );
+}
+
 console.log("主线接线回归通过：4号车厢首次发现与医学询问、折返描写、3号→2号点门驱动、Clicker 与控制杆接线。");
