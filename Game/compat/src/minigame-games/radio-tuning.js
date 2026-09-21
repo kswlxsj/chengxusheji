@@ -186,11 +186,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     });
     context.registerCleanup(function () {
       cancelAnimationFrame(animationFrame);
-      root.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keydown", onKeydown);
       dial.removeEventListener("click", onDialClick);
       root.remove();
     });
-    root.addEventListener("keydown", onKeydown);
+    document.addEventListener("keydown", onKeydown);
     dial.addEventListener("click", onDialClick);
     pointerAngle = 0;
     rangeCenter = 82 + Math.random() * 80;
