@@ -493,10 +493,10 @@ window.GAME_DATA = {
           "image": "assets/Image/Scene/StillLife/bag-05-a.webp",
           "fullCanvas": true,
           "hitPosition": {
-            "x": 16,
-            "y": 39,
-            "width": 14,
-            "height": 11
+            "x": 13,
+            "y": 53,
+            "width": 17,
+            "height": 17
           },
           "position": {
             "x": 0,
@@ -513,10 +513,10 @@ window.GAME_DATA = {
           "image": "assets/Image/Scene/StillLife/bag-05-b.webp",
           "fullCanvas": true,
           "hitPosition": {
-            "x": 65,
-            "y": 36,
-            "width": 11,
-            "height": 11
+            "x": 63,
+            "y": 52,
+            "width": 14,
+            "height": 17
           },
           "position": {
             "x": 0,

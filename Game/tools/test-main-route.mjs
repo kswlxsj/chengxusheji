@@ -164,8 +164,8 @@ assert.deepEqual(objectOf("carriage_05", "window_05_left").position, { x: 19, y:
 assert.deepEqual(objectOf("carriage_05", "window_05_right").position, { x: 61, y: 33, width: 18, height: 15 }, "5号右窗热点应收在玻璃内部，不得延伸到窗框或座椅");
 assert.equal(objectOf("carriage_05", "clutter_05_a").clickEvent, "E_05_JUNK_A");
 assert.equal(objectOf("carriage_05", "clutter_05_b").clickEvent, "E_05_JUNK_B");
-assert.deepEqual(objectOf("carriage_05", "clutter_05_a").hitPosition, { x: 16, y: 39, width: 14, height: 11 });
-assert.deepEqual(objectOf("carriage_05", "clutter_05_b").hitPosition, { x: 65, y: 36, width: 11, height: 11 });
+assert.deepEqual(objectOf("carriage_05", "clutter_05_a").hitPosition, { x: 13, y: 53, width: 17, height: 17 });
+assert.deepEqual(objectOf("carriage_05", "clutter_05_b").hitPosition, { x: 63, y: 52, width: 14, height: 17 });
 const carriage05LeftJunk = objectOf("carriage_05", "clutter_05_c");
 assert.equal(carriage05LeftJunk.image, "assets/Image/Scene/StillLife/trash-05-b.webp", "5号左侧杂物应对应左边的白色袋堆");
 assert.equal(carriage05LeftJunk.clickEvent, "E_05_JUNK_LEFT", "5号左侧杂物应使用独立随机对白");
