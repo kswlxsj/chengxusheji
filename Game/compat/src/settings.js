@@ -13,6 +13,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   var shortcutSettingMessage = document.querySelector("#shortcut-setting-message");
   var endingList = document.querySelector("#ending-collection");
   var endingProgress = document.querySelector("#ending-progress");
+  var achievementList = document.querySelector("#achievement-collection");
+  var achievementProgress = document.querySelector("#achievement-progress");
   function selectTab(tab) {
     var _document$querySelect, _document$querySelect2, _document$querySelect3, _document$querySelect4;
     for (var _i = 0, _tabs = tabs; _i < _tabs.length; _i++) {
@@ -204,7 +206,9 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
   var unlockedCount = Game.ENDING_CATALOG.filter(function (ending) {
     return unlockedEndings.has(ending.id);
   }).length;
+  if (unlockedCount === Game.ENDING_CATALOG.length) Game.PlayerProfile.unlockAchievement("all_endings");
   endingProgress.textContent = "\u5DF2\u6536\u96C6 ".concat(unlockedCount, " / ").concat(Game.ENDING_CATALOG.length);
+  endingList.replaceChildren();
   var _iterator2 = _createForOfIteratorHelper(Game.ENDING_CATALOG),
     _step2;
   try {
@@ -216,5 +220,50 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
     _iterator2.e(err);
   } finally {
     _iterator2.f();
+  }
+  function createAchievementCard(achievement, unlocked) {
+    var card = document.createElement("article");
+    card.className = "achievement-card".concat(unlocked ? " is-unlocked" : " is-locked");
+    var preview = document.createElement("div");
+    preview.className = "achievement-card-preview";
+    if (unlocked) {
+      var image = document.createElement("img");
+      image.src = achievement.image;
+      image.alt = "".concat(achievement.title, "\u6210\u5C31\u56FE\u6807");
+      preview.append(image);
+    } else {
+      var placeholder = document.createElement("span");
+      placeholder.className = "achievement-card-lock";
+      placeholder.textContent = "？";
+      placeholder.setAttribute("aria-hidden", "true");
+      preview.append(placeholder);
+    }
+    var content = document.createElement("div");
+    content.className = "achievement-card-content";
+    var heading = document.createElement("h3");
+    heading.textContent = unlocked ? achievement.title : "？？？";
+    var description = document.createElement("p");
+    description.textContent = unlocked ? achievement.description : "未解锁";
+    content.append(heading, description);
+    card.append(preview, content);
+    return card;
+  }
+  var unlockedAchievements = new Set(Game.PlayerProfile.getUnlockedAchievements());
+  var unlockedAchievementCount = Game.ACHIEVEMENT_CATALOG.filter(function (achievement) {
+    return unlockedAchievements.has(achievement.id);
+  }).length;
+  achievementProgress.textContent = "\u5DF2\u89E3\u9501 ".concat(unlockedAchievementCount, " / ").concat(Game.ACHIEVEMENT_CATALOG.length);
+  achievementList.replaceChildren();
+  var _iterator3 = _createForOfIteratorHelper(Game.ACHIEVEMENT_CATALOG),
+    _step3;
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var achievement = _step3.value;
+      achievementList.append(createAchievementCard(achievement, unlockedAchievements.has(achievement.id)));
+    }
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
   }
 })(window.TrainGame);

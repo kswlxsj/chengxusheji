@@ -136,6 +136,10 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
         this.objectStates = source.objectStates || {};
         this.checkResults = source.checkResults || {};
         this.checkAttempts = source.checkAttempts || {};
+        this.runStats = source.runStats || {
+          sanLost: 0,
+          minigamesStarted: {}
+        };
       }
     }, {
       key: "snapshot",
@@ -151,7 +155,8 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
           inventory: this.inventory,
           objectStates: this.objectStates,
           checkResults: this.checkResults,
-          checkAttempts: this.checkAttempts
+          checkAttempts: this.checkAttempts,
+          runStats: this.runStats
         });
       }
     }, {
@@ -160,11 +165,27 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
         if (!isPlainObject(snapshot)) throw new TypeError("存档状态格式无效");
         var clean = Game.deepClone(snapshot);
         if (clean.checkAttempts === undefined) clean.checkAttempts = {};
+        if (clean.runStats === undefined) clean.runStats = {
+          sanLost: 0,
+          minigamesStarted: {}
+        };
         if (clean.sceneId != null && typeof clean.sceneId !== "string") throw new TypeError("存档场景 ID 无效");
         if (clean.currentEventId != null && typeof clean.currentEventId !== "string") throw new TypeError("存档事件 ID 无效");
         for (var _i = 0, _arr = ["attributes", "skills", "skillOverrides", "flags", "objectStates", "checkResults", "checkAttempts"]; _i < _arr.length; _i++) {
           var key = _arr[_i];
           if (!isPlainObject(clean[key])) throw new TypeError("\u5B58\u6863\u5B57\u6BB5 ".concat(key, " \u683C\u5F0F\u65E0\u6548"));
+        }
+        if (!isPlainObject(clean.runStats) || !isPlainObject(clean.runStats.minigamesStarted)) {
+          throw new TypeError("存档运行统计格式无效");
+        }
+        if (!Number.isInteger(clean.runStats.sanLost) || clean.runStats.sanLost < 0) {
+          throw new TypeError("存档 SAN 损失统计无效");
+        }
+        for (var _i2 = 0, _Object$entries = Object.entries(clean.runStats.minigamesStarted); _i2 < _Object$entries.length; _i2++) {
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+            gameId = _Object$entries$_i[0],
+            count = _Object$entries$_i[1];
+          if (!gameId || !Number.isInteger(count) || count < 0) throw new TypeError("存档小游戏统计无效");
         }
 
         // 旧存档迁移：力量、敏捷和幸运已从当前属性表删除；新的体质是独立属性，
@@ -180,8 +201,8 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
         }
 
         // 旧版本的侦查、医学和话术已改为直接点击或属性检定，不再保留技能状态。
-        for (var _i2 = 0, _arr2 = ["talk", "medicine", "scouting", "firstAid"]; _i2 < _arr2.length; _i2++) {
-          var removedSkill = _arr2[_i2];
+        for (var _i3 = 0, _arr2 = ["talk", "medicine", "scouting", "firstAid"]; _i3 < _arr2.length; _i3++) {
+          var removedSkill = _arr2[_i3];
           delete clean.skills[removedSkill];
           delete clean.skillOverrides[removedSkill];
         }
@@ -190,26 +211,26 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
           return typeof item !== "string";
         })) throw new TypeError("存档物品栏格式无效");
         this.validateRegisteredKeys(clean.attributes, this.attributeDefinitions, "属性");
-        for (var _i3 = 0, _Object$entries = Object.entries(clean.attributes); _i3 < _Object$entries.length; _i3++) {
-          var _Object$entries$_i = _slicedToArray(_Object$entries[_i3], 2),
-            id = _Object$entries$_i[0],
-            value = _Object$entries$_i[1];
+        for (var _i4 = 0, _Object$entries2 = Object.entries(clean.attributes); _i4 < _Object$entries2.length; _i4++) {
+          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i4], 2),
+            id = _Object$entries2$_i[0],
+            value = _Object$entries2$_i[1];
           var definition = this.attributeDefinitions.get(id);
           if (!Number.isInteger(value) || value < definition.min || definition.max !== null && value > definition.max) {
             throw new TypeError("\u5B58\u6863\u5C5E\u6027 ".concat(id, " \u8D85\u51FA\u6CE8\u518C\u8303\u56F4"));
           }
         }
         this.validateRegisteredKeys(clean.skills, this.skillDefinitions, "技能");
-        for (var _i4 = 0, _Object$entries2 = Object.entries(clean.skills); _i4 < _Object$entries2.length; _i4++) {
-          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i4], 2),
-            _id = _Object$entries2$_i[0],
-            _value = _Object$entries2$_i[1];
+        for (var _i5 = 0, _Object$entries3 = Object.entries(clean.skills); _i5 < _Object$entries3.length; _i5++) {
+          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i5], 2),
+            _id = _Object$entries3$_i[0],
+            _value = _Object$entries3$_i[1];
           if (typeof _value !== "boolean") throw new TypeError("\u5B58\u6863\u6280\u80FD ".concat(_id, " \u4E0D\u662F\u5E03\u5C14\u503C"));
         }
-        for (var _i5 = 0, _Object$entries3 = Object.entries(clean.skillOverrides); _i5 < _Object$entries3.length; _i5++) {
-          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i5], 2),
-            _id2 = _Object$entries3$_i[0],
-            locked = _Object$entries3$_i[1];
+        for (var _i6 = 0, _Object$entries4 = Object.entries(clean.skillOverrides); _i6 < _Object$entries4.length; _i6++) {
+          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i6], 2),
+            _id2 = _Object$entries4$_i[0],
+            locked = _Object$entries4$_i[1];
           if (!this.skillDefinitions.has(_id2) || locked !== true) throw new TypeError("\u5B58\u6863\u6280\u80FD\u5C4F\u853D\u72B6\u6001\u65E0\u6548\uFF1A".concat(_id2));
         }
         this.sceneId = clean.sceneId || null;
@@ -223,14 +244,15 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
         this.objectStates = clean.objectStates;
         this.checkResults = clean.checkResults;
         this.checkAttempts = clean.checkAttempts;
+        this.runStats = clean.runStats;
 
         // 旧存档将驾驶室钥匙和操作面板钥匙合并为 crew_keys；恢复时拆成两个正式物品。
         if (this.inventory.includes("crew_keys")) {
           this.inventory = this.inventory.filter(function (itemId) {
             return itemId !== "crew_keys";
           });
-          for (var _i6 = 0, _arr3 = ["driver_cab_key", "control_panel_key"]; _i6 < _arr3.length; _i6++) {
-            var itemId = _arr3[_i6];
+          for (var _i7 = 0, _arr3 = ["driver_cab_key", "control_panel_key"]; _i7 < _arr3.length; _i7++) {
+            var itemId = _arr3[_i7];
             if (!this.inventory.includes(itemId)) this.inventory.push(itemId);
           }
         }

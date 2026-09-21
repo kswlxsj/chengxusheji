@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>常暗之厢 · 游戏</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css?v=panel-style-20260918-2">
+  <link rel="stylesheet" href="styles/main.css?v=achievement-20260921-1">
   <link rel="stylesheet" href="styles/carriage-02-darkness.css?v=carriage05-half-dark-20260916-2">
   <script src="src/compat-loader.js" data-src="src/namespace.js" data-ie-css="styles/main.ie.css|styles/carriage-02-darkness.ie.css|styles/ie-overrides.css"></script>
   <!-- window.TrainGame，以及 deepClone、delay 基础接口。 -->
 
   <script src="src/compat-loader.js" data-src="src/auth.js"></script>
   <!-- TrainGame.Auth，提供 register、login、currentUser、logout 等账号接口。 -->
-  <script src="src/compat-loader.js" data-src="src/player-profile.js"></script>
+  <script src="src/compat-loader.js" data-src="src/player-profile.js?v=achievement-20260921-1"></script>
   <!-- TrainGame.PlayerProfile，提供当前账号的音量偏好与结局收藏。 -->
    
   <script src="src/compat-loader.js" data-src="src/auth-guard.js"></script>
@@ -43,13 +43,13 @@
   </main>
 
   <!-- 编译产物放在最前面；其余脚本读取 window.GAME_DATA。 -->
-  <script src="src/compat-loader.js" data-src="data/compiled-game-data.js?v=carriage06-investigation-gate-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="data/compiled-game-data.js?v=carriage05-random-search-20260921-3"></script>
   <!-- window.GAME_DATA，包含 meta、scenes、events、items、attributes、skills 等游戏数据。 -->
   
   <script src="src/compat-loader.js" data-src="src/page-flow.js?v=save-manager-20260918-1"></script>
   <!-- TrainGame.PageFlow，提供路由跳转、存档槽位解析和跨页临时数据接口。 -->
   
-  <script src="src/compat-loader.js" data-src="src/state.js?v=checkpoint-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/state.js?v=achievement-20260921-1"></script>
   <!-- TrainGame.GameState、TrainGame.SaveManager，提供游戏状态和存档管理接口。 -->
   
   <script src="src/compat-loader.js" data-src="src/ui.js?v=checkpoint-20260917-1"></script>
@@ -58,10 +58,10 @@
   <script src="src/compat-loader.js" data-src="src/audio.js?v=preserve-rate-position-20260918-1"></script>
   <!-- TrainGame.AudioManager 与 BackgroundAudioManager，共用淡化音源生命周期。 -->
   
-  <script src="src/compat-loader.js" data-src="src/scene.js?v=carriage05-half-dark-click-through-20260916-3"></script>
+  <script src="src/compat-loader.js" data-src="src/scene.js?v=carriage05-click-fallback-20260921-1"></script>
   <!-- TrainGame.evaluateCondition、TrainGame.SceneManager，提供条件判断和场景管理接口。 -->
   
-  <script src="src/compat-loader.js" data-src="src/events.js?v=checkpoint-20260917-1"></script>
+  <script src="src/compat-loader.js" data-src="src/events.js?v=achievement-20260921-1"></script>
   <!-- TrainGame.Registry、TrainGame.EventEngine，提供动作注册和事件执行接口。 -->
   
   <script src="src/compat-loader.js" data-src="src/dice.js?v=attribute-balance-20260916-1"></script>
@@ -107,7 +107,7 @@
     <script src="src/compat-loader.js" data-src="src/minigame-games/conductor-tug.js?v=scene-stability-20260913-1"></script>
   <!-- 终局控制杆争夺小游戏：进入先头车厢后触发，抓握区大小读取里世界交钥匙历史。 -->
 
-  <script src="src/compat-loader.js" data-src="src/main.js?v=save-manager-20260918-1"></script>
+  <script src="src/compat-loader.js" data-src="src/main.js?v=achievement-20260921-1"></script>
   <!-- 创建并初始化当前页面的游戏实例，并新增 window.game 调试接口。 -->
 </body>
 </html>

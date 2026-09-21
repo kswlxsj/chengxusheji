@@ -403,6 +403,8 @@
       this.registerAction("minigame", async (action) => {
         if (!Game.Minigames) throw new Error("小游戏系统未加载：缺少 src/minigames.js");
         const spec = Game.Minigames.get(action.game);
+        const started = this.state.runStats.minigamesStarted;
+        started[action.game] = (started[action.game] || 0) + 1;
         const host = this.ui.minigame || null;
         // 小游戏使用独立覆盖层；清掉对白窗口，避免上一句文字穿透到卡牌等玩法界面。
         this.ui.closeDialog?.();
@@ -482,6 +484,7 @@
       const definition = this.state.attributeDefinitions.get(attribute);
       const before = this.state.getAttribute(attribute);
       const after = this.state.modifyAttribute(attribute, amount);
+      if (attribute === "san" && after < before) this.state.runStats.sanLost += before - after;
       this.ui.showAttributeChange?.({
         name: definition?.name || attribute,
         requested: amount,

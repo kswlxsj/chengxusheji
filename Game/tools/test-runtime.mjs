@@ -209,6 +209,54 @@ assert.deepEqual(
 );
 storage.delete(aliceProfileKey);
 
+// 成就使用账号级持久化；医疗次数、小游戏启动记录、累计 SAN 损失与终局条件必须分别判定。
+assert.equal(Auth.register("AchievementTester", "secret4").ok, true);
+assert.equal(Auth.login("AchievementTester", "secret4").ok, true);
+assert.equal(Game.ACHIEVEMENT_CATALOG.length, 9, "成就页应固定为九宫格");
+assert.equal(Game.ACHIEVEMENT_CATALOG[1].title, "妙手回春", "第二格应为妙手回春");
+assert.deepEqual([...Game.PlayerProfile.getUnlockedAchievements()], []);
+
+function achievementState(overrides = {}) {
+  return {
+    flags: {},
+    inventory: [],
+    checkAttempts: {},
+    runStats: { sanLost: 0, minigamesStarted: {} },
+    ...overrides
+  };
+}
+
+Game.PlayerProfile.evaluateAchievements(achievementState({
+  flags: { carriage_05_all_inspected_rewarded: true },
+  checkAttempts: { "id:crew_04_medical": { attempts: 1, success: true } }
+}));
+Game.PlayerProfile.evaluateAchievements(achievementState({
+  checkAttempts: { "id:crew_04_medical": { attempts: 2, success: true } }
+}));
+Game.PlayerProfile.evaluateAchievements(achievementState({
+  checkAttempts: {
+    "id:crew_04_medical": { attempts: 2, success: false },
+    "event:E_020_SECOND_MEDICAL:ev020_education_01": { attempts: 1, success: true }
+  }
+}));
+Game.PlayerProfile.evaluateAchievements(achievementState({
+  flags: { card_battle_won: true },
+  runStats: { sanLost: 0, minigamesStarted: { card_battle_hard: 1 } }
+}));
+Game.PlayerProfile.evaluateAchievements(achievementState({
+  flags: { ending_reason: "true_end" },
+  inventory: ["drink"]
+}));
+for (const ending of Game.ENDING_CATALOG) Game.PlayerProfile.unlockEnding(ending.id);
+assert.deepEqual(
+  new Set(Game.PlayerProfile.getUnlockedAchievements()),
+  new Set(Game.ACHIEVEMENT_CATALOG.map((achievement) => achievement.id)),
+  "九项成就均应能由对应条件解锁"
+);
+assert.equal(Game.PlayerProfile.unlockAchievement("unknown"), false, "未知成就不应进入收藏");
+assert.equal(Game.PlayerProfile.evaluateAchievements(achievementState()).length, 0, "重复检查不得重复解锁");
+assert.equal(Auth.login("Alice", "secret1").ok, true);
+
 const initialState = {
   sceneId: "test_scene",
   currentEventId: null,

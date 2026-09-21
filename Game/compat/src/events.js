@@ -788,7 +788,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         this.registerAction("minigame", /*#__PURE__*/function () {
           var _ref22 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee17(action) {
             var _this3$ui$closeDialog2, _this3$ui3, _host$setQuitAllowed;
-            var spec, host, stage, context, cleanups, gameContext, settlement, running, quit, _i, _cleanups, cleanup, result, _iterator4, _step4, item, _t2;
+            var spec, started, host, stage, context, cleanups, gameContext, settlement, running, quit, _i, _cleanups, cleanup, result, _iterator4, _step4, item, _t2;
             return _regenerator().w(function (_context17) {
               while (1) switch (_context17.p = _context17.n) {
                 case 0:
@@ -799,6 +799,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
                   throw new Error("小游戏系统未加载：缺少 src/minigames.js");
                 case 1:
                   spec = Game.Minigames.get(action.game);
+                  started = _this3.state.runStats.minigamesStarted;
+                  started[action.game] = (started[action.game] || 0) + 1;
                   host = _this3.ui.minigame || null; // 小游戏使用独立覆盖层；清掉对白窗口，避免上一句文字穿透到卡牌等玩法界面。
                   (_this3$ui$closeDialog2 = (_this3$ui3 = _this3.ui).closeDialog) === null || _this3$ui$closeDialog2 === void 0 || _this3$ui$closeDialog2.call(_this3$ui3);
                   stage = host ? host.openAndStage(spec.title, action.game) : null;
@@ -961,6 +963,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         var definition = this.state.attributeDefinitions.get(attribute);
         var before = this.state.getAttribute(attribute);
         var after = this.state.modifyAttribute(attribute, amount);
+        if (attribute === "san" && after < before) this.state.runStats.sanLost += before - after;
         (_this$ui$showAttribut = (_this$ui = this.ui).showAttributeChange) === null || _this$ui$showAttribut === void 0 || _this$ui$showAttribut.call(_this$ui, {
           name: (definition === null || definition === void 0 ? void 0 : definition.name) || attribute,
           requested: amount,

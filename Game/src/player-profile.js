@@ -1,7 +1,7 @@
 (function (Game) {
   "use strict";
 
-  const PROFILE_VERSION = 5;
+  const PROFILE_VERSION = 6;
   const STORAGE_KEY_PREFIX = "train-game-profile-user-v1:";
   const AUDIO_REFERENCE_LEVEL = 0.6;
   const AUDIO_KEYS = Object.freeze(["pageMusic", "gameAmbience", "gameSfx", "buttonSfx"]);
@@ -56,6 +56,64 @@
   ]);
   const ENDING_IDS = new Set(ENDING_CATALOG.map((ending) => ending.id));
 
+  const ACHIEVEMENT_CATALOG = Object.freeze([
+    Object.freeze({
+      id: "rummage",
+      title: "翻箱倒柜",
+      description: "调查 5 号车厢内的全部可交互物。",
+      image: "assets/Image/Ui/Achievement/rummage.png"
+    }),
+    Object.freeze({
+      id: "first_aid_first_try",
+      title: "妙手回春",
+      description: "第一次救治乘务员便成功。",
+      image: "assets/Image/Ui/Achievement/first-aid-first-try.png"
+    }),
+    Object.freeze({
+      id: "clever_victory",
+      title: "智取",
+      description: "不激活斗牌与抢摇杆小游戏，抵达真结局。",
+      image: "assets/Image/Ui/Achievement/clever-victory.png"
+    }),
+    Object.freeze({
+      id: "second_chance_aid",
+      title: "亡羊补牢",
+      description: "第一次救治失败，第二次救治成功。",
+      image: "assets/Image/Ui/Achievement/second-chance-aid.png"
+    }),
+    Object.freeze({
+      id: "third_time_aid",
+      title: "事不过三",
+      description: "前两次救治失败，在员工柜前第三次救治成功。",
+      image: "assets/Image/Ui/Achievement/third-time-aid.png"
+    }),
+    Object.freeze({
+      id: "prepared",
+      title: "有备无患",
+      description: "保留未开启的饮料抵达真结局。",
+      image: "assets/Image/Ui/Achievement/prepared.png"
+    }),
+    Object.freeze({
+      id: "unscathed",
+      title: "全须全尾",
+      description: "全程没有损失 SAN，抵达真结局。",
+      image: "assets/Image/Ui/Achievement/unscathed.png"
+    }),
+    Object.freeze({
+      id: "all_cards_out",
+      title: "底牌尽出",
+      description: "赢下困难模式斗牌。",
+      image: "assets/Image/Ui/Achievement/all-cards-out.png"
+    }),
+    Object.freeze({
+      id: "all_endings",
+      title: "阅尽终局",
+      description: "收集全部六个结局。",
+      image: "assets/Image/Ui/Achievement/all-endings.png"
+    })
+  ]);
+  const ACHIEVEMENT_IDS = new Set(ACHIEVEMENT_CATALOG.map((achievement) => achievement.id));
+
   function defaultProfile() {
     return {
       version: PROFILE_VERSION,
@@ -67,7 +125,8 @@
       },
       autoSaveEnabled: true,
       shortcuts: { ...DEFAULT_SHORTCUTS },
-      unlockedEndings: []
+      unlockedEndings: [],
+      unlockedAchievements: []
     };
   }
 
@@ -113,6 +172,11 @@
     }
     if (Array.isArray(value.unlockedEndings)) {
       profile.unlockedEndings = [...new Set(value.unlockedEndings.filter((id) => ENDING_IDS.has(id)))];
+    }
+    if (Array.isArray(value.unlockedAchievements)) {
+      profile.unlockedAchievements = [...new Set(
+        value.unlockedAchievements.filter((id) => ACHIEVEMENT_IDS.has(id))
+      )];
     }
     if (typeof value.autoSaveEnabled === "boolean") profile.autoSaveEnabled = value.autoSaveEnabled;
     profile.shortcuts = normalizeShortcuts(value.shortcuts);
@@ -207,10 +271,60 @@
     const profile = readProfile();
     if (profile.unlockedEndings.includes(id)) return false;
     profile.unlockedEndings.push(id);
+    const written = writeProfile(profile);
+    if (written && profile.unlockedEndings.length === ENDING_CATALOG.length) unlockAchievement("all_endings");
+    return written;
+  }
+
+  function getUnlockedAchievements() {
+    return [...readProfile().unlockedAchievements];
+  }
+
+  function unlockAchievement(id) {
+    if (!ACHIEVEMENT_IDS.has(id)) return false;
+    const profile = readProfile();
+    if (profile.unlockedAchievements.includes(id)) return false;
+    profile.unlockedAchievements.push(id);
     return writeProfile(profile);
   }
 
+  function evaluateAchievements(state) {
+    if (!state || typeof state !== "object") return [];
+    const unlocked = [];
+    const award = (id) => {
+      if (!unlockAchievement(id)) return;
+      const achievement = ACHIEVEMENT_CATALOG.find((candidate) => candidate.id === id);
+      if (achievement) unlocked.push(achievement);
+    };
+    const medical = state.checkAttempts?.["id:crew_04_medical"];
+    const thirdMedical = state.checkAttempts?.["event:E_020_SECOND_MEDICAL:ev020_education_01"];
+    const started = state.runStats?.minigamesStarted || {};
+    const isTrueEnding = state.flags?.ending_reason === "true_end";
+
+    if (state.flags?.carriage_05_all_inspected_rewarded === true) award("rummage");
+    if (medical?.success === true && medical.attempts === 1) award("first_aid_first_try");
+    if (medical?.success === true && medical.attempts === 2) award("second_chance_aid");
+    if (medical?.success === false && medical.attempts === 2 && thirdMedical?.success === true) {
+      award("third_time_aid");
+    }
+    if ((started.card_battle_hard || 0) > 0 && state.flags?.card_battle_won === true) {
+      award("all_cards_out");
+    }
+    if (isTrueEnding) {
+      if (
+        (started.card_battle || 0) === 0
+        && (started.card_battle_hard || 0) === 0
+        && (started.conductor_tug || 0) === 0
+      ) award("clever_victory");
+      if (Array.isArray(state.inventory) && state.inventory.includes("drink")) award("prepared");
+      if ((state.runStats?.sanLost || 0) === 0) award("unscathed");
+    }
+    if (getUnlockedEndings().length === ENDING_CATALOG.length) award("all_endings");
+    return unlocked;
+  }
+
   Game.ENDING_CATALOG = ENDING_CATALOG;
+  Game.ACHIEVEMENT_CATALOG = ACHIEVEMENT_CATALOG;
   Game.AUDIO_REFERENCE_LEVEL = AUDIO_REFERENCE_LEVEL;
   Game.PlayerProfile = Object.freeze({
     getAudioSettings,
@@ -223,6 +337,9 @@
     setShortcutSetting,
     resetShortcutSettings,
     getUnlockedEndings,
-    unlockEnding
+    unlockEnding,
+    getUnlockedAchievements,
+    unlockAchievement,
+    evaluateAchievements
   });
 })(window.TrainGame);

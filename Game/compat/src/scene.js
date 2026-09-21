@@ -744,7 +744,15 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
           this.setHotEntry(null);
           return;
         }
-        this.setHotEntry(this.topCanvasEntryAt(event));
+        var target = event.target;
+        var targetButton = target && target.closest ? target.closest(".scene-object-hit") : null;
+        var targetEntry = targetButton ? this.findCanvasEntry(targetButton) : null;
+        var canvasEntry = this.topCanvasEntryAt(event) || targetEntry;
+        var rectEntry = this.topRectEntryAt(event);
+        var canvasZ = (canvasEntry === null || canvasEntry === void 0 ? void 0 : canvasEntry.object.zIndex) || 10;
+        var rectZ = (rectEntry === null || rectEntry === void 0 ? void 0 : rectEntry.object.zIndex) || 10;
+        // 矩形热点（如车窗）位于全画布物件之上时，不应让下层行李继续发亮。
+        this.setHotEntry(canvasEntry && (!rectEntry || canvasZ >= rectZ) ? canvasEntry : null);
       }
     }, {
       key: "renderDirectionalLight",
@@ -896,19 +904,24 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
       value: function handleCanvasClick(event) {
         var target = event.target;
         var button = target && target.closest ? target.closest(".scene-object-hit") : null;
-        if (!button || !this.interactionEnabled) return;
-        var targetEntry = this.findCanvasEntry(button);
-        if (!targetEntry || !this.onObjectClick) return;
+        var regularButton = target && target.closest ? target.closest(".scene-object") : null;
+        // 普通矩形热点由自己的 click 监听处理；全画布热点则允许在舞台层补做命中，
+        // 这样图片加载、透明层或浏览器点击穿透时也不会让行李完全失去交互。
+        if (regularButton && !button) return;
+        if (!this.interactionEnabled || !this.onObjectClick) return;
+        var targetEntry = button ? this.findCanvasEntry(button) : null;
         // 键盘激活直接使用当前焦点；鼠标则按真实不透明像素重新选最上层物件。
         if (event.detail === 0) {
-          if (targetEntry.object.clickEvent) this.onObjectClick(targetEntry.object.clickEvent, targetEntry.object);
+          if (targetEntry !== null && targetEntry !== void 0 && targetEntry.object.clickEvent) this.onObjectClick(targetEntry.object.clickEvent, targetEntry.object);
           return;
         }
         var canvasEntry = this.topCanvasEntryAt(event);
         var rectEntry = this.topRectEntryAt(event);
         var canvasZ = (canvasEntry === null || canvasEntry === void 0 ? void 0 : canvasEntry.object.zIndex) || 10;
         var rectZ = (rectEntry === null || rectEntry === void 0 ? void 0 : rectEntry.object.zIndex) || 10;
-        var entry = canvasEntry && (!rectEntry || canvasZ >= rectZ) ? canvasEntry : rectEntry;
+        // 事件目标已经是某个全画布命中按钮时，优先保留该目标作为兜底；
+        // 只有明确命中了更高层矩形/画布物件时才切换，避免坐标换算误差吞掉行李点击。
+        var entry = canvasEntry && (!rectEntry || canvasZ >= rectZ) ? canvasEntry : rectEntry || targetEntry;
         if (entry !== null && entry !== void 0 && entry.object.clickEvent) this.onObjectClick(entry.object.clickEvent, entry.object);
       }
     }, {

@@ -1,4 +1,5 @@
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -46,7 +47,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     },
     onTerminate: function () {
       var _onTerminate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var _Game$PlayerProfile, _Game$PlayerProfile$u, _ui$audio, _ui$audio$stopAll, _ui$backgroundAudio, _ui$backgroundAudio$s, _ui$cancelPending, _document$querySelect;
+        var _Game$PlayerProfile, _Game$PlayerProfile$u, _Game$PlayerProfile2, _Game$PlayerProfile2$, _ui$audio, _ui$audio$stopAll, _ui$backgroundAudio, _ui$backgroundAudio$s, _ui$cancelPending, _document$querySelect;
         var reason, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
@@ -62,6 +63,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               flow.clearRefreshSnapshot();
               reason = state.flags.ending_reason || "san";
               (_Game$PlayerProfile = Game.PlayerProfile) === null || _Game$PlayerProfile === void 0 || (_Game$PlayerProfile$u = _Game$PlayerProfile.unlockEnding) === null || _Game$PlayerProfile$u === void 0 || _Game$PlayerProfile$u.call(_Game$PlayerProfile, reason);
+              (_Game$PlayerProfile2 = Game.PlayerProfile) === null || _Game$PlayerProfile2 === void 0 || (_Game$PlayerProfile2$ = _Game$PlayerProfile2.evaluateAchievements) === null || _Game$PlayerProfile2$ === void 0 || _Game$PlayerProfile2$.call(_Game$PlayerProfile2, state);
               // 预加载结局素材期间也不能继续播放旧场景音频。
               (_ui$audio = ui.audio) === null || _ui$audio === void 0 || (_ui$audio$stopAll = _ui$audio.stopAll) === null || _ui$audio$stopAll === void 0 || _ui$audio$stopAll.call(_ui$audio, {
                 immediate: true
@@ -353,7 +355,24 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     if (startupLocked || paused || engine.busy || state.sceneId !== "carriage_06" || !hasInvestigatedAllCarriage06Items() || state.flags.carriage_06_guide_seen === true) return;
     void engine.play("E_005_GUIDE");
   }
-  engine.onStateChanged = updateHud;
+  function handleStateChanged() {
+    var _Game$PlayerProfile3, _Game$PlayerProfile3$;
+    var unlocked = ((_Game$PlayerProfile3 = Game.PlayerProfile) === null || _Game$PlayerProfile3 === void 0 || (_Game$PlayerProfile3$ = _Game$PlayerProfile3.evaluateAchievements) === null || _Game$PlayerProfile3$ === void 0 ? void 0 : _Game$PlayerProfile3$.call(_Game$PlayerProfile3, state)) || [];
+    var _iterator = _createForOfIteratorHelper(unlocked),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var achievement = _step.value;
+        ui.toast("\u6210\u5C31\u89E3\u9501\uFF1A".concat(achievement.title));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+    updateHud();
+  }
+  engine.onStateChanged = handleStateChanged;
   engine.onCheckpointChanged = rememberRefreshCheckpoint;
   function errorMessage(error) {
     return error instanceof Error ? error.message : "未知错误";
